@@ -16,3 +16,7 @@ This library depends on the following libraries:
   * python-libsbml
   * pandas
   * numpy
+  
+---------------------------------------
+
+<img src="http://enzymeml.org/images/logo/enzymeml.jpg" width="250" />
