@@ -8,9 +8,9 @@ from setuptools import setup
 
 setup(      
     name='PyEnzyme',
-    version='1.0.0',
+    version='0.1.1',
     description='Handling of EnzymeML files',
-    url='https://github.com/EnzymeML/python-enzymeml',
+    url='#',
     author='Range, Jan',
     author_email='range.jan@web.de',
     license='MIT',
