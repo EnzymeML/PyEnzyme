@@ -1,4 +1,4 @@
-# python-enzymeml
+# PyEnzyme
 _**Authors**_:      [Jan Range](https://github.com/JR-1991)<br>
 _**Repository**_:   https://github.com/EnzymeML/python-enzymeml<br>
 _**Issue tracker**_: https://github.com/EnzymeML/python-enzymeml/issues<br>
