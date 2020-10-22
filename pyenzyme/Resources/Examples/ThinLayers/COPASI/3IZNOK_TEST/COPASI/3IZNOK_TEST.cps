@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.29.227 (Source) (http://www.copasi.org) at 2020-10-15T09:19:34Z -->
+<!-- generated with COPASI 4.29.227 (Source) (http://www.copasi.org) at 2020-10-22T11:08:58Z -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
 <COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="29" versionDevel="227" copasiSourcesModified="0">
   <ListOfFunctions>
@@ -11,7 +11,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Function_39">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-15T09:19:34Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -35,7 +35,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Model_0">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-15T09:19:34Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -56,7 +56,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Compartment_1">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-15T09:19:34Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -71,7 +71,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Metabolite_5">
     <dcterms:created>
       <rdf:Description>
-        <dcterms:W3CDTF>2020-10-15T09:19:34Z</dcterms:W3CDTF>
+        <dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
       </rdf:Description>
     </dcterms:created>
     <CopasiMT:is rdf:resource="urn:miriam:sbo:SBO:0000252" />
@@ -93,7 +93,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Metabolite_6">
     <dcterms:created>
       <rdf:Description>
-        <dcterms:W3CDTF>2020-10-15T09:19:34Z</dcterms:W3CDTF>
+        <dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
       </rdf:Description>
     </dcterms:created>
     <CopasiMT:is rdf:resource="urn:miriam:sbo:SBO:0000247" />
@@ -115,7 +115,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Metabolite_7">
     <dcterms:created>
       <rdf:Description>
-        <dcterms:W3CDTF>2020-10-15T09:19:34Z</dcterms:W3CDTF>
+        <dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
       </rdf:Description>
     </dcterms:created>
     <CopasiMT:is rdf:resource="urn:miriam:sbo:SBO:0000247" />
@@ -137,7 +137,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Metabolite_8">
     <dcterms:created>
       <rdf:Description>
-        <dcterms:W3CDTF>2020-10-15T09:19:34Z</dcterms:W3CDTF>
+        <dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
       </rdf:Description>
     </dcterms:created>
     <CopasiMT:is rdf:resource="urn:miriam:sbo:SBO:0000247" />
@@ -159,7 +159,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Metabolite_9">
     <dcterms:created>
       <rdf:Description>
-        <dcterms:W3CDTF>2020-10-15T09:19:34Z</dcterms:W3CDTF>
+        <dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
       </rdf:Description>
     </dcterms:created>
     <CopasiMT:is rdf:resource="urn:miriam:sbo:SBO:0000247" />
@@ -183,7 +183,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Reaction_1">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-15T09:19:34Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -217,16 +217,16 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
           <Modifier metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5385" name="kcat_s1" value="0.015"/>
-          <Constant key="Parameter_5392" name="km_s1" value="0.01"/>
+          <Constant key="Parameter_5421" name="kcat_s1" value="0.015"/>
+          <Constant key="Parameter_5441" name="km_s1" value="0.01"/>
         </ListOfConstants>
         <KineticLaw function="Function_39" unitType="Default" scalingCompartment="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_265">
-              <SourceParameter reference="Parameter_5385"/>
+              <SourceParameter reference="Parameter_5421"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_266">
-              <SourceParameter reference="Parameter_5392"/>
+              <SourceParameter reference="Parameter_5441"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_267">
               <SourceParameter reference="Metabolite_5"/>
@@ -250,7 +250,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#ModelParameterSet_0">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-15T09:19:34Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -382,6 +382,50 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
         <Parameter name="Calculate Statistics" type="bool" value="0"/>
         <ParameterGroup name="OptimizationItemList">
+          <ParameterGroup name="FitItem">
+            <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[O-phospho-L-serine],Reference=InitialConcentration"/>
+            <Parameter name="LowerBound" type="cn" value="0.0"/>
+            <Parameter name="UpperBound" type="cn" value="0.0"/>
+            <Parameter name="StartValue" type="float" value="0"/>
+            <ParameterGroup name="Affected Experiments">
+              <Parameter name="Experiment Key" type="key" value=""/>
+            </ParameterGroup>
+            <ParameterGroup name="Affected Cross Validation Experiments">
+            </ParameterGroup>
+          </ParameterGroup>
+          <ParameterGroup name="FitItem">
+            <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[O-phospho-L-serine],Reference=InitialConcentration"/>
+            <Parameter name="LowerBound" type="cn" value="0.0016666666666666666"/>
+            <Parameter name="UpperBound" type="cn" value="16.666666666666664"/>
+            <Parameter name="StartValue" type="float" value="0.16666666666666666"/>
+            <ParameterGroup name="Affected Experiments">
+              <Parameter name="Experiment Key" type="key" value="Experiment_0"/>
+            </ParameterGroup>
+            <ParameterGroup name="Affected Cross Validation Experiments">
+            </ParameterGroup>
+          </ParameterGroup>
+          <ParameterGroup name="FitItem">
+            <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[O-phospho-L-serine],Reference=InitialConcentration"/>
+            <Parameter name="LowerBound" type="cn" value="0.003333333333333333"/>
+            <Parameter name="UpperBound" type="cn" value="33.33333333333333"/>
+            <Parameter name="StartValue" type="float" value="0.33333333333333331"/>
+            <ParameterGroup name="Affected Experiments">
+              <Parameter name="Experiment Key" type="key" value=""/>
+            </ParameterGroup>
+            <ParameterGroup name="Affected Cross Validation Experiments">
+            </ParameterGroup>
+          </ParameterGroup>
+          <ParameterGroup name="FitItem">
+            <Parameter name="ObjectCN" type="cn" value="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[O-phospho-L-serine],Reference=InitialConcentration"/>
+            <Parameter name="LowerBound" type="cn" value="0.005"/>
+            <Parameter name="UpperBound" type="cn" value="50.0"/>
+            <Parameter name="StartValue" type="float" value="0.5"/>
+            <ParameterGroup name="Affected Experiments">
+              <Parameter name="Experiment Key" type="key" value=""/>
+            </ParameterGroup>
+            <ParameterGroup name="Affected Cross Validation Experiments">
+            </ParameterGroup>
+          </ParameterGroup>
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
         </ParameterGroup>
@@ -393,19 +437,23 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <ParameterGroup name="Experiment Set">
           <ParameterGroup name="steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1">
             <Parameter name="Key" type="key" value="Experiment_0"/>
-            <Parameter name="File Name" type="file" value="../../Resources/Examples/ThinLayers/COPASI/3IZNOK_TEST/COPASI/data.tsv"/>
+            <Parameter name="File Name" type="file" value="experiment_s1_1.tsv"/>
             <Parameter name="First Row" type="unsignedInteger" value="1"/>
-            <Parameter name="Last Row" type="unsignedInteger" value="1"/>
+            <Parameter name="Last Row" type="unsignedInteger" value="201"/>
             <Parameter name="Experiment Type" type="unsignedInteger" value="1"/>
             <Parameter name="Normalize Weights per Experiment" type="bool" value="1"/>
             <Parameter name="Separator" type="string" value="&#x09;"/>
             <Parameter name="Weight Method" type="unsignedInteger" value="1"/>
             <Parameter name="Data is Row Oriented" type="bool" value="1"/>
-            <Parameter name="Row containing Names" type="unsignedInteger" value="4294967295"/>
-            <Parameter name="Number of Columns" type="unsignedInteger" value="1"/>
+            <Parameter name="Row containing Names" type="unsignedInteger" value="1"/>
+            <Parameter name="Number of Columns" type="unsignedInteger" value="2"/>
             <ParameterGroup name="Object Map">
               <ParameterGroup name="0">
                 <Parameter name="Role" type="unsignedInteger" value="3"/>
+              </ParameterGroup>
+              <ParameterGroup name="1">
+                <Parameter name="Role" type="unsignedInteger" value="2"/>
+                <Parameter name="Object CN" type="cn" value="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[O-phospho-L-serine],Reference=Concentration"/>
               </ParameterGroup>
             </ParameterGroup>
           </ParameterGroup>
@@ -727,6 +775,48 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         </PlotItem>
       </ListOfPlotItems>
     </PlotSpecification>
+    <PlotSpecification name="Parameter Estimation Result" type="Plot2D" active="1" taskTypes="Parameter Estimation">
+      <Parameter name="log X" type="bool" value="0"/>
+      <Parameter name="log Y" type="bool" value="0"/>
+      <ListOfPlotItems>
+        <PlotItem name="steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,[O-phospho-L-serine](Measured Value)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="3"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="1"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Measured Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,[O-phospho-L-serine](Fitted Value)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Fitted Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,[O-phospho-L-serine](Weighted Error)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="2"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="2"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Weighted Error"/>
+          </ListOfChannels>
+        </PlotItem>
+      </ListOfPlotItems>
+    </PlotSpecification>
   </ListOfPlots>
   <ListOfUnitDefinitions>
     <UnitDefinition key="Unit_1" name="meter" symbol="m">
@@ -737,7 +827,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_0">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-15T09:19:33Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -755,7 +845,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_4">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-15T09:19:33Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -773,7 +863,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_12">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-15T09:19:33Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -791,7 +881,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_16">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-15T09:19:33Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -809,7 +899,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_34">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-15T09:19:33Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -827,7 +917,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_40">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-15T09:19:34Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
