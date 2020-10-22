@@ -7,6 +7,7 @@ from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from pyenzyme.enzymeml.models.kineticmodel import KineticModel
 from pyenzyme.enzymeml.core.replicate import Replicate
 import pandas as pd
+from copy import deepcopy
 
 
 class EnzymeReaction(object):
@@ -62,9 +63,10 @@ class EnzymeReaction(object):
         Args:
             String/ListStr ids: Single or multiple IDs of reactants/proteins
         '''
-        
+        ids = deepcopy(ids)
         if type(ids) == str:
             ids = [ids]
+        
         
         repls = []
         all_tups = self.__educts + self.__products + self.__modifiers
@@ -72,13 +74,13 @@ class EnzymeReaction(object):
         
         for tup in all_tups:
             if tup[0].split('_')[0] in ids:
+                
                 repls += [ repl.getData() for repl in tup[3] ]
-                ids.remove(tup[0])
+                ids.remove(tup[0].split('_')[0])
         
         if len(ids) > 0:
             
             print('\nCould not find ', ids, '\n' )
-        
         return pd.DataFrame( repls ).T
     
     def getEduct(self, id_):
