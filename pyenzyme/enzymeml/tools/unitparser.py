@@ -79,7 +79,7 @@ class UnitParser(object):
             return "".join(  [ self.__reformatString(unit, "+") for unit in nom ] +  [self.__reformatString(unit, "-") for unit in den ]  )
         
         def __getPrefix(self, string, exponent):
-            regex = "^([a-zA-Z]*)(C|celsius|K|kelvin|M|molar|mole|g|gram|l|L|litre|liter|s|seconds|second|h|hour|hours)$"
+            regex = "^([a-zA-Z]*)(C|celsius|K|kelvin|M|molar|mole|g|gram|l|L|litre|liter|s|seconds|second|min|mins|minutes|h|hour|hours)$"
             string = string.lower()[0:-1] + string[-1]
             
             try:
