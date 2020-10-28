@@ -15,5 +15,5 @@ setup(
     author_email='range.jan@web.de',
     license='MIT',
     packages = setuptools.find_packages(),
-    install_requires=['python-libsbml', 'numpy', 'pandas', 'python-libcombine', 'COPASI']
+    install_requires=['python-libsbml', 'numpy', 'pandas', 'python-libcombine', 'python-copasi']
     )
