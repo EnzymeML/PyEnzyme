@@ -1,6 +1,5 @@
 '''
 Created on 04.08.2020
-
 @author: JR
 '''
 
@@ -9,6 +8,51 @@ import os
 
 import COPASI
 from builtins import enumerate
+
+
+def run_parameter_estimation(dm):
+    task = dm.getTask('Parameter Estimation')
+    assert (isinstance(task, COPASI.CFitTask))
+    task.setScheduled(True)
+    problem = task.getProblem()
+    problem.setCalculateStatistics(False)
+
+    reaction = dm.getModel().getReaction(0)
+    objects = reaction.getParameterObjects()
+
+    cn_name_map = {}
+
+    # add fit items for reaction parameters
+    for obj in objects:
+        param = obj[0]
+        if param.getObjectAncestor('Reaction') is None:
+            # skip all non-local parameters
+            continue
+        value = reaction.getParameterValue(param.getObjectName())
+        item = problem.addFitItem(param.getValueObject().getCN())
+        item.setStartValue(value)  # the current initial concentration
+        item.setLowerBound(COPASI.CCommonName(str(value * 0.0001)))
+        item.setUpperBound(COPASI.CCommonName(str(value * 10000)))
+        cn_name_map[param.getValueObject().getCN().getString()] = param.getObjectName()
+
+    # switch optimization method
+    task.setMethodType(COPASI.CTaskEnum.Method_LevenbergMarquardt)
+
+    # run optimization
+    task.initialize(COPASI.CCopasiTask.OUTPUT_UI)
+    task.process(True)
+
+    # print parameter values
+    assert (isinstance(problem, COPASI.CFitProblem))
+    results = problem.getSolutionVariables()
+    for i in range(problem.getOptItemSize()):
+        item = problem.getOptItem(i)
+        cn = item.getObjectCN().getString()
+        if cn not in cn_name_map:
+            continue
+        value = results.get(i)
+        print(" {0}: {1}".format(cn_name_map[cn], value))
+
 
 class ThinLayerCopasi(object):
     
@@ -78,10 +122,8 @@ class ThinLayerCopasi(object):
                 data.to_csv( outdir +'/experiment_%s_%i.tsv' % ( reactant, i ), sep='\t', header=True)
                 
                 exp = COPASI.CExperiment(dm)
-                exp = exp_set.addExperiment(exp)
-                info = COPASI.CExperimentFileInfo(exp_set)
-                info.setFileName( outdir + '/experiment_%s_%i.tsv' % ( reactant, i ))
-                exp.setObjectName(reaction.getName())
+                #exp.setObjectName(reaction.getName())  # the name should be unique, so here we have to generate one
+                exp.setObjectName('{0} at {1:.2f}'.format(metab.getObjectName(), conc_val))
                 exp.setFirstRow(1)
                 exp.setLastRow(data.shape[0]+1)
                 exp.setHeaderRow(1)
@@ -89,7 +131,10 @@ class ThinLayerCopasi(object):
                 exp.setExperimentType(COPASI.CTaskEnum.Task_timeCourse)
                 exp.setSeparator('\t')
                 exp.setNumColumns(2)
-                
+                exp = exp_set.addExperiment(exp)
+                info = COPASI.CExperimentFileInfo(exp_set)
+                info.setFileName(outdir + '/experiment_%s_%i.tsv' % (reactant, i))
+
                 # add the initial concentration as fit item
                 item = problem.addFitItem(cn)
                 item.setStartValue(conc_val)  # the current initial concentration 
@@ -122,12 +167,15 @@ class ThinLayerCopasi(object):
         task = dm.getTask('Parameter Estimation')
         task.setMethodType(COPASI.CTaskEnum.Method_Statistics)
         COPASI.COutputAssistant.getListOfDefaultOutputDescriptions(task)
-        COPASI.COutputAssistant.createDefaultOutput(913, task, dm)
-        COPASI.COutputAssistant.createDefaultOutput(910, task, dm)
+        COPASI.COutputAssistant.createDefaultOutput(913, task, dm)  # progress of fit plot
+        # COPASI.COutputAssistant.createDefaultOutput(910, task, dm)  # parameter estimation result (all experiments in one)
+        COPASI.COutputAssistant.createDefaultOutput(911, task, dm)  # parameter estimation result per experiment
         dm.saveModel( outdir + "/" + fname + ".cps", True)
         
         print("Saved model to " + outdir + "/" + fname + ".cps")
+
+        run_parameter_estimation(dm)
         
 if __name__ == '__main__':
-    
-    ThinLayerCopasi().importEnzymeML('r0', 's1', "../../Resources/Examples/ThinLayers/COPASI/3IZNOK_TEST/3IZNOK_TEST.omex")
+    print(os.path.abspath("../../Resources/Examples/ThinLayers/COPASI/3IZNOK_TEST/3IZNOK_TEST.omex"))
+    ThinLayerCopasi().importEnzymeML('r0', 's1', os.path.abspath("../../Resources/Examples/ThinLayers/COPASI/3IZNOK_TEST/3IZNOK_TEST.omex") )
