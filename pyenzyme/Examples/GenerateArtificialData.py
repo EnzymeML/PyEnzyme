@@ -2,6 +2,8 @@ from pyenzyme.enzymeml.core import Replicate
 from pyenzyme.enzymeml.tools import EnzymeMLReader, EnzymeMLWriter
 from pyenzyme.enzymeml.core.reactant import Reactant
 
+import os
+
 # Define Menten equation
 def menten(s, vmax, km):
     
@@ -25,6 +27,7 @@ def generateData(init_conc, vmax, km):
 if __name__ == '__main__':
     
     # Read Strenda EnzymeML
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     enzmldoc = EnzymeMLReader().readFromFile('../Resources/Examples/ThinLayers/STRENDA/Generated/3IZNOK_TEST/3IZNOK_TEST.omex', omex=True)
     
     # iterate through kinetic law parameters
@@ -88,7 +91,7 @@ if __name__ == '__main__':
                     repl_index += 1
                     
                     enzmldoc.getReaction('r0').addReplicate(repl, enzmldoc)
-        
+
     enzmldoc.printProteins()
     enzmldoc.printReactants()
     enzmldoc.printReactions()

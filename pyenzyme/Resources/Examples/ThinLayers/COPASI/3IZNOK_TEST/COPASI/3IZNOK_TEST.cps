@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.29.227 (Source) (http://www.copasi.org) at 2020-10-22T11:08:58Z -->
+<!-- generated with COPASI 4.29.227 (Source) (http://www.copasi.org) at 2020-10-28T21:52:31Z -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
 <COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="29" versionDevel="227" copasiSourcesModified="0">
   <ListOfFunctions>
@@ -11,7 +11,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Function_39">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -35,7 +35,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Model_0">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -56,7 +56,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Compartment_1">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -71,7 +71,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Metabolite_5">
     <dcterms:created>
       <rdf:Description>
-        <dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+        <dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
       </rdf:Description>
     </dcterms:created>
     <CopasiMT:is rdf:resource="urn:miriam:sbo:SBO:0000252" />
@@ -93,7 +93,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Metabolite_6">
     <dcterms:created>
       <rdf:Description>
-        <dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+        <dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
       </rdf:Description>
     </dcterms:created>
     <CopasiMT:is rdf:resource="urn:miriam:sbo:SBO:0000247" />
@@ -115,7 +115,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Metabolite_7">
     <dcterms:created>
       <rdf:Description>
-        <dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+        <dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
       </rdf:Description>
     </dcterms:created>
     <CopasiMT:is rdf:resource="urn:miriam:sbo:SBO:0000247" />
@@ -137,7 +137,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Metabolite_8">
     <dcterms:created>
       <rdf:Description>
-        <dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+        <dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
       </rdf:Description>
     </dcterms:created>
     <CopasiMT:is rdf:resource="urn:miriam:sbo:SBO:0000247" />
@@ -159,7 +159,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Metabolite_9">
     <dcterms:created>
       <rdf:Description>
-        <dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+        <dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
       </rdf:Description>
     </dcterms:created>
     <CopasiMT:is rdf:resource="urn:miriam:sbo:SBO:0000247" />
@@ -183,7 +183,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Reaction_1">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -250,7 +250,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#ModelParameterSet_0">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-28T21:52:31Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -263,8 +263,8 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
           <ModelParameter cn="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK]" value="1" type="Compartment" simulationType="fixed"/>
         </ModelParameterGroup>
         <ModelParameterGroup cn="String=Initial Species Values" type="Group">
-          <ModelParameter cn="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[TrpB2o from Arabidopsis thaliana 10.0 microM]" value="6.0221417899999996e+24" type="Species" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[indole]" value="6.0221417900000001e+25" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[TrpB2o from Arabidopsis thaliana 10.0 microM]" value="6.0221417900000003e+21" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[indole]" value="6.0221417900000001e+22" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[O-phospho-L-serine]" value="6.0221417899999999e+23" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[L-Tryptophan]" value="6.0221417899999999e+23" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[HPO4(2-)]" value="6.0221417899999999e+23" type="Species" simulationType="reactions"/>
@@ -289,7 +289,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
       <StateTemplateVariable objectReference="Compartment_1"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 6.0221417900000001e+25 6.0221417899999999e+23 6.0221417899999999e+23 6.0221417899999999e+23 6.0221417899999996e+24 1 
+      0 6.0221417900000001e+22 6.0221417899999999e+23 6.0221417899999999e+23 6.0221417899999999e+23 6.0221417900000003e+21 1 
     </InitialState>
   </Model>
   <ListOfTasks>
@@ -388,7 +388,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
             <Parameter name="UpperBound" type="cn" value="0.0"/>
             <Parameter name="StartValue" type="float" value="0"/>
             <ParameterGroup name="Affected Experiments">
-              <Parameter name="Experiment Key" type="key" value=""/>
+              <Parameter name="Experiment Key" type="key" value="Experiment_0"/>
             </ParameterGroup>
             <ParameterGroup name="Affected Cross Validation Experiments">
             </ParameterGroup>
@@ -399,7 +399,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
             <Parameter name="UpperBound" type="cn" value="16.666666666666664"/>
             <Parameter name="StartValue" type="float" value="0.16666666666666666"/>
             <ParameterGroup name="Affected Experiments">
-              <Parameter name="Experiment Key" type="key" value="Experiment_0"/>
+              <Parameter name="Experiment Key" type="key" value="Experiment_5"/>
             </ParameterGroup>
             <ParameterGroup name="Affected Cross Validation Experiments">
             </ParameterGroup>
@@ -410,7 +410,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
             <Parameter name="UpperBound" type="cn" value="33.33333333333333"/>
             <Parameter name="StartValue" type="float" value="0.33333333333333331"/>
             <ParameterGroup name="Affected Experiments">
-              <Parameter name="Experiment Key" type="key" value=""/>
+              <Parameter name="Experiment Key" type="key" value="Experiment_6"/>
             </ParameterGroup>
             <ParameterGroup name="Affected Cross Validation Experiments">
             </ParameterGroup>
@@ -421,7 +421,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
             <Parameter name="UpperBound" type="cn" value="50.0"/>
             <Parameter name="StartValue" type="float" value="0.5"/>
             <ParameterGroup name="Affected Experiments">
-              <Parameter name="Experiment Key" type="key" value=""/>
+              <Parameter name="Experiment Key" type="key" value="Experiment_7"/>
             </ParameterGroup>
             <ParameterGroup name="Affected Cross Validation Experiments">
             </ParameterGroup>
@@ -435,9 +435,75 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Parameter name="Use Time Sens" type="bool" value="0"/>
         <Parameter name="Time-Sens" type="cn" value=""/>
         <ParameterGroup name="Experiment Set">
-          <ParameterGroup name="steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1">
+          <ParameterGroup name="O-phospho-L-serine at 0.00">
             <Parameter name="Key" type="key" value="Experiment_0"/>
+            <Parameter name="File Name" type="file" value="experiment_s1_0.tsv"/>
+            <Parameter name="First Row" type="unsignedInteger" value="1"/>
+            <Parameter name="Last Row" type="unsignedInteger" value="201"/>
+            <Parameter name="Experiment Type" type="unsignedInteger" value="1"/>
+            <Parameter name="Normalize Weights per Experiment" type="bool" value="1"/>
+            <Parameter name="Separator" type="string" value="&#x09;"/>
+            <Parameter name="Weight Method" type="unsignedInteger" value="1"/>
+            <Parameter name="Data is Row Oriented" type="bool" value="1"/>
+            <Parameter name="Row containing Names" type="unsignedInteger" value="1"/>
+            <Parameter name="Number of Columns" type="unsignedInteger" value="2"/>
+            <ParameterGroup name="Object Map">
+              <ParameterGroup name="0">
+                <Parameter name="Role" type="unsignedInteger" value="3"/>
+              </ParameterGroup>
+              <ParameterGroup name="1">
+                <Parameter name="Role" type="unsignedInteger" value="2"/>
+                <Parameter name="Object CN" type="cn" value="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[O-phospho-L-serine],Reference=Concentration"/>
+              </ParameterGroup>
+            </ParameterGroup>
+          </ParameterGroup>
+          <ParameterGroup name="O-phospho-L-serine at 0.17">
+            <Parameter name="Key" type="key" value="Experiment_5"/>
             <Parameter name="File Name" type="file" value="experiment_s1_1.tsv"/>
+            <Parameter name="First Row" type="unsignedInteger" value="1"/>
+            <Parameter name="Last Row" type="unsignedInteger" value="201"/>
+            <Parameter name="Experiment Type" type="unsignedInteger" value="1"/>
+            <Parameter name="Normalize Weights per Experiment" type="bool" value="1"/>
+            <Parameter name="Separator" type="string" value="&#x09;"/>
+            <Parameter name="Weight Method" type="unsignedInteger" value="1"/>
+            <Parameter name="Data is Row Oriented" type="bool" value="1"/>
+            <Parameter name="Row containing Names" type="unsignedInteger" value="1"/>
+            <Parameter name="Number of Columns" type="unsignedInteger" value="2"/>
+            <ParameterGroup name="Object Map">
+              <ParameterGroup name="0">
+                <Parameter name="Role" type="unsignedInteger" value="3"/>
+              </ParameterGroup>
+              <ParameterGroup name="1">
+                <Parameter name="Role" type="unsignedInteger" value="2"/>
+                <Parameter name="Object CN" type="cn" value="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[O-phospho-L-serine],Reference=Concentration"/>
+              </ParameterGroup>
+            </ParameterGroup>
+          </ParameterGroup>
+          <ParameterGroup name="O-phospho-L-serine at 0.33">
+            <Parameter name="Key" type="key" value="Experiment_6"/>
+            <Parameter name="File Name" type="file" value="experiment_s1_2.tsv"/>
+            <Parameter name="First Row" type="unsignedInteger" value="1"/>
+            <Parameter name="Last Row" type="unsignedInteger" value="201"/>
+            <Parameter name="Experiment Type" type="unsignedInteger" value="1"/>
+            <Parameter name="Normalize Weights per Experiment" type="bool" value="1"/>
+            <Parameter name="Separator" type="string" value="&#x09;"/>
+            <Parameter name="Weight Method" type="unsignedInteger" value="1"/>
+            <Parameter name="Data is Row Oriented" type="bool" value="1"/>
+            <Parameter name="Row containing Names" type="unsignedInteger" value="1"/>
+            <Parameter name="Number of Columns" type="unsignedInteger" value="2"/>
+            <ParameterGroup name="Object Map">
+              <ParameterGroup name="0">
+                <Parameter name="Role" type="unsignedInteger" value="3"/>
+              </ParameterGroup>
+              <ParameterGroup name="1">
+                <Parameter name="Role" type="unsignedInteger" value="2"/>
+                <Parameter name="Object CN" type="cn" value="CN=Root,Model=3IZNOK_TEST,Vector=Compartments[VesselUNK],Vector=Metabolites[O-phospho-L-serine],Reference=Concentration"/>
+              </ParameterGroup>
+            </ParameterGroup>
+          </ParameterGroup>
+          <ParameterGroup name="O-phospho-L-serine at 0.50">
+            <Parameter name="Key" type="key" value="Experiment_7"/>
+            <Parameter name="File Name" type="file" value="experiment_s1_3.tsv"/>
             <Parameter name="First Row" type="unsignedInteger" value="1"/>
             <Parameter name="Last Row" type="unsignedInteger" value="201"/>
             <Parameter name="Experiment Type" type="unsignedInteger" value="1"/>
@@ -775,11 +841,11 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         </PlotItem>
       </ListOfPlotItems>
     </PlotSpecification>
-    <PlotSpecification name="Parameter Estimation Result" type="Plot2D" active="1" taskTypes="Parameter Estimation">
+    <PlotSpecification name="O-phospho-L-serine at 0.00" type="Plot2D" active="1" taskTypes="Parameter Estimation">
       <Parameter name="log X" type="bool" value="0"/>
       <Parameter name="log Y" type="bool" value="0"/>
       <ListOfPlotItems>
-        <PlotItem name="steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,[O-phospho-L-serine](Measured Value)" type="Curve2D">
+        <PlotItem name="[O-phospho-L-serine](Measured Value)" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="3"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="1"/>
           <Parameter name="Line width" type="unsignedFloat" value="1"/>
@@ -787,11 +853,11 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
           <Parameter name="Color" type="string" value="#FF0000"/>
           <Parameter name="Recording Activity" type="string" value="after"/>
           <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Independent Value"/>
-            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Measured Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.00,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.00,Vector=Fitted Points[0],Reference=Measured Value"/>
           </ListOfChannels>
         </PlotItem>
-        <PlotItem name="steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,[O-phospho-L-serine](Fitted Value)" type="Curve2D">
+        <PlotItem name="[O-phospho-L-serine](Fitted Value)" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line width" type="unsignedFloat" value="1"/>
@@ -799,11 +865,11 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
           <Parameter name="Color" type="string" value="#FF0000"/>
           <Parameter name="Recording Activity" type="string" value="after"/>
           <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Independent Value"/>
-            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Fitted Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.00,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.00,Vector=Fitted Points[0],Reference=Fitted Value"/>
           </ListOfChannels>
         </PlotItem>
-        <PlotItem name="steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,[O-phospho-L-serine](Weighted Error)" type="Curve2D">
+        <PlotItem name="[O-phospho-L-serine](Weighted Error)" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="2"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Line width" type="unsignedFloat" value="1"/>
@@ -811,8 +877,134 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
           <Parameter name="Color" type="string" value="#FF0000"/>
           <Parameter name="Recording Activity" type="string" value="after"/>
           <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Independent Value"/>
-            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=steady-state kinetics with TrpB2o from Arabidopsis thaliana PConc: 10.00 uM +1,Vector=Fitted Points[0],Reference=Weighted Error"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.00,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.00,Vector=Fitted Points[0],Reference=Weighted Error"/>
+          </ListOfChannels>
+        </PlotItem>
+      </ListOfPlotItems>
+    </PlotSpecification>
+    <PlotSpecification name="O-phospho-L-serine at 0.17" type="Plot2D" active="1" taskTypes="Parameter Estimation">
+      <Parameter name="log X" type="bool" value="0"/>
+      <Parameter name="log Y" type="bool" value="0"/>
+      <ListOfPlotItems>
+        <PlotItem name="[O-phospho-L-serine](Measured Value)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="3"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="1"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.17,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.17,Vector=Fitted Points[0],Reference=Measured Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[O-phospho-L-serine](Fitted Value)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.17,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.17,Vector=Fitted Points[0],Reference=Fitted Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[O-phospho-L-serine](Weighted Error)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="2"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="2"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.17,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.17,Vector=Fitted Points[0],Reference=Weighted Error"/>
+          </ListOfChannels>
+        </PlotItem>
+      </ListOfPlotItems>
+    </PlotSpecification>
+    <PlotSpecification name="O-phospho-L-serine at 0.33" type="Plot2D" active="1" taskTypes="Parameter Estimation">
+      <Parameter name="log X" type="bool" value="0"/>
+      <Parameter name="log Y" type="bool" value="0"/>
+      <ListOfPlotItems>
+        <PlotItem name="[O-phospho-L-serine](Measured Value)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="3"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="1"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.33,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.33,Vector=Fitted Points[0],Reference=Measured Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[O-phospho-L-serine](Fitted Value)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.33,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.33,Vector=Fitted Points[0],Reference=Fitted Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[O-phospho-L-serine](Weighted Error)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="2"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="2"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.33,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.33,Vector=Fitted Points[0],Reference=Weighted Error"/>
+          </ListOfChannels>
+        </PlotItem>
+      </ListOfPlotItems>
+    </PlotSpecification>
+    <PlotSpecification name="O-phospho-L-serine at 0.50" type="Plot2D" active="1" taskTypes="Parameter Estimation">
+      <Parameter name="log X" type="bool" value="0"/>
+      <Parameter name="log Y" type="bool" value="0"/>
+      <ListOfPlotItems>
+        <PlotItem name="[O-phospho-L-serine](Measured Value)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="3"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="1"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.50,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.50,Vector=Fitted Points[0],Reference=Measured Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[O-phospho-L-serine](Fitted Value)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.50,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.50,Vector=Fitted Points[0],Reference=Fitted Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[O-phospho-L-serine](Weighted Error)" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="2"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="2"/>
+          <Parameter name="Color" type="string" value="#FF0000"/>
+          <Parameter name="Recording Activity" type="string" value="after"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.50,Vector=Fitted Points[0],Reference=Independent Value"/>
+            <ChannelSpec cn="CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,ParameterGroup=Experiment Set,ParameterGroup=O-phospho-L-serine at 0.50,Vector=Fitted Points[0],Reference=Weighted Error"/>
           </ListOfChannels>
         </PlotItem>
       </ListOfPlotItems>
@@ -827,7 +1019,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_0">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -845,7 +1037,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_4">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -863,7 +1055,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_12">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -881,7 +1073,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_16">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -899,7 +1091,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_34">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>
@@ -917,7 +1109,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
 <rdf:Description rdf:about="#Unit_40">
 <dcterms:created>
 <rdf:Description>
-<dcterms:W3CDTF>2020-10-22T11:08:58Z</dcterms:W3CDTF>
+<dcterms:W3CDTF>2020-10-28T21:52:30Z</dcterms:W3CDTF>
 </rdf:Description>
 </dcterms:created>
 </rdf:Description>

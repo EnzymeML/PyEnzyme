@@ -4,11 +4,14 @@ Created on 04.08.2020
 '''
 
 from pyenzyme.enzymeml.tools import EnzymeMLReader, EnzymeMLWriter
+from pyenzyme.enzymeml.core import Replicate
+from pyenzyme.enzymeml.models import KineticModel
 import os
 
 import COPASI
 from builtins import enumerate
 
+##### COPASI FUNCTIONS #####
 
 def replace_kinetic_law(dm, reaction, function_name):
     # type: (COPASI.CDataModel, COPASI.CReaction, str) -> None
@@ -81,18 +84,26 @@ def run_parameter_estimation(dm):
     # print parameter values
     assert (isinstance(problem, COPASI.CFitProblem))
     results = problem.getSolutionVariables()
+
+    vmax = None
+    km = None
+
     for i in range(problem.getOptItemSize()):
         item = problem.getOptItem(i)
         cn = item.getObjectCN().getString()
         if cn not in cn_name_map:
             continue
         value = results.get(i)
-        print(" {0}: {1}".format(cn_name_map[cn], value))
+
+        if cn_name_map[cn] == 'V': vmax = value;
+        if cn_name_map[cn] == 'Km': km = value;
+    
+    return km, vmax
 
 
 class ThinLayerCopasi(object):
     
-    def importEnzymeML(self, reaction, reactants, path, outdir=None):
+    def importEnzymeML(self, reaction_id, reactants, path, outdir=None):
         
         '''
         ThinLayer interface from an .omex EnzymeML container 
@@ -110,19 +121,21 @@ class ThinLayerCopasi(object):
         fname = str(os.path.basename(path)).split(".omex")[0]
         
         if outdir is None:
-            
-            outdir = "/".join( path.split('/')[0:-1] ) +  "/COPASI"
-                         
+            outdir = os.path.join( os.path.split(path)[0],  "COPASI" )
             os.makedirs( outdir, exist_ok=True )
         
         ########### PyEnzyme ########### 
         
         # Read EnzymeML Omex file
         doc = EnzymeMLReader().readFromFile(path, omex=True)
-        enzmldoc = deepcopy(doc)
+        enzmldoc = EnzymeMLReader().readFromFile(path, omex=True)
 
         # Get reaction and replicates
-        reaction = enzmldoc.getReaction(reaction)
+        reaction = enzmldoc.getReaction(reaction_id)
+
+        # Unify units according to selected reactant for
+        # COPASI consistency in calculation
+        self.unifyUnits(reactants[0], reaction, enzmldoc, 'mole')
         
         # initialize COPASI data model
         dm = COPASI.CRootContainer.addDatamodel()
@@ -141,8 +154,6 @@ class ThinLayerCopasi(object):
         problem = task.getProblem()
         problem.setCalculateStatistics(False)
         exp_set = problem.getExperimentSet()
-        
-        
         
         for reactant in reactants:
             # include each replicate
@@ -207,12 +218,81 @@ class ThinLayerCopasi(object):
         COPASI.COutputAssistant.createDefaultOutput(913, task, dm)  # progress of fit plot
         # COPASI.COutputAssistant.createDefaultOutput(910, task, dm)  # parameter estimation result (all experiments in one)
         COPASI.COutputAssistant.createDefaultOutput(911, task, dm)  # parameter estimation result per experiment
-        dm.saveModel( outdir + "/" + fname + ".cps", True)
-        
-        print("Saved model to " + outdir + "/" + fname + ".cps")
+        dm.saveModel( os.path.join( outdir, fname + ".cps"), True)
+        print("Saved model CPS to " + outdir + "/" + fname + ".cps")
 
-        run_parameter_estimation(dm)
+        # Gather Menten parameters
+        Km, vmax = run_parameter_estimation(dm)
+        
+        parameters = { 'km_%s' % reactants[0]: (Km, enzmldoc.getReactant(reactants[0]).getSubstanceunits()),
+                       'vmax_%s' % reactants[0]: (vmax, enzmldoc.getReactant(reactants[0]).getSubstanceunits()) }
+        equation = "vmax_%s*%s/(km_%s+%s)" % tuple([reactants[0]]*4)
+        km  = KineticModel(equation, parameters)
+
+        doc.getReaction(reaction_id).setModel( km )
+
+        EnzymeMLWriter().toFile(doc, outdir)
+
+    def unifyUnits(self, reactant, reaction, enzmldoc, kind):
+
+        # get unit of specified reactant
+        unit = enzmldoc.getUnitDict()[ enzmldoc.getReactant(reactant).getSubstanceunits() ]
+        units = unit.getUnits()
+        exponent = [ tup[1] for tup in units if tup[0] == kind ][0]
+        scale = [ tup[2] for tup in units if tup[0] == kind ][0]
+
+        # iterate through elements
+        all_elems = [reaction.getEducts(), reaction.getProducts(), reaction.getModifiers()]
+
+        for i, elem in enumerate(all_elems):
+            for tup in elem:
+                
+                # get exponent and scale to calculate factor for new calculation
+                if tup[0][0] == 's': unit_r = enzmldoc.getUnitDict()[ enzmldoc.getReactant(tup[0]).getSubstanceunits() ];
+                if tup[0][0] == 'p': unit_r = enzmldoc.getUnitDict()[ enzmldoc.getProtein(tup[0]).getSubstanceUnits() ];
+
+                units_r = unit_r.getUnits()
+                exponent_r = [ tup[1] for tup in units_r if tup[0] == kind ][0]
+                scale_r = [ tup[2] for tup in units_r if tup[0] == kind ][0]
+
+                nu_scale = exponent_r*( scale_r - scale )
+
+                if nu_scale != 0:
+
+                    # Reset Species initial concentrations
+                    if tup[0][0] == 's':
+                        enzmldoc.getReactant(tup[0]).setSubstanceunits( unit.getId() )
+                        enzmldoc.getReactant(tup[0]).setInitConc( enzmldoc.getReactant(tup[0]).getInitConc()*(10**nu_scale) )
+                    elif tup[0][0] == 'p':
+                        enzmldoc.getProtein(tup[0]).setSubstanceUnits( unit.getId() )
+                        enzmldoc.getProtein(tup[0]).setInitConc( enzmldoc.getProtein(tup[0]).getInitConc()*(10**nu_scale) )
+
+                    # Reset replicate concentrations
+                    nu_repls = [ Replicate(
+                                            repl.getReplica(), 
+                                            repl.getReactant(), 
+                                            repl.getType(), 
+                                            unit.getId(), 
+                                            repl.getTimeUnit(),
+                                            repl.getInitConc()*(10**nu_scale)
+                                             ) 
+                                             
+                                             for repl in tup[3] ]
+                    
+                    # Reset initial concentrations
+                    nu_inits = [ init*(10**nu_scale) for init in tup[4] ]
+                    
+                    for conc in nu_inits:
+                        enzmldoc.addConc( (conc, unit.getId()) )
+
+                    # Remove old element
+                    if i == 0: 
+                        reaction.getEducts()[ reaction.getEduct( tup[0], index=True ) ] = ( tup[0], tup[1], tup[2], nu_repls, nu_inits )
+                    if i == 1: 
+                        reaction.getProducts()[ reaction.getProduct( tup[0], index=True ) ] = ( tup[0], tup[1], tup[2], nu_repls, nu_inits )
+                    if i == 2: 
+                        reaction.getModifiers()[ reaction.getModifier( tup[0], index=True ) ] = ( tup[0], tup[1], tup[2], nu_repls, nu_inits )
         
 if __name__ == '__main__':
-    print(os.path.abspath("../../Resources/Examples/ThinLayers/COPASI/3IZNOK_TEST/3IZNOK_TEST.omex"))
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     ThinLayerCopasi().importEnzymeML('r0', 's1', os.path.abspath("../../Resources/Examples/ThinLayers/COPASI/3IZNOK_TEST/3IZNOK_TEST.omex") )

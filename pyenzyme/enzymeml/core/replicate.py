@@ -29,7 +29,7 @@ class Replicate(object):
         self.setDataUnit(data_unit)
         self.setTimeUnit(time_unit)
         self.setInitConc(init_conc)
-
+    
     def getInitConc(self):
         return self.__init_conc
 

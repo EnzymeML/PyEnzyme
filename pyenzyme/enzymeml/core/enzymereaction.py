@@ -83,48 +83,61 @@ class EnzymeReaction(object):
             print('\nCould not find ', ids, '\n' )
         return pd.DataFrame( repls ).T
     
-    def getEduct(self, id_):
+    def getEduct(self, id_, index=False):
         
         '''
         Returns educt tuple ( ID, Stoichiometry, IsConstant, Replicates )
         
         Args:
             String id_: Reactant internal ID
+            Bool index: Returns index of tuple
         '''
         
-        for tup in self.__educts:
+        for i, tup in enumerate(self.__educts):
             if tup[0] == id_:
-                return tup
+                if index:
+                    return i
+                else:
+                    return tup
             
         raise KeyError( "Reactant %s not defined in educts" % id_ )
     
-    def getProduct(self, id_):
+    def getProduct(self, id_, index=False):
         
         '''
         Returns product tuple ( ID, Stoichiometry, IsConstant, Replicates )
         
         Args:
             String id_: Reactant internal ID
+            Bool index: Returns index of tuple
         '''
         
-        for tup in self.__products:
+        for i, tup in enumerate(self.__products):
             if tup[0] == id_:
-                return tup
+                if index:
+                    return i
+                else:
+                    return tup
+            
             
         raise KeyError( "Reactant %s not defined in products" % id_ )
     
-    def getModifier(self, id_):
+    def getModifier(self, id_, index=False):
         
         '''
         Returns modifier tuple ( ID, Stoichiometry, IsConstant, Replicates )
         
         Args:
             String id_: Reactant/Protein internal ID
+            Bool index: Returns index of tuple
         '''
         
-        for tup in self.__modifiers:
+        for i, tup in enumerate(self.__modifiers):
             if tup[0] == id_:
-                return tup
+                if index:
+                    return i
+                else:
+                    return tup
             
         raise KeyError( "Reactant/Protein %s not defined in modifiers" % id_ )
         

@@ -36,6 +36,19 @@ class EnzymeMLDocument(object):
         self.setReactionDict(dict())
         self.setUnitDict(dict())
         self.setConcDict(dict())
+    
+    def addConc(self, tup):
+
+        index = 0
+        id_ = 'c%i' % index
+        while True:
+
+            if id_ not in self.__ConcDict.keys():
+                self.__ConcDict[id_] = tup
+                break
+            else:
+                index += 1
+                id_ = 'c%i' % index
 
     def getDoi(self):
         return self.__doi

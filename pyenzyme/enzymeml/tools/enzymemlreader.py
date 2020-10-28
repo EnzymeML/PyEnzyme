@@ -370,11 +370,13 @@ class EnzymeMLReader(object):
             
             modifiers = [ 
                 
-                         ( species_ref.getSpecies(),
-                         reaction_replicates[ species_ref.getSpecies() ]
+                         ( species_ref.getSpecies(), 1.0, False,
+                         reaction_replicates[ species_ref.getSpecies() ],
+                         list()
                          ) if species_ref.getSpecies() in reaction_replicates.keys()
                          
-                         else ( species_ref.getSpecies(),
+                         else ( species_ref.getSpecies(), 1.0, False,
+                         list(),
                          list()
                          )
                       
