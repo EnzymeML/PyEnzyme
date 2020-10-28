@@ -604,7 +604,7 @@ class EnzymeMLWriter(object):
             
             
             file = XMLNode( XMLTriple( 'enzymeml:file' ), XMLAttributes(), XMLNamespaces() )
-            file.addAttr('file', './data/Data.csv')
+            file.addAttr('file', './data/data.csv')
             file.addAttr('format', 'format0')
             file.addAttr('id', 'file0')
             
