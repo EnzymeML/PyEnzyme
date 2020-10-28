@@ -10,14 +10,50 @@ import COPASI
 from builtins import enumerate
 
 
+def replace_kinetic_law(dm, reaction, function_name):
+    # type: (COPASI.CDataModel, COPASI.CReaction, str) -> None
+    functions = COPASI.CRootContainer.getFunctionList()
+    function = functions.findFunction(function_name)
+    if function is None:
+        print("No such function defined, can't change kinetics")
+        return
+
+    if reaction.isReversible():  # for now force the kinetic to be irreversible
+                                 # (otherwise the kinetic law does not apply)
+        reaction.setReversible(False)
+
+    # now since we have 2 substrates in this case and we would automatically assign the first substrate
+    # to the new function, we want to make sure that we map to the same substrates as the old reaction
+    substrates = None
+    fun_params = reaction.getFunctionParameters()
+    for i in range(fun_params.size()):
+        param = fun_params.getParameter(i)
+        if param.getUsage() == COPASI.CFunctionParameter.Role_SUBSTRATE:
+            substrates = reaction.getParameterCNs(param.getObjectName())
+            break
+
+    # set the new function
+    reaction.setFunction(function)
+    if substrates is not None:
+        # in case we found substrates map them
+        reaction.setParameterCNs('substrate', substrates)
+
+    # recompile model so it can be simulated later on
+    reaction.compile()
+    dm.getModel().forceCompile()
+    pass
+
+
 def run_parameter_estimation(dm):
     task = dm.getTask('Parameter Estimation')
     assert (isinstance(task, COPASI.CFitTask))
     task.setScheduled(True)
     problem = task.getProblem()
     problem.setCalculateStatistics(False)
+    # problem.setRandomizeStartValues(True)  # not randomizing this time
 
     reaction = dm.getModel().getReaction(0)
+    replace_kinetic_law(dm, reaction, "Henri-Michaelis-Menten (irreversible)")
     objects = reaction.getParameterObjects()
 
     cn_name_map = {}
@@ -82,8 +118,9 @@ class ThinLayerCopasi(object):
         ########### PyEnzyme ########### 
         
         # Read EnzymeML Omex file
-        enzmldoc = EnzymeMLReader().readFromFile(path, omex=True)
-        
+        doc = EnzymeMLReader().readFromFile(path, omex=True)
+        enzmldoc = deepcopy(doc)
+
         # Get reaction and replicates
         reaction = enzmldoc.getReaction(reaction)
         
