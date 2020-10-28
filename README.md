@@ -1,7 +1,7 @@
 # PyEnzyme
 _**Authors**_:      [Jan Range](https://github.com/JR-1991)<br>
-_**Repository**_:   https://github.com/EnzymeML/python-enzymeml<br>
-_**Issue tracker**_: https://github.com/EnzymeML/python-enzymeml/issues<br>
+_**Repository**_:   https://github.com/EnzymeML/PyEnzyme<br>
+_**Issue tracker**_: https://github.com/EnzymeML/PyEnzyme/issues<br>
 _**License**_:      BSD 2 Clause &ndash; see the file [LICENSE](LICENSE) for details
 
 This project hosts a python library for reading / writing  documents 
