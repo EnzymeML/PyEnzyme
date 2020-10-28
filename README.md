@@ -14,6 +14,7 @@ This library depends on the following libraries:
 
   * python-libcombine
   * python-libsbml
+  * python-copasi
   * pandas
   * numpy
   
