@@ -2,4 +2,4 @@ python-libsbml
 numpy
 pandas
 python-libcombine
-COPASI
+python-copasi
