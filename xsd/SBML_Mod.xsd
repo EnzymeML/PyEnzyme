@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" targetNamespace="http://www.sbml.org/sbml/level3/version2/core" xmlns:mstns="http://www.sbml.org/sbml/level3/version2/core" xmlns="http://www.sbml.org/sbml/level3/version2/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:app1="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:app2="http://biomodels.net/biology-qualifiers/" xmlns:app3="http://sbml.org/enzymeml/version1">
+  <xs:import namespace="http://biomodels.net/biology-qualifiers/" schemaLocation="experiment_app2.xsd" />
+  <xs:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" schemaLocation="experiment_app1.xsd" />
+  <xs:import namespace="http://sbml.org/enzymeml/version1" schemaLocation="experiment_app3.xsd" />
+  <xs:element name="annotation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="app1:RDF" />
+        <xs:element ref="app3:protein" />
+        <xs:element ref="app3:data" />
+        <xs:element ref="app3:reaction" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="sbml">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="model" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="listOfUnitDefinitions" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="unitDefinition" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element ref="annotation" minOccurs="0" maxOccurs="unbounded" />
+                          <xs:element name="listOfUnits" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="unit" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:attribute name="kind" form="unqualified" type="xs:string" />
+                                    <xs:attribute name="exponent" form="unqualified" type="xs:string" />
+                                    <xs:attribute name="scale" form="unqualified" type="xs:string" />
+                                    <xs:attribute name="multiplier" form="unqualified" type="xs:string" />
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="metaid" form="unqualified" type="xs:string" />
+                        <xs:attribute name="id" form="unqualified" type="xs:string" />
+                        <xs:attribute name="name" form="unqualified" type="xs:string" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="listOfCompartments" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="compartment" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="id" form="unqualified" type="xs:string" />
+                        <xs:attribute name="name" form="unqualified" type="xs:string" />
+                        <xs:attribute name="spatialDimensions" form="unqualified" type="xs:string" />
+                        <xs:attribute name="size" form="unqualified" type="xs:string" />
+                        <xs:attribute name="units" form="unqualified" type="xs:string" />
+                        <xs:attribute name="constant" form="unqualified" type="xs:string" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="listOfSpecies" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="species" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element ref="annotation" minOccurs="0" maxOccurs="unbounded" />
+                        </xs:sequence>
+                        <xs:attribute name="metaid" form="unqualified" type="xs:string" />
+                        <xs:attribute name="sboTerm" form="unqualified" type="xs:string" />
+                        <xs:attribute name="id" form="unqualified" type="xs:string" />
+                        <xs:attribute name="name" form="unqualified" type="xs:string" />
+                        <xs:attribute name="compartment" form="unqualified" type="xs:string" />
+                        <xs:attribute name="initialConcentration" form="unqualified" type="xs:string" />
+                        <xs:attribute name="substanceUnits" form="unqualified" type="xs:string" />
+                        <xs:attribute name="hasOnlySubstanceUnits" form="unqualified" type="xs:string" />
+                        <xs:attribute name="boundaryCondition" form="unqualified" type="xs:string" />
+                        <xs:attribute name="constant" form="unqualified" type="xs:string" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="listOfReactions" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element ref="annotation" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="reaction" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element ref="annotation" minOccurs="0" maxOccurs="unbounded" />
+                          <xs:element name="listOfReactants" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="speciesReference" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:attribute name="species" form="unqualified" type="xs:string" />
+                                    <xs:attribute name="stoichiometry" form="unqualified" type="xs:string" />
+                                    <xs:attribute name="constant" form="unqualified" type="xs:string" />
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="metaid" form="unqualified" type="xs:string" />
+                        <xs:attribute name="id" form="unqualified" type="xs:string" />
+                        <xs:attribute name="name" form="unqualified" type="xs:string" />
+                        <xs:attribute name="reversible" form="unqualified" type="xs:string" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" form="unqualified" type="xs:string" />
+            <xs:attribute name="name" form="unqualified" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="level" form="unqualified" type="xs:string" />
+      <xs:attribute name="version" form="unqualified" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="annotation" />
+        <xs:element ref="sbml" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

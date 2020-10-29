@@ -1,0 +1,31 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema targetNamespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:mstns="http://www.sbml.org/sbml/level3/version2/core" xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:app1="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:app3="http://sbml.org/enzymeml/version1" xmlns:app2="http://biomodels.net/biology-qualifiers/">
+  <xs:import namespace="http://biomodels.net/biology-qualifiers/" schemaLocation="experiment_app2.xsd" />
+  <xs:import namespace="http://sbml.org/enzymeml/version1" schemaLocation="experiment_app3.xsd" />
+  <xs:import namespace="http://www.sbml.org/sbml/level3/version2/core" schemaLocation="experiment.xsd" />
+  <xs:element name="Bag" msdata:Prefix="rdf">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="li" msdata:Prefix="rdf" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="resource" msdata:Prefix="rdf" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RDF" msdata:Prefix="rdf">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Description" msdata:Prefix="rdf" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="app2:is" />
+            </xs:sequence>
+            <xs:attribute name="about" msdata:Prefix="rdf" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
