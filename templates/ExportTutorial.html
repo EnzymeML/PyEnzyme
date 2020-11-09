@@ -13569,7 +13569,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">reaction_1</span><span class="o">.</span><span class="n">addReplicate</span><span class="p">(</span><span class="n">replicate_1</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
@@ -13585,7 +13585,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[15]:</div>
+    <div class="prompt output_prompt">Out[14]:</div>
 
 
 
@@ -13612,7 +13612,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">reaction1</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">addReaction</span><span class="p">(</span><span class="n">reaction_1</span><span class="p">)</span>
@@ -13659,14 +13659,14 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">equation</span> <span class="o">=</span> <span class="s2">&quot;s0 * vmax / ( s0 + Km )&quot;</span>
 
 <span class="n">parameters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;Km&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;mmole / s&quot;</span><span class="p">)</span>
-<span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;vmax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="s2">&quot;mmole / l&quot;</span><span class="p">)</span>
+<span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;Km_s0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;mmole / s&quot;</span><span class="p">)</span>
+<span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;vmax_s0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="s2">&quot;mmole / l&quot;</span><span class="p">)</span>
 
 <span class="n">kinetic_model</span> <span class="o">=</span> <span class="n">KineticModel</span><span class="p">(</span> <span class="n">equation</span><span class="o">=</span><span class="n">equation</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span> <span class="p">)</span>
 </pre></div>
@@ -13678,7 +13678,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">getReaction</span><span class="p">(</span><span class="n">reaction1</span><span class="p">)</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="n">kinetic_model</span><span class="p">)</span>
@@ -13701,7 +13701,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">printUnits</span><span class="p">()</span>
@@ -13745,7 +13745,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">out_dir</span> <span class="o">=</span> <span class="s2">&quot;YourDirectory/YourFilename&quot;</span>
@@ -13772,19 +13772,6 @@ Archive created: Your_experiment_name.omex
 </div>
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
 </div>
 </div>
 
