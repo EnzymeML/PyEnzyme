@@ -5,7 +5,7 @@ Created on 10.06.2020
 '''
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from libsbml._libsbml import parseL3Formula
-
+import json
 
 class KineticModel(object):
 
@@ -22,6 +22,25 @@ class KineticModel(object):
         self.setEquation(equation)
         self.setParameters(parameters)
         self.setEqObject( self.getEquation() )
+        
+    def toJSON(self, d=False):
+        
+        if d:
+            f = lambda o: { key.split('__')[-1]: item 
+                               for key, item in o.__dict__.items() 
+                               if 'eqObject' not in key}
+            return f(self)
+        
+        return json.dumps(
+            self, 
+            default=lambda o: { key.split('__')[-1]: item 
+                               for key, item in o.__dict__.items() 
+                               if 'eqObject' not in key}, 
+            indent=4
+            )
+    
+    def __str__(self):
+        return self.toJSON()
         
     def addToReaction(self, reaction):
         

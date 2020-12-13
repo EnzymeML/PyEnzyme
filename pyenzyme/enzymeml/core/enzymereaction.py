@@ -7,6 +7,7 @@ from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from pyenzyme.enzymeml.models.kineticmodel import KineticModel
 from pyenzyme.enzymeml.core.replicate import Replicate
 import pandas as pd
+import json
 from copy import deepcopy
 
 
@@ -36,6 +37,48 @@ class EnzymeReaction(object):
         self.setEducts(educts)
         self.setProducts(products)
         self.setModifiers(modifiers)
+     
+    def toJSON(self):
+        
+        def transformAttr(self):
+            
+            d = dict()
+            for key, item in self.__dict__.items():
+                
+                if 'KineticModel' not in key:
+                
+                    if 'model' in key:
+                        d['model'] = item.toJSON(d=True)
+                    
+                    elif type(item) == list:
+                        nu_lst = [
+                            
+                            {
+                                'species': tup[0],
+                                'stoich': tup[1],
+                                'constant': tup[2],
+                                'replicates': [ repl.toJSON(d=True) for repl in tup[3] ],
+                                'init_conc': str(tup[4]).replace('"', '')
+                                
+                            }
+                            for tup in item
+                        ]
+                        
+                        d[key.split('__')[-1]] = nu_lst
+                        
+                    else:
+                        d[key.split('__')[-1]] = item
+            
+            return d
+        
+        return json.dumps(
+            self, 
+            default=transformAttr, 
+            indent=4
+            )
+    
+    def __str__(self):
+        return self.toJSON() 
         
     def __setInitConc(self, conc, reactant, enzmldoc):
         

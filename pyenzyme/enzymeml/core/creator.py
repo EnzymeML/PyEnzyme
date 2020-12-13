@@ -5,7 +5,7 @@ Created on 09.06.2020
 '''
 
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
-
+import json
 
 class Creator(object):
 
@@ -24,6 +24,16 @@ class Creator(object):
         self.setFname(family_name)
         self.setGname(given_name)
         self.setMail(mail)
+
+    def toJSON(self):
+        return json.dumps(
+            self, 
+            default=lambda o: { key.split('__')[-1]: item for key, item in o.__dict__.items()}, 
+            indent=4
+            )
+    
+    def __str__(self):
+        return self.toJSON()
 
     def getFname(self):
         return self.__fname

@@ -4,7 +4,7 @@ Created on 11.06.2020
 @author: JR
 '''
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
-
+import json
 
 class Vessel(object):
 
@@ -27,6 +27,16 @@ class Vessel(object):
         self.setConstant(True)
         self.setSize(size)
         self.setUnit(unit)
+        
+    def toJSON(self):
+        return json.dumps(
+            self, 
+            default=lambda o: { key.split('__')[-1]: item for key, item in o.__dict__.items()}, 
+            indent=4
+            )
+    
+    def __str__(self):
+        return self.toJSON()
 
     def getName(self):
         return self.__name

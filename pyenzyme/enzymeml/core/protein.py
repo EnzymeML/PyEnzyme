@@ -5,11 +5,11 @@ Created on 09.06.2020
 '''
 
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
-
+import json
 
 class Protein(object):
 
-    def __init__(self, name, sequence, compartment_id, init_conc, substance_units, constant=True):
+    def __init__(self, name, sequence, compartment, init_conc, substance_units, constant=True, ecnumber=None, uniprotid=None):
         
         '''
         Object describing an EnzymeML protein.
@@ -27,12 +27,27 @@ class Protein(object):
 
         self.setName(name)
         self.setSequence(sequence)
-        self.setCompartment(compartment_id)
+        self.setCompartment(compartment)
         self.setInitConc(init_conc)
         self.setSubstanceUnits(substance_units)
         self.setBoundary(False)
         self.setConstant(constant)
         self.setSboterm("SBO:0000252")
+        
+        if ecnumber != None:
+            self.setEcnumber(ecnumber)
+        if uniprotid != None:
+            self.setUniprotID(uniprotid)
+        
+    def toJSON(self):
+        return json.dumps(
+            self, 
+            default=lambda o: { key.split('__')[-1]: item for key, item in o.__dict__.items()}, 
+            indent=4
+            )
+    
+    def __str__(self):
+        return self.toJSON()
 
     def getEcnumber(self):
         return self.__ecnumber

@@ -36,6 +36,26 @@ class EnzymeMLDocument(object):
         self.setReactionDict(dict())
         self.setUnitDict(dict())
         self.setConcDict(dict())
+        
+    def __str__(self):
+    
+        fin_string = ['>>> Units']
+        for key, item in self.__UnitDict.items():
+            fin_string.append('\tID: %s \t Name: %s' % ( key, item.getName() ))
+            
+        fin_string.append('>>> Reactants')
+        for key, item in self.__ReactantDict.items():
+            fin_string.append('\tID: %s \t Name: %s' % ( key, item.getName() ))
+            
+        fin_string.append('>>> Proteins')
+        for key, item in self.__ProteinDict.items():
+            fin_string.append('\tID: %s \t Name: %s' % ( key, item.getName() ))
+            
+        fin_string.append('>>> Reactions')
+        for key, item in self.__ReactionDict.items():
+            fin_string.append('\tID: %s \t Name: %s' % ( key, item.getName() ))
+        
+        return "\n".join(fin_string)
     
     def addConc(self, tup):
 
@@ -427,6 +447,8 @@ class EnzymeMLDocument(object):
             
             
         self.__vessel = TypeChecker(vessel, Vessel)
+        
+        return vessel.getId()
 
 
     def delVessel(self):

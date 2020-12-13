@@ -4,10 +4,11 @@ Created on 10.06.2020
 @author: JR
 '''
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
+import json
 
 class Reactant(object):
 
-    def __init__(self, name, compartment_id, init_conc=0.0, substance_units='NAN', constant=False):
+    def __init__(self, name, compartment_id, init_conc=0.0, substance_units='NAN', constant=False, smiles=None, inchi=None):
         
         '''
         Object describing an EnzymeML reactant.
@@ -30,6 +31,21 @@ class Reactant(object):
         self.setBoundary(False)
         self.setConstant(constant)
         self.setSboterm("SBO:0000247")
+        
+        if inchi != None:
+            self.setInchi(inchi)
+        if smiles != None:
+            self.setSmiles(smiles)
+        
+    def toJSON(self):
+        return json.dumps(
+            self, 
+            default=lambda o: { key.split('__')[-1]: item for key, item in o.__dict__.items()}, 
+            indent=4
+            )
+    
+    def __str__(self):
+        return self.toJSON()
 
     def getInchi(self):
         return self.__inchi

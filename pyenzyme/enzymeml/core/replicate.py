@@ -6,11 +6,12 @@ Created on 10.06.2020
 
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from pandas.core.series import Series
+import json
 
 
 class Replicate(object):
 
-    def __init__(self, replica, reactant, type_, data_unit, time_unit, init_conc="NONE"):
+    def __init__(self, replica, reactant, type_, data_unit, time_unit, init_conc="NONE", data=None, time=None):
 
         '''
         Object describing an EnzymeML replicate.
@@ -29,6 +30,34 @@ class Replicate(object):
         self.setDataUnit(data_unit)
         self.setTimeUnit(time_unit)
         self.setInitConc(init_conc)
+        
+        if data != None and time != None:
+            self.setData(data, time)
+        
+    def toJSON(self, d=False):
+        
+        def transformAttr(self):
+            d = dict()
+            for key, item in self.__dict__.items():
+                
+                if type(item) == Series:
+                    d['data'] = str(list(item)).replace('"', '')
+                    d['time'] = str(list(item.index)).replace('"', '')
+                else:
+                    d[key.split('__')[-1]] = str(item)
+                
+            return d
+        
+        if d: return transformAttr(self);
+                    
+        return json.dumps(
+            self,
+            default = transformAttr,
+            indent=4
+            )
+    
+    def __str__(self):
+        return self.toJSON()
     
     def getInitConc(self):
         return self.__init_conc
