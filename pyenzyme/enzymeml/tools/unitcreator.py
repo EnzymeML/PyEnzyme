@@ -77,7 +77,24 @@ class UnitCreator(object):
             return self.__checkFootprints(enzmldoc, units)
         
         # Initialize UnitDef
-        name = " ".join( ["%s%s %s" % ( prefix, baseunit, exponent ) for prefix, baseunit, exponent in units ] )
+        nominator, denominator = [], []
+        for prefix, baseunit, exponent in units:
+            
+            pre_unit = "".join([prefix, baseunit])
+            
+            if float(exponent) > 0:
+                if abs(float(exponent)) > 1: nominator.append( pre_unit + f"**{exponent}" )
+                if abs(float(exponent)) == 1: nominator.append( pre_unit )
+            else:
+                if abs(float(exponent)) > 1: denominator.append( pre_unit + f"**{exponent}" )
+                if abs(float(exponent)) == 1: denominator.append( pre_unit )
+              
+        if len(denominator) > 0: name = " / ".join( [
+                                                " ".join(nominator),
+                                                " ".join(denominator)
+                                                ] )
+        if len(denominator) == 0: name = " ".join(nominator)
+            
         unitdef = UnitDef(name, id_, "NONE")
         unitdef.setFootprint(units)
         
