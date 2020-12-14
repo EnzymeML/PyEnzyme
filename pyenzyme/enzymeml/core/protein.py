@@ -9,7 +9,7 @@ import json
 
 class Protein(object):
 
-    def __init__(self, name, sequence, compartment, init_conc, substance_units, constant=True, ecnumber=None, uniprotid=None):
+    def __init__(self, name, sequence, compartment, init_conc, substanceunits, constant=True, ecnumber=None, uniprotid=None):
         
         '''
         Object describing an EnzymeML protein.
@@ -29,7 +29,7 @@ class Protein(object):
         self.setSequence(sequence)
         self.setCompartment(compartment)
         self.setInitConc(init_conc)
-        self.setSubstanceUnits(substance_units)
+        self.setSubstanceUnits(substanceunits)
         self.setBoundary(False)
         self.setConstant(constant)
         self.setSboterm("SBO:0000252")
@@ -39,10 +39,15 @@ class Protein(object):
         if uniprotid != None:
             self.setUniprotID(uniprotid)
         
-    def toJSON(self):
+    def toJSON(self, d=False, enzmldoc=False):
+        
+        f = lambda o: { key.split('__')[-1]: item for key, item in o.__dict__.items()}
+        
+        if d: return f(self)
+        
         return json.dumps(
             self, 
-            default=lambda o: { key.split('__')[-1]: item for key, item in o.__dict__.items()}, 
+            default=f, 
             indent=4
             )
     
@@ -122,7 +127,7 @@ class Protein(object):
 
 
     def getSubstanceUnits(self):
-        return self.__substance_units
+        return self.__substanceunits
 
 
     def getBoundary(self):
@@ -159,7 +164,7 @@ class Protein(object):
 
 
     def setSubstanceUnits(self, unit_id):
-        self.__substance_units = TypeChecker(unit_id, str)
+        self.__substanceunits = TypeChecker(unit_id, str)
 
 
     def setBoundary(self, boundary):
@@ -195,7 +200,7 @@ class Protein(object):
 
 
     def delSubstanceUnits(self):
-        del self.__substance_units
+        del self.__substanceunits
 
 
     def delBoundary(self):
@@ -211,7 +216,7 @@ class Protein(object):
     _sequence = property(getSequence, setSequence, delSequence, "_sequence's docstring")
     _sboterm = property(getSboterm, setSboterm, delSboterm, "_sboterm's docstring")
     _compartment = property(getCompartment, setCompartment, delCompartment, "_compartment's docstring")
-    _substance_units = property(getSubstanceUnits, setSubstanceUnits, delSubstanceUnits, "_substance_units's docstring")
+    _substanceunits = property(getSubstanceUnits, setSubstanceUnits, delSubstanceUnits, "_substanceunits's docstring")
     _boundary = property(getBoundary, setBoundary, delBoundary, "_boundary's docstring")
     _constant = property(getConstant, setConstant, delConstant, "_constant's docstring")
     _init_conc = property(getInitConc, setInitConc, delInitConc, "_init_conc's docstring")

@@ -23,19 +23,29 @@ class KineticModel(object):
         self.setParameters(parameters)
         self.setEqObject( self.getEquation() )
         
-    def toJSON(self, d=False):
+    def toJSON(self, d=False, enzmldoc=False):
         
-        if d:
-            f = lambda o: { key.split('__')[-1]: item 
-                               for key, item in o.__dict__.items() 
-                               if 'eqObject' not in key}
-            return f(self)
+        def transformAttr(self):
+            d = dict()
+            for key, item in self.__dict__.items():
+                key = key.split('__')[-1]
+                
+                if 'eqObject' not in key:
+                    
+                    if type(item) == dict and enzmldoc != False:
+                        
+                        item = { k: (it[0], enzmldoc.getUnitDict()[it[1]].getName())
+                                        for k, it in item.items() }
+                        
+                    d[key] = item
+            
+            return d
+        
+        if d: return transformAttr(self)
         
         return json.dumps(
             self, 
-            default=lambda o: { key.split('__')[-1]: item 
-                               for key, item in o.__dict__.items() 
-                               if 'eqObject' not in key}, 
+            default=transformAttr, 
             indent=4
             )
     

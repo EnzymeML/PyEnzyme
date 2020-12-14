@@ -34,7 +34,7 @@ class Replicate(object):
         if data != None and time != None:
             self.setData(data, time)
         
-    def toJSON(self, d=False):
+    def toJSON(self, d=False, enzmldoc=False):
         
         def transformAttr(self):
             d = dict()
@@ -44,11 +44,15 @@ class Replicate(object):
                     d['data'] = str(list(item)).replace('"', '')
                     d['time'] = str(list(item.index)).replace('"', '')
                 else:
+                    
+                    if enzmldoc != False and 'unit' in key:
+                        item = enzmldoc.getUnitDict()[item].getName()
+                    
                     d[key.split('__')[-1]] = str(item)
                 
             return d
         
-        if d: return transformAttr(self);
+        if d: return transformAttr(self)
                     
         return json.dumps(
             self,

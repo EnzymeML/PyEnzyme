@@ -27,7 +27,7 @@ class Reactant(object):
         self.setName(name)
         self.setCompartment(compartment_id)
         self.setInitConc(init_conc)
-        self.setSubstanceunits(substance_units)
+        self.setSubstanceUnits(substance_units)
         self.setBoundary(False)
         self.setConstant(constant)
         self.setSboterm("SBO:0000247")
@@ -37,10 +37,15 @@ class Reactant(object):
         if smiles != None:
             self.setSmiles(smiles)
         
-    def toJSON(self):
+    def toJSON(self, d=False, enzmldoc=False):
+        
+        f = lambda o: { key.split('__')[-1]: item for key, item in o.__dict__.items()}
+        
+        if d: return f(self)
+        
         return json.dumps(
             self, 
-            default=lambda o: { key.split('__')[-1]: item for key, item in o.__dict__.items()}, 
+            default=f, 
             indent=4
             )
     
@@ -104,7 +109,7 @@ class Reactant(object):
         return self.__compartment
 
 
-    def getSubstanceunits(self):
+    def getSubstanceUnits(self):
         return self.__substanceunits
 
 
@@ -137,7 +142,7 @@ class Reactant(object):
         self.__compartment = TypeChecker(compartment_id, str)
 
 
-    def setSubstanceunits(self, substance_unit):
+    def setSubstanceUnits(self, substance_unit):
         self.__substanceunits = TypeChecker(substance_unit, str)
 
 
@@ -169,7 +174,7 @@ class Reactant(object):
         del self.__compartment
 
 
-    def delSubstanceunits(self):
+    def delSubstanceUnits(self):
         del self.__substanceunits
 
 
@@ -185,7 +190,7 @@ class Reactant(object):
     _metaid = property(getMetaid, setMetaid, delMetaid, "_metaid's docstring")
     _sboterm = property(getSboterm, setSboterm, delSboterm, "_sboterm's docstring")
     _compartment = property(getCompartment, setCompartment, delCompartment, "_compartment's docstring")
-    _substanceunits = property(getSubstanceunits, setSubstanceunits, delSubstanceunits, "_substanceunits's docstring")
+    _substanceunits = property(getSubstanceUnits, setSubstanceUnits, delSubstanceUnits, "_substanceunits's docstring")
     _boundary = property(getBoundary, setBoundary, delBoundary, "_boundary's docstring")
     _constant = property(getConstant, setConstant, delConstant, "_constant's docstring")
     _init_conc = property(getInitConc, setInitConc, delInitConc, "_init_conc's docstring")

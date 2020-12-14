@@ -28,10 +28,15 @@ class Vessel(object):
         self.setSize(size)
         self.setUnit(unit)
         
-    def toJSON(self):
+    def toJSON(self, d=False, enzmldoc=False):
+        
+        f = lambda o: { key.split('__')[-1]: item for key, item in o.__dict__.items()}
+        
+        if d: return f(self)
+        
         return json.dumps(
             self, 
-            default=lambda o: { key.split('__')[-1]: item for key, item in o.__dict__.items()}, 
+            default=f, 
             indent=4
             )
     
