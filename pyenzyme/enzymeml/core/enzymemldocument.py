@@ -33,7 +33,7 @@ class EnzymeMLDocument(object):
             level (int, optional): SBML level. Defaults to 3.
             version (int, optional): SBML version. Defaults to 2.
         """
-        
+
         self.setName(name)
         self.setLevel(level)
         self.setVersion(version)
@@ -55,7 +55,7 @@ class EnzymeMLDocument(object):
             string: JSON-formatted string
             dict: Object serialized as dictionary
         """
-        
+
         def transformAttr(self):
             """
             Serialization function
@@ -63,7 +63,7 @@ class EnzymeMLDocument(object):
             Returns:
                 dict: Object serialized as dictionary
             """
-            
+
             # create JSON file with correct names
             enzmldoc_dict = dict()
             kwds = ['ProteinDict', 'ReactantDict', 'ReactionDict']
@@ -94,7 +94,7 @@ class EnzymeMLDocument(object):
 
             return enzmldoc_dict
         
-        if d: return transformAttr(d)
+        if d: return transformAttr(self)
          
         return json.dumps(
             self, 
@@ -109,7 +109,7 @@ class EnzymeMLDocument(object):
         Returns:
             string: Beautified summarization of object
         """
-        
+
         fin_string = ['>>> Units']
         for key, item in self.__UnitDict.items():
             fin_string.append('\tID: %s \t Name: %s' % ( key, item.getName() ))
@@ -135,7 +135,7 @@ class EnzymeMLDocument(object):
         Args:
             tup (float, string): Value and unit of initial concentration
         """
-        
+
         index = 0
         id_ = 'c%i' % index
         while True:
@@ -154,7 +154,7 @@ class EnzymeMLDocument(object):
         Returns:
             string: DOI Identifier
         """
-        
+
         return self.__doi
 
 
@@ -165,7 +165,7 @@ class EnzymeMLDocument(object):
         Returns:
             string: PubMed ID
         """
-        
+
         return self.__pubmedID
 
 
@@ -176,7 +176,7 @@ class EnzymeMLDocument(object):
         Returns:
             string: Arbitrary URL
         """
-        
+
         return self.__url
 
 
@@ -187,7 +187,7 @@ class EnzymeMLDocument(object):
         Args:
             doi (string): EnzymeML document or publication DOI
         """
-        
+
         if "https://identifiers.org/doi:" in TypeChecker(doi, str):
             self.__doi = doi
         else:
@@ -201,7 +201,7 @@ class EnzymeMLDocument(object):
         Args:
             pubmedID (string): EnzymeML document ot publication PubMedID
         """
-        
+
         if "https://identifiers.org/pubmed:" in pubmedID:
             self.__pubmedID = TypeChecker(pubmedID, str)
         else:
@@ -215,7 +215,7 @@ class EnzymeMLDocument(object):
         Args:
             url (string): Arbitraty URL
         """
-        
+
         self.__url = TypeChecker(url, str)
 
 
@@ -250,7 +250,7 @@ class EnzymeMLDocument(object):
         Args:
             reaction (EnzymeReaction): Reaction object to add.
         """
-        
+
         # update replicate units
         for i, tup in enumerate(reaction.getEducts()):
             for j, repl in enumerate(tup[3]):
@@ -298,7 +298,7 @@ class EnzymeMLDocument(object):
         """
         Prints reactions found in the object
         """
-        
+
         print('>>> Reactions')
         for key, item in self.__ReactionDict.items():
             print('    ID: %s \t Name: %s' % ( key, item.getName() ))
@@ -307,7 +307,7 @@ class EnzymeMLDocument(object):
         """
         Prints units found in the object
         """
-        
+
         print('>>> Units')
         for key, item in self.__UnitDict.items():
             print('    ID: %s \t Name: %s' % ( key, item.getName() ))
@@ -316,7 +316,7 @@ class EnzymeMLDocument(object):
         """
         Prints reactants found in the object
         """
-        
+
         print('>>> Reactants')
         for key, item in self.__ReactantDict.items():
             print('    ID: %s \t Name: %s' % ( key, item.getName() ))
@@ -325,7 +325,7 @@ class EnzymeMLDocument(object):
         """
         Prints proteins found in the object
         """
-        
+
         print('>>> Proteins')
         for key, item in self.__ProteinDict.items():
             print('    ID: %s \t Name: %s' % ( key, item.getName() ))
@@ -345,7 +345,7 @@ class EnzymeMLDocument(object):
         Returns:
             EnzymeReaction: Object describing a reaction
         """
-        
+
         if by_id:
             
             if id_ in self.__ReactionDict.keys():
@@ -375,7 +375,7 @@ class EnzymeMLDocument(object):
         Returns:
             Reactant: Object describing a reactant
         """
-        
+
         if by_id:
             
             if id_ in self.__ReactantDict.keys():
@@ -405,7 +405,7 @@ class EnzymeMLDocument(object):
         Returns:
             Protein: Object describing a protein
         """
-        
+
         if by_id:
                
             if id_ in self.__ProteinDict.keys():
@@ -432,7 +432,7 @@ class EnzymeMLDocument(object):
         Returns:
             string: Internal identifier for the reactant. Use it for other objects!
         """
-        
+
         TypeChecker(reactant, Reactant)
         
         index = 0
@@ -478,7 +478,7 @@ class EnzymeMLDocument(object):
         Returns:
             string: Internal identifier for the protein. Use it for other objects!
         """
-        
+
         TypeChecker(protein, Protein)
         
         index = 0
@@ -517,7 +517,7 @@ class EnzymeMLDocument(object):
         Returns:
             string: Internal identifier for the reaction. Use it for other objects!
         """
-        
+
         TypeChecker(reaction, EnzymeReaction)
         
         index = 0
@@ -560,7 +560,7 @@ class EnzymeMLDocument(object):
         Returns:
             string: Date of creation
         """
-        
+
         return self.__created
 
 
@@ -571,7 +571,7 @@ class EnzymeMLDocument(object):
         Returns:
             string: Date of recent modification
         """
-        
+
         return self.__modified
 
 
@@ -582,7 +582,7 @@ class EnzymeMLDocument(object):
         Args:
             date (string): Date of creation
         """
-        
+
         self.__created = TypeChecker(date, str)
 
 
@@ -593,7 +593,7 @@ class EnzymeMLDocument(object):
         Args:
             date (string): Date of recent modification
         """
-        
+
         self.__modified = TypeChecker(date, str)
 
 
@@ -616,7 +616,7 @@ class EnzymeMLDocument(object):
         Args:
             creators (string, list<string>): Single or multiple author classes
         """
-        
+
         
         if type(creators) == list:
             self.__creator = [ TypeChecker(creator, Creator) for creator in creators ]
@@ -643,7 +643,7 @@ class EnzymeMLDocument(object):
         Returns:
             string : Internal identifier for Vessel object. Use it for other objetcs!
         """
-        
+
         
         # Automatically set unit
         if use_parser:
@@ -671,7 +671,7 @@ class EnzymeMLDocument(object):
         Returns:
             string: Name of document
         """
-        
+
         return self.__name
 
 
@@ -690,7 +690,7 @@ class EnzymeMLDocument(object):
         Returns:
             dict: Dictionary containing Protein objects describing proteins
         """
-        
+
         return self.__ProteinDict
 
 
@@ -701,7 +701,7 @@ class EnzymeMLDocument(object):
         Returns:
             dict: Dictionary containing Reactant objects describing reactants
         """
-        
+
         return self.__ReactantDict
 
 
@@ -712,7 +712,7 @@ class EnzymeMLDocument(object):
         Returns:
             dict: Dictionary containing EnzymeReaction objects describing reactions
         """
-        
+
         return self.__ReactionDict
 
 
@@ -723,7 +723,7 @@ class EnzymeMLDocument(object):
         Returns:
             dict: Dictionary containing UnitDef objects describing units
         """
-        
+
         return self.__UnitDict
 
 
@@ -734,7 +734,7 @@ class EnzymeMLDocument(object):
         Args:
             value (string): Name of the document
         """
-        
+
         self.__name = value
 
 
@@ -748,7 +748,7 @@ class EnzymeMLDocument(object):
         Raises:
             IndexError: If SBML level not in [1,3]
         """
-        
+
         
         if 1 <= TypeChecker(level, int) <= 3:
             self.__level = level
@@ -763,7 +763,7 @@ class EnzymeMLDocument(object):
         Args:
             version (string): SBML level
         """
-        
+
         self.__version = TypeChecker(version, int)
 
 
