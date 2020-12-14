@@ -346,7 +346,7 @@ class EnzymeMLWriter(object):
             species.setBoundaryCondition(reactant.getBoundary());
             
             if reactant.getInitConc() > 0: species.setInitialConcentration(reactant.getInitConc());
-            if reactant.getSubstanceunits() != 'NAN': species.setSubstanceUnits(reactant.getSubstanceunits());
+            if reactant.getSubstanceUnits() != 'NAN': species.setSubstanceUnits(reactant.getSubstanceUnits());
             
             species.setConstant(reactant.getConstant())
             species.setHasOnlySubstanceUnits(False)
@@ -475,7 +475,7 @@ class EnzymeMLWriter(object):
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
                             conc_node.addAttr( "id", str(conc) )
                             conc_node.addAttr( "value", str(enzmldoc.getConcDict()[conc][0]) )
-                            conc_node.addAttr( "unit", enzmldoc.getReactant(species).getSubstanceunits() )
+                            conc_node.addAttr( "unit", enzmldoc.getReactant(species).getSubstanceUnits() )
                             conc_annot.addChild( conc_node )
                             
                         except KeyError:
@@ -483,12 +483,12 @@ class EnzymeMLWriter(object):
                             inv_initconc = { item: key for key, item in enzmldoc.getConcDict().items() }
                             init_entry = enzmldoc.getConcDict()[
                                 
-                                inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceunits() ) ]
+                                inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
                                 
                                 ]
                             
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
-                            conc_node.addAttr( "id", inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceunits() ) ] )
+                            conc_node.addAttr( "id", inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ] )
                             conc_node.addAttr( "value", str(init_entry[0]) )
                             conc_node.addAttr( "unit", str(init_entry[1]) )
                             conc_annot.addChild( conc_node )
