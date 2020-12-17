@@ -22,7 +22,7 @@ from _io import StringIO
 
 class EnzymeMLReader(object):
 
-    def readFromFile(self, path, omex=False):
+    def readFromFile(self, path, omex=True):
         '''
         Reads EnzymeML document to an object layer EnzymeMLDocument class.
         

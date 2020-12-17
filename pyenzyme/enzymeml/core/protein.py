@@ -9,7 +9,7 @@ import json
 
 class Protein(object):
 
-    def __init__(self, name, sequence, compartment, init_conc, substanceunits, constant=True, ecnumber=None, uniprotid=None):
+    def __init__(self, name, sequence, compartment=None, init_conc=None, substanceunits=None, constant=True, ecnumber=None, uniprotid=None):
         
         '''
         Object describing an EnzymeML protein.
@@ -27,9 +27,9 @@ class Protein(object):
 
         self.setName(name)
         self.setSequence(sequence)
-        self.setCompartment(compartment)
-        self.setInitConc(init_conc)
-        self.setSubstanceUnits(substanceunits)
+        if compartment != None: self.setCompartment(compartment)
+        if init_conc != None: self.setInitConc(init_conc)
+        if substanceunits != None: self.setSubstanceUnits(substanceunits)
         self.setBoundary(False)
         self.setConstant(constant)
         self.setSboterm("SBO:0000252")

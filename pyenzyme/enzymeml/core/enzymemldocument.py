@@ -18,13 +18,13 @@ from pyenzyme.enzymeml.core.protein import Protein
 from pyenzyme.enzymeml.core.vessel import Vessel
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
-
+from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
 import json
 
 
 class EnzymeMLDocument(object):
 
-    def __init__(self, name, level=3, version=2):
+    def __init__(self, name, level=3, version=2, archive=None):
         """
         Class describing a complete EnzymeML document.
 
@@ -33,7 +33,7 @@ class EnzymeMLDocument(object):
             level (int, optional): SBML level. Defaults to 3.
             version (int, optional): SBML version. Defaults to 2.
         """
-
+    
         self.setName(name)
         self.setLevel(level)
         self.setVersion(version)
@@ -43,6 +43,9 @@ class EnzymeMLDocument(object):
         self.setReactionDict(dict())
         self.setUnitDict(dict())
         self.setConcDict(dict())
+        
+    def toFile(self, path):
+        EnzymeMLWriter().toFile(self, path)
         
     def toJSON(self, d=False, only_reactions=False):
         """
