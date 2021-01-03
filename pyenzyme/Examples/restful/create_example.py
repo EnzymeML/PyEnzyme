@@ -54,6 +54,7 @@ print(km)
 reac.setModel(km)
 
 reac_id = enzmldoc.addReaction(reac)
-print(reac)
 
-print(enzmldoc)
+import json
+with open('example.json', 'w') as f:
+    json.dump(enzmldoc.toJSON(d=True), f, indent=4)

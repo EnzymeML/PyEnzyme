@@ -1,0 +1,108 @@
+{
+    "name": "TEST",
+    "level": 3,
+    "version": 2,
+    "Protein": [
+        {
+            "name": "PROTEIN_TEST",
+            "sequence": "SEQ_TEST",
+            "compartment": "v0",
+            "init_conc": 10.0,
+            "substanceunits": "mmole / l",
+            "boundary": false,
+            "constant": true,
+            "sboterm": "SBO:0000252",
+            "id": "p0",
+            "metaid": "METAID_P0"
+        }
+    ],
+    "Reactant": [
+        {
+            "name": "TEST_REAC1",
+            "compartment": "v0",
+            "init_conc": 10.0,
+            "substanceunits": "mmole / l",
+            "boundary": false,
+            "constant": false,
+            "sboterm": "SBO:0000247",
+            "smiles": "TEST_SMILES",
+            "inchi": "TEST_INCHI",
+            "id": "s0",
+            "metaid": "METAID_S0"
+        },
+        {
+            "name": "TEST_REAC2",
+            "compartment": "v0",
+            "init_conc": 10.0,
+            "substanceunits": "mmole / l",
+            "boundary": false,
+            "constant": true,
+            "sboterm": "SBO:0000247",
+            "smiles": "TEST_SMILES",
+            "inchi": "TEST_INCHI",
+            "id": "s1",
+            "metaid": "METAID_S1"
+        }
+    ],
+    "Reaction": [
+        {
+            "temperature": 283.15,
+            "tempunit": "C",
+            "ph": 7.0,
+            "name": "TEST_REACT",
+            "reversible": true,
+            "educts": [
+                {
+                    "species": "s0",
+                    "stoich": 1.0,
+                    "constant": false,
+                    "replicates": [
+                        {
+                            "replica": "TEST_REPL",
+                            "species": "s0",
+                            "type": "conc",
+                            "data_unit": "mmole / l",
+                            "time_unit": "s",
+                            "init_conc": "c0",
+                            "data": "[1, 2, 3, 4, 5]",
+                            "time": "[0, 1, 2, 3, 4]"
+                        }
+                    ],
+                    "init_conc": "[]"
+                }
+            ],
+            "products": [
+                {
+                    "species": "s1",
+                    "stoich": 1.0,
+                    "constant": false,
+                    "replicates": [],
+                    "init_conc": "[]"
+                }
+            ],
+            "modifiers": [
+                {
+                    "species": "p0",
+                    "stoich": 1.0,
+                    "constant": true,
+                    "replicates": [],
+                    "init_conc": "[]"
+                }
+            ],
+            "model": {
+                "equation": "x_s0*s0",
+                "parameters": {
+                    "x_s0": [
+                        10.0,
+                        "mmole / l"
+                    ]
+                }
+            },
+            "id": "r0",
+            "metaid": "METAID_R0"
+        }
+    ],
+    "doi": "https://identifiers.org/doi:DOI_TEST",
+    "pubmedID": "https://identifiers.org/pubmed:PMID_TEST",
+    "url": "URL_TEST"
+}
