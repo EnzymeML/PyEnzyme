@@ -8,7 +8,7 @@ import json
 
 class Reactant(object):
 
-    def __init__(self, name, compartment_id, init_conc=0.0, substance_units='NAN', constant=False, smiles=None, inchi=None):
+    def __init__(self, name, compartment, init_conc=0.0, substanceunits='NAN', constant=False, smiles=None, inchi=None):
         
         '''
         Object describing an EnzymeML reactant.
@@ -25,9 +25,9 @@ class Reactant(object):
         '''
         
         self.setName(name)
-        self.setCompartment(compartment_id)
+        self.setCompartment(compartment)
         self.setInitConc(init_conc)
-        self.setSubstanceUnits(substance_units)
+        self.setSubstanceUnits(substanceunits)
         self.setBoundary(False)
         self.setConstant(constant)
         self.setSboterm("SBO:0000247")

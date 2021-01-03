@@ -24,7 +24,7 @@ import json
 
 class EnzymeMLDocument(object):
 
-    def __init__(self, name, level=3, version=2, archive=None):
+    def __init__(self, name, level=3, version=2, doi=None, pubmedID=None, url=None):
         """
         Class describing a complete EnzymeML document.
 
@@ -43,6 +43,10 @@ class EnzymeMLDocument(object):
         self.setReactionDict(dict())
         self.setUnitDict(dict())
         self.setConcDict(dict())
+        
+        if pubmedID: self.setPubmedID(pubmedID)
+        if doi: self.setDoi(doi)
+        if url: self.setUrl(url)
         
     def toFile(self, path):
         EnzymeMLWriter().toFile(self, path)
