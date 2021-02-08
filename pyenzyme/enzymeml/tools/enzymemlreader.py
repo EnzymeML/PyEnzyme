@@ -20,7 +20,7 @@ from pyenzyme.enzymeml.models.kineticmodel import KineticModel
 from libcombine import CombineArchive
 from _io import StringIO
 
-class EnzymeMLReader(object):
+class EnzymeMLReader():
 
     def readFromFile(self, path, omex=True):
         '''

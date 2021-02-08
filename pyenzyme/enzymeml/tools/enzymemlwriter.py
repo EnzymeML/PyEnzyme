@@ -202,6 +202,8 @@ class EnzymeMLWriter(object):
             pass
         
         archive.writeToFile(self.path + '/' + out_file)
+        
+        print(self.path + '/' + out_file)
     
         print('\nArchive created:', out_file)
         
@@ -447,10 +449,12 @@ class EnzymeMLWriter(object):
             # educts
             for educt in reac.getEducts():
                 
+                print(educt)
+                
                 species = educt[0]
                 stoich = educt[1]
                 const = educt[2]
-                init_concs = educt[-1]
+                init_concs = educt[-1] + list( set( [ repl.getInitConc() for repl in educt[3] ] ) )
                 
                 specref = reaction.createReactant()
                 specref.setSpecies(species)
