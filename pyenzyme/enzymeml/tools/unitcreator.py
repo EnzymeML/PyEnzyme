@@ -94,7 +94,10 @@ class UnitCreator(object):
                                                 " ".join(denominator)
                                                 ] )
         if len(denominator) == 0: name = " ".join(nominator)
-            
+        
+        if name.lower() == 'c':
+            name = 'K'
+          
         unitdef = UnitDef(name, id_, "NONE")
         unitdef.setFootprint(units)
         

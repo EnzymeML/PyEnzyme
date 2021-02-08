@@ -244,7 +244,7 @@ class EnzymeReaction(object):
             
         raise KeyError( "Reactant/Protein %s not defined in modifiers" % id_ )
         
-    def addReplicate(self, replicate, enzmldoc):
+    def addReplicate(self, replicate, enzmldoc, by_id=True):
         """
         Adds Replicate object to EnzymeReaction object. Destination is inherited automatically based on ID.
 
@@ -268,7 +268,7 @@ class EnzymeReaction(object):
             
         except KeyError:
             index = 0
-            init_conc_tup = ( replicate.getInitConc(), enzmldoc.getReactant( replicate.getReactant() ).getSubstanceUnits() )
+            init_conc_tup = ( replicate.getInitConc(), enzmldoc.getReactant( replicate.getReactant(), by_id=by_id ).getSubstanceUnits() )
             while True:
                 id_ = "c%i" % index
                 
@@ -279,24 +279,31 @@ class EnzymeReaction(object):
                     
                 else:
                     index += 1
+                    
         
         try:
             replicate.getData()
         except AttributeError:
             raise AttributeError( "Replicate has no series data. Add data via replicate.setData( pandas.Series )" )
         
+        def getName(name, by_id):
+            if by_id:
+                return enzmldoc.getReactant( name, by_id ).getId()
+            else:
+                return enzmldoc.getReactant( name, by_id ).getName()
+        
         for i in range(len(self.__educts)):
-            if self.__educts[i][0] == replicate.getReactant():
+            if getName(self.__educts[i][0], by_id) == replicate.getReactant():
                 self.__educts[i][3].append(replicate)
                 return 1
             
         for i in range(len(self.__products)):
-            if self.__products[i][0] == replicate.getReactant():
+            if getName(self.__products[i][0], by_id) == replicate.getReactant():
                 self.__products[i][3].append(replicate)
                 return 1
             
         for i in range(len(self.__modifiers)):
-            if self.__modifiers[i][0] == replicate.getReactant():
+            if getName(self.__products[i][0], by_id) == replicate.getReactant():
                 self.__modifiers[i][3].append(replicate)
                 return 1
             

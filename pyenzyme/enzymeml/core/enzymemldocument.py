@@ -24,7 +24,7 @@ import json
 
 class EnzymeMLDocument(object):
 
-    def __init__(self, name, level=3, version=2, doi=None, pubmedID=None, url=None):
+    def __init__(self, name, level=3, version=2, doi=None, pubmedID=None, url=None ):
         """
         Class describing a complete EnzymeML document.
 
@@ -78,12 +78,20 @@ class EnzymeMLDocument(object):
             
             # iterate over attributes and call toJSON
             for key, item in self.__dict__.items():
+                
                 key = key.split('__')[-1]
                 
+                ### GET SINGLE ATTRIBUTES ###
                 if type(item) == str or type(item ) == int:
                     # store basic meta information
                     enzmldoc_dict[key] = item
                     
+                ### GET VESSEL ###
+                elif key == 'vessel':
+                    # add vessel to the dictionary
+                    enzmldoc_dict[key] = item.toJSON(d=True)
+                
+                ### GET DICTIONARIES ###
                 elif type(item) == dict and key in kwds:
                     # store dictionaries and transform IDs
                     enzmldoc_dict[key.replace('Dict', '')] = list()
@@ -98,6 +106,8 @@ class EnzymeMLDocument(object):
                         
                         # Add JSON object to element array
                         enzmldoc_dict[key.replace('Dict', '')].append(d)
+                        
+               
 
             return enzmldoc_dict
         
@@ -392,6 +402,7 @@ class EnzymeMLDocument(object):
             
         else:
             for reactant in self.__ReactantDict.values():
+
                 if id_ == reactant.getName():
                     return reactant
 
@@ -651,7 +662,6 @@ class EnzymeMLDocument(object):
             string : Internal identifier for Vessel object. Use it for other objetcs!
         """
 
-        
         # Automatically set unit
         if use_parser:
             
@@ -660,6 +670,9 @@ class EnzymeMLDocument(object):
                 UnitCreator().getUnit( vessel.getUnit(), self) 
                 
                 )
+            
+            ## TODO Automatic ID assignment 
+            vessel.setId('v0')
             
             
         self.__vessel = TypeChecker(vessel, Vessel)

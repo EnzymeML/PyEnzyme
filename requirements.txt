@@ -3,3 +3,5 @@ numpy
 pandas
 python-libcombine
 python-copasi
+Flask-RESTful
+Flask

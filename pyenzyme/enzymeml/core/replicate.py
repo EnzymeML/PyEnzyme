@@ -39,7 +39,6 @@ class Replicate(object):
         def transformAttr(self):
             d = dict()
             for key, item in self.__dict__.items():
-                
                 if type(item) == Series:
                     d['data'] = str(list(item)).replace('"', '')
                     d['time'] = str(list(item.index)).replace('"', '')
