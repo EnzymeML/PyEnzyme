@@ -11,96 +11,6 @@ import os
 import COPASI
 from builtins import enumerate
 
-##### COPASI FUNCTIONS #####
-
-def replace_kinetic_law(dm, reaction, function_name):
-    # type: (COPASI.CDataModel, COPASI.CReaction, str) -> None
-    functions = COPASI.CRootContainer.getFunctionList()
-    function = functions.findFunction(function_name)
-    if function is None:
-        print("No such function defined, can't change kinetics")
-        return
-
-    if reaction.isReversible():  # for now force the kinetic to be irreversible
-                                 # (otherwise the kinetic law does not apply)
-        reaction.setReversible(False)
-
-    # now since we have 2 substrates in this case and we would automatically assign the first substrate
-    # to the new function, we want to make sure that we map to the same substrates as the old reaction
-    substrates = None
-    fun_params = reaction.getFunctionParameters()
-    for i in range(fun_params.size()):
-        param = fun_params.getParameter(i)
-        if param.getUsage() == COPASI.CFunctionParameter.Role_SUBSTRATE:
-            substrates = reaction.getParameterCNs(param.getObjectName())
-            break
-
-    # set the new function
-    reaction.setFunction(function)
-    if substrates is not None:
-        # in case we found substrates map them
-        reaction.setParameterCNs('substrate', substrates)
-
-    # recompile model so it can be simulated later on
-    reaction.compile()
-    dm.getModel().forceCompile()
-    pass
-
-
-def run_parameter_estimation(dm):
-    task = dm.getTask('Parameter Estimation')
-    assert (isinstance(task, COPASI.CFitTask))
-    task.setScheduled(True)
-    problem = task.getProblem()
-    problem.setCalculateStatistics(False)
-    # problem.setRandomizeStartValues(True)  # not randomizing this time
-
-    reaction = dm.getModel().getReaction(0)
-    replace_kinetic_law(dm, reaction, "Henri-Michaelis-Menten (irreversible)")
-    objects = reaction.getParameterObjects()
-
-    cn_name_map = {}
-
-    # add fit items for reaction parameters
-    for obj in objects:
-        param = obj[0]
-        if param.getObjectAncestor('Reaction') is None:
-            # skip all non-local parameters
-            continue
-        value = reaction.getParameterValue(param.getObjectName())
-        item = problem.addFitItem(param.getValueObject().getCN())
-        item.setStartValue(value)  # the current initial concentration
-        item.setLowerBound(COPASI.CCommonName(str(value * 0.0001)))
-        item.setUpperBound(COPASI.CCommonName(str(value * 10000)))
-        cn_name_map[param.getValueObject().getCN().getString()] = param.getObjectName()
-
-    # switch optimization method
-    task.setMethodType(COPASI.CTaskEnum.Method_LevenbergMarquardt)
-
-    # run optimization
-    task.initialize(COPASI.CCopasiTask.OUTPUT_UI)
-    task.process(True)
-
-    # print parameter values
-    assert (isinstance(problem, COPASI.CFitProblem))
-    results = problem.getSolutionVariables()
-
-    vmax = None
-    km = None
-
-    for i in range(problem.getOptItemSize()):
-        item = problem.getOptItem(i)
-        cn = item.getObjectCN().getString()
-        if cn not in cn_name_map:
-            continue
-        value = results.get(i)
-
-        if cn_name_map[cn] == 'V': vmax = value;
-        if cn_name_map[cn] == 'Km': km = value;
-    
-    return km, vmax
-
-
 class ThinLayerCopasi(object):
     
     def importEnzymeML(self, reaction_id, reactants, path, outdir=None):
@@ -222,21 +132,21 @@ class ThinLayerCopasi(object):
         print("Saved model CPS to " + outdir + "/" + fname + ".cps")
 
         # Gather Menten parameters
-        Km, vmax = run_parameter_estimation(dm)
+        Km, vmax = self.run_parameter_estimation(dm)
         
-        parameters = { 'km_%s' % reactants[0]: (Km, enzmldoc.getReactant(reactants[0]).getSubstanceunits()),
-                       'vmax_%s' % reactants[0]: (vmax, enzmldoc.getReactant(reactants[0]).getSubstanceunits()) }
+        parameters = { 'km_%s' % reactants[0]: (Km, enzmldoc.getReactant(reactants[0]).getSubstanceUnits()),
+                       'vmax_%s' % reactants[0]: (vmax, enzmldoc.getReactant(reactants[0]).getSubstanceUnits()) }
         equation = "vmax_%s*%s/(km_%s+%s)" % tuple([reactants[0]]*4)
         km  = KineticModel(equation, parameters)
 
         doc.getReaction(reaction_id).setModel( km )
 
-        EnzymeMLWriter().toFile(doc, outdir)
+        enzmldoc.toFile(outdir)
 
     def unifyUnits(self, reactant, reaction, enzmldoc, kind):
 
         # get unit of specified reactant
-        unit = enzmldoc.getUnitDict()[ enzmldoc.getReactant(reactant).getSubstanceunits() ]
+        unit = enzmldoc.getUnitDict()[ enzmldoc.getReactant(reactant).getSubstanceUnits() ]
         units = unit.getUnits()
         exponent = [ tup[1] for tup in units if tup[0] == kind ][0]
         scale = [ tup[2] for tup in units if tup[0] == kind ][0]
@@ -248,7 +158,7 @@ class ThinLayerCopasi(object):
             for tup in elem:
                 
                 # get exponent and scale to calculate factor for new calculation
-                if tup[0][0] == 's': unit_r = enzmldoc.getUnitDict()[ enzmldoc.getReactant(tup[0]).getSubstanceunits() ];
+                if tup[0][0] == 's': unit_r = enzmldoc.getUnitDict()[ enzmldoc.getReactant(tup[0]).getSubstanceUnits() ];
                 if tup[0][0] == 'p': unit_r = enzmldoc.getUnitDict()[ enzmldoc.getProtein(tup[0]).getSubstanceUnits() ];
 
                 units_r = unit_r.getUnits()
@@ -261,7 +171,7 @@ class ThinLayerCopasi(object):
 
                     # Reset Species initial concentrations
                     if tup[0][0] == 's':
-                        enzmldoc.getReactant(tup[0]).setSubstanceunits( unit.getId() )
+                        enzmldoc.getReactant(tup[0]).setSubstanceUnits( unit.getId() )
                         enzmldoc.getReactant(tup[0]).setInitConc( enzmldoc.getReactant(tup[0]).getInitConc()*(10**nu_scale) )
                     elif tup[0][0] == 'p':
                         enzmldoc.getProtein(tup[0]).setSubstanceUnits( unit.getId() )
@@ -292,6 +202,95 @@ class ThinLayerCopasi(object):
                         reaction.getProducts()[ reaction.getProduct( tup[0], index=True ) ] = ( tup[0], tup[1], tup[2], nu_repls, nu_inits )
                     if i == 2: 
                         reaction.getModifiers()[ reaction.getModifier( tup[0], index=True ) ] = ( tup[0], tup[1], tup[2], nu_repls, nu_inits )
+                        
+    ##### COPASI FUNCTIONS #####
+
+    def replace_kinetic_law(self, dm, reaction, function_name):
+        # type: (COPASI.CDataModel, COPASI.CReaction, str) -> None
+        functions = COPASI.CRootContainer.getFunctionList()
+        function = functions.findFunction(function_name)
+        if function is None:
+            print("No such function defined, can't change kinetics")
+            return
+
+        if reaction.isReversible():  # for now force the kinetic to be irreversible
+                                    # (otherwise the kinetic law does not apply)
+            reaction.setReversible(False)
+
+        # now since we have 2 substrates in this case and we would automatically assign the first substrate
+        # to the new function, we want to make sure that we map to the same substrates as the old reaction
+        substrates = None
+        fun_params = reaction.getFunctionParameters()
+        for i in range(fun_params.size()):
+            param = fun_params.getParameter(i)
+            if param.getUsage() == COPASI.CFunctionParameter.Role_SUBSTRATE:
+                substrates = reaction.getParameterCNs(param.getObjectName())
+                break
+
+        # set the new function
+        reaction.setFunction(function)
+        if substrates is not None:
+            # in case we found substrates map them
+            reaction.setParameterCNs('substrate', substrates)
+
+        # recompile model so it can be simulated later on
+        reaction.compile()
+        dm.getModel().forceCompile()
+        pass
+
+
+    def run_parameter_estimation(self, dm):
+        task = dm.getTask('Parameter Estimation')
+        assert (isinstance(task, COPASI.CFitTask))
+        task.setScheduled(True)
+        problem = task.getProblem()
+        problem.setCalculateStatistics(False)
+        # problem.setRandomizeStartValues(True)  # not randomizing this time
+
+        reaction = dm.getModel().getReaction(0)
+        self.replace_kinetic_law(dm, reaction, "Henri-Michaelis-Menten (irreversible)")
+        objects = reaction.getParameterObjects()
+
+        cn_name_map = {}
+
+        # add fit items for reaction parameters
+        for obj in objects:
+            param = obj[0]
+            if param.getObjectAncestor('Reaction') is None:
+                # skip all non-local parameters
+                continue
+            value = reaction.getParameterValue(param.getObjectName())
+            item = problem.addFitItem(param.getValueObject().getCN())
+            item.setStartValue(value)  # the current initial concentration
+            item.setLowerBound(COPASI.CCommonName(str(value * 0.0001)))
+            item.setUpperBound(COPASI.CCommonName(str(value * 10000)))
+            cn_name_map[param.getValueObject().getCN().getString()] = param.getObjectName()
+
+        # switch optimization method
+        task.setMethodType(COPASI.CTaskEnum.Method_LevenbergMarquardt)
+
+        # run optimization
+        task.initialize(COPASI.CCopasiTask.OUTPUT_UI)
+        task.process(True)
+
+        # print parameter values
+        assert (isinstance(problem, COPASI.CFitProblem))
+        results = problem.getSolutionVariables()
+
+        vmax = None
+        km = None
+
+        for i in range(problem.getOptItemSize()):
+            item = problem.getOptItem(i)
+            cn = item.getObjectCN().getString()
+            if cn not in cn_name_map:
+                continue
+            value = results.get(i)
+
+            if cn_name_map[cn] == 'V': vmax = value;
+            if cn_name_map[cn] == 'Km': km = value;
+        
+        return km, vmax
         
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
