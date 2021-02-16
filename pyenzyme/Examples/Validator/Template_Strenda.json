@@ -1,0 +1,110 @@
+{
+    "EnzymeReaction": {
+        "ph": {
+            "type": "float",
+            "val_range": [
+                0.0,
+                14.0
+            ]
+        },
+        "temperature": {
+            "type": "float",
+            "val_range": [
+                0.0,
+                393.0
+            ]
+        },
+        "tempunit": {
+            "type": "str",
+            "vocab": [
+                "C",
+                "K"
+            ]
+        }
+    },
+    "Protein": {
+        "init_conc": {
+            "type": "float",
+            "val_range": [
+                0.0,
+                1000000000.0
+            ]
+        },
+        "sequence": {
+            "type": "str",
+            "vocab": [
+                "A",
+                "R",
+                "N",
+                "D",
+                "C",
+                "Q",
+                "E",
+                "G",
+                "H",
+                "I",
+                "L",
+                "K",
+                "M",
+                "F",
+                "P",
+                "S",
+                "T",
+                "W",
+                "Y",
+                "V",
+                "U",
+                "O",
+                "X",
+                "B",
+                "Z",
+                "J"
+            ]
+        },
+        "substanceunits": {
+            "type": "str",
+            "vocab": [
+                "mmol / l",
+                "mumol / l",
+                "pmol / l",
+                "mol / l",
+                "M",
+                "mM",
+                "muM",
+                "pM"
+            ]
+        }
+    },
+    "Reactant": {
+        "ph": {
+            "type": "float",
+            "val_range": [
+                0.0,
+                14.0
+            ]
+        },
+        "temperature": {
+            "type": "float",
+            "val_range": [
+                0.0,
+                393.0
+            ]
+        },
+        "tempunit": {
+            "type": "str",
+            "vocab": [
+                "C",
+                "K"
+            ]
+        }
+    },
+    "model": {
+        "parameters": {
+            "type": "str",
+            "vocab": [
+                "km",
+                "kcat"
+            ]
+        }
+    }
+}
