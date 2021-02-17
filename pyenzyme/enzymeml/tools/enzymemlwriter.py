@@ -449,8 +449,6 @@ class EnzymeMLWriter(object):
             # educts
             for educt in reac.getEducts():
                 
-                print(educt)
-                
                 species = educt[0]
                 stoich = educt[1]
                 const = educt[2]
