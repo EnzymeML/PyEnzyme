@@ -3,7 +3,7 @@ import numpy as np
 import json
 import argparse
 
-def generateValidField( type_, val_range=None, vocab=None ):
+def generateValidField( type_, importance, val_range=None, vocab=None ):
     
     if vocab:
         # Vocab check
@@ -26,6 +26,7 @@ def generateValidField( type_, val_range=None, vocab=None ):
     
     # generate dicionary
     valid_template = dict()
+    valid_template["importance"] = importance
     
     if type_ in type_dict.keys():
         valid_template["type"] = type_
@@ -89,7 +90,7 @@ if __name__ == "__main__":
         for index, row in df_red.iterrows():
             
             att_name = row['atts']
-            att_type = row['Type']
+            att_type = row['Data Type']
 
             if row['Range'] != 'nan':
 
@@ -100,18 +101,18 @@ if __name__ == "__main__":
             elif row['Range'] == 'nan': 
                 val_range = None
                 
-            if row['Vocab'] != 'nan':
+            if row['Vocabulary'] != 'nan':
                 
-                vocab = row['Vocab'].split(',')
+                vocab = row['Vocabulary'].split(',')
                 
-            elif row['Vocab'] == 'nan': 
+            elif row['Vocabulary'] == 'nan': 
                 vocab = None
             
             # Create Field for JSON valid file
-            if row['Vocab'] != 'nan' or row['Range'] != 'nan':
-                fields[att_name] = generateValidField(att_type, val_range, vocab)
+            importance = row['Attribute Importance']
+            fields[att_name] = generateValidField(att_type, importance, val_range, vocab)
             
         params[clss] = fields
         
     # compose everything
-    print("\n", composeValidationTemplate(**params))
+    print("\n", composeValidationTemplate(**params), '\n')
