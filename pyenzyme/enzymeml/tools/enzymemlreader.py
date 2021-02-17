@@ -248,6 +248,7 @@ class EnzymeMLReader():
                                     )
                 
                 reactant.setMetaid(species.getMetaId())
+                reactant.setId(species.getId())
                 
                 if len(species.getAnnotationString()) > 0:
                 

@@ -59,6 +59,7 @@ reaction.setModel(km)
 # add to EnzymeML document
 enzmldoc.addReaction(reaction)
 
+'''
 def trackVessel(enzmldoc):
 
     instances = list()
@@ -144,3 +145,4 @@ def trackReactions(enzmldoc):
             "enzymeMLReactionName": getEnzymeDataField("enzymeMLReactionName", False, reaction.getName())
             
         }
+'''

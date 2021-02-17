@@ -9,7 +9,7 @@ import json
 
 class Protein(object):
 
-    def __init__(self, name, sequence, compartment=None, init_conc=None, substanceunits=None, constant=True, ecnumber=None, uniprotid=None):
+    def __init__(self, name, sequence, compartment=None, init_conc=None, substanceunits=None, constant=True, ecnumber=None, uniprotid=None, organism=None):
         
         '''
         Object describing an EnzymeML protein.
@@ -38,6 +38,8 @@ class Protein(object):
             self.setEcnumber(ecnumber)
         if uniprotid != None:
             self.setUniprotID(uniprotid)
+        if organism != None:
+            self.setOrganism(organism)
         
     def toJSON(self, d=False, enzmldoc=False):
         

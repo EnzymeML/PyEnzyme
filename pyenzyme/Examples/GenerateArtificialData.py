@@ -86,7 +86,7 @@ if __name__ == '__main__':
                     
                     time, data =  generateData(init_conc, vmax, km)
                     
-                    repl = Replicate("repl_%s" % (repl_index), reac_id, "conc", reactant.getSubstanceunits(), "s", init_conc)
+                    repl = Replicate("repl_%s" % (repl_index), reac_id, "conc", reactant.getSubstanceUnits(), "s", init_conc)
                     repl.setData(data, time)
                     repl_index += 1
                     
