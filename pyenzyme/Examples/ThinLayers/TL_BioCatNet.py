@@ -558,5 +558,5 @@ class ThinlayerBioCatNet():
         
 if __name__ == '__main__':
 
-    ThinlayerBioCatNet().toEnzymeML("../../Resources/Examples/ThinLayers/BioCatNet/BioCatNet_Dataset.xlsx")
+    ThinlayerBioCatNet().toEnzymeML("../../Resources/Examples/ThinLayers/BioCatNet/DMBA_selfligation.xlsx")
         
