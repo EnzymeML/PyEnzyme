@@ -61,7 +61,8 @@ class Create(Resource):
             enzmldoc.addReaction(reac)
 
         # Send File  
-        dirpath = os.path.join( os.getcwd(), next(tempfile._get_candidate_names()) )
+        dirpath = os.path.join( os.path.dirname(os.path.realpath(__file__)), next(tempfile._get_candidate_names()) )
+
         enzmldoc.toFile( dirpath )
         
         path = os.path.join(  

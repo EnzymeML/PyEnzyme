@@ -19,7 +19,8 @@ class Read(Resource):
         file = request.files['omex'].read()
         
         # Write to temp file
-        tmp = next(tempfile._get_candidate_names())
+        tmp = os.path.join( os.path.dirname(os.path.realpath(__file__)), next(tempfile._get_candidate_names()) )
+
         with open(tmp, 'wb') as f:
             f.write(file)
         
