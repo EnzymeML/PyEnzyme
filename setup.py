@@ -8,7 +8,7 @@ from setuptools import setup
 
 setup(      
     name='PyEnzyme',
-    version='1.0.1',
+    version='1.0.2',
     description='Handling of EnzymeML files',
     url='https://github.com/EnzymeML/PyEnzyme',
     author='Range, Jan',
