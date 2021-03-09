@@ -12,6 +12,7 @@ class RestfulServer():
 
         api.add_resource(Create, '/create')
         api.add_resource(Read,'/read' )
+        api.add_resource(restfulCOPASI, '/copasi')
         
 
         app.run(debug=debug)
