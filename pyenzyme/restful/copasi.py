@@ -3,11 +3,12 @@ from flask_restful import Resource, Api
 
 import os
 import json
+import shutil
+import io
 
 from pyenzyme.enzymeml.tools import EnzymeMLReader, EnzymeMLWriter
 from pyenzyme.enzymeml.core import Replicate
-from pyenzyme.enzymeml.models import KineticModel
-import os
+from pyenzyme.enzymeml.models import KineticModel, MichaelisMenten
 
 import COPASI
 from builtins import enumerate
@@ -22,23 +23,46 @@ class restfulCOPASI(Resource):
         file = request.files['omex'].read()
         body = json.loads( request.form['json'] )
         
+        # Send File  
+        dirpath = os.path.join( os.path.dirname(os.path.realpath(__file__)), next(tempfile._get_candidate_names()) )
+        omexpath = os.path.join( dirpath, next(tempfile._get_candidate_names()) )
+        
+        os.mkdir(dirpath)
+        
         # Write to temp file
-        tmp = next(tempfile._get_candidate_names())
-        with open(tmp, 'wb') as f:
+        with open(omexpath, 'wb') as f:
             f.write(file)
         
         # Save JSON in variable
-        enzmldoc = EnzymeMLReader().readFromFile(tmp)
+        enzmldoc = EnzymeMLReader().readFromFile(omexpath)
         
         # Estimate parameters
-        km, vmax = self.importEnzymeML( body['reaction'], body['reactant'], enzmldoc )
+        km_val, km_unit, vmax_val, vmax_unit = self.importEnzymeML( body['reaction'], body['reactant'], dirpath, enzmldoc )
         
-        # remove temp file
-        os.remove(tmp)
+        menten_model = MichaelisMenten(vmax_val, vmax_unit, km_val, km_unit, body['reactant'], enzmldoc)
         
-        return jsonify( { 'Km': km, 'VMax': vmax } )
+        # Write model to reaction
+        enzmldoc.getReactionDict()[body['reaction']].setModel(menten_model)
+        
+        enzmldoc.toFile( dirpath )
+        
+        path = os.path.join(  
+                            dirpath,
+                            enzmldoc.getName(), 
+                            enzmldoc.getName() + '.omex' 
+                            )
+
+        f = io.BytesIO( open(path, "rb").read() )
+        f.name = enzmldoc.getName() + '_COPASI.omex'
+        
+        shutil.rmtree( dirpath, ignore_errors=True )
+        
+        return send_file( f,
+                          mimetype='omex',
+                          as_attachment=True,
+                          attachment_filename='%s_COPASI.omex' % enzmldoc.getName() )
     
-    def importEnzymeML(self, reaction_id, reactants, enzmldoc):
+    def importEnzymeML(self, reaction_id, reactants, dirpath, enzmldoc):
         
         '''
         ThinLayer interface from an .omex EnzymeML container 
@@ -56,7 +80,7 @@ class restfulCOPASI(Resource):
 
         # Get reaction and replicates
         reaction = enzmldoc.getReaction(reaction_id)
-
+        
         # Unify units according to selected reactant for
         # COPASI consistency in calculation
         self.unifyUnits(reactants[0], reaction, enzmldoc, 'mole')
@@ -80,18 +104,25 @@ class restfulCOPASI(Resource):
         exp_set = problem.getExperimentSet()
         
         for reactant in reactants:
+            
             # include each replicate
             for i, repl in enumerate( reaction.getEduct(reactant)[3] ):
+                
                 
                 data = repl.getData()
                 data.name = data.name.split('/')[1]
                 
                 conc_val, conc_unit =  enzmldoc.getConcDict()[repl.getInitConc()]
+                time_unit = data.index.name.split('/')[-1]
                 
                 metab = [ metab for metab in dm.getModel().getMetabolites() if metab.sbml_id == reactant][0]
                 cn = metab.getInitialConcentrationReference().getCN()
                 
-                data.to_csv( 'copasicache' + '/experiment_%s_%i.tsv' % ( reactant, i ), sep='\t', header=True)
+                # TSV path
+                tsvpath = os.path.join( dirpath, 'experiment_%s_%i.tsv' % ( reactant, i ) )
+                
+                data.to_csv( tsvpath, 
+                             sep='\t', header=True)
                 
                 exp = COPASI.CExperiment(dm)
                 #exp.setObjectName(reaction.getName())  # the name should be unique, so here we have to generate one
@@ -99,13 +130,13 @@ class restfulCOPASI(Resource):
                 exp.setFirstRow(1)
                 exp.setLastRow(data.shape[0]+1)
                 exp.setHeaderRow(1)
-                exp.setFileName( 'copasicache' +'/experiment_%s_%i.tsv' % ( reactant, i ))
+                exp.setFileName( tsvpath )
                 exp.setExperimentType(COPASI.CTaskEnum.Task_timeCourse)
                 exp.setSeparator('\t')
                 exp.setNumColumns(2)
                 exp = exp_set.addExperiment(exp)
                 info = COPASI.CExperimentFileInfo(exp_set)
-                info.setFileName('copasicache' +'/experiment_%s_%i.tsv' % (reactant, i))
+                info.setFileName( tsvpath )
 
                 # add the initial concentration as fit item
                 item = problem.addFitItem(cn)
@@ -119,7 +150,7 @@ class restfulCOPASI(Resource):
                 obj_map.setNumCols(2)
                 
                 for i, col in enumerate(["time"] + [data.name]):
-                    if col is "time":
+                    if col == "time":
                         role = COPASI.CExperiment.time
                         obj_map.setRole(i, role)
                         
@@ -141,9 +172,17 @@ class restfulCOPASI(Resource):
         COPASI.COutputAssistant.createDefaultOutput(911, task, dm)  # parameter estimation result per experiment
 
         # Gather Menten parameters
-        Km, vmax = self.run_parameter_estimation(dm)
+        Km_value, vmax_value = self.run_parameter_estimation(dm)
+        Km_unit = enzmldoc.getUnitDict()[conc_unit].getName()
+        time_unit = enzmldoc.getUnitDict()[time_unit].getName()
+
+        if "M" in Km_unit: 
+            vmax_unit = Km_unit + ' / ' + time_unit
+        else:
+            split_u = Km_unit.split('/')
+            vmax_unit = split_u[0] + ' / ' + f'( {split_u[1]} * {time_unit} )'
         
-        return Km, vmax
+        return Km_value, Km_unit, vmax_value, vmax_unit
         
         '''
         parameters = { 'km_%s' % reactants[0]: (Km, enzmldoc.getReactant(reactants[0]).getSubstanceunits()),
