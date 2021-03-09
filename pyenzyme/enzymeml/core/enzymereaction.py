@@ -14,6 +14,7 @@ Copyright (c) 2020 Institute Of Biochemistry and Technical Biochemistry Stuttgar
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from pyenzyme.enzymeml.models.kineticmodel import KineticModel
 from pyenzyme.enzymeml.core.replicate import Replicate
+from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 import pandas as pd
 import json
 from copy import deepcopy
@@ -287,24 +288,56 @@ class EnzymeReaction(object):
             raise AttributeError( "Replicate has no series data. Add data via replicate.setData( pandas.Series )" )
         
         def getName(name, by_id):
+            # Helper function
             if by_id:
                 return enzmldoc.getReactant( name, by_id ).getId()
             else:
                 return enzmldoc.getReactant( name, by_id ).getName()
+            
+        def checkUnits(replicate, enzmldoc):
+            # Checks if units are given as ID or need to be added 
+            # to the document
+            
+            time_unit = replicate.getTimeUnit()
+            data_unit = replicate.getDataUnit()
+            
+            # Check if units are already given as an ID
+            def isID(string):
+                if string[0] == "u":
+                    try:
+                        int(string[1::])
+                        return 1
+                    except ValueError:
+                        return 0
+                else:
+                    return 0
+                
+            # perform checks
+            if isID(time_unit): 
+                replicate.setTimeUnit( enzmldoc.getUnitDict()[time_unit].getId() )
+            else:
+                replicate.setTimeUnit( UnitCreator().getUnit(time_unit, enzmldoc) )
+                
+            if isID(data_unit):
+                replicate.setDataUnit( enzmldoc.getUnitDict()[data_unit].getId() )
+            else:
+                replicate.setDataUnit( UnitCreator().getUnit(data_unit, enzmldoc) )
+            
+            return replicate
         
         for i in range(len(self.__educts)):
             if getName(self.__educts[i][0], by_id) == replicate.getReactant():
-                self.__educts[i][3].append(replicate)
+                self.__educts[i][3].append( checkUnits(replicate, enzmldoc) )
                 return 1
             
         for i in range(len(self.__products)):
             if getName(self.__products[i][0], by_id) == replicate.getReactant():
-                self.__products[i][3].append(replicate)
+                self.__products[i][3].append( checkUnits(replicate, enzmldoc) )
                 return 1
             
         for i in range(len(self.__modifiers)):
             if getName(self.__products[i][0], by_id) == replicate.getReactant():
-                self.__modifiers[i][3].append(replicate)
+                self.__modifiers[i][3].append( checkUnits(replicate, enzmldoc) )
                 return 1
             
         raise AttributeError( "Replicate's reactant %s not defined in reaction" % (replicate.getReactant()) )
