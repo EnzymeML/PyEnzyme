@@ -104,7 +104,7 @@ class EnzymeMLReader():
                 if "doi" in elem.tag:
                     enzmldoc.setDoi( elem.text )
                 elif 'pubmedID' in elem.tag:
-                    print(elem.text)
+                    enzmldoc.setPubmedID( elem.text )
                 elif 'url' in elem.tag:
                     enzmldoc.setUrl(elem.text)
         
