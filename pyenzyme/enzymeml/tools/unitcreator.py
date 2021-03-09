@@ -71,11 +71,6 @@ class UnitCreator(object):
         parser = UnitParser()
         units = sorted(parser.parse(unit_string))
         
-        # Check if there is already a similar unit defined
-        if self.__checkFootprints(enzmldoc, units) != "NEW":
-            
-            return self.__checkFootprints(enzmldoc, units)
-        
         # Initialize UnitDef
         nominator, denominator = [], []
         for prefix, baseunit, exponent in units:
@@ -99,10 +94,14 @@ class UnitCreator(object):
             name = 'K'
           
         unitdef = UnitDef(name, id_, "NONE")
-        unitdef.setFootprint(units)
         
         for prefix, baseunit, exponent in units:
             self.__functionDict[baseunit]( unitdef, prefix, exponent )
+            
+        # Check if there is already a similar unit defined
+        if self.__checkFootprints(enzmldoc, unitdef.getFootprint()) != "NEW":
+            
+            return self.__checkFootprints(enzmldoc, unitdef.getFootprint())
         
         enzmldoc.getUnitDict()[unitdef.getId()] = unitdef
         
@@ -113,18 +112,18 @@ class UnitCreator(object):
         unitdict = enzmldoc.getUnitDict()
         
         def __compare(f1, f2):
-            return sum( [ 0 if tup1 == tup2 else 1 for tup1, tup2 in zip( sorted(f1), sorted(f2) ) ] )
+            return sorted(f1) == sorted(f2)
         
         for unitdef in unitdict:
-            if __compare( unitdict[unitdef].getFootprint() , footprint) == 0:
+            if __compare( unitdict[unitdef].getFootprint() , footprint):
 
                 return unitdict[unitdef].getId()
-            
+
         return "NEW"
             
     def __Mole(self, unitdef, prefix, exponent):
         
-        kind = libsbml.UNIT_KIND_MOLE
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_MOLE )
         scale = self.__getPrefix(prefix)
         multiplier = 1
         
@@ -134,7 +133,7 @@ class UnitCreator(object):
         
         self.__Mole(unitdef, prefix, exponent)
         
-        kind = libsbml.UNIT_KIND_LITRE
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_LITRE )
         scale = 1
         multiplier = 1
         
@@ -142,7 +141,7 @@ class UnitCreator(object):
         
     def __Volume(self, unitdef, prefix, exponent):
         
-        kind = libsbml.UNIT_KIND_LITRE
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_LITRE )
         scale = self.__getPrefix(prefix)
         multiplier = 1
         
@@ -150,7 +149,7 @@ class UnitCreator(object):
         
     def __Amount(self, unitdef, prefix, exponent):
         
-        kind = libsbml.UNIT_KIND_GRAM
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_GRAM )
         scale = self.__getPrefix(prefix)
         multiplier = 1
         
@@ -158,7 +157,7 @@ class UnitCreator(object):
         
     def __Seconds(self, unitdef, prefix, exponent):
         
-        kind = libsbml.UNIT_KIND_SECOND
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_SECOND )
         scale = 1
         multiplier = 1
         
@@ -166,7 +165,7 @@ class UnitCreator(object):
         
     def __Minutes(self, unitdef, prefix=None, exponent=1):
         
-        kind = libsbml.UNIT_KIND_SECOND
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_SECOND )
         scale = 1
         multiplier = 60
         
@@ -174,7 +173,7 @@ class UnitCreator(object):
         
     def __Hours(self, unitdef, prefix=None, exponent=1):
         
-        kind = libsbml.UNIT_KIND_SECOND
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_SECOND )
         scale = 1
         multiplier = 60*60
         
@@ -182,7 +181,7 @@ class UnitCreator(object):
         
     def __Celsius(self, unitdef, prefix=None, exponent=1):
         
-        kind = libsbml.UNIT_KIND_KELVIN
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_KELVIN )
         scale = 1
         multiplier = 1
         
@@ -190,7 +189,7 @@ class UnitCreator(object):
         
     def __Kelvin(self, unitdef, prefix=None, exponent=1):
         
-        kind = libsbml.UNIT_KIND_KELVIN
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_KELVIN )
         scale = 1
         multiplier = 1
         

@@ -66,7 +66,7 @@ class UnitParser(object):
         
         def __exponentString(self, string):
     
-            string = string.split('/')
+            string = [ st.strip() for st in string.split('/') ]
             
             if len(string) == 2:
                 nom = string[0].split(' ')
