@@ -5,7 +5,7 @@ Created on 04.08.2020
 
 from pyenzyme.enzymeml.tools import EnzymeMLReader, EnzymeMLWriter
 from pyenzyme.enzymeml.core import Replicate
-from pyenzyme.enzymeml.models import KineticModel
+from pyenzyme.enzymeml.models import KineticModel, MichaelisMenten
 import os
 
 import COPASI
@@ -13,7 +13,7 @@ from builtins import enumerate
 
 class ThinLayerCopasi(object):
     
-    def importEnzymeML(self, reaction_id, reactants, path, outdir=None):
+    def modelEnzymeML(self, reaction_id, reactant, path):
         
         '''
         ThinLayer interface from an .omex EnzymeML container 
@@ -25,24 +25,50 @@ class ThinLayerCopasi(object):
             String reaction: Reaction ID to extract data from
             String reactants: Single or multiple IDs for desired reactant(s)
         '''
+        
+        # Save JSON in variable
+        enzmldoc = EnzymeMLReader().readFromFile(path)
+        
+        # Create directory for modeled data
+        dirpath = os.path.join( os.path.dirname(path), f"Modeled_{reaction_id}_{reactant}" )
+        
+        try:
+            os.mkdir(dirpath)
+        except FileExistsError:
+            # Modeled dir already there
+            pass
+        
+        # Estimate parameters
+        km_val, km_unit, vmax_val, vmax_unit = self.importEnzymeML( reaction_id, reactant, dirpath, enzmldoc )
+        
+        menten_model = MichaelisMenten(vmax_val, vmax_unit, km_val, km_unit, reactant, enzmldoc)
+        
+        # Write model to reaction
+        enzmldoc.getReactionDict()[reaction_id].setModel(menten_model)
+        
+        enzmldoc.toFile( dirpath )
+
+        print(km_val, km_unit, vmax_val, vmax_unit)
+    
+    def importEnzymeML(self, reaction_id, reactants, dirpath, enzmldoc):
+        
+        '''
+        ThinLayer interface from an .omex EnzymeML container 
+        to COPASI comatible .cps fiel format.
+        
+        Args:
+            String path: Path to .omex EnzymeML file
+            String outdir: Path to store .cps COPASI file
+            String reaction: Reaction ID to extract data from
+            String reactants: Single or multiple IDs for desired reactant(s)
+        '''
+        
         if type(reactants) == str:
             reactants = [reactants]
-        
-        fname = str(os.path.basename(path)).split(".omex")[0]
-        
-        if outdir is None:
-            outdir = os.path.join( os.path.split(path)[0],  "COPASI" )
-            os.makedirs( outdir, exist_ok=True )
-        
-        ########### PyEnzyme ########### 
-        
-        # Read EnzymeML Omex file
-        doc = EnzymeMLReader().readFromFile(path, omex=True)
-        enzmldoc = EnzymeMLReader().readFromFile(path, omex=True)
 
         # Get reaction and replicates
         reaction = enzmldoc.getReaction(reaction_id)
-
+        
         # Unify units according to selected reactant for
         # COPASI consistency in calculation
         self.unifyUnits(reactants[0], reaction, enzmldoc, 'mole')
@@ -66,18 +92,25 @@ class ThinLayerCopasi(object):
         exp_set = problem.getExperimentSet()
         
         for reactant in reactants:
+            
             # include each replicate
             for i, repl in enumerate( reaction.getEduct(reactant)[3] ):
+                
                 
                 data = repl.getData()
                 data.name = data.name.split('/')[1]
                 
                 conc_val, conc_unit =  enzmldoc.getConcDict()[repl.getInitConc()]
+                time_unit = data.index.name.split('/')[-1]
                 
                 metab = [ metab for metab in dm.getModel().getMetabolites() if metab.sbml_id == reactant][0]
                 cn = metab.getInitialConcentrationReference().getCN()
                 
-                data.to_csv( outdir +'/experiment_%s_%i.tsv' % ( reactant, i ), sep='\t', header=True)
+                # TSV path
+                tsvpath = os.path.join( dirpath, 'experiment_%s_%i.tsv' % ( reactant, i ) )
+                
+                data.to_csv( tsvpath, 
+                             sep='\t', header=True)
                 
                 exp = COPASI.CExperiment(dm)
                 #exp.setObjectName(reaction.getName())  # the name should be unique, so here we have to generate one
@@ -85,13 +118,13 @@ class ThinLayerCopasi(object):
                 exp.setFirstRow(1)
                 exp.setLastRow(data.shape[0]+1)
                 exp.setHeaderRow(1)
-                exp.setFileName( outdir + '/experiment_%s_%i.tsv' % ( reactant, i ))
+                exp.setFileName( tsvpath )
                 exp.setExperimentType(COPASI.CTaskEnum.Task_timeCourse)
                 exp.setSeparator('\t')
                 exp.setNumColumns(2)
                 exp = exp_set.addExperiment(exp)
                 info = COPASI.CExperimentFileInfo(exp_set)
-                info.setFileName(outdir + '/experiment_%s_%i.tsv' % (reactant, i))
+                info.setFileName( tsvpath )
 
                 # add the initial concentration as fit item
                 item = problem.addFitItem(cn)
@@ -105,7 +138,7 @@ class ThinLayerCopasi(object):
                 obj_map.setNumCols(2)
                 
                 for i, col in enumerate(["time"] + [data.name]):
-                    if col is "time":
+                    if col == "time":
                         role = COPASI.CExperiment.time
                         obj_map.setRole(i, role)
                         
@@ -119,30 +152,37 @@ class ThinLayerCopasi(object):
                         obj_map.setRole(i, role)
                 
         # Finally save the model and add plot/progress
-        dm.saveModel( outdir + "/" + fname + ".cps", True)
-        
-        dm.loadModel( outdir + "/" + fname + ".cps" )
         task = dm.getTask('Parameter Estimation')
         task.setMethodType(COPASI.CTaskEnum.Method_Statistics)
         COPASI.COutputAssistant.getListOfDefaultOutputDescriptions(task)
         COPASI.COutputAssistant.createDefaultOutput(913, task, dm)  # progress of fit plot
         # COPASI.COutputAssistant.createDefaultOutput(910, task, dm)  # parameter estimation result (all experiments in one)
         COPASI.COutputAssistant.createDefaultOutput(911, task, dm)  # parameter estimation result per experiment
-        dm.saveModel( os.path.join( outdir, fname + ".cps"), True)
-        print("Saved model CPS to " + outdir + "/" + fname + ".cps")
 
         # Gather Menten parameters
-        Km, vmax = self.run_parameter_estimation(dm)
+        Km_value, vmax_value = self.run_parameter_estimation(dm)
+        Km_unit = enzmldoc.getUnitDict()[conc_unit].getName()
+        time_unit = enzmldoc.getUnitDict()[time_unit].getName()
+
+        if "M" in Km_unit: 
+            vmax_unit = Km_unit + ' / ' + time_unit
+        else:
+            split_u = Km_unit.split('/')
+            vmax_unit = split_u[0] + ' / ' + f'( {split_u[1]} * {time_unit} )'
         
-        parameters = { 'km_%s' % reactants[0]: (Km, enzmldoc.getReactant(reactants[0]).getSubstanceUnits()),
-                       'vmax_%s' % reactants[0]: (vmax, enzmldoc.getReactant(reactants[0]).getSubstanceUnits()) }
+        return Km_value, Km_unit, vmax_value, vmax_unit
+        
+        '''
+        parameters = { 'km_%s' % reactants[0]: (Km, enzmldoc.getReactant(reactants[0]).getSubstanceunits()),
+                       'vmax_%s' % reactants[0]: (vmax, enzmldoc.getReactant(reactants[0]).getSubstanceunits()) }
         equation = "vmax_%s*%s/(km_%s+%s)" % tuple([reactants[0]]*4)
         km  = KineticModel(equation, parameters)
 
         doc.getReaction(reaction_id).setModel( km )
 
-        enzmldoc.toFile(outdir)
-
+        enzmldoc.toFile(doc, outdir)
+        '''
+        
     def unifyUnits(self, reactant, reaction, enzmldoc, kind):
 
         # get unit of specified reactant
@@ -294,4 +334,4 @@ class ThinLayerCopasi(object):
         
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    ThinLayerCopasi().importEnzymeML('r0', 's1', os.path.abspath("../../Resources/Examples/ThinLayers/COPASI/3IZNOK_TEST/3IZNOK_TEST.omex") )
+    ThinLayerCopasi().modelEnzymeML('r0', 's1', os.path.abspath("../../Resources/Examples/ThinLayers/COPASI/3IZNOK_TEST/3IZNOK_TEST.omex") )
