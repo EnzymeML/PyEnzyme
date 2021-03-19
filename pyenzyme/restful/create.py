@@ -1,5 +1,11 @@
+# @Author: Jan Range
+# @Date:   2021-03-18 22:33:21
+# @Last Modified by:   Jan Range
+# @Last Modified time: 2021-03-19 16:23:13
 from flask import Flask, request, send_file
 from flask_restful import Resource, Api
+from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
+from marshmallow import fields, Schema
 
 import tempfile
 import os
@@ -8,11 +14,13 @@ import io
 
 from pyenzyme.enzymeml.core import EnzymeMLDocument, Protein, Reactant, EnzymeReaction, Replicate, Vessel
 from pyenzyme.enzymeml.models import KineticModel
-
-
-
-class Create(Resource):
+from pyenzyme.restful.create_schema import EnzymeMLSchema
     
+
+class Create(MethodResource):
+    
+    @doc(tags=['Create EnzymeML'], description='This endpoint is used to create an EnzymeML document out of JSON data')
+    @marshal_with(EnzymeMLSchema(), code=200)
     def post(self):
         """
         Reads JSON formatted data and converts to an EnzymeML container.
@@ -58,6 +66,25 @@ class Create(Resource):
             # add modifiers by name
             for modifier in reaction['modifiers']: self.parseReacElements( reac.addModifier, modifier, reac, enzmldoc )
             
+            if 'kineticmodel' in reaction.keys():
+                
+                # kinetic models
+                model = reaction['kineticmodel']
+                equation = model['equation']
+                parameters = dict()
+                
+                for parameter in model['parameters']:
+                    
+                    name = parameter['name']
+                    reactant = enzmldoc.getReactant(parameter['reactant'], by_id=False).getId()
+                    value = parameter['value']
+                    unit = parameter['unit']
+                    
+                    parameters[f"{name}_{reactant}"] = (value, unit)
+                
+                km = KineticModel(equation, parameters)
+                reac.setModel(km)
+                
             enzmldoc.addReaction(reac)
 
         # Send File  
