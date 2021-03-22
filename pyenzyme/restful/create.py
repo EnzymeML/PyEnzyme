@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-19 16:23:13
+# @Last Modified time: 2021-03-22 10:33:10
 from flask import Flask, request, send_file
 from flask_restful import Resource, Api
 from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
@@ -34,23 +34,23 @@ class Create(MethodResource):
         enzmldoc = EnzymeMLDocument(**param_doc)
         
         # create vessel
-        vessel = Vessel( **json_data["Vessel"] )
+        vessel = Vessel( **json_data["vessel"] )
         enzmldoc.setVessel(vessel)
         
         # parse proteins
-        for protein in json_data['Protein']:
+        for protein in json_data['protein']:
             enzmldoc.addProtein(
                 Protein(**protein)
             )
             
         # parse reactants
-        for reactant in json_data['Reactant']:
+        for reactant in json_data['reactant']:
             enzmldoc.addReactant(
                 Reactant(**reactant)
             )
             
         # parse reactions
-        for reaction in json_data['Reaction']:
+        for reaction in json_data['reaction']:
             # initialize reaction meta data
             param_reac = { key: item for key, item in reaction.items()
                             if type(item) != list and type(item) != dict }
