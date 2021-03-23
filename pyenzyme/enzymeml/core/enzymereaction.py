@@ -1,3 +1,7 @@
+# @Author: Jan Range
+# @Date:   2021-03-18 22:33:21
+# @Last Modified by:   Jan Range
+# @Last Modified time: 2021-03-23 22:09:22
 '''
 File: /enzymereaction.py
 Project: EnzymeML
@@ -83,7 +87,7 @@ class EnzymeReaction(object):
                                 'stoich': tup[1],
                                 'constant': tup[2],
                                 'replicates': [ repl.toJSON(d=True, enzmldoc=enzmldoc) for repl in tup[3] ],
-                                'init_conc': str(tup[4]).replace('"', '')
+                                'init_conc': tup[4]
                                 
                             }
                             for tup in item

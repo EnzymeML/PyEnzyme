@@ -1,9 +1,9 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-19 15:30:52
+# @Last Modified time: 2021-03-23 21:55:27
 
-from flask import Flask, request, send_file, jsonify
+from flask import Flask, request, send_file, jsonify, Response
 from flask_restful import Resource, Api
 from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
 
@@ -30,7 +30,7 @@ class OMEXField(ma.fields.Field):
         try:
             return [int(c) for c in value]
         except ValueError as error:
-            raise ValidationError("TEST") from error
+            raise ma.ValidationError("TEST") from error
 
 class Read(MethodResource):
     
@@ -57,4 +57,4 @@ class Read(MethodResource):
         # remove temp file
         os.remove(tmp)
         
-        return jsonify(JSON)
+        return Response(json.dumps(JSON),  mimetype='application/json')

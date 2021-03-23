@@ -1,3 +1,7 @@
+# @Author: Jan Range
+# @Date:   2021-03-18 22:33:21
+# @Last Modified by:   Jan Range
+# @Last Modified time: 2021-03-23 22:04:14
 '''
 File: /enzymemldocument.py
 Project: EnzymeML
@@ -793,7 +797,6 @@ class EnzymeMLDocument(object):
 
     def setReactantDict(self, reactantDict):
         self.__ReactantDict = TypeChecker(reactantDict, dict)
-
 
     def setReactionDict(self, reactionDict):
         self.__ReactionDict = TypeChecker(reactionDict, dict)

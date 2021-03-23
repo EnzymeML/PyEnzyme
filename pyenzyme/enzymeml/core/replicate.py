@@ -40,14 +40,23 @@ class Replicate(object):
             d = dict()
             for key, item in self.__dict__.items():
                 if type(item) == Series:
-                    d['data'] = str(list(item)).replace('"', '')
-                    d['time'] = str(list(item.index)).replace('"', '')
+                    d['data'] = list(item)
+                    d['time'] = list(item.index)
                 else:
                     
-                    if enzmldoc != False and 'unit' in key:
-                        item = enzmldoc.getUnitDict()[item].getName()
+                    if enzmldoc != False:
+                        
+                        if 'unit' in key:
+                            item = enzmldoc.getUnitDict()[item].getName()
                     
-                    d[key.split('__')[-1]] = str(item)
+                        if "init_conc" in key:
+                            val, _ = enzmldoc.getConcDict()[item]
+                            item = val
+                    
+                    if type(item) == list:
+                        d[key.split('__')[-1]] = item
+                    else:
+                        d[key.split('__')[-1]] = item
                 
             return d
         
