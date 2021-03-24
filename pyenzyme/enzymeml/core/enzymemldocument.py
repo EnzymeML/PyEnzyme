@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-23 22:04:14
+# @Last Modified time: 2021-03-24 01:21:43
 '''
 File: /enzymemldocument.py
 Project: EnzymeML
@@ -93,7 +93,7 @@ class EnzymeMLDocument(object):
                 ### GET VESSEL ###
                 elif key == 'vessel':
                     # add vessel to the dictionary
-                    enzmldoc_dict[key] = item.toJSON(d=True)
+                    enzmldoc_dict[key] = item.toJSON(d=True, enzmldoc=self)
                 
                 ### GET DICTIONARIES ###
                 elif type(item) == dict and key in kwds:
@@ -493,7 +493,7 @@ class EnzymeMLDocument(object):
         Adds Protein object to EnzymeMLDocument object. Automatically assigns ID and converts units.
 
         Args:
-            protein (Protein): Object describing protein
+            protein (Protein): Object describing g
             use_parser (bool, optional): If set True, will use internal unit parser. Defaults to True.
             custom_id (str, optional): Assigns custom ID instead of automatic. Defaults to 'NULL'.
 

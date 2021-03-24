@@ -50,9 +50,10 @@ class Replicate(object):
                             item = enzmldoc.getUnitDict()[item].getName()
                     
                         if "init_conc" in key:
-                            val, _ = enzmldoc.getConcDict()[item]
-                            item = val
-                    
+                            #val, _ = enzmldoc.getConcDict()[item]
+                            #item = val
+                            item = item #TODO
+                            
                     if type(item) == list:
                         d[key.split('__')[-1]] = item
                     else:
