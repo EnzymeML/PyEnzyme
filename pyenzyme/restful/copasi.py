@@ -1,3 +1,7 @@
+# @Author: Jan Range
+# @Date:   2021-03-18 22:33:21
+# @Last Modified by:   Jan Range
+# @Last Modified time: 2021-03-24 14:18:00
 from flask import Flask, request, send_file, jsonify
 from flask_restful import Resource, Api
 
@@ -24,7 +28,7 @@ class restfulCOPASI(Resource):
         body = json.loads( request.form['json'] )
         
         # Send File  
-        dirpath = os.path.join( os.path.dirname(os.path.realpath(__file__)), next(tempfile._get_candidate_names()) )
+        dirpath = os.path.join( os.path.dirname(os.path.realpath(__file__)), "copasi_temp", next(tempfile._get_candidate_names()) )
         omexpath = os.path.join( dirpath, next(tempfile._get_candidate_names()) )
         
         os.mkdir(dirpath)

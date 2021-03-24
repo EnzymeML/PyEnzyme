@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-23 21:55:27
+# @Last Modified time: 2021-03-24 14:17:21
 
 from flask import Flask, request, send_file, jsonify, Response
 from flask_restful import Resource, Api
@@ -45,7 +45,7 @@ class Read(MethodResource):
         file = request.files['omex'].read()
         
         # Write to temp file
-        tmp = os.path.join( os.path.dirname(os.path.realpath(__file__)), next(tempfile._get_candidate_names()) )
+        tmp = os.path.join( os.path.dirname(os.path.realpath(__file__)), "read_temp", next(tempfile._get_candidate_names()) )
 
         with open(tmp, 'wb') as f:
             f.write(file)
