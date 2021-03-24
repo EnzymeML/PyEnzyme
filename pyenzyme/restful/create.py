@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-24 14:17:39
+# @Last Modified time: 2021-03-24 14:27:19
 from flask import Flask, request, send_file
 from flask_restful import Resource, Api
 from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
@@ -87,8 +87,10 @@ class Create(MethodResource):
                 
             enzmldoc.addReaction(reac)
 
-        # Send File  
-        dirpath = os.path.join( os.path.dirname(os.path.realpath(__file__)), "create_temp", next(tempfile._get_candidate_names()) )
+        # Send File
+        dirpath = os.path.join( os.path.dirname( os.path.realpath(__file__)), "create_temp" )
+        os.makedirs(dirpath, exist_ok=True)
+        dirpath = os.path.join( dirpath, next(tempfile._get_candidate_names()) )
 
         enzmldoc.toFile( dirpath )
         
