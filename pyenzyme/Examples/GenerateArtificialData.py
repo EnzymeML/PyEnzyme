@@ -1,3 +1,7 @@
+# @Author: Jan Range
+# @Date:   2021-03-18 22:33:21
+# @Last Modified by:   Jan Range
+# @Last Modified time: 2021-03-26 18:38:23
 from pyenzyme.enzymeml.core import Replicate
 from pyenzyme.enzymeml.tools import EnzymeMLReader, EnzymeMLWriter
 from pyenzyme.enzymeml.core.reactant import Reactant
@@ -78,19 +82,21 @@ if __name__ == '__main__':
                 reactant = enzmldoc.getReactant(reac_id)
                 
                 for init_conc in init_concs:
+                    
+                    if init_conc > 0:
                 
-                    kcat = reactant_models[reac_id]['kcat'][0]
-                    protein_conc = enzmldoc.getProtein("p0").getInitConc()*1e-3 # n mol
-                    vmax = protein_conc*kcat
-                    km = reactant_models[reac_id]['km'][0]
-                    
-                    time, data =  generateData(init_conc, vmax, km)
-                    
-                    repl = Replicate("repl_%s" % (repl_index), reac_id, "conc", reactant.getSubstanceUnits(), "s", init_conc)
-                    repl.setData(data, time)
-                    repl_index += 1
-                    
-                    enzmldoc.getReaction('r0').addReplicate(repl, enzmldoc)
+                        kcat = reactant_models[reac_id]['kcat'][0]
+                        protein_conc = enzmldoc.getProtein("p0").getInitConc()*1e-3 # n mol
+                        vmax = protein_conc*kcat
+                        km = reactant_models[reac_id]['km'][0]
+                        
+                        time, data =  generateData(init_conc, vmax, km)
+                        
+                        repl = Replicate("repl_%s" % (repl_index), reac_id, "conc", reactant.getSubstanceUnits(), "s", init_conc)
+                        repl.setData(data, time)
+                        repl_index += 1
+                        
+                        enzmldoc.getReaction('r0').addReplicate(repl, enzmldoc)
 
     enzmldoc.printProteins()
     enzmldoc.printReactants()
