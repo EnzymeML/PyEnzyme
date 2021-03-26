@@ -396,6 +396,7 @@ class EnzymeMLWriter(object):
         if len(list(enzmldoc.getReactionDict().items())) == 0:
             raise ValueError( "Please define a reaction before writing" )
         
+        # store initial concentrations to prevent duplicate entries
         for key, reac in enzmldoc.getReactionDict().items():
             
             reaction = model.createReaction()
@@ -447,12 +448,14 @@ class EnzymeMLWriter(object):
                 
             # iterate over lists
             # educts
+            init_conc_check = list()
             for educt in reac.getEducts():
                 
                 species = educt[0]
                 stoich = educt[1]
                 const = educt[2]
                 init_concs = educt[-1] + list( set( [ repl.getInitConc() for repl in educt[3] ] ) )
+                init_concs = list(set(init_concs))
                 
                 specref = reaction.createReactant()
                 specref.setSpecies(species)
@@ -472,14 +475,18 @@ class EnzymeMLWriter(object):
                     conc_annot.addNamespace("http://sbml.org/enzymeml/version1", "enzymeml")
                     
                     for conc in init_concs:
-                        
+
                         try:
+                                           
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
                             conc_node.addAttr( "id", str(conc) )
                             conc_node.addAttr( "value", str(enzmldoc.getConcDict()[conc][0]) )
                             conc_node.addAttr( "unit", enzmldoc.getReactant(species).getSubstanceUnits() )
-                            conc_annot.addChild( conc_node )
                             
+                            if conc not in init_conc_check:
+                                conc_annot.addChild( conc_node )
+                                init_conc_check.append(str(conc))
+                                
                         except KeyError:
                             
                             inv_initconc = { item: key for key, item in enzmldoc.getConcDict().items() }
@@ -489,11 +496,16 @@ class EnzymeMLWriter(object):
                                 
                                 ]
                             
+                            conc = inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
+                            
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
-                            conc_node.addAttr( "id", inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ] )
+                            conc_node.addAttr( "id", str(conc) )
                             conc_node.addAttr( "value", str(init_entry[0]) )
                             conc_node.addAttr( "unit", str(init_entry[1]) )
-                            conc_annot.addChild( conc_node )
+                            
+                            if conc not in init_conc_check:
+                                conc_annot.addChild( conc_node )
+                                init_conc_check.append(conc)
                         
                     specref.appendAnnotation(conc_annot)
                 
@@ -519,6 +531,7 @@ class EnzymeMLWriter(object):
                     index += 1
                     
             # products
+            init_conc_check = []
             for product in reac.getProducts():
                 
                 species = product[0]
@@ -552,6 +565,7 @@ class EnzymeMLWriter(object):
                     index += 1
                     
             # modifiers
+            init_conc_check = []
             for modifier in reac.getModifiers():
                 
                 species = modifier[0]
