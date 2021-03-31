@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-23 22:09:22
+# @Last Modified time: 2021-04-01 00:25:12
 '''
 File: /enzymereaction.py
 Project: EnzymeML
@@ -80,6 +80,10 @@ class EnzymeReaction(object):
                         d['model'] = item.toJSON(d=True, enzmldoc=enzmldoc)
                     
                     elif type(item) == list:
+                        
+                        
+                        getInitConc = lambda tup: [ (val, enzmldoc.getUnitDict()[unit].getName() ) for val, unit in tup[4] ]
+                        
                         nu_lst = [
                             
                             {
@@ -87,7 +91,7 @@ class EnzymeReaction(object):
                                 'stoich': tup[1],
                                 'constant': tup[2],
                                 'replicates': [ repl.toJSON(d=True, enzmldoc=enzmldoc) for repl in tup[3] ],
-                                'init_conc': tup[4]
+                                'init_conc': getInitConc( tup )
                                 
                             }
                             for tup in item
@@ -118,7 +122,7 @@ class EnzymeReaction(object):
 
         return self.toJSON() 
         
-    def __setInitConc(self, conc, reactant, enzmldoc):
+    def __setInitConc(self, conc, reactant, enzmldoc, conc_unit=None):
         """
         INTERNAL. Sets initial concentrations of reactant.
 
@@ -126,13 +130,17 @@ class EnzymeReaction(object):
             conc (float): Concentration value
             reactant (string): Reactant ID
             enzmldoc (EnzymeMLDocument): To add and check IDs
+            conc_unit (boolean): If true, uses the reactants unit
 
         Returns:
             string: initConc ID
         """
 
-        conc_tup = (conc, enzmldoc.getReactant(reactant).getSubstanceUnits())
-        
+        if conc_unit == None:
+            conc_tup = (conc, enzmldoc.getReactant(reactant).getSubstanceUnits())
+        else:
+            conc_tup = (conc, UnitCreator().getUnit(conc_unit, enzmldoc))
+            
         if conc_tup not in enzmldoc.getConcDict().values():
             
             index = 0
@@ -248,6 +256,36 @@ class EnzymeReaction(object):
                     return tup
             
         raise KeyError( "Reactant/Protein %s not defined in modifiers" % id_ )
+    
+    def addInitConc(self, elem_id, conc_val, conc_unit, enzmldoc ):
+        
+        def __parseAdd( fun, d, elem_id, conc_val, conc_unit, enzmldoc ):
+            
+            try:
+                tup_id = fun(elem_id, index=True)
+                elem, stoich, constant, replicates, initConc = d[tup_id]
+                
+                nu_initConc = list( set( initConc + [ self.__setInitConc(conc_val, elem_id, enzmldoc, conc_unit) ] ) )
+                d[tup_id] = (elem, stoich, constant, replicates, nu_initConc)
+                
+                return 1
+            
+            except KeyError as e:
+
+                return 0
+            
+        # check for all elements
+        if __parseAdd( self.getEduct, self.__educts, elem_id, conc_val, conc_unit, enzmldoc ):
+            return 1
+        elif __parseAdd( self.getProduct, self.__products, elem_id, conc_val, conc_unit, enzmldoc ):
+            return 1
+        elif __parseAdd( self.getModifier, self.__modifiers, elem_id, conc_val, conc_unit, enzmldoc  ):
+            return 1
+        else:
+            raise KeyError( f"Reactant/Protein {elem_id} not defined in reaction!" )
+            
+
+        
         
     def addReplicate(self, replicate, enzmldoc, by_id=True):
         """
@@ -267,13 +305,13 @@ class EnzymeReaction(object):
 
         # Turn initial cocncentrations to IDs
         try:
-            init_conc_tup = ( replicate.getInitConc(), enzmldoc.getReactant( replicate.getReactant() ).getSubstanceUnits() )
+            init_conc_tup = ( replicate.getInitConc(), UnitCreator().getUnit( replicate.getDataUnit(), enzmldoc) )
             inv_conc = { item: key for key, item in enzmldoc.getConcDict().items() }
             replicate.setInitConc( inv_conc[ init_conc_tup ] )
             
         except KeyError:
             index = 0
-            init_conc_tup = ( replicate.getInitConc(), enzmldoc.getReactant( replicate.getReactant(), by_id=by_id ).getSubstanceUnits() )
+            init_conc_tup = ( replicate.getInitConc(), UnitCreator().getUnit( replicate.getDataUnit(), enzmldoc) )
             while True:
                 id_ = "c%i" % index
                 
