@@ -481,7 +481,7 @@ class EnzymeMLWriter(object):
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
                             conc_node.addAttr( "id", str(conc) )
                             conc_node.addAttr( "value", str(enzmldoc.getConcDict()[conc][0]) )
-                            conc_node.addAttr( "unit", enzmldoc.getReactant(species).getSubstanceUnits() )
+                            conc_node.addAttr( "unit", str(enzmldoc.getConcDict()[conc][1]) )
                             
                             if conc not in init_conc_check:
                                 conc_annot.addChild( conc_node )
@@ -543,6 +543,49 @@ class EnzymeMLWriter(object):
                 specref.setStoichiometry(stoich)
                 specref.setConstant(const)
                 
+                init_concs = product[-1] + list( set( [ repl.getInitConc() for repl in product[3] ] ) )
+                init_concs = list(set(init_concs))
+                
+                if len(init_concs) > 0:
+                    
+                    conc_annot = XMLNode( XMLTriple('enzymeml:initConcs'), XMLAttributes(), XMLNamespaces() )
+                    conc_annot.addNamespace("http://sbml.org/enzymeml/version1", "enzymeml")
+                    
+                    for conc in init_concs:
+
+                        try:
+                                           
+                            conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
+                            conc_node.addAttr( "id", str(conc) )
+                            conc_node.addAttr( "value", str(enzmldoc.getConcDict()[conc][0]) )
+                            conc_node.addAttr( "unit", str(enzmldoc.getConcDict()[conc][1]) )
+                            
+                            if conc not in init_conc_check:
+                                conc_annot.addChild( conc_node )
+                                init_conc_check.append(str(conc))
+                                
+                        except KeyError:
+                            
+                            inv_initconc = { item: key for key, item in enzmldoc.getConcDict().items() }
+                            init_entry = enzmldoc.getConcDict()[
+                                
+                                inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
+                                
+                                ]
+                            
+                            conc = inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
+                            
+                            conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
+                            conc_node.addAttr( "id", str(conc) )
+                            conc_node.addAttr( "value", str(init_entry[0]) )
+                            conc_node.addAttr( "unit", str(init_entry[1]) )
+                            
+                            if conc not in init_conc_check:
+                                conc_annot.addChild( conc_node )
+                                init_conc_check.append(conc)
+                        
+                    specref.appendAnnotation(conc_annot)
+                
                 for repl in product[3]:
                     
                     repl_node = XMLNode( XMLTriple('enzymeml:replica'), XMLAttributes(), XMLNamespaces() )
@@ -573,7 +616,50 @@ class EnzymeMLWriter(object):
                 specref = reaction.createModifier()
                 specref.setSpecies(species)
                 
-                for repl in modifier[-1]:
+                init_concs = modifier[-1] + list( set( [ repl.getInitConc() for repl in modifier[3] ] ) )
+                init_concs = list(set(init_concs))
+                
+                if len(init_concs) > 0:
+                    
+                    conc_annot = XMLNode( XMLTriple('enzymeml:initConcs'), XMLAttributes(), XMLNamespaces() )
+                    conc_annot.addNamespace("http://sbml.org/enzymeml/version1", "enzymeml")
+                    
+                    for conc in init_concs:
+
+                        try:
+                                           
+                            conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
+                            conc_node.addAttr( "id", str(conc) )
+                            conc_node.addAttr( "value", str(enzmldoc.getConcDict()[conc][0]) )
+                            conc_node.addAttr( "unit", str(enzmldoc.getConcDict()[conc][1]) )
+                            
+                            if conc not in init_conc_check:
+                                conc_annot.addChild( conc_node )
+                                init_conc_check.append(str(conc))
+                                
+                        except KeyError:
+                            
+                            inv_initconc = { item: key for key, item in enzmldoc.getConcDict().items() }
+                            init_entry = enzmldoc.getConcDict()[
+                                
+                                inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
+                                
+                                ]
+                            
+                            conc = inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
+                            
+                            conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
+                            conc_node.addAttr( "id", str(conc) )
+                            conc_node.addAttr( "value", str(init_entry[0]) )
+                            conc_node.addAttr( "unit", str(init_entry[1]) )
+                            
+                            if conc not in init_conc_check:
+                                conc_annot.addChild( conc_node )
+                                init_conc_check.append(conc)
+                        
+                    specref.appendAnnotation(conc_annot)
+                
+                for repl in modifier[-2]:
                     
                     repl_node = XMLNode( XMLTriple('enzymeml:replica'), XMLAttributes(), XMLNamespaces() )
                     repl_node.addAttr('measurement', 'M0')
