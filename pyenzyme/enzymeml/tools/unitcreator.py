@@ -22,6 +22,7 @@ class UnitCreator(object):
             "g": self.__Amount,
             "gram": self.__Amount,
             "s": self.__Seconds,
+            "sec": self.__Seconds,
             "second": self.__Seconds,
             "seconds": self.__Seconds,
             "min": self.__Minutes,
