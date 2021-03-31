@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-24 01:21:43
+# @Last Modified time: 2021-03-30 17:31:56
 '''
 File: /enzymemldocument.py
 Project: EnzymeML
@@ -488,7 +488,7 @@ class EnzymeMLDocument(object):
                 index += 1
                 id_ = "s%i" % index
         
-    def addProtein(self, protein, use_parser=True):
+    def addProtein(self, protein, use_parser=True, custom_id='NULL'):
         """
         Adds Protein object to EnzymeMLDocument object. Automatically assigns ID and converts units.
 
@@ -504,7 +504,12 @@ class EnzymeMLDocument(object):
         TypeChecker(protein, Protein)
         
         index = 0
-        id_ = "p%i" % index
+        
+        if custom_id == "NULL":
+            id_ = "p%i" % index
+        else:
+            id_ = custom_id
+            
         while True:
             
             if id_ not in self.__ProteinDict.keys():
