@@ -281,7 +281,7 @@ class EnzymeMLReader():
                 
                 enzmldoc.getConcDict()[id] = (val, unit)
                 
-                initconc.append(val)
+                initconc.append( (val, unit) )
                 
             return initconc
         
