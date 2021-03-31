@@ -139,7 +139,8 @@ class Replicate(object):
             self.__data = TypeChecker(data, Series)
         else:
             dat = Series(data)
-            dat.Index = time
+            dat.index = time
+            
             self.__data = dat
 
 
