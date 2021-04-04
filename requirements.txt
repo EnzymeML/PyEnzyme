@@ -1,7 +1,11 @@
+flask
+flask-restful
+flask-apispec
 python-libsbml
 numpy
 pandas
 python-libcombine
 python-copasi
-Flask-RESTful
-Flask
+openpyxl
+marshmallow
+scipy
