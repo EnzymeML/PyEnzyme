@@ -80,6 +80,8 @@ class convertTemplate(Resource):
     
         # gather sheets by name
         sheets = self.getSheets(file)
+        
+        print(sheets["vessels"])
 
         # General information
         info = self.getGeneralInfo( sheets["generalInfo"] )
@@ -138,7 +140,7 @@ class convertTemplate(Resource):
         return data
     
     def getVessels(self, sheet, enzmldoc):
-    
+        sheet = sheet.iloc[:,0:4]
         sheet = sheet.dropna(thresh=sheet.shape[-1]-1)
 
         # Vessel(name, id_, size, unit)
