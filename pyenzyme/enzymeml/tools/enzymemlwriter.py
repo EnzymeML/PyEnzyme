@@ -477,7 +477,7 @@ class EnzymeMLWriter(object):
                     for conc in init_concs:
 
                         try:
-                                           
+                            print(conc)               
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
                             conc_node.addAttr( "id", str(conc) )
                             conc_node.addAttr( "value", str(enzmldoc.getConcDict()[conc][0]) )
@@ -490,13 +490,14 @@ class EnzymeMLWriter(object):
                         except KeyError:
                             
                             inv_initconc = { item: key for key, item in enzmldoc.getConcDict().items() }
+
                             init_entry = enzmldoc.getConcDict()[
                                 
-                                inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
+                                inv_initconc[ conc ]
                                 
                                 ]
                             
-                            conc = inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
+                            conc = inv_initconc[ conc ]
                             
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
                             conc_node.addAttr( "id", str(conc) )

@@ -373,12 +373,12 @@ class EnzymeMLReader():
                 
                          ( species_ref.getSpecies(), 1.0, False,
                          reaction_replicates[ species_ref.getSpecies() ],
-                         list()
+                         self.__getInitConcs(species_ref, enzmldoc)
                          ) if species_ref.getSpecies() in reaction_replicates.keys()
                          
                          else ( species_ref.getSpecies(), 1.0, False,
                          list(),
-                         list()
+                         self.__getInitConcs(species_ref, enzmldoc)
                          )
                       
                         for species_ref in reac.getListOfModifiers()
