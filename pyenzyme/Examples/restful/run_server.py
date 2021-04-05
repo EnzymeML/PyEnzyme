@@ -15,17 +15,6 @@ api = Api(app)
 
 app.secret_key = 'the random string'
 
-app.config.update({
-    'APISPEC_SPEC': APISpec(
-        title='EnzymeML REST-API',
-        version='v1',
-        openapi_version="2.0.1",
-        plugins=[MarshmallowPlugin()],
-    ),
-    'APISPEC_SWAGGER_UI_URL': '/doc',
-    'APISPEC_SWAGGER_URL': '/swagger'
-})
-
 docs = FlaskApiSpec(app)
 
 api.add_resource(Create, '/create')
