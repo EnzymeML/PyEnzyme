@@ -19,10 +19,10 @@ app.config.update({
     'APISPEC_SPEC': APISpec(
         title='EnzymeML REST-API',
         version='v1',
-        openapi_version="2.0.0",
+        openapi_version="2.0.1",
         plugins=[MarshmallowPlugin()],
     ),
-    'APISPEC_SWAGGER_UI_URL': '/',
+    'APISPEC_SWAGGER_UI_URL': '/doc',
     'APISPEC_SWAGGER_URL': '/swagger'
 })
 
