@@ -60,8 +60,6 @@ class convertTemplate(MethodResource):
             dirpath = os.path.join( os.path.dirname( os.path.realpath(__file__)), "converter_temp" )
             os.makedirs(dirpath, exist_ok=True)
             dirpath = os.path.join( dirpath, next(tempfile._get_candidate_names()) )
-            
-            print(dirpath)
 
             enzmldoc.toFile( dirpath )
             
@@ -70,13 +68,11 @@ class convertTemplate(MethodResource):
                                 enzmldoc.getName(), 
                                 enzmldoc.getName().replace(' ', '_') + '.omex' 
                                 )
-            
-            print(path)
 
             f = io.BytesIO( open(path, "rb").read() )
             f.name = enzmldoc.getName() + '.omex'
             
-            #shutil.rmtree( dirpath, ignore_errors=True )
+            shutil.rmtree( dirpath, ignore_errors=True )
             
             return send_file( f,
                                 mimetype='omex',
@@ -87,8 +83,6 @@ class convertTemplate(MethodResource):
     
         # gather sheets by name
         sheets = self.getSheets(file)
-        
-        print(sheets["vessels"])
 
         # General information
         info = self.getGeneralInfo( sheets["generalInfo"] )
@@ -202,6 +196,7 @@ class convertTemplate(MethodResource):
         
         for id_, item in data.items():
             item = { key: boolCheck(val) for key, val in item.items() if val != '#NULL#' }
+            
             protein = Protein(**item)
             
             prot_id = enzmldoc.addProtein(protein, use_parser=False, custom_id=id_)
