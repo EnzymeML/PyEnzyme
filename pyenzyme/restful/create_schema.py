@@ -14,6 +14,15 @@ class EnzymeMLSchema(Schema):
     pubmedID = fields.Str(required=False)
     url = fields.Str(required=False)
     
+    ############# Creator #################
+
+    class CreatorSchema(Schema):
+        fname = fields.Str(required=True)
+        gname = fields.Str(required=True)
+        mail = fields.Str(required=True)
+        
+    creator = fields.List( fields.Nested(CreatorSchema()), required=True )
+
     ############# Vessels #################
     
     class VesselSchema(Schema):

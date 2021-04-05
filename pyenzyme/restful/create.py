@@ -12,7 +12,7 @@ import os
 import shutil
 import io
 
-from pyenzyme.enzymeml.core import EnzymeMLDocument, Protein, Reactant, EnzymeReaction, Replicate, Vessel
+from pyenzyme.enzymeml.core import EnzymeMLDocument, Protein, Reactant, EnzymeReaction, Replicate, Vessel, Creator
 from pyenzyme.enzymeml.models import KineticModel
 from pyenzyme.restful.create_schema import EnzymeMLSchema
     
@@ -32,6 +32,10 @@ class Create(MethodResource):
         param_doc = { key: item for key, item in json_data.items() 
                       if type(item) != list and type(item) != dict }
         enzmldoc = EnzymeMLDocument(**param_doc)
+        
+        # create Creator
+        creators = [ Creator(**creator)  for creator in json_data['creator'] ]
+        enzmldoc.setCreator(creators)
         
         # create vessel
         vessel = Vessel( **json_data["vessel"] )
