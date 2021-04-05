@@ -88,17 +88,21 @@ class EnzymeMLDocument(object):
                 ### GET SINGLE ATTRIBUTES ###
                 if type(item) == str or type(item ) == int:
                     # store basic meta information
-                    enzmldoc_dict[key] = item
-                    
-                ### GET VESSEL ###
+                    enzmldoc_dict[key.lower()] = item
+                
+                ### Get Creator ###
+                elif key.lower() == "creator":
+                    enzmldoc_dict[key.lower()] = [ creator.toJSON(d=True, enzmldoc=self) for creator in item ]
+                
+                ### GET VESSEL/Creator ###
                 elif key == 'vessel':
                     # add vessel to the dictionary
-                    enzmldoc_dict[key] = item.toJSON(d=True, enzmldoc=self)
+                    enzmldoc_dict[key.lower()] = item.toJSON(d=True, enzmldoc=self)
                 
                 ### GET DICTIONARIES ###
                 elif type(item) == dict and key in kwds:
                     # store dictionaries and transform IDs
-                    enzmldoc_dict[key.replace('Dict', '')] = list()
+                    enzmldoc_dict[key.replace('Dict', '').lower()] = list()
                     
                     # iterate over entries and use toJSON method
                     for elem in item.values():
@@ -109,7 +113,7 @@ class EnzymeMLDocument(object):
                         d[unit_idx] = self.__UnitDict[ d[unit_idx] ].getName()
                         
                         # Add JSON object to element array
-                        enzmldoc_dict[key.replace('Dict', '')].append(d)
+                        enzmldoc_dict[key.replace('Dict', '').lower()].append(d)
                         
                
 
