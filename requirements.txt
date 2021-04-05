@@ -9,3 +9,4 @@ python-copasi
 openpyxl
 marshmallow
 scipy
+apispec
