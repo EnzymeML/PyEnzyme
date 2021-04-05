@@ -16,10 +16,12 @@ from pyenzyme.enzymeml.core import EnzymeMLDocument, Protein, Reactant, EnzymeRe
 from pyenzyme.enzymeml.models import KineticModel
 from pyenzyme.restful.create_schema import EnzymeMLSchema
     
+desc = 'This endpoint is used to create an EnzymeML Document from a JSON representation. \
+        The endpoint will return your data as an EnzymeML OMEX file.'
 
 class Create(MethodResource):
     
-    @doc(tags=['Create EnzymeML'], description='This endpoint is used to create an EnzymeML document out of JSON data')
+    @doc(tags=['Create EnzymeML'], description=desc)
     @marshal_with(EnzymeMLSchema(), code=200)
     def post(self):
         """

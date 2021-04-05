@@ -4,6 +4,7 @@
 # @Last Modified time: 2021-03-31 19:20:48
 from flask import Flask, request, send_file, jsonify, redirect, flash
 from flask_restful import Resource, Api
+from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
 from werkzeug.utils import secure_filename
 
 
@@ -15,6 +16,7 @@ import io
 from pyenzyme.enzymeml.tools import EnzymeMLReader, EnzymeMLWriter, UnitCreator
 from pyenzyme.enzymeml.core import Replicate, EnzymeMLDocument, EnzymeReaction, Vessel, Protein, Reactant
 from pyenzyme.enzymeml.models import KineticModel, MichaelisMenten
+from pyenzyme.restful.template_schema import TemplateSchema
 
 from builtins import enumerate
 
@@ -24,9 +26,14 @@ import tempfile
 import numpy as np
 import pandas as pd
 
+desc = 'This endpoint is used to convert an EnzymeML-Template spreadsheet to an EnzymeML OMEX container.\
+        Upload your XLSM file using form-data with the "xlsm" tag. \
+        The endpoint will return the converted template as an OMEX file.'
 
-class convertTemplate(Resource):
+class convertTemplate(MethodResource):
     
+    @doc(tags=['Convert EnzymeML-Template'], description=desc)
+    @marshal_with(TemplateSchema(), code=200)
     def post(self):
         
         # check if the post request has the file part
