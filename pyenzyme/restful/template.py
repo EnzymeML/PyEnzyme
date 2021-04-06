@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-31 19:20:48
+# @Last Modified time: 2021-04-07 00:04:27
 from flask import Flask, request, send_file, jsonify, redirect, flash
 from flask_restful import Resource, Api
 from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
@@ -112,6 +112,12 @@ class convertTemplate(MethodResource):
         self.getData( sheets["data"], enzmldoc )
         
         return enzmldoc
+    
+    def __cleanSpaces(self, cell):
+        if cell == " ":
+            return np.nan
+        else:
+            return cell
         
     def getSheets(self, file):
     
@@ -141,7 +147,8 @@ class convertTemplate(MethodResource):
         return data
     
     def getVessels(self, sheet, enzmldoc):
-        sheet = sheet.iloc[0:20,0:4]
+        
+        sheet = sheet.iloc[0:20,0:4].applymap(self.__cleanSpaces)
         sheet = sheet.dropna(thresh=sheet.shape[-1]-1)
 
         # Vessel(name, id_, size, unit)
@@ -156,7 +163,7 @@ class convertTemplate(MethodResource):
     def getReactants(self, sheet, enzmldoc):
     
         # Clean sheet
-        sheet = sheet.iloc[0:20,0:6]
+        sheet = sheet.iloc[0:20,0:6].applymap(self.__cleanSpaces)
         sheet = sheet.dropna(thresh=sheet.shape[-1]-1)
         sheet = sheet.replace(np.nan, '#NULL#', regex=True)
         
@@ -180,9 +187,8 @@ class convertTemplate(MethodResource):
     def getProteins(self, sheet, enzmldoc):
     
         # Clean sheet
-        sheet = sheet.iloc[0:20,0:8]
+        sheet = sheet.iloc[0:20,0:8].applymap(self.__cleanSpaces)
         sheet = sheet.dropna(thresh=sheet.shape[-1]-1)
-        print(sheet)
         sheet = sheet.replace(np.nan, '#NULL#', regex=True)
         
         # Protein(name, sequence, compartment=None, init_conc=None, substanceunits=None, constant=True, ecnumber=None, uniprotid=None, organism=None)
@@ -222,7 +228,7 @@ class convertTemplate(MethodResource):
     def getReactions(self, sheet, enzmldoc):
     
         # Clean sheet
-        sheet = sheet.iloc[0:20,0:10]
+        sheet = sheet.iloc[0:20,0:10].applymap(self.__cleanSpaces)
         sheet = sheet.dropna(thresh=sheet.shape[-1]-1)
         sheet = sheet.replace(np.nan, '#NULL#', regex=True)
         
