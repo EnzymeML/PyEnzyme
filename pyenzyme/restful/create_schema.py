@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-19 15:03:19
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-19 16:14:27
+# @Last Modified time: 2021-04-06 23:46:10
 
 from marshmallow import fields, Schema
 
@@ -17,8 +17,8 @@ class EnzymeMLSchema(Schema):
     ############# Creator #################
 
     class CreatorSchema(Schema):
-        fname = fields.Str(required=True)
-        gname = fields.Str(required=True)
+        family_name = fields.Str(required=True)
+        given_name = fields.Str(required=True)
         mail = fields.Str(required=True)
         
     creator = fields.List( fields.Nested(CreatorSchema()), required=True )
