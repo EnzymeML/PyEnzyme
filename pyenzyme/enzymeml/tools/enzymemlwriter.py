@@ -477,7 +477,6 @@ class EnzymeMLWriter(object):
                     for conc in init_concs:
 
                         try:
-                            print(conc)               
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
                             conc_node.addAttr( "id", str(conc) )
                             conc_node.addAttr( "value", str(enzmldoc.getConcDict()[conc][0]) )
@@ -715,7 +714,8 @@ class EnzymeMLWriter(object):
         
         if csv:
             # write file to csv
-            df = pd.DataFrame( np.array(data).T )
+            df = [ pd.DataFrame( col ) for col in data ]
+            df = pd.concat(df, axis=1, ignore_index=True)
             df.to_csv( self.path + '/data/data.csv', index=False, header=False)
         
         if len( all_repls ) > 0:
