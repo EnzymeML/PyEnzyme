@@ -60,7 +60,7 @@ class convertTemplate(MethodResource):
             dirpath = os.path.join( os.path.dirname( os.path.realpath(__file__)), "converter_temp" )
             os.makedirs(dirpath, exist_ok=True)
             dirpath = os.path.join( dirpath, next(tempfile._get_candidate_names()) )
-
+            
             enzmldoc.toFile( dirpath )
             
             path = os.path.join(  
@@ -141,7 +141,7 @@ class convertTemplate(MethodResource):
         return data
     
     def getVessels(self, sheet, enzmldoc):
-        sheet = sheet.iloc[:,0:4]
+        sheet = sheet.iloc[0:20,0:4]
         sheet = sheet.dropna(thresh=sheet.shape[-1]-1)
 
         # Vessel(name, id_, size, unit)
@@ -156,7 +156,7 @@ class convertTemplate(MethodResource):
     def getReactants(self, sheet, enzmldoc):
     
         # Clean sheet
-        sheet = sheet.iloc[:,0:6]
+        sheet = sheet.iloc[0:20,0:6]
         sheet = sheet.dropna(thresh=sheet.shape[-1]-1)
         sheet = sheet.replace(np.nan, '#NULL#', regex=True)
         
@@ -180,8 +180,9 @@ class convertTemplate(MethodResource):
     def getProteins(self, sheet, enzmldoc):
     
         # Clean sheet
-        sheet = sheet.iloc[:,0:8]
+        sheet = sheet.iloc[0:20,0:8]
         sheet = sheet.dropna(thresh=sheet.shape[-1]-1)
+        print(sheet)
         sheet = sheet.replace(np.nan, '#NULL#', regex=True)
         
         # Protein(name, sequence, compartment=None, init_conc=None, substanceunits=None, constant=True, ecnumber=None, uniprotid=None, organism=None)
@@ -221,7 +222,7 @@ class convertTemplate(MethodResource):
     def getReactions(self, sheet, enzmldoc):
     
         # Clean sheet
-        sheet = sheet.iloc[:,0:10]
+        sheet = sheet.iloc[0:20,0:10]
         sheet = sheet.dropna(thresh=sheet.shape[-1]-1)
         sheet = sheet.replace(np.nan, '#NULL#', regex=True)
         
@@ -329,6 +330,12 @@ class convertTemplate(MethodResource):
                                 "init_val": init_val,
                                 "raw": data_raw
                             } ]
+                            
+                            # Add Protein initial concentration to modifier
+                            enzmldoc.getReaction(reac, by_id=False).addInitConc( protein_id , protein_init_val, protein_init_unit, enzmldoc)
+                            
+                            enzmldoc.getProtein( protein_id ).setInitConc( protein_init_val )
+                            enzmldoc.getProtein( protein_id ).setSubstanceUnits( UnitCreator().getUnit( protein_init_unit, enzmldoc ) )
                             
                         else:
                             # Add initial concentration although no raw data is given

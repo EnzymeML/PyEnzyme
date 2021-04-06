@@ -496,7 +496,8 @@ class EnzymeMLReader():
                                         child.attrib["initConcID"]
                                         )
                     
-                    repl.setData( data[ "%s/%s/%s" % ( child.attrib["replica"], child.attrib["species"], child.attrib["type"] ) ] )
+                    col_name = "%s/%s/%s" % ( child.attrib["replica"], child.attrib["species"], child.attrib["type"] )
+                    repl.setData( data[ col_name ] )
                     
                     replicates[ repl.getReplica() ] = repl
         
