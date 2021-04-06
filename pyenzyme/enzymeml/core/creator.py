@@ -1,3 +1,7 @@
+# @Author: Jan Range
+# @Date:   2021-04-06 23:30:20
+# @Last Modified by:   Jan Range
+# @Last Modified time: 2021-04-07 00:07:27
 '''
 File: /creator.py
 Project: EnzymeML
@@ -63,7 +67,7 @@ class Creator(object):
         Returns:
             string: Author family name
         """
-        return self.__fname
+        return self.__family_name
 
 
     def getGname(self):
@@ -72,7 +76,7 @@ class Creator(object):
         Returns:
             string: Author given name
         """
-        return self.__gname
+        return self.__given_name
 
 
     def getMail(self):
@@ -89,7 +93,7 @@ class Creator(object):
         Args:
             family_name (string): Authors family name
         """
-        self.__fname = TypeChecker(family_name, str)
+        self.__family_name = TypeChecker(family_name, str)
 
 
     def setGname(self, given_name):
@@ -98,7 +102,7 @@ class Creator(object):
         Args:
             given_name (string): Authors given name
         """
-        self.__gname = TypeChecker(given_name, str)
+        self.__given_name = TypeChecker(given_name, str)
 
 
     def setMail(self, mail):
@@ -111,11 +115,11 @@ class Creator(object):
 
 
     def delFname(self):
-        del self.__fname
+        del self.__family_name
 
 
     def delGname(self):
-        del self.__gname
+        del self.__given_name
 
 
     def delMail(self):
