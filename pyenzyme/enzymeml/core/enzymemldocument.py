@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-30 17:31:56
+# @Last Modified time: 2021-04-08 10:13:25
 '''
 File: /enzymemldocument.py
 Project: EnzymeML
@@ -575,7 +575,7 @@ class EnzymeMLDocument(object):
                         reaction.getModel().getParameters()[key] = (item[0], UnitCreator().getUnit( item[1] , self) )
                         
                 except Exception as e:
-                    print(e)
+                    pass
 
                 self.__ReactionDict[reaction.getId()] = reaction
                 
