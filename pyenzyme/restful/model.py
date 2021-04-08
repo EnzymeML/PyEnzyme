@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-26 18:39:17
+# @Last Modified time: 2021-04-07 09:37:57
 from flask import Flask, request, send_file, jsonify, redirect, flash
 from flask_restful import Resource, Api
 from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
@@ -38,12 +38,10 @@ class parameterEstimation(MethodResource):
         
         # check if the post request has the file part
         if 'omex' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
+            return jsonify( {"response": 'No file part'} )
         
         if 'json' not in request.form:
-            flash('No json part')
-            return redirect(request.url)
+            return jsonify( {"response": 'No json part'} )
         
         # receive OMEX file
         file = request.files['omex']
@@ -52,8 +50,7 @@ class parameterEstimation(MethodResource):
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
+            return jsonify( {"response": 'No file selected'} )
         
         if file and file.filename.split('.')[-1] == "omex":
             
@@ -83,11 +80,9 @@ class parameterEstimation(MethodResource):
             # Define model TODO
             def Menten( s, vmax, km ):
                 return vmax*s / (s+km)
-            
+
             # Estimate parameters
             km_val, km_stdev, vmax_val, vmax_stdev = self.estimateParams( Menten, reac, repls, enzmldoc )
-            
-            print(km_val, km_stdev, vmax_val, vmax_stdev)
             
             reactant_unit_id = enzmldoc.getReactant(body['reactant']).getSubstanceUnits()
             reactant_unit = enzmldoc.getUnitDict()[reactant_unit_id].getName()
