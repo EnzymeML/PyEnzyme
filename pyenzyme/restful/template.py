@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-07 00:04:27
+# @Last Modified time: 2021-04-08 10:09:15
 from flask import Flask, request, send_file, jsonify, redirect, flash
 from flask_restful import Resource, Api
 from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
@@ -38,16 +38,14 @@ class convertTemplate(MethodResource):
         
         # check if the post request has the file part
         if 'xlsm' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
+            return jsonify( {"response": 'No file part'} )
         
         file = request.files['xlsm']
         
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
+            return jsonify( {"response": 'No file selected'} )
         
         if file and file.filename.split('.')[-1] == "xlsm":
             
@@ -186,9 +184,10 @@ class convertTemplate(MethodResource):
             
     def getProteins(self, sheet, enzmldoc):
     
-        # Clean sheet
+        # Clean sheet       
         sheet = sheet.iloc[0:20,0:8].applymap(self.__cleanSpaces)
-        sheet = sheet.dropna(thresh=sheet.shape[-1]-1)
+        sheet = sheet.dropna(thresh=sheet.shape[-1]-3)
+        
         sheet = sheet.replace(np.nan, '#NULL#', regex=True)
         
         # Protein(name, sequence, compartment=None, init_conc=None, substanceunits=None, constant=True, ecnumber=None, uniprotid=None, organism=None)
@@ -213,9 +212,9 @@ class convertTemplate(MethodResource):
     def getReacElements(self, item):
 
         elements = {
-                    "educts": item["educts"].split(','), 
-                    "products": item["products"].split(','), 
-                    "modifiers": item["modifiers"].split(',') + item["proteins"].split(',')
+                    "educts": item["educts"].split(', '), 
+                    "products": item["products"].split(', '), 
+                    "modifiers": item["modifiers"].split(', ') + item["proteins"].split(', ')
                     }
 
         item.pop("educts")
@@ -261,7 +260,6 @@ class convertTemplate(MethodResource):
                 for elem in elements[key]:
                     
                     if elem != "#NULL#":
-                        
                         elem_id = inv_prDict[elem]
                         
                         if 's' in elem_id:
