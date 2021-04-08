@@ -205,7 +205,7 @@ class EnzymeMLWriter(object):
         
         print(self.path + '/' + out_file)
     
-        print('\nArchive created:', out_file)
+        print('\nArchive created:', out_file,  '\n')
         
     def __addRefs(self, model, enzmldoc):
         
