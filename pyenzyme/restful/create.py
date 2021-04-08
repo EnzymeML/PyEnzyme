@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-24 14:27:19
+# @Last Modified time: 2021-04-08 09:26:49
 from flask import Flask, request, send_file
 from flask_restful import Resource, Api
 from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
@@ -40,7 +40,7 @@ class Create(MethodResource):
         enzmldoc.setCreator(creators)
         
         # create vessel
-        vessel = Vessel( **json_data["vessel"] )
+        vessel = Vessel( **json_data["vessel"][0] )
         enzmldoc.setVessel(vessel)
         
         # parse proteins
