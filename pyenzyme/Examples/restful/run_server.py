@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-06 23:46:58
+# @Last Modified time: 2021-04-14 20:07:48
 from flask import Flask, request
 from flask_restful import Resource, Api
 from apispec import APISpec
@@ -30,4 +30,4 @@ docs.register(convertTemplate, endpoint='converttemplate')
 
 if __name__ == "__main__":
         
-    app.run(host="127.0.0.1", debug=True)
+    app.run(host="0.0.0.0")
