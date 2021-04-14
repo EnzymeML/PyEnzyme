@@ -668,7 +668,11 @@ class EnzymeMLWriter(object):
                     form_node = XMLNode( XMLTriple('enzymeml:column'), XMLAttributes(), XMLNamespaces() )
                     form_node.addAttr( 'replica', repl.getReplica() )
                     form_node.addAttr( 'species', repl.getReactant() )
+                    form_node.addAttr( 'type', repl.getType() )
+                    form_node.addAttr( 'unit', repl.getDataUnit() )
+                    form_node.addAttr( 'index', str(index) )
                     form_node.addAttr( 'initConcID', str(repl.getInitConc()) )
+                        
                         
                     replica_root.addChild(repl_node)
                     format_.addChild(form_node)

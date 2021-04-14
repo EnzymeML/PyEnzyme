@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-01 00:25:12
+# @Last Modified time: 2021-04-14 19:40:18
 '''
 File: /enzymereaction.py
 Project: EnzymeML
@@ -378,7 +378,7 @@ class EnzymeReaction(object):
                 return 1
             
         for i in range(len(self.__modifiers)):
-            if getName(self.__products[i][0], by_id) == replicate.getReactant():
+            if getName(self.__modifiers[i][0], by_id) == replicate.getReactant():
                 self.__modifiers[i][3].append( checkUnits(replicate, enzmldoc) )
                 return 1
             
