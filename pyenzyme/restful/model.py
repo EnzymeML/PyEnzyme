@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-07 09:37:57
+# @Last Modified time: 2021-04-14 19:23:45
 from flask import Flask, request, send_file, jsonify, redirect, flash
 from flask_restful import Resource, Api
 from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
@@ -128,10 +128,12 @@ class parameterEstimation(MethodResource):
         for col in range(repls.shape[-1]):
             
             tc_data = repls.iloc[:,col]
-            reactant = tc_data.name.split('/')[0]
+            replicate = tc_data.name.split('/')[0]
+            reactant = tc_data.name.split('/')[1]
+            
             
             # generate product data for each
-            init_conc_id = [ repl for repl in reac.getEduct("s1")[3] if repl.getReplica() == reactant ][0].getInitConc()
+            init_conc_id = [ repl for repl in reac.getEduct(reactant)[3] if repl.getReplica() == replicate ][0].getInitConc()
             init_conc = enzmldoc.getConcDict()[init_conc_id][0]
 
 
