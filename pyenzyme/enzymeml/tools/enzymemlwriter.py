@@ -640,13 +640,19 @@ class EnzymeMLWriter(object):
                         except KeyError:
                             
                             inv_initconc = { item: key for key, item in enzmldoc.getConcDict().items() }
+                            
+                            if species[0] == "p": 
+                                fun = enzmldoc.getProtein
+                            elif species[0] == "s":
+                                fun = enzmldoc.getReactant
+                            
                             init_entry = enzmldoc.getConcDict()[
                                 
-                                inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
+                                inv_initconc[ (conc, fun(species).getSubstanceUnits() ) ]
                                 
                                 ]
                             
-                            conc = inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
+                            conc = inv_initconc[ (conc, fun(species).getSubstanceUnits() ) ]
                             
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
                             conc_node.addAttr( "id", str(conc) )
