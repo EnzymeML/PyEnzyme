@@ -1,12 +1,13 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-14 20:07:48
+# @Last Modified time: 2021-04-20 09:13:10
 from flask import Flask, request
 from flask_restful import Resource, Api
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask_apispec import FlaskApiSpec
+from flask_cors import CORS
 
 from pyenzyme.restful import Create, Read, restfulCOPASI, parameterEstimation, convertTemplate
 

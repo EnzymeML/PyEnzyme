@@ -1,6 +1,7 @@
 flask
 flask-restful
 flask-apispec
+flask-cors
 python-libsbml
 numpy
 pandas
