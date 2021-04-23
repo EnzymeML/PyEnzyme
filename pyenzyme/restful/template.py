@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-08 10:09:15
+# @Last Modified time: 2021-04-23 14:55:23
 from flask import Flask, request, send_file, jsonify, redirect, flash
 from flask_restful import Resource, Api
 from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
@@ -312,12 +312,17 @@ class convertTemplate(MethodResource):
                         exp_dict["time"] = { "unit": datType.split("[")[-1].split(']')[0],
                                             "raw": [ val for val in time_raw if type(val) == float ]}
                         
-                    elif "Concentration" in datType:
+                    elif "Concentration" in datType or "Absorption" in datType:
+                        
+                        if "Concentration" in datType: data_type = "conc"
+                        if "Absorption" in datType: data_type = "abs"
+                        
+                        print("TYPE", data_type)
                         
                         data_raw = [ val for val in list( row.iloc[9::] ) if type(val) == float ]
                         reactant = enzmldoc.getReactant( row.iloc[6], by_id=False ).getId()
                         init_val = row.iloc[7]
-                        init_unit = row.iloc[8]
+                        init_unit = repl_unit = row.iloc[8]
                         
                         protein_id = enzmldoc.getProtein( row.iloc[3], by_id=False ).getId()
                         protein_init_val = row.iloc[4]
@@ -326,13 +331,18 @@ class convertTemplate(MethodResource):
                         enzmldoc.getReactant( reactant ).setInitConc( init_val )
                         enzmldoc.getReactant( reactant ).setSubstanceUnits( UnitCreator().getUnit( init_unit, enzmldoc ) )
                         
+                        if data_type == "abs": repl_unit = "abs"
+                        
                         if len(data_raw) > 0:
+                            
+                            print("REPL", repl_unit)
                         
                             exp_dict["reactants"] += [ {
                                 "id": reactant,
-                                "unit": init_unit,
+                                "unit": repl_unit,
                                 "init_val": init_val,
-                                "raw": data_raw
+                                "raw": data_raw,
+                                "type": data_type
                             } ]
                             
                             # Add Protein initial concentration to modifier
@@ -357,7 +367,7 @@ class convertTemplate(MethodResource):
                     repl = Replicate(
                         replica= f"repl_{exp}_{i}", 
                         reactant=reactant["id"], 
-                        type_="conc",
+                        type_=reactant["type"],
                         data_unit=reactant["unit"],
                         time_unit=exp_dict["time"]["unit"],
                         init_conc=reactant["init_val"],

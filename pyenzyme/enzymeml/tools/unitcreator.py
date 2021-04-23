@@ -35,7 +35,8 @@ class UnitCreator(object):
             "c": self.__Celsius,
             "celsius": self.__Celsius,
             "K": self.__Kelvin,
-            "kelvin": self.__Kelvin
+            "kelvin": self.__Kelvin,
+            "dimensionless": self.__Dimensionless
             
             
             }
@@ -58,16 +59,28 @@ class UnitCreator(object):
             else:
                 index += 1
         
-        '''       
-        # check if its already a unit
-        regex = "[u\d]"
-        f = lambda x: re.findall(regex, x)
-        res = len(f(unit_string))
-        print("LELE", unit_string, res)
-        if 2 > 1:
-            return unit_string
-        '''
-                     
+        # Check dimensionless units
+        dimlessToCheck = ('abs', 'absorption', 'dimensionless')
+        
+        if unit_string.lower().endswith(dimlessToCheck):
+            print("Klappt!", unit_string)
+            
+            # Initialize UnitDef object
+            unitdef = UnitDef("absorption", id_, "NONE")
+            
+            self.__functionDict["dimensionless"]( unitdef, 1.0, 1.0 )
+            
+            # Check if there is already a similar unit defined
+            if self.__checkFootprints(enzmldoc, unitdef.getFootprint()) != "NEW":
+                
+                return self.__checkFootprints(enzmldoc, unitdef.getFootprint())
+            
+            enzmldoc.getUnitDict()[unitdef.getId()] = unitdef
+            
+            return unitdef.getId()
+        
+        ### IF SI UNIT AND NOT DIMENSIONLESS ###
+        
         # Call unit parser to identify units
         parser = UnitParser()
         units = sorted(parser.parse(unit_string))
@@ -84,18 +97,21 @@ class UnitCreator(object):
             else:
                 if abs(float(exponent)) > 1: denominator.append( pre_unit + f"**{exponent}" )
                 if abs(float(exponent)) == 1: denominator.append( pre_unit )
-              
+        
+        # Reformat unit string to a convenient format    
         if len(denominator) > 0: name = " / ".join( [
                                                 " ".join(nominator),
                                                 " ".join(denominator)
                                                 ] )
         if len(denominator) == 0: name = " ".join(nominator)
         
+        # Convert Celsius to Kelvin - No SBML kind for C!
         if name.lower() == 'c':
             name = 'K'
-          
-        unitdef = UnitDef(name, id_, "NONE")
         
+        # Initialize UnitDef object
+        unitdef = UnitDef(name, id_, "NONE")
+          
         for prefix, baseunit, exponent in units:
             self.__functionDict[baseunit]( unitdef, prefix, exponent )
             
@@ -191,6 +207,14 @@ class UnitCreator(object):
     def __Kelvin(self, unitdef, prefix=None, exponent=1):
         
         kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_KELVIN )
+        scale = 1
+        multiplier = 1
+        
+        unitdef.addBaseUnit( kind, exponent, scale, multiplier )
+        
+    def __Dimensionless(self, unitdef, prefix=None, exponent=1):
+        
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_DIMENSIONLESS )
         scale = 1
         multiplier = 1
         
