@@ -43,13 +43,24 @@ class Protein(object):
         
     def toJSON(self, d=False, enzmldoc=False):
         
-        f = lambda o: { key.split('__')[-1]: item for key, item in o.__dict__.items()}
-        
-        if d: return f(self)
+        def transformAttr(self):
+            d = dict()
+            for key, item in self.__dict__.items():
+                
+                if enzmldoc != False:
+                        
+                    if 'unit' in key:
+                        item = enzmldoc.getUnitDict()[item].getName()
+                        
+                d[key.split('__')[-1]] = item
+                
+            return d
+    
+        if d: return transformAttr(self)
         
         return json.dumps(
             self, 
-            default=f, 
+            default=transformAttr, 
             indent=4
             )
     

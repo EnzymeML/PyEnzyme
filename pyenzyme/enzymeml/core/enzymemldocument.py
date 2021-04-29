@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-08 10:13:25
+# @Last Modified time: 2021-04-29 19:38:00
 '''
 File: /enzymemldocument.py
 Project: EnzymeML
@@ -106,12 +106,8 @@ class EnzymeMLDocument(object):
                     
                     # iterate over entries and use toJSON method
                     for elem in item.values():
-                        d = elem.toJSON(d=True, enzmldoc=self)
-                        
-                        # Convert units to names
-                        unit_idx = [ k for k in d.keys() if 'unit' in k ][0]
-                        d[unit_idx] = self.__UnitDict[ d[unit_idx] ].getName()
-                        
+                        d = elem.toJSON(d=True, enzmldoc=self) 
+                    
                         # Add JSON object to element array
                         enzmldoc_dict[key.replace('Dict', '').lower()].append(d)
                         

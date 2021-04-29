@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-14 19:40:18
+# @Last Modified time: 2021-04-29 16:40:31
 '''
 File: /enzymereaction.py
 Project: EnzymeML
@@ -98,6 +98,9 @@ class EnzymeReaction(object):
                         ]
                         
                         d[key.split('__')[-1]] = nu_lst
+                        
+                    elif 'unit' in key and enzmldoc != False:
+                        d[key.split('__')[-1]] = enzmldoc.getUnitDict()[item].getName()
                         
                     else:
                         d[key.split('__')[-1]] = item

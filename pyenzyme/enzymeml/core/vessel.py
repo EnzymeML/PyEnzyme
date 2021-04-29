@@ -49,7 +49,7 @@ class Vessel(object):
         
         return json.dumps(
             self, 
-            default=f, 
+            default=transformAttr, 
             indent=4
             )
     
