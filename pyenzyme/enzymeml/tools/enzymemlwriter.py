@@ -4,7 +4,7 @@ Created on 03.07.2020
 @author: JR
 '''
 from libsbml import SBMLDocument, CVTerm, XMLNode, XMLTriple, XMLAttributes,\
-    XMLNamespaces, SBMLWriter
+    XMLNamespaces, SBMLWriter, ModelHistory, ModelCreator
 import libsbml
 from libsbml._libsbml import BIOLOGICAL_QUALIFIER, BQB_IS
 from libcombine import CombineArchive, OmexDescription, KnownFormats, VCard
@@ -82,6 +82,8 @@ class EnzymeMLWriter(object):
         model.setName(enzmldoc.getName())
         model.setId(enzmldoc.getName())
         
+        
+        
         # Add references
         self.__addRefs(model, enzmldoc)
         
@@ -157,14 +159,15 @@ class EnzymeMLWriter(object):
             False  # mark file as master
         )
     
-        # add metadata to the archive itself
+        # add metadata to the experiment file
+        location = "./experiment.xml"
         description = OmexDescription()
-        description.setAbout(".")
-        description.setDescription(enzmldoc.getName())
+        description.setAbout(location)
+        description.setDescription("EnzymeML model")
         description.setCreated(OmexDescription.getCurrentDateAndTime())
         
         try:
-            for creat in enzmldoc.get_creator():
+            for creat in enzmldoc.getCreator():
                 
                 creator = VCard()
                 creator.setFamilyName(creat.getFname())
@@ -172,17 +175,10 @@ class EnzymeMLWriter(object):
                 creator.setEmail(creat.getMail())
         
                 description.addCreator(creator)
-        except AttributeError:
+        except AttributeError as e:
             pass
     
         archive.addMetadata(".", description)
-    
-        # add metadata to the experiment file
-        location = "./experiment.xml"
-        description = OmexDescription()
-        description.setAbout(location)
-        description.setDescription("EnzymeML model")
-        description.setCreated(OmexDescription.getCurrentDateAndTime())
         archive.addMetadata(location, description)
         
         # add metadata to the csv file

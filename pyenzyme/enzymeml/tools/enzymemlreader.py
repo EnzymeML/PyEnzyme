@@ -35,13 +35,15 @@ class EnzymeMLReader():
         self.__path = path
         
         if self.omex:
+            
             self.archive = CombineArchive()
             self.archive.initializeFromArchive(self.__path)
         
             sbmlfile = self.archive.getEntry(0)
             content = self.archive.extractEntryToString(sbmlfile.getLocation())
+            
+            desc =  self.archive.getMetadataForLocation(sbmlfile.getLocation())
 
-        
         reader = SBMLReader()
         
         if self.omex:
@@ -59,12 +61,16 @@ class EnzymeMLReader():
         # Fetch references
         self.__getRefs(model, enzmldoc)
         
-        # Fetch meta data
-        try:
-            creators = self.__getCreators(model)
-            enzmldoc.setCreator(creators)
-        except AttributeError:
-            enzmldoc.setCreator( Creator("UNKNOWN", "UNKNOWN", "UNKNOWN") )
+        # Fetch Creators
+        numCreators = desc.getNumCreators()
+        creators = list()
+        for i in range(numCreators):
+            creator = desc.getCreator(i)
+            creators.append(
+                Creator(creator.getFamilyName(), creator.getGivenName(), creator.getEmail()) 
+            )
+            
+        enzmldoc.setCreator(creators)
         
         try:
             model_hist = model.getModelHistory()
@@ -312,9 +318,9 @@ class EnzymeMLReader():
                     
                     for cond in child:
                         # iterate through conditions 
-                        if 'ph' in cond.tag: ph=float(cond.attrib["value"]);
-                        if 'temperature' in cond.tag: temperature=float(cond.attrib["value"]);
-                        if 'temperature' in cond.tag: tempunit=cond.attrib["unit"];
+                        if 'ph' in cond.tag: ph=float(cond.attrib["value"])
+                        if 'temperature' in cond.tag: temperature=float(cond.attrib["value"])
+                        if 'temperature' in cond.tag: tempunit=cond.attrib["unit"]
                         
                 elif 'replica' in child.tag:
 
