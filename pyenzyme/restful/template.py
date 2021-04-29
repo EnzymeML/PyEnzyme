@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-23 14:55:23
+# @Last Modified time: 2021-04-29 18:31:43
 from flask import Flask, request, send_file, jsonify, redirect, flash
 from flask_restful import Resource, Api
 from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
@@ -47,7 +47,7 @@ class convertTemplate(MethodResource):
         if file.filename == '':
             return jsonify( {"response": 'No file selected'} )
         
-        if file and file.filename.split('.')[-1] == "xlsm":
+        if file and file.filename.split('.')[-1] in "xlsm_xlsx":
             
             filename = secure_filename(file.filename)
             
