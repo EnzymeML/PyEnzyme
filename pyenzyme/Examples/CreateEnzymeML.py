@@ -4,12 +4,15 @@ Created on 12.08.2020
 @author: JR
 '''
 
-from pyenzyme.enzymeml.core import EnzymeMLDocument, Vessel, Reactant, EnzymeReaction, Replicate
+from pyenzyme.enzymeml.core import EnzymeMLDocument, Vessel, Reactant, EnzymeReaction, Replicate, Creator
 from pyenzyme.enzymeml.tools import EnzymeMLWriter
 import pandas as pd
 from pyenzyme.enzymeml.core.protein import Protein
 
 enzmldoc = EnzymeMLDocument('TEST', 3, 2)
+
+creators = [ Creator("GNAME1", "FNAME1", "MAIL1"), Creator("GNAME2", "FNAME2", "MAIL2") ]
+enzmldoc.setCreator(creators)
 
 vessel = Vessel('name', 'v0', 10.0, 'l')
 enzmldoc.setVessel(vessel)
@@ -40,4 +43,4 @@ enzmldoc.printReactants()
 enzmldoc.printProteins()
 enzmldoc.printReactions()
 
-print(writer.toXMLString(enzmldoc))
+enzmldoc.toFile('TEST')
