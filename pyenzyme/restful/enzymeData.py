@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-29 21:08:58
+# @Last Modified time: 2021-04-30 11:25:41
 
 from flask import Flask, request, send_file, jsonify, Response
 from flask_restful import Resource, Api
@@ -77,13 +77,13 @@ class enzymeData(MethodResource):
             self.keys[key] = n_maps
         
         # Initialize JSON body
-        JSON = { "metadatablocks": { "enzymeML" : { "displayName": "EnzymeML Document" }, 'citation': { "displayName": "Citation Metadata" } } }
+        JSON = { "metadataBlocks": { "enzymeML" : { "displayName": "EnzymeML Metadata" }, 'citation': { "displayName": "Citation Metadata" } } }
         fields = list()
         cite_fields = list()
         
         # References
         references_dv = self.getCompound('enzymeMLReferences', enzmldoc.toJSON(d=True), multiple='false')
-        fields.append( references_dv )
+        if references_dv: fields.append( references_dv )
         
         # Creators
         for creator in enzmldoc.getCreator():
@@ -91,27 +91,27 @@ class enzymeData(MethodResource):
             author_dv = self.getCompound( 'author', data, multiple='true' )
             dataset_dv = self.getCompound( 'dataset', data, multiple='true' )
             
-            cite_fields.append(author_dv)
-            cite_fields.append(dataset_dv)
+            if author_dv: cite_fields.append(author_dv)
+            if dataset_dv: cite_fields.append(dataset_dv)
             
         # Vessel
         vessel = enzmldoc.getVessel().toJSON(d=True, enzmldoc=enzmldoc)
         vessel_dv = self.getCompound( 'enzymeMLVessel', vessel, multiple='false' )
-        fields.append(vessel_dv)
+        if vessel_dv: fields.append(vessel_dv)
         
         # Reactants
         for key, reactant in enzmldoc.getReactantDict().items():
             reactant = reactant.toJSON(d=True, enzmldoc=enzmldoc)
             reactant_dv = self.getCompound( 'enzymeMLReactant', reactant, multiple='true' )
             
-            fields.append(reactant_dv)
+            if reactant_dv: fields.append(reactant_dv)
             
         # Proteins
         for key, protein in enzmldoc.getProteinDict().items():
             protein = protein.toJSON(d=True, enzmldoc=enzmldoc)
             protein_dv = self.getCompound( 'enzymeMLProtein', protein, multiple='true' )
             
-            fields.append(protein_dv)
+            if protein_dv: fields.append(protein_dv)
             
         # Reactions
         for key, reaction in enzmldoc.getReactionDict().items():
@@ -144,10 +144,10 @@ class enzymeData(MethodResource):
             
             fields.append(reaction_dv)
 
-        JSON["metadatablocks"]["enzymeML"]["fields"] = fields
-        JSON["metadatablocks"]["citation"]["fields"] = cite_fields
+        JSON["metadataBlocks"]["enzymeML"]["fields"] = fields
+        JSON["metadataBlocks"]["citation"]["fields"] = cite_fields
         
-        return JSON
+        return { "datasetVersion": JSON }
     
     def getCompound(self, compound_name, json_data, multiple ):
     
@@ -163,8 +163,11 @@ class enzymeData(MethodResource):
                     print(f"Couldnt find required data {key} - Please make sure to fill out all required fields.")
                 else:
                     pass
-            
-        return self.getEnzymeDataField( compound_name, multiple, compound, 'compound' )
+        
+        if len(compound) > 0:
+            return self.getEnzymeDataField( compound_name, multiple, compound, 'compound' )
+        else:
+            return None
     
     def getEnzymeDataField(self, typename, multiple, value, typeclass):
     
