@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-30 11:25:41
+# @Last Modified time: 2021-04-30 12:14:41
 
 from flask import Flask, request, send_file, jsonify, Response
 from flask_restful import Resource, Api
@@ -66,7 +66,8 @@ class enzymeData(MethodResource):
     def generateDataverseRequest(self, enzmldoc):
         
         # Load mapping
-        mapping = pd.read_csv('../../restful/enzymeData_Mapping.csv')
+        #mapping = pd.read_csv('../../restful/enzymeData_Mapping.csv') # Use for testing locally
+        mapping = pd.read_csv('pyenzyme/restful/enzymeData_Mapping.csv')
         
         # decompose mapping
         self.keys = { key: mapping[ mapping['classes'] == key ].drop('classes', axis=1) for key in list( set( mapping['classes'] ) ) }
