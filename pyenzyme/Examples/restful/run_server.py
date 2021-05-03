@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-05-03 16:39:38
+# @Last Modified time: 2021-05-03 16:42:43
 from flask import Flask, request, render_template
 from flask_restful import Resource, Api
 from apispec import APISpec
@@ -26,7 +26,7 @@ api.add_resource(convertTemplate, '/template/convert')
 api.add_resource(exportData, '/exportdata')
 api.add_resource(enzymeData, '/enzymedata')
 
-@app.route('/upload')
+@app.route('/template/upload')
 def upload_file():
     return render_template('upload.html')
 
