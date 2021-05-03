@@ -1,8 +1,8 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-29 21:20:39
-from flask import Flask, request
+# @Last Modified time: 2021-05-03 16:39:38
+from flask import Flask, request, render_template
 from flask_restful import Resource, Api
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 from pyenzyme.restful import Create, Read, restfulCOPASI, parameterEstimation, convertTemplate, exportData, enzymeData
 
-app = Flask(__name__)
+app = Flask(__name__,template_folder='.')
 api = Api(app)
 
 app.secret_key = 'the random string'
@@ -26,6 +26,10 @@ api.add_resource(convertTemplate, '/template/convert')
 api.add_resource(exportData, '/exportdata')
 api.add_resource(enzymeData, '/enzymedata')
 
+@app.route('/upload')
+def upload_file():
+    return render_template('upload.html')
+
 docs.register(Create, endpoint='create')
 docs.register(Read, endpoint='read')
 docs.register(parameterEstimation, endpoint='parameterestimation')
@@ -34,4 +38,4 @@ docs.register(exportData, endpoint='exportdata')
 
 if __name__ == "__main__":
         
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", debug=True)
