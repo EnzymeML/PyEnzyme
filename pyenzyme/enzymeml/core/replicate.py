@@ -47,16 +47,14 @@ class Replicate(object):
                     if enzmldoc != False:
                         
                         if 'unit' in key:
-                            item = enzmldoc.getUnitDict()[item].getName()
+                            if item: item = enzmldoc.getUnitDict()[item].getName()
+                            if not item: item = "nan"
                     
                         if "init_conc" in key:
                             val, unit = enzmldoc.getConcDict()[item]
                             item = [ val, enzmldoc.getUnitDict()[unit].getName() ]
                             
-                    if type(item) == list:
-                        d[key.split('__')[-1]] = item
-                    else:
-                        d[key.split('__')[-1]] = item
+                    if str(item) != "nan": d[key.split('__')[-1]] = item
                 
             return d
         

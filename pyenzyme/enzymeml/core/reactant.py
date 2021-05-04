@@ -46,10 +46,11 @@ class Reactant(object):
                 if enzmldoc != False:
                         
                     if 'unit' in key:
-                        item = enzmldoc.getUnitDict()[item].getName()
+                        if item: item = enzmldoc.getUnitDict()[item].getName()
+                        if not item: item = "nan"
+                            
+                if str(item) != "nan": d[key.split('__')[-1]] = item
                         
-                d[key.split('__')[-1]] = item
-                
             return d
         
         if d: return transformAttr(self)

@@ -245,6 +245,20 @@ class EnzymeMLReader():
                 
             else:
                 
+                # Store input params in a dictionary for felxibility
+                data = dict()
+                
+                
+                data["name"] = species.getName()
+                
+                if species.getSubstanceUnits():
+                    # Check for empty strings
+                    data["init_conc"] = species.getInitialConcentration()
+                    data["substanceunits"] = species.getSubstanceUnits()
+                    
+                data["constant"] = species.getConstant()
+                
+                
                 reactant = Reactant(
                                     species.getName(),
                                     species.getCompartment(), 
