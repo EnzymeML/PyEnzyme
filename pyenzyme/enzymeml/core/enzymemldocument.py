@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-29 19:38:00
+# @Last Modified time: 2021-05-06 20:09:39
 '''
 File: /enzymemldocument.py
 Project: EnzymeML
@@ -23,7 +23,7 @@ from pyenzyme.enzymeml.core.vessel import Vessel
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
-import json
+import json, urllib
 
 
 class EnzymeMLDocument(object):
@@ -51,6 +51,101 @@ class EnzymeMLDocument(object):
         if pubmedID: self.setPubmedID(pubmedID)
         if doi: self.setDoi(doi)
         if url: self.setUrl(url)
+        
+    def __validField( self, log, enzml_obj, valid_key, valid ):
+        """Generates validation field and log
+
+        Args:
+            log (dict): Dictionary for logging validation results
+            enzml_obj (dict): EnzymeML document JSON representation
+            valid_key (string): Dict key to the respective validation object
+            valid (dict): JSON validaton termplate representation
+        """
+    
+        for key, item in valid[valid_key].items():
+            importance = item['importance']
+
+            if key in enzml_obj.keys():
+                
+                log[key] = 'Valid'
+            else:
+                if importance == 'Mandatory':
+                    log[key] = 'Mandatory missing'
+                    self.is_valid = False
+                elif importance == 'Optional':
+                    log[key] = 'Optional missing'
+                elif importance == 'Not supported':
+                    log[key] = 'Not supported'
+            
+    def validate(self, JSON=None, link=None, log=False ):
+        """Validate an EnzymeML file by using either a link to an existing file or a JSON schema
+            Please note that when a link is already given the JSON instance will be overriden.
+
+        Args:
+            JSON (dict/string, optional): JSON representation of an EnzymemL validation schema. Defaults to None.
+            link (string, optional): Link to an existing JSON template. Defaults to None.
+            log (Boolean, optional): Whether or not a log is returned. Defaults to False
+        """
+        
+        # Convert EnzymeML document to JSON
+        enzmldoc_json = self.toJSON(d=True)
+        
+        # Fetch validation template
+        if link:
+            response = urllib.request.urlopen(link)
+            valid = json.loads(response.read())
+            
+        elif JSON:
+            if type(JSON) == str:
+                JSON = json.loads( JSON )
+            valid = JSON
+            
+        else:
+            raise FileNotFoundError( 'Please provide either a JSON dict validation template or link' )
+        
+        print(valid)
+        
+        # Initialize Log
+        log = dict()
+        self.is_valid = True
+
+        # Validate general information
+        log['EnzymeMLDocument'] = dict()
+        self.__validField( log['EnzymeMLDocument'], enzmldoc_json, "EnzymeMLDocument", valid )
+
+        # Validate Vessel
+        log['Vessel'] = dict()
+        self.__validField( log['Vessel'], enzmldoc_json['vessel'], "Vessel", valid  )
+
+        # Validate 
+        log['Reactant'] = dict()
+        for reactant in enzmldoc_json['reactant']:
+            log['Reactant'][reactant['id']] = dict()
+            self.__validField( log['Reactant'][reactant['id']], reactant, "Reactant", valid  )
+            
+        log['Protein'] = dict()
+        for protein in enzmldoc_json['protein']:
+            log['Protein'][protein['id']] = dict()
+            self.__validField( log['Protein'][protein['id']], protein, "Protein", valid  )
+            
+        log['EnzymeReaction'] = dict()
+        for reaction in enzmldoc_json['reaction']:
+            log['EnzymeReaction'][reaction['id']] = dict()
+            self.__validField( log['EnzymeReaction'][reaction['id']], protein, "EnzymeReaction", valid  )
+            
+            # merge replicates and validate all of them
+            getRepls = lambda reac_elem: [ repl for species in reaction[reac_elem] for repl in species['replicates']  ]
+            replicates = getRepls('educts') + getRepls('products') + getRepls('modifiers')
+            
+            log['EnzymeReaction'][reaction['id']]['replicates'] = dict()
+            for replicate in replicates:
+                log['EnzymeReaction'][reaction['id']]['replicates'][replicate['replica']] = dict()
+                self.__validField( log['EnzymeReaction'][reaction['id']]['replicates'][replicate['replica']], replicate, "Replicate", valid )
+                
+        if log:
+            return {'isvalid': self.is_valid, 'log': log}
+        else:
+            return self.is_valid
         
     def toFile(self, path):
         EnzymeMLWriter().toFile(self, path)
