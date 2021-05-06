@@ -99,7 +99,7 @@ class EnzymeReaction(object):
                         
                         d[key.split('__')[-1]] = nu_lst
                         
-                    elif 'unit' in key and enzmldoc != False:
+                    elif 'unit' in key and enzmldoc != False and item:
                         d[key.split('__')[-1]] = enzmldoc.getUnitDict()[item].getName()
                         
                     else:

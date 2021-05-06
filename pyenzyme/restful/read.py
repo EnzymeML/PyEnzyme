@@ -57,9 +57,11 @@ class Read(MethodResource):
             
             # Save JSON in variable
             enzmldoc = EnzymeMLReader().readFromFile(tmp)
-            JSON = enzmldoc.toJSON(d=True)
             
             # remove temp file
             os.remove(tmp)
+            
+            # Convert to JSON
+            JSON = enzmldoc.toJSON(d=True)
             
             return Response(json.dumps(JSON),  mimetype='application/json')
