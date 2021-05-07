@@ -148,6 +148,9 @@ class enzymeData(MethodResource):
         JSON["metadataBlocks"]["enzymeML"]["fields"] = fields
         JSON["metadataBlocks"]["citation"]["fields"] = cite_fields
         
+        if not cite_fields:
+            JSON["metadataBlocks"].pop("citation")
+        
         return { "datasetVersion": JSON }
     
     def getCompound(self, compound_name, json_data, multiple ):
