@@ -63,7 +63,6 @@ class UnitCreator(object):
         dimlessToCheck = ('abs', 'absorption', 'dimensionless')
         
         if unit_string.lower().endswith(dimlessToCheck):
-            print("Klappt!", unit_string)
             
             # Initialize UnitDef object
             unitdef = UnitDef("absorption", id_, "NONE")
