@@ -135,7 +135,7 @@ class EnzymeMLDocument(object):
         log['EnzymeReaction'] = dict()
         for reaction in enzmldoc_json['reaction']:
             log['EnzymeReaction'][reaction['id']] = dict()
-            self.__validField( log['EnzymeReaction'][reaction['id']], protein, "EnzymeReaction", valid  )
+            self.__validField( log['EnzymeReaction'][reaction['id']], reaction, "EnzymeReaction", valid  )
             
             # merge replicates and validate all of them
             getRepls = lambda reac_elem: [ repl for species in reaction[reac_elem] for repl in species['replicates']  ]
