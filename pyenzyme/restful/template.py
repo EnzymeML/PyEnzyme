@@ -14,7 +14,7 @@ import shutil
 import io
 
 from pyenzyme.enzymeml.tools import EnzymeMLReader, EnzymeMLWriter, UnitCreator
-from pyenzyme.enzymeml.core import Replicate, EnzymeMLDocument, EnzymeReaction, Vessel, Protein, Reactant
+from pyenzyme.enzymeml.core import Replicate, EnzymeMLDocument, EnzymeReaction, Vessel, Protein, Reactant, Creator
 from pyenzyme.enzymeml.models import KineticModel, MichaelisMenten
 from pyenzyme.restful.template_schema import TemplateSchema
 
@@ -90,6 +90,9 @@ class convertTemplate(MethodResource):
         enzmldoc = EnzymeMLDocument(**info)
         enzmldoc.setCreated(str(doc))
 
+        # Creators
+        self.getCreators(sheets['creator'], enzmldoc)
+
         # create mapping dictionary
         self.proteinDict = dict()
         self.reactantDict = dict()
@@ -122,7 +125,7 @@ class convertTemplate(MethodResource):
         loadSheet = lambda name, skiprow: pd.read_excel(file, sheet_name=name, skiprows=skiprow)
         
         return {
-            
+            "creator": loadSheet("General Information", 9),
             "generalInfo": loadSheet("General Information", 1),
             "vessels": loadSheet("Vessels", 2),
             "reactants": loadSheet("Reactants", 2),
@@ -131,6 +134,16 @@ class convertTemplate(MethodResource):
             "kineticModels": loadSheet("Kinetic Models", 2),
             "data": loadSheet("Data", 3),
         }
+        
+    def getCreators(self, sheet, enzmldoc):
+        
+        sheet = sheet.iloc[:,0:3].dropna()
+        sheet.columns = ["family_name", "given_name", "mail"]
+        data = sheet.to_dict("index")
+         
+        creators = [ Creator(**user) for user in data.values() ]
+
+        enzmldoc.setCreator(creators)
         
     def getGeneralInfo(self, sheet):
     
@@ -177,6 +190,8 @@ class convertTemplate(MethodResource):
         
         for id_, item in data.items():
             item = { key: boolCheck(val) for key, val in item.items() if val != '#NULL#' }
+            item["compartment"] = enzmldoc.getVessel().getId()
+            
             reactant = Reactant(**item)
             
             reac_id = enzmldoc.addReactant(reactant, custom_id=id_)
@@ -202,6 +217,7 @@ class convertTemplate(MethodResource):
         
         for id_, item in data.items():
             item = { key: boolCheck(val) for key, val in item.items() if val != '#NULL#' }
+            item["compartment"] = enzmldoc.getVessel().getId()
             
             protein = Protein(**item)
             
@@ -317,8 +333,6 @@ class convertTemplate(MethodResource):
                         if "Concentration" in datType: data_type = "conc"
                         if "Absorption" in datType: data_type = "abs"
                         
-                        print("TYPE", data_type)
-                        
                         data_raw = [ val for val in list( row.iloc[9::] ) if type(val) == float ]
                         reactant = enzmldoc.getReactant( row.iloc[6], by_id=False ).getId()
                         init_val = row.iloc[7]
@@ -334,8 +348,6 @@ class convertTemplate(MethodResource):
                         if data_type == "abs": repl_unit = "abs"
                         
                         if len(data_raw) > 0:
-                            
-                            print("REPL", repl_unit)
                         
                             exp_dict["reactants"] += [ {
                                 "id": reactant,
