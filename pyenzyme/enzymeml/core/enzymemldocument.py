@@ -67,7 +67,11 @@ class EnzymeMLDocument(object):
 
             if key in enzml_obj.keys():
                 
-                log[key] = 'Valid'
+                if importance == 'Mandatory':
+                    log[key] = 'Valid'
+                elif importance == 'Not supported':
+                    log[key] = 'Not supported'
+                    
             else:
                 if importance == 'Mandatory':
                     log[key] = 'Mandatory missing'

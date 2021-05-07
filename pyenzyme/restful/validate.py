@@ -65,8 +65,6 @@ class Validate(MethodResource):
         
         if file and file.filename.split('.')[-1] == "omex":
             
-            print('HALLLOOOO')
-            
             file = file.read()
             
             # Write to temp file
