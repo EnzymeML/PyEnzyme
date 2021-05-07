@@ -12,6 +12,7 @@ from flask_cors import CORS
 from pyenzyme.restful import Create, Read, restfulCOPASI, parameterEstimation, convertTemplate, exportData, enzymeData, Validate, createValidate
 
 app = Flask(__name__,template_folder='.')
+CORS(app)
 api = Api(app)
 
 app.secret_key = 'the random string'
