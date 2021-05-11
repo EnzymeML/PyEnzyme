@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-05-11 18:33:15
+# @Last Modified time: 2021-05-11 18:42:42
 
 from flask import request, jsonify, Response
 from flask_apispec import doc, marshal_with, MethodResource
@@ -18,7 +18,6 @@ desc = 'This endpoint is used to read an EnzymeML OMEX container to JSON.\
         The endpoint will return a JSON representation of your EnzymeML document.'
 
 class Read(MethodResource):
-    
     @doc(tags=['Read EnzymeML'], description=desc)
     @marshal_with(ReadSchema(), code=200)
     def get(self):
