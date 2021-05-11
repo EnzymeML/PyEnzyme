@@ -1,15 +1,11 @@
 # @Author: Jan Range
 # @Date:   2021-03-19 15:03:19
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-19 16:14:27
+# @Last Modified time: 2021-05-11 19:07:03
 
-from marshmallow import fields, Schema, ValidationError
+from marshmallow import fields, Schema,
 
 class TemplateSchema(Schema):
-    
-    ############# JSON #################
-    
+    """Spreadsheet template conversion endpoint schema
+    """
     xlsm = fields.Str(required=True, description="EnzymeML OMEX container")
-    
-    
-    
