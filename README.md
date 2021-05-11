@@ -12,11 +12,11 @@ available in PyPi, so all you should need to do to install it, is to run:
     
 This library depends on the following libraries: 
 
-  * python-libcombine
-  * python-libsbml
-  * python-copasi
-  * pandas
-  * numpy
+*  python-libcombine
+*  python-libsbml
+*  python-copasi
+*  pandas
+*  numpy
   
 ---------------------------------------
 
