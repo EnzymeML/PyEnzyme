@@ -1,19 +1,16 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-05-06 20:17:38
+# @Last Modified time: 2021-05-11 19:04:06
 
-from flask import Flask, request, send_file, jsonify, Response
-from flask_restful import Resource, Api
-from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
+from flask import request, jsonify, Response
+from flask_apispec import doc, marshal_with, MethodResource
 
 import tempfile
 import os
 import json
-import urllib
 
 from pyenzyme.enzymeml.tools import EnzymeMLReader
-from pyenzyme.enzymeml.models import KineticModel
 from pyenzyme.restful.validate_schema import ValidateSchema
 
 import marshmallow as ma
@@ -25,14 +22,13 @@ desc = 'This endpoint is used to validate an EnzymeML OMEX container.\
         The endpoint will return a JSON representation of your EnzymeML document.'
 
 class Validate(MethodResource):
-    
     @doc(tags=['Validate EnzymeML'], description=desc)
     @marshal_with(ValidateSchema(), code=200)
     def get(self):
+        """Reads OMEX file and validates against given validation templates either
+        by a link/file or raw validation JSON
         """
-        Reads JSON formatted data and converts to an EnzymeML container.
-        """
-        
+
         # check if the post request has the file part
         if 'omex' not in request.files:
             return jsonify( {"response": 'No file part'} )
@@ -46,13 +42,13 @@ class Validate(MethodResource):
                 custom = request.files['custom'].read()
                 body = {'custom': json.loads( custom )}
             
-        else:   
+        else:
             # load json body
             body = json.loads( request.form['json'] )
         
             if 'link' not in body.keys():
                 # check if custom is given
-                if 'custom' not in body.keys():  
+                if 'custom' not in body.keys():
                     return jsonify( {"response": 'No validate link/json part'} )
         
         # receive OMEX file
@@ -62,7 +58,7 @@ class Validate(MethodResource):
         # submit an empty part without filename
         if file.filename == '':
             return jsonify( {"response": 'No file selected'} )
-        
+		
         if file and file.filename.split('.')[-1] == "omex":
             
             file = file.read()
@@ -85,7 +81,7 @@ class Validate(MethodResource):
             if 'link' in body.keys():
                 response = enzmldoc.validate( link=body['link'], log=True )
                 
-            elif 'custom' in body.keys():  
+            elif 'custom' in body.keys():
                 response = enzmldoc.validate( JSON=body['custom'], log=True )
                 
             # remove temp file
