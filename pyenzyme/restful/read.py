@@ -1,21 +1,17 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-07 09:39:27
+# @Last Modified time: 2021-05-11 18:33:15
 
-from flask import Flask, request, send_file, jsonify, Response
-from flask_restful import Resource, Api
-from flask_apispec import ResourceMeta, Ref, doc, marshal_with, use_kwargs, MethodResource
+from flask import request, jsonify, Response
+from flask_apispec import doc, marshal_with, MethodResource
 
 import tempfile
 import os
 import json
 
 from pyenzyme.enzymeml.tools import EnzymeMLReader
-from pyenzyme.enzymeml.models import KineticModel
 from pyenzyme.restful.read_schema import ReadSchema
-
-import marshmallow as ma
 
 desc = 'This endpoint is used to read an EnzymeML OMEX container to JSON.\
         Upload your OMEX file using form-data with the "omex" tag. \
@@ -26,8 +22,10 @@ class Read(MethodResource):
     @doc(tags=['Read EnzymeML'], description=desc)
     @marshal_with(ReadSchema(), code=200)
     def get(self):
-        """
-        Reads JSON formatted data and converts to an EnzymeML container.
+        
+        """This endpoint is used to read an EnzymeML OMEX container to JSON.
+        Upload your OMEX file using form-data with the "omex" tag.
+        The endpoint will return a JSON representation of your EnzymeML document.
         """
         
         # check if the post request has the file part
