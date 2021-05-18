@@ -1,11 +1,10 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-05-06 22:14:30
-from flask import Flask, request, render_template
-from flask_restful import Resource, Api
-from apispec import APISpec
-from apispec.ext.marshmallow import MarshmallowPlugin
+# @Last Modified time: 2021-05-18 09:34:16
+from pyenzyme.restful.addModel import addModel
+from flask import Flask, render_template
+from flask_restful import Api
 from flask_apispec import FlaskApiSpec
 from flask_cors import CORS
 
@@ -29,6 +28,7 @@ api.add_resource(exportData, '/exportdata')
 api.add_resource(enzymeData, '/enzymedata')
 api.add_resource(Validate, '/validate')
 api.add_resource(createValidate, '/validate/create')
+api.add_resource(addModel, '/addmodel')
 
 @app.route('/template/upload')
 def upload_file():
@@ -45,6 +45,7 @@ docs.register(convertTemplate, endpoint='converttemplate')
 docs.register(exportData, endpoint='exportdata')
 docs.register(Validate, endpoint='validate')
 docs.register(createValidate, endpoint='createvalidate')
+docs.register(addModel, endpoint='addmodel')
 
 if __name__ == "__main__":
         
