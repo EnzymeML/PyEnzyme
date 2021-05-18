@@ -548,7 +548,7 @@ class EnzymeMLWriter(object):
                     conc_annot.addNamespace("http://sbml.org/enzymeml/version1", "enzymeml")
                     
                     for conc in init_concs:
-
+                        
                         try:
                                            
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
@@ -565,11 +565,11 @@ class EnzymeMLWriter(object):
                             inv_initconc = { item: key for key, item in enzmldoc.getConcDict().items() }
                             init_entry = enzmldoc.getConcDict()[
                                 
-                                inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
+                                inv_initconc[ conc ]
                                 
                                 ]
                             
-                            conc = inv_initconc[ (conc, enzmldoc.getReactant(species).getSubstanceUnits() ) ]
+                            conc = inv_initconc[ conc ]
                             
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
                             conc_node.addAttr( "id", str(conc) )
@@ -644,11 +644,11 @@ class EnzymeMLWriter(object):
                             
                             init_entry = enzmldoc.getConcDict()[
                                 
-                                inv_initconc[ (conc, fun(species).getSubstanceUnits() ) ]
+                                inv_initconc[ conc ]
                                 
                                 ]
                             
-                            conc = inv_initconc[ (conc, fun(species).getSubstanceUnits() ) ]
+                            conc = inv_initconc[ conc ]
                             
                             conc_node = XMLNode( XMLTriple('enzymeml:initConc'), XMLAttributes(), XMLNamespaces() )
                             conc_node.addAttr( "id", str(conc) )
