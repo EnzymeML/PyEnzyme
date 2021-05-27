@@ -12,11 +12,61 @@
       <p>Please upload your <a href="https://www.dropbox.com/s/bigaq2l1vynr13k/EnzymeML_Template.zip?dl=1">EnzymeML spreadsheet</a> via the following form.</p>
       <p>In return you will receive the corresponding OMEX file.</p>
       <p>&nbsp;</p>
+      <input type="file" id="input_spreadsheet" accept=".xlsm, .xlsx" value="Select a file" onchange="activateButton()"><br><br>
+      <input type="submit" id="button_submit" value="Download" onclick="convertButton()" disabled>
+
+      <script>
+         function activateButton() {
+           var file=document.getElementById("input_spreadsheet").files;
+           var bt = document.getElementById("button_submit");
+           if (file.length === 1) {
+             bt.disabled = false;
+             console.log(document.getElementById("input_spreadsheet").files[0].name.slice(0,-4)+'omex')
+           } else {
+             bt.disabled = true;
+           }
+         }
+       
+         function convertButton() {
+           var fileInput=document.getElementById("input_spreadsheet");
+           var fileName=fileInput.files[0].name
+           var formdata = new FormData();
+           formdata.append("xlsm", fileInput.files[0], fileName);
+       
+           var requestOptions = {
+             method: 'POST',
+             body: formdata,
+             redirect: 'follow'
+           };
+       
+           //fetch("https://enzml.sloppy.zone/template/convert", requestOptions)
+           fetch("./convert", requestOptions)
+             .then(response => {
+               if (response.status === 200){
+                  fileName = response.headers.get('content-disposition').split('"')[1]
+                  return response.blob()
+               } else {
+                  console.log(response);
+                  alert("ERROR: " + response.status+"\n"+ response.statusText);
+               }
+             })
+             .then(blob => {
+                 var url = window.URL.createObjectURL(blob);
+                 var a = document.createElement('a');
+                 a.href = url;
+                 a.download = fileName
+                 document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                 a.click();    
+                 a.remove();  //afterwards we remove the element again         
+             });
+         }
+       </script>
+      <!-- old version
       <p><form action = "https://enzml.sloppy.zone/template/convert" method = "POST" 
          enctype = "multipart/form-data">
          <input type = "file" name = "xlsm" />
          <input type = "submit"/>
-      </form></p>
+      </form></p>-->
       
    </body>
 </html>
