@@ -15,5 +15,19 @@ setup(
     author_email='range.jan@web.de',
     license='BSD2',
     packages = setuptools.find_packages(),
-    install_requires=['python-libsbml', 'numpy', 'pandas', 'python-libcombine', 'python-copasi']
+    install_requires=[
+        'flask',
+        'flask-restful',
+        'flask-apispec',
+        'flask-cors',
+        'python-libsbml',
+        'numpy',
+        'pandas',
+        'python-libcombine',
+        'python-copasi',
+        'openpyxl',
+        'marshmallow',
+        'scipy',
+        'apispec'
+    ]
     )
