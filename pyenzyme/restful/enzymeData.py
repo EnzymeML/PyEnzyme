@@ -1,7 +1,7 @@
 # @Author: Jan Range
 # @Date:   2021-03-18 22:33:21
 # @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-30 12:14:41
+# @Last Modified time: 2021-05-18 12:29:41
 
 from flask import Flask, request, send_file, jsonify, Response
 from flask_restful import Resource, Api
@@ -44,7 +44,7 @@ class enzymeData(MethodResource):
             file = file.read()
             
             # Write to temp file
-            dirpath = os.path.join( os.path.dirname( os.path.realpath(__file__)), "edata_write_temp" )
+            dirpath = os.path.join( os.path.dirname( os.path.realpath(__file__)), "enzymedata_write_temp" )
             os.makedirs(dirpath, exist_ok=True)
             
             tmp = os.path.join( dirpath, next(tempfile._get_candidate_names()) )
@@ -66,8 +66,8 @@ class enzymeData(MethodResource):
     def generateDataverseRequest(self, enzmldoc):
         
         # Load mapping
-        #mapping = pd.read_csv('../../restful/enzymeData_Mapping.csv') # Use for testing locally
-        mapping = pd.read_csv('pyenzyme/restful/enzymeData_Mapping.csv')
+        mapping = pd.read_csv('../../restful/enzymeData_Mapping.csv') # Use for testing locally
+        #mapping = pd.read_csv('pyenzyme/restful/enzymeData_Mapping.csv')
         
         # decompose mapping
         self.keys = { key: mapping[ mapping['classes'] == key ].drop('classes', axis=1) for key in list( set( mapping['classes'] ) ) }
@@ -83,34 +83,39 @@ class enzymeData(MethodResource):
         cite_fields = list()
         
         # References
-        references_dv = self.getCompound('enzymeMLReferences', enzmldoc.toJSON(d=True), multiple='false')
+        references_dv = self.getCompound('enzymeMLReferences', enzmldoc.toJSON(d=True), multiple=False)
         if references_dv: fields.append( references_dv )
+        
+        # add Title
+        cite_fields.append( self.getEnzymeDataField("title", False, enzmldoc.getName(), "primitive") )
+        cite_fields.append( self.getEnzymeDataField("dsDescription", False, f"EnzymeML File describing {enzmldoc.getName()}", "primitive") )
+        cite_fields.append( self.getEnzymeDataField("subject", False, "Biocatalysis", "primitive") )
         
         # Creators
         for creator in enzmldoc.getCreator():
             data = { "given_name" : " ".join( [ creator.getGname(), creator.getFname() ] ), "mail": creator.getMail() }
-            author_dv = self.getCompound( 'author', data, multiple='true' )
-            dataset_dv = self.getCompound( 'dataset', data, multiple='true' )
+            author_dv = self.getCompound( 'author', data, multiple=True )
+            dataset_dv = self.getCompound( 'dataset', data, multiple=True )
             
             if author_dv: cite_fields.append(author_dv)
             if dataset_dv: cite_fields.append(dataset_dv)
             
         # Vessel
         vessel = enzmldoc.getVessel().toJSON(d=True, enzmldoc=enzmldoc)
-        vessel_dv = self.getCompound( 'enzymeMLVessel', vessel, multiple='false' )
+        vessel_dv = self.getCompound( 'enzymeMLVessel', vessel, multiple=False )
         if vessel_dv: fields.append(vessel_dv)
         
         # Reactants
         for key, reactant in enzmldoc.getReactantDict().items():
             reactant = reactant.toJSON(d=True, enzmldoc=enzmldoc)
-            reactant_dv = self.getCompound( 'enzymeMLReactant', reactant, multiple='true' )
+            reactant_dv = self.getCompound( 'enzymeMLReactant', reactant, multiple=True )
             
             if reactant_dv: fields.append(reactant_dv)
             
         # Proteins
         for key, protein in enzmldoc.getProteinDict().items():
             protein = protein.toJSON(d=True, enzmldoc=enzmldoc)
-            protein_dv = self.getCompound( 'enzymeMLProtein', protein, multiple='true' )
+            protein_dv = self.getCompound( 'enzymeMLProtein', protein, multiple=True )
             
             if protein_dv: fields.append(protein_dv)
             
@@ -121,8 +126,8 @@ class enzymeData(MethodResource):
                 # fetch model
                 model = reaction.getModel().toJSON(d=True, enzmldoc=enzmldoc)
                 
-                kinetic_dv = self.getCompound( 'enzymeMLKineticLaw', model, multiple='true' )
-                kinetic_dv['value'].append( self.getEnzymeDataField( 'enzymeMLKineticLawReaction', 'false', key, 'primitive' ) )
+                kinetic_dv = self.getCompound( 'enzymeMLKineticLaw', model, multiple=True )
+                kinetic_dv['value'].append( self.getEnzymeDataField( 'enzymeMLKineticLawReaction', False, key, 'primitive' ) )
                 
                 fields.append(kinetic_dv)
                 
@@ -136,12 +141,12 @@ class enzymeData(MethodResource):
             modifiers = getElems( reaction.getModifiers )
             
             reaction = reaction.toJSON(d=True, enzmldoc=enzmldoc)
-            reaction_dv = self.getCompound( 'enzymeMLReaction', reaction, multiple='true' )
+            reaction_dv = self.getCompound( 'enzymeMLReaction', reaction, multiple=True )
             
             # add elements
-            reaction_dv['value'] += [ self.getEnzymeDataField( 'enzymeMLReactionEduct', 'true', educt, 'primitive' ) for educt in educts ]
-            reaction_dv['value'] += [ self.getEnzymeDataField( 'enzymeMLReactionProduct', 'true', product, 'primitive' ) for product in products ]
-            reaction_dv['value'] += [ self.getEnzymeDataField( 'enzymeMLReactionModifier', 'true', modifier, 'primitive' ) for modifier in modifiers ]
+            reaction_dv['value'] += [ self.getEnzymeDataField( 'enzymeMLReactionEduct', True, educt, 'primitive' ) for educt in educts ]
+            reaction_dv['value'] += [ self.getEnzymeDataField( 'enzymeMLReactionProduct', True, product, 'primitive' ) for product in products ]
+            reaction_dv['value'] += [ self.getEnzymeDataField( 'enzymeMLReactionModifier', True, modifier, 'primitive' ) for modifier in modifiers ]
             
             fields.append(reaction_dv)
 
@@ -155,12 +160,12 @@ class enzymeData(MethodResource):
     
     def getCompound(self, compound_name, json_data, multiple ):
     
-        compound = list()
+        compound = dict()
         
         for key, item in self.keys[compound_name].items():
             
             try:
-                compound.append( self.getEnzymeDataField( typename=item['typename'], multiple='false', value=json_data[key], typeclass=item['Typeclass'] ) )
+                compound[item['typename']] = self.getEnzymeDataField( typename=item['typename'], multiple=False, value=json_data[key], typeclass=item['Typeclass'] )
                 
             except KeyError:
                 if item['Required'] == 'y':
@@ -169,7 +174,9 @@ class enzymeData(MethodResource):
                     pass
         
         if len(compound) > 0:
-            return self.getEnzymeDataField( compound_name, multiple, compound, 'compound' )
+            # transform compund to dictionary
+            
+            return self.getEnzymeDataField( compound_name, multiple, [compound], 'compound' )
         else:
             return None
     
