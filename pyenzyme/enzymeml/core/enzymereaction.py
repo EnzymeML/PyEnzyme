@@ -308,7 +308,12 @@ class EnzymeReaction(object):
 
         # Turn initial cocncentrations to IDs
         try:
-            init_conc_tup = ( replicate.getInitConc(), UnitCreator().getUnit( replicate.getDataUnit(), enzmldoc) )
+            if replicate.getDataUnit() in enzmldoc.getUnitDict().keys():
+                # Check if the unit is already an index defined in teh document
+                init_conc_tup = ( replicate.getInitConc(), replicate.getDataUnit() )
+            else:
+                # If not, create a new one
+                init_conc_tup = ( replicate.getInitConc(), UnitCreator().getUnit( replicate.getDataUnit(), enzmldoc ) )
             inv_conc = { item: key for key, item in enzmldoc.getConcDict().items() }
             replicate.setInitConc( inv_conc[ init_conc_tup ] )
             
