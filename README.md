@@ -9,7 +9,7 @@ This project hosts a python library for reading / writing  documents
 encoded in EnzymeML format. This library is written in python, and is
 available in PyPi, so all you should need to do to install it, is to run:
 
-`pip install PyEnzyme`
+    pip install PyEnzyme
 
 This library depends on the following libraries:
 
