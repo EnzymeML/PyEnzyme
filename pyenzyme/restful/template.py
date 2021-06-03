@@ -63,7 +63,6 @@ class convertTemplate(MethodResource):
             
             path = os.path.join(  
                                 dirpath,
-                                enzmldoc.getName(), 
                                 enzmldoc.getName().replace(' ', '_') + '.omex' 
                                 )
 

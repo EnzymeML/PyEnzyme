@@ -106,7 +106,6 @@ class parameterEstimation(MethodResource):
             
             path = os.path.join(  
                                 dirpath,
-                                enzmldoc.getName(), 
                                 enzmldoc.getName() + '.omex' 
                                 )
 
