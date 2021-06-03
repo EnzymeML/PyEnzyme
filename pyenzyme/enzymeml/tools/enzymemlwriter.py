@@ -11,6 +11,7 @@ from libcombine import CombineArchive, OmexDescription, KnownFormats, VCard
 import pandas as pd
 import numpy as np
 import os
+import shutil
 
 class EnzymeMLWriter(object):
 
@@ -24,10 +25,10 @@ class EnzymeMLWriter(object):
             String path: EnzymeML file is written to this destination
         '''
         
-        self.path = path + '/' + enzmldoc.getName()
+        self.path = os.path.normpath(path)
         
         try:
-            os.makedirs( self.path + '/data' )
+            os.makedirs( os.path.join( self.path, 'data' ) )
         except FileExistsError:
             pass
         
@@ -58,14 +59,13 @@ class EnzymeMLWriter(object):
         
         # Write to EnzymeML
         writer = SBMLWriter()
-        writer.writeSBMLToFile(doc, self.path + '/experiment.xml')
+        writer.writeSBMLToFile(doc, os.path.join( self.path, 'experiment.xml' ) ) 
         
         # Write to OMEX
         self.__createArchive(enzmldoc, doc)
         
-        os.remove(self.path + '/experiment.xml')
-        os.remove(self.path + '/data/data.csv')
-        os.rmdir(self.path + '/data')
+        shutil.rmtree( os.path.join(  self.path, 'data'), ignore_errors=True )
+        os.remove( os.path.join( self.path, 'experiment.xml' ) )
         
     def toXMLString(self, enzmldoc):
         
@@ -198,8 +198,6 @@ class EnzymeMLWriter(object):
             pass
         
         archive.writeToFile(self.path + '/' + out_file)
-        
-        print(self.path + '/' + out_file)
     
         print('\nArchive created:', out_file,  '\n')
         
@@ -718,7 +716,7 @@ class EnzymeMLWriter(object):
             
             list_files.addChild(file)
         
-        if csv:
+        if csv and data:
             # write file to csv
             df = [ pd.DataFrame( col ) for col in data ]
             df = pd.concat(df, axis=1, ignore_index=True)
