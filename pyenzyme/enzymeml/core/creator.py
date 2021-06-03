@@ -2,17 +2,6 @@
 # @Date:   2021-04-06 23:30:20
 # @Last Modified by:   Jan Range
 # @Last Modified time: 2021-04-07 00:07:27
-'''
-File: /creator.py
-Project: EnzymeML
-Created Date: November 10th 2020
-Author: Jan Range
------
-Last Modified: Friday December 11th 2020 4:05:57 pm
-Modified By: the developer formerly known as Jan Range at <range.jan@web.de>
------
-Copyright (c) 2020 Institute Of Biochemistry and Technical Biochemistry Stuttgart
-'''
 
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 import json
@@ -60,7 +49,7 @@ class Creator(object):
             string: JSON-formatted string
         """
         return self.toJSON()
-
+    
     def getFname(self):
         """
         
