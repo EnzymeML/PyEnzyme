@@ -10,7 +10,6 @@ from pyenzyme.restful.model import parameterEstimation
 from pyenzyme.restful.template import convertTemplate
 from pyenzyme.restful.exportData import exportData
 from pyenzyme.restful.enzymeData import enzymeData
-from pyenzyme.restful.server import RestfulServer
 from pyenzyme.restful.validate import Validate
 from pyenzyme.restful.validate_schema import ValidateSchema
 from pyenzyme.restful.addModel import addModel
