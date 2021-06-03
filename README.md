@@ -25,9 +25,6 @@ This library depends on the following libraries:
 * scipy
 * apispec
 
-```
-*
-```
 ---
 
 <img src="http://enzymeml.org/images/logo/enzymeml.jpg" width="250" />
