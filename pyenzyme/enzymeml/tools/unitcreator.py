@@ -22,6 +22,7 @@ class UnitCreator(object):
             "g": self.__Amount,
             "gram": self.__Amount,
             "s": self.__Seconds,
+            "sec": self.__Seconds,
             "second": self.__Seconds,
             "seconds": self.__Seconds,
             "min": self.__Minutes,
@@ -34,7 +35,8 @@ class UnitCreator(object):
             "c": self.__Celsius,
             "celsius": self.__Celsius,
             "K": self.__Kelvin,
-            "kelvin": self.__Kelvin
+            "kelvin": self.__Kelvin,
+            "dimensionless": self.__Dimensionless
             
             
             }
@@ -57,32 +59,65 @@ class UnitCreator(object):
             else:
                 index += 1
         
-        '''       
-        # check if its already a unit
-        regex = "[u\d]"
-        f = lambda x: re.findall(regex, x)
-        res = len(f(unit_string))
-        print("LELE", unit_string, res)
-        if 2 > 1:
-            return unit_string
-        '''
-                     
+        # Check dimensionless units
+        dimlessToCheck = ('abs', 'absorption', 'dimensionless')
+        
+        if unit_string.lower().endswith(dimlessToCheck):
+            
+            # Initialize UnitDef object
+            unitdef = UnitDef("absorption", id_, "NONE")
+            
+            self.__functionDict["dimensionless"]( unitdef, 1.0, 1.0 )
+            
+            # Check if there is already a similar unit defined
+            if self.__checkFootprints(enzmldoc, unitdef.getFootprint()) != "NEW":
+                
+                return self.__checkFootprints(enzmldoc, unitdef.getFootprint())
+            
+            enzmldoc.getUnitDict()[unitdef.getId()] = unitdef
+            
+            return unitdef.getId()
+        
+        ### IF SI UNIT AND NOT DIMENSIONLESS ###
+        
         # Call unit parser to identify units
         parser = UnitParser()
         units = sorted(parser.parse(unit_string))
         
-        # Check if there is already a similar unit defined
-        if self.__checkFootprints(enzmldoc, units) != "NEW":
-            
-            return self.__checkFootprints(enzmldoc, units)
-        
         # Initialize UnitDef
-        name = " ".join( ["%s%s %s" % ( prefix, baseunit, exponent ) for prefix, baseunit, exponent in units ] )
-        unitdef = UnitDef(name, id_, "NONE")
-        unitdef.setFootprint(units)
+        nominator, denominator = [], []
+        for prefix, baseunit, exponent in units:
+            
+            pre_unit = "".join([prefix, baseunit])
+            
+            if float(exponent) > 0:
+                if abs(float(exponent)) > 1: nominator.append( pre_unit + f"**{exponent}" )
+                if abs(float(exponent)) == 1: nominator.append( pre_unit )
+            else:
+                if abs(float(exponent)) > 1: denominator.append( pre_unit + f"**{exponent}" )
+                if abs(float(exponent)) == 1: denominator.append( pre_unit )
         
+        # Reformat unit string to a convenient format    
+        if len(denominator) > 0: name = " / ".join( [
+                                                " ".join(nominator),
+                                                " ".join(denominator)
+                                                ] )
+        if len(denominator) == 0: name = " ".join(nominator)
+        
+        # Convert Celsius to Kelvin - No SBML kind for C!
+        if name.lower() == 'c':
+            name = 'K'
+        
+        # Initialize UnitDef object
+        unitdef = UnitDef(name, id_, "NONE")
+          
         for prefix, baseunit, exponent in units:
             self.__functionDict[baseunit]( unitdef, prefix, exponent )
+            
+        # Check if there is already a similar unit defined
+        if self.__checkFootprints(enzmldoc, unitdef.getFootprint()) != "NEW":
+            
+            return self.__checkFootprints(enzmldoc, unitdef.getFootprint())
         
         enzmldoc.getUnitDict()[unitdef.getId()] = unitdef
         
@@ -93,18 +128,18 @@ class UnitCreator(object):
         unitdict = enzmldoc.getUnitDict()
         
         def __compare(f1, f2):
-            return sum( [ 0 if tup1 == tup2 else 1 for tup1, tup2 in zip( sorted(f1), sorted(f2) ) ] )
+            return sorted(f1) == sorted(f2)
         
         for unitdef in unitdict:
-            if __compare( unitdict[unitdef].getFootprint() , footprint) == 0:
+            if __compare( unitdict[unitdef].getFootprint() , footprint):
 
                 return unitdict[unitdef].getId()
-            
+
         return "NEW"
             
     def __Mole(self, unitdef, prefix, exponent):
         
-        kind = libsbml.UNIT_KIND_MOLE
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_MOLE )
         scale = self.__getPrefix(prefix)
         multiplier = 1
         
@@ -114,7 +149,7 @@ class UnitCreator(object):
         
         self.__Mole(unitdef, prefix, exponent)
         
-        kind = libsbml.UNIT_KIND_LITRE
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_LITRE )
         scale = 1
         multiplier = 1
         
@@ -122,7 +157,7 @@ class UnitCreator(object):
         
     def __Volume(self, unitdef, prefix, exponent):
         
-        kind = libsbml.UNIT_KIND_LITRE
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_LITRE )
         scale = self.__getPrefix(prefix)
         multiplier = 1
         
@@ -130,7 +165,7 @@ class UnitCreator(object):
         
     def __Amount(self, unitdef, prefix, exponent):
         
-        kind = libsbml.UNIT_KIND_GRAM
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_GRAM )
         scale = self.__getPrefix(prefix)
         multiplier = 1
         
@@ -138,7 +173,7 @@ class UnitCreator(object):
         
     def __Seconds(self, unitdef, prefix, exponent):
         
-        kind = libsbml.UNIT_KIND_SECOND
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_SECOND )
         scale = 1
         multiplier = 1
         
@@ -146,7 +181,7 @@ class UnitCreator(object):
         
     def __Minutes(self, unitdef, prefix=None, exponent=1):
         
-        kind = libsbml.UNIT_KIND_SECOND
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_SECOND )
         scale = 1
         multiplier = 60
         
@@ -154,7 +189,7 @@ class UnitCreator(object):
         
     def __Hours(self, unitdef, prefix=None, exponent=1):
         
-        kind = libsbml.UNIT_KIND_SECOND
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_SECOND )
         scale = 1
         multiplier = 60*60
         
@@ -162,7 +197,7 @@ class UnitCreator(object):
         
     def __Celsius(self, unitdef, prefix=None, exponent=1):
         
-        kind = libsbml.UNIT_KIND_KELVIN
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_KELVIN )
         scale = 1
         multiplier = 1
         
@@ -170,7 +205,15 @@ class UnitCreator(object):
         
     def __Kelvin(self, unitdef, prefix=None, exponent=1):
         
-        kind = libsbml.UNIT_KIND_KELVIN
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_KELVIN )
+        scale = 1
+        multiplier = 1
+        
+        unitdef.addBaseUnit( kind, exponent, scale, multiplier )
+        
+    def __Dimensionless(self, unitdef, prefix=None, exponent=1):
+        
+        kind = libsbml.UnitKind_toString( libsbml.UNIT_KIND_DIMENSIONLESS )
         scale = 1
         multiplier = 1
         

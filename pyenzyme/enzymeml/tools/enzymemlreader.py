@@ -20,9 +20,9 @@ from pyenzyme.enzymeml.models.kineticmodel import KineticModel
 from libcombine import CombineArchive
 from _io import StringIO
 
-class EnzymeMLReader(object):
+class EnzymeMLReader():
 
-    def readFromFile(self, path, omex=False):
+    def readFromFile(self, path, omex=True):
         '''
         Reads EnzymeML document to an object layer EnzymeMLDocument class.
         
@@ -35,13 +35,15 @@ class EnzymeMLReader(object):
         self.__path = path
         
         if self.omex:
+            
             self.archive = CombineArchive()
             self.archive.initializeFromArchive(self.__path)
         
             sbmlfile = self.archive.getEntry(0)
             content = self.archive.extractEntryToString(sbmlfile.getLocation())
+            
+            desc =  self.archive.getMetadataForLocation(sbmlfile.getLocation())
 
-        
         reader = SBMLReader()
         
         if self.omex:
@@ -59,12 +61,16 @@ class EnzymeMLReader(object):
         # Fetch references
         self.__getRefs(model, enzmldoc)
         
-        # Fetch meta data
-        try:
-            creators = self.__getCreators(model)
-            enzmldoc.setCreator(creators)
-        except AttributeError:
-            enzmldoc.setCreator( Creator("UNKNOWN", "UNKNOWN", "UNKNOWN") )
+        # Fetch Creators
+        numCreators = desc.getNumCreators()
+        creators = list()
+        for i in range(numCreators):
+            creator = desc.getCreator(i)
+            creators.append(
+                Creator(creator.getFamilyName(), creator.getGivenName(), creator.getEmail()) 
+            )
+            
+        enzmldoc.setCreator(creators)
         
         try:
             model_hist = model.getModelHistory()
@@ -104,7 +110,7 @@ class EnzymeMLReader(object):
                 if "doi" in elem.tag:
                     enzmldoc.setDoi( elem.text )
                 elif 'pubmedID' in elem.tag:
-                    print(elem.text)
+                    enzmldoc.setPubmedID( elem.text )
                 elif 'url' in elem.tag:
                     enzmldoc.setUrl(elem.text)
         
@@ -239,6 +245,20 @@ class EnzymeMLReader(object):
                 
             else:
                 
+                # Store input params in a dictionary for felxibility
+                data = dict()
+                
+                
+                data["name"] = species.getName()
+                
+                if species.getSubstanceUnits():
+                    # Check for empty strings
+                    data["init_conc"] = species.getInitialConcentration()
+                    data["substanceunits"] = species.getSubstanceUnits()
+                    
+                data["constant"] = species.getConstant()
+                
+                
                 reactant = Reactant(
                                     species.getName(),
                                     species.getCompartment(), 
@@ -248,6 +268,7 @@ class EnzymeMLReader(object):
                                     )
                 
                 reactant.setMetaid(species.getMetaId())
+                reactant.setId(species.getId())
                 
                 if len(species.getAnnotationString()) > 0:
                 
@@ -280,7 +301,7 @@ class EnzymeMLReader(object):
                 
                 enzmldoc.getConcDict()[id] = (val, unit)
                 
-                initconc.append(val)
+                initconc.append( (val, unit) )
                 
             return initconc
         
@@ -311,9 +332,9 @@ class EnzymeMLReader(object):
                     
                     for cond in child:
                         # iterate through conditions 
-                        if 'ph' in cond.tag: ph=float(cond.attrib["value"]);
-                        if 'temperature' in cond.tag: temperature=float(cond.attrib["value"]);
-                        if 'temperature' in cond.tag: tempunit=cond.attrib["unit"];
+                        if 'ph' in cond.tag: ph=float(cond.attrib["value"])
+                        if 'temperature' in cond.tag: temperature=float(cond.attrib["value"])
+                        if 'temperature' in cond.tag: tempunit=cond.attrib["unit"]
                         
                 elif 'replica' in child.tag:
 
@@ -372,12 +393,12 @@ class EnzymeMLReader(object):
                 
                          ( species_ref.getSpecies(), 1.0, False,
                          reaction_replicates[ species_ref.getSpecies() ],
-                         list()
+                         self.__getInitConcs(species_ref, enzmldoc)
                          ) if species_ref.getSpecies() in reaction_replicates.keys()
                          
                          else ( species_ref.getSpecies(), 1.0, False,
                          list(),
-                         list()
+                         self.__getInitConcs(species_ref, enzmldoc)
                          )
                       
                         for species_ref in reac.getListOfModifiers()
@@ -495,7 +516,8 @@ class EnzymeMLReader(object):
                                         child.attrib["initConcID"]
                                         )
                     
-                    repl.setData( data[ "%s/%s/%s" % ( child.attrib["replica"], child.attrib["species"], child.attrib["type"] ) ] )
+                    col_name = "%s/%s/%s" % ( child.attrib["replica"], child.attrib["species"], child.attrib["type"] )
+                    repl.setData( data[ col_name ] )
                     
                     replicates[ repl.getReplica() ] = repl
         

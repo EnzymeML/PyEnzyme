@@ -1,3 +1,7 @@
+# @Author: Jan Range
+# @Date:   2021-03-18 22:33:21
+# @Last Modified by:   Jan Range
+# @Last Modified time: 2021-03-30 11:56:10
 import re
 
 class UnitParser(object):
@@ -66,7 +70,7 @@ class UnitParser(object):
         
         def __exponentString(self, string):
     
-            string = string.split('/')
+            string = [ st.strip() for st in string.split('/') ]
             
             if len(string) == 2:
                 nom = string[0].split(' ')
@@ -79,7 +83,7 @@ class UnitParser(object):
             return "".join(  [ self.__reformatString(unit, "+") for unit in nom ] +  [self.__reformatString(unit, "-") for unit in den ]  )
         
         def __getPrefix(self, string, exponent):
-            regex = "^([a-zA-Z]*)(C|celsius|K|kelvin|M|molar|mole|g|gram|l|L|litre|liter|s|seconds|second|min|mins|minutes|h|hour|hours)$"
+            regex = "^([a-zA-Z]*)(C|celsius|K|kelvin|M|molar|mole|g|gram|l|L|litre|liter|s|sec|seconds|second|min|mins|minutes|h|hour|hours)$"
             string = string.lower()[0:-1] + string[-1]
             
             try:

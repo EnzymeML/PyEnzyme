@@ -4,7 +4,7 @@ Created on 11.06.2020
 @author: JR
 '''
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
-
+import json
 
 class Vessel(object):
 
@@ -27,6 +27,33 @@ class Vessel(object):
         self.setConstant(True)
         self.setSize(size)
         self.setUnit(unit)
+        
+    def toJSON(self, d=False, enzmldoc=False):
+        
+        def transformAttr(self):
+            d = dict()
+            for key, item in self.__dict__.items():
+                
+                if enzmldoc != False:
+                        
+                    if 'unit' in key:
+                        if item: item = enzmldoc.getUnitDict()[item].getName()
+                        if not item: item = "nan"
+                            
+                if str(item) != "nan": d[key.split('__')[-1]] = item
+                
+            return d
+        
+        if d: return transformAttr(self)
+        
+        return json.dumps(
+            self, 
+            default=transformAttr, 
+            indent=4
+            )
+    
+    def __str__(self):
+        return self.toJSON()
 
     def getName(self):
         return self.__name

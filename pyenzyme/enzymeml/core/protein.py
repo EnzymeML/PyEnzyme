@@ -5,11 +5,11 @@ Created on 09.06.2020
 '''
 
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
-
+import json
 
 class Protein(object):
 
-    def __init__(self, name, sequence, compartment_id, init_conc, substance_units, constant=True):
+    def __init__(self, name, sequence, compartment=None, init_conc=None, substanceunits=None, constant=True, ecnumber=None, uniprotid=None, organism=None):
         
         '''
         Object describing an EnzymeML protein.
@@ -27,12 +27,46 @@ class Protein(object):
 
         self.setName(name)
         self.setSequence(sequence)
-        self.setCompartment(compartment_id)
-        self.setInitConc(init_conc)
-        self.setSubstanceUnits(substance_units)
+        if compartment != None: self.setCompartment(compartment)
+        if init_conc != None: self.setInitConc(init_conc)
+        if substanceunits != None: self.setSubstanceUnits(substanceunits)
         self.setBoundary(False)
         self.setConstant(constant)
         self.setSboterm("SBO:0000252")
+        
+        if ecnumber != None:
+            self.setEcnumber(ecnumber)
+        if uniprotid != None:
+            self.setUniprotID(uniprotid)
+        if organism != None:
+            self.setOrganism(organism)
+        
+    def toJSON(self, d=False, enzmldoc=False):
+        
+        def transformAttr(self):
+            d = dict()
+            for key, item in self.__dict__.items():
+                
+                if enzmldoc != False:
+                        
+                    if 'unit' in key:
+                        if item: item = enzmldoc.getUnitDict()[item].getName()
+                        if not item: item = "nan"
+                            
+                if str(item) != "nan": d[key.split('__')[-1]] = item
+                
+            return d
+    
+        if d: return transformAttr(self)
+        
+        return json.dumps(
+            self, 
+            default=transformAttr, 
+            indent=4
+            )
+    
+    def __str__(self):
+        return self.toJSON()
 
     def getEcnumber(self):
         return self.__ecnumber
@@ -107,7 +141,7 @@ class Protein(object):
 
 
     def getSubstanceUnits(self):
-        return self.__substance_units
+        return self.__substanceunits
 
 
     def getBoundary(self):
@@ -144,7 +178,7 @@ class Protein(object):
 
 
     def setSubstanceUnits(self, unit_id):
-        self.__substance_units = TypeChecker(unit_id, str)
+        self.__substanceunits = TypeChecker(unit_id, str)
 
 
     def setBoundary(self, boundary):
@@ -180,7 +214,7 @@ class Protein(object):
 
 
     def delSubstanceUnits(self):
-        del self.__substance_units
+        del self.__substanceunits
 
 
     def delBoundary(self):
@@ -196,7 +230,7 @@ class Protein(object):
     _sequence = property(getSequence, setSequence, delSequence, "_sequence's docstring")
     _sboterm = property(getSboterm, setSboterm, delSboterm, "_sboterm's docstring")
     _compartment = property(getCompartment, setCompartment, delCompartment, "_compartment's docstring")
-    _substance_units = property(getSubstanceUnits, setSubstanceUnits, delSubstanceUnits, "_substance_units's docstring")
+    _substanceunits = property(getSubstanceUnits, setSubstanceUnits, delSubstanceUnits, "_substanceunits's docstring")
     _boundary = property(getBoundary, setBoundary, delBoundary, "_boundary's docstring")
     _constant = property(getConstant, setConstant, delConstant, "_constant's docstring")
     _init_conc = property(getInitConc, setInitConc, delInitConc, "_init_conc's docstring")
