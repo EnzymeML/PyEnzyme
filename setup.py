@@ -29,5 +29,10 @@ setup(
         'marshmallow',
         'scipy',
         'apispec'
-    ]
+    ],
+    extras_require={
+        'test': [
+            'pytest'
+        ]
+    },
     )
