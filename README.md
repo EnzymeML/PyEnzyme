@@ -1,3 +1,5 @@
+[![Build and Test](https://github.com/EnzymeML/PyEnzyme/actions/workflows/build.yml/badge.svg)](https://github.com/EnzymeML/PyEnzyme/actions/workflows/build.yml)
+
 # PyEnzyme
 
 _**Authors**_:      [Jan Range](https://github.com/JR-1991)<br>
