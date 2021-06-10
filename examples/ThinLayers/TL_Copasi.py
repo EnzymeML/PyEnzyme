@@ -13,7 +13,7 @@ from builtins import enumerate
 
 class ThinLayerCopasi(object):
     
-    def modelEnzymeML(self, reaction_id, reactant, path):
+    def modelEnzymeML(self, reaction_id, reactant, path, outdir=None):
         
         '''
         ThinLayer interface from an .omex EnzymeML container 
@@ -30,8 +30,12 @@ class ThinLayerCopasi(object):
         path = os.path.normpath(path)
         enzmldoc = EnzymeMLReader().readFromFile(path)
         
+        # store files in the output dir unless not specified (in that case use the directory from the example)
+        if outdir is None:
+            outdir = os.path.dirname(path)
+
         # Create directory for modeled data
-        dirpath = os.path.join( os.path.dirname(path), f"Modeled_{reaction_id}_{reactant}" )
+        dirpath = os.path.join( outdir, f"Modeled_{reaction_id}_{reactant}" )
 
         try:
             os.mkdir(dirpath)
