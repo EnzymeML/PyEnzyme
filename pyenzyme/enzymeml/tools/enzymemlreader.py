@@ -518,7 +518,7 @@ class EnzymeMLReader():
                                         )
 
                     # WORKAROUND FOR COMPATIBILITY
-                    if child.attrib['isCalculated']:
+                    if 'isCalculated' in child.attrib.keys():
                         isCalculated = child.attrib['isCalculated']
                     else:
                         isCalculated = False
