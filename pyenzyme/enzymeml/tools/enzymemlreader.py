@@ -508,14 +508,23 @@ class EnzymeMLReader():
             for child in format_:
                 
                 if child.attrib["type"] != "time":
+
                     repl = Replicate(   child.attrib["replica"], 
                                         child.attrib["species"], 
                                         child.attrib["type"], 
                                         child.attrib["unit"], 
                                         time_unit,
-                                        child.attrib["initConcID"]
+                                        child.attrib["initConcID"],
                                         )
-                    
+
+                    # WORKAROUND FOR COMPATIBILITY
+                    if child.attrib['isCalculated']:
+                        isCalculated = child.attrib['isCalculated']
+                    else:
+                        isCalculated = False
+
+                    repl.setIsCalculated(isCalculated)
+
                     col_name = "%s/%s/%s" % ( child.attrib["replica"], child.attrib["species"], child.attrib["type"] )
                     repl.setData( data[ col_name ] )
                     

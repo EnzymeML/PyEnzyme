@@ -286,7 +286,7 @@ class EnzymeMLWriter(object):
             species.setName(protein.getName())
             species.setMetaId(protein.getMetaid())
             species.setSBOTerm(protein.getSboterm())
-            species.setCompartment(protein.getCompartment())
+            species.setCompartment(protein.getVessel())
             species.setBoundaryCondition(protein.getBoundary());
             species.setInitialConcentration(protein.getInitConc());
             species.setSubstanceUnits(protein.getSubstanceUnits());
@@ -338,7 +338,7 @@ class EnzymeMLWriter(object):
             species.setName(reactant.getName())
             species.setMetaId(reactant.getMetaid())
             species.setSBOTerm(reactant.getSboterm())
-            species.setCompartment(reactant.getCompartment())
+            species.setCompartment(reactant.getVessel())
             species.setBoundaryCondition(reactant.getBoundary());
             
             if reactant.getInitConc() > 0: species.setInitialConcentration(reactant.getInitConc());
@@ -516,6 +516,7 @@ class EnzymeMLWriter(object):
                     form_node.addAttr( 'unit', repl.getDataUnit() )
                     form_node.addAttr( 'index', str(index) )
                     form_node.addAttr( 'initConcID', str(repl.getInitConc()) )
+                    form_node.addAttr( 'isCalculated', str(repl.getIsCalculated()))
                         
                     replica_root.addChild(repl_node)
                     format_.addChild(form_node)
@@ -593,6 +594,7 @@ class EnzymeMLWriter(object):
                     form_node.addAttr( 'unit', repl.getDataUnit() )
                     form_node.addAttr( 'index', str(index) )
                     form_node.addAttr( 'initConcID', str(repl.getInitConc()) )
+                    form_node.addAttr( 'isCalculated', str(repl.getIsCalculated()))
                         
                     replica_root.addChild(repl_node)
                     format_.addChild(form_node)
@@ -672,6 +674,7 @@ class EnzymeMLWriter(object):
                     form_node.addAttr( 'unit', repl.getDataUnit() )
                     form_node.addAttr( 'index', str(index) )
                     form_node.addAttr( 'initConcID', str(repl.getInitConc()) )
+                    form_node.addAttr( 'isCalculated', str(repl.getIsCalculated()))
                         
                         
                     replica_root.addChild(repl_node)
