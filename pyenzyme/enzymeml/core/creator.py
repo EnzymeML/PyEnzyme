@@ -1,7 +1,14 @@
-# @Author: Jan Range
-# @Date:   2021-04-06 23:30:20
-# @Last Modified by:   Jan Range
-# @Last Modified time: 2021-04-07 00:07:27
+'''
+File: creator.py
+Project: core
+Author: Jan Range
+License: BSD-2 clause
+-----
+Last Modified: Tuesday June 15th 2021 6:28:16 pm
+Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
+-----
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
+'''
 
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 import json
@@ -17,7 +24,7 @@ class Creator(object):
             given_name (string): Given name of author
             mail (string): E-Mail of author
         """
-        
+
         self.setFname(family_name)
         self.setGname(given_name)
         self.setMail(mail)
@@ -27,12 +34,13 @@ class Creator(object):
 
         Args:
             d (bool, optional): Returns dictionary. Defaults to False.
-            enzmldoc (bool, optional): Used to convert unit/species IDs to Name/JSON. Defaults to False.
+            enzmldoc (bool, optional): Used to convert unit/species IDs
+                                       to Name/JSON. Defaults to False.
 
         Returns:
             string: JSON-formatted string
         """
-        
+
         def transformAttr(classDict):
             return {
                     key.split('__')[-1]: item
@@ -41,24 +49,24 @@ class Creator(object):
 
         if d:
             return transformAttr(self.__dict__)
-        
+
         return json.dumps(
             self,
             default=transformAttr,
             indent=4
             )
-    
+
     def __str__(self):
         """Returns Creator object as JSON-formatted string
-        
+
         Returns:
             string: JSON-formatted string
         """
         return self.toJSON()
-    
+
     def getFname(self):
         """
-        
+
         Returns:
             string: Author family name
         """
@@ -115,4 +123,3 @@ class Creator(object):
     _fname = property(getFname, setFname, delFname, "_fname's docstring")
     _gname = property(getGname, setGname, delGname, "_gname's docstring")
     _mail = property(getMail, setMail, delMail, "_mail's docstring")
-    

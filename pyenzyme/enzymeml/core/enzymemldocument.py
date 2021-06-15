@@ -1,19 +1,14 @@
-# @Author: Jan Range
-# @Date:   2021-03-18 22:33:21
-# @Last Modified by:   Jan Range
-# @Last Modified time: 2021-05-06 20:09:39
 '''
-File: /enzymemldocument.py
-Project: EnzymeML
-Created Date: November 10th 2020
+File: enzymemldocument.py
+Project: core
 Author: Jan Range
+License: BSD-2 clause
 -----
-Last Modified: Friday December 11th 2020 4:05:57 pm
-Modified By: the developer formerly known as Jan Range at <range.jan@web.de>
+Last Modified: Tuesday June 15th 2021 6:26:22 pm
+Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
-Copyright (c) 2020 Institute Of Biochemistry and Technical Biochemistry Stuttgart
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
-
 
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from pyenzyme.enzymeml.core.reactant import Reactant
@@ -102,9 +97,12 @@ class EnzymeMLDocument(object):
         the JSON instance will be overriden.
 
         Args:
-            JSON (dict/string, optional): JSON representation of an EnzymemL validation schema. Defaults to None.
-            link (string, optional): Link to an existing JSON template. Defaults to None.
-            log (Boolean, optional): Whether or not a log is returned. Defaults to False
+            JSON (dict/string, optional): JSON representation of an EnzymemL
+                                          validation schema. Defaults to None.
+            link (string, optional): Link to an existing JSON template.
+                                     Defaults to None.
+            log (Boolean, optional): Whether or not a log is returned.
+                                     Defaults to False
         """
 
         # Convert EnzymeML document to JSON
@@ -221,8 +219,11 @@ class EnzymeMLDocument(object):
         a JSON-formatted string or dictionary.
 
         Args:
-            only_reactions (bool, optional): Returns only reactions including Reactant/Protein info. Defaults to False.
-            d (bool, optional): Returns dictionary instead of JSON. Defaults to False.
+            only_reactions (bool, optional): Returns only reactions including
+                                             Reactant/Protein info.
+                                             Defaults to False.
+            d (bool, optional): Returns dictionary instead of JSON.
+                                Defaults to False.
         Returns:
             string: JSON-formatted string
             dict: Object serialized as dictionary
@@ -248,19 +249,19 @@ class EnzymeMLDocument(object):
 
                 key = key.split('__')[-1]
 
-                ### GET SINGLE ATTRIBUTES ###
+                # GET SINGLE ATTRIBUTES
                 if type(item) == str or type(item) == int:
                     # store basic meta information
                     enzmldoc_dict[key.lower()] = item
 
-                ### Get Creator ###
+                # Get Creator
                 elif key.lower() == "creator":
                     enzmldoc_dict[key.lower()] = [
                         creator.toJSON(d=True, enzmldoc=self)
                         for creator in item
                     ]
 
-                ### GET VESSEL/Creator ###
+                # GET VESSEL/Creator
                 elif key == 'vessel':
                     # add vessel to the dictionary
                     enzmldoc_dict[key.lower()] = item.toJSON(
@@ -268,7 +269,7 @@ class EnzymeMLDocument(object):
                         enzmldoc=self
                     )
 
-                ### GET DICTIONARIES ###
+                # GET DICTIONARIES
                 elif type(item) == dict and key in kwds:
 
                     # store dictionaries and transform IDs
@@ -383,7 +384,7 @@ class EnzymeMLDocument(object):
 
     def setPubmedID(self, pubmedID):
         """
-        Sets PubMedID of EnzymeML document. 
+        Sets PubMedID of EnzymeML document.
         Add Identifiers.org URI if not given
 
         Args:
@@ -460,7 +461,7 @@ class EnzymeMLDocument(object):
                         replicate.setInitConc(
                             reactant.getInitConc()
                         )
-        
+
         # Update replicate units and add to EnzymeMLDocument
         updateReplicateUnits(reaction.getEducts)
         updateReplicateUnits(reaction.getProducts)
@@ -473,7 +474,7 @@ class EnzymeMLDocument(object):
 
         print('>>> Reactions')
         for key, item in self.__ReactionDict.items():
-            print('    ID: %s \t Name: %s' % ( key, item.getName() ))
+            print('    ID: %s \t Name: %s' % (key, item.getName()))
 
     def printUnits(self):
         """
@@ -482,7 +483,7 @@ class EnzymeMLDocument(object):
 
         print('>>> Units')
         for key, item in self.__UnitDict.items():
-            print('    ID: %s \t Name: %s' % ( key, item.getName() ))
+            print('    ID: %s \t Name: %s' % (key, item.getName()))
 
     def printReactants(self):
         """
@@ -491,7 +492,7 @@ class EnzymeMLDocument(object):
 
         print('>>> Reactants')
         for key, item in self.__ReactantDict.items():
-            print('    ID: %s \t Name: %s' % ( key, item.getName() ))
+            print('    ID: %s \t Name: %s' % (key, item.getName()))
 
     def printProteins(self):
         """
@@ -500,7 +501,7 @@ class EnzymeMLDocument(object):
 
         print('>>> Proteins')
         for key, item in self.__ProteinDict.items():
-            print('    ID: %s \t Name: %s' % ( key, item.getName() ))
+            print('    ID: %s \t Name: %s' % (key, item.getName()))
 
     def getReaction(self, id_, by_id=True):
         """
@@ -508,7 +509,8 @@ class EnzymeMLDocument(object):
 
         Args:
             id_ (string): Unique Identifier of reaction to retrieve
-            by_id (bool, optional): If set False id_ has to be reactions name. Defaults to True.
+            by_id (bool, optional): If set False id_ has to be reactions name.
+                                    Defaults to True.
 
         Raises:
             KeyError: If ID is unfindable
@@ -523,14 +525,20 @@ class EnzymeMLDocument(object):
             if id_ in self.__ReactionDict.keys():
                 return self.__ReactionDict[id_]
 
-            raise KeyError('Reaction %s not found in EnzymeML document %s' % ( id_, self.__name ))
+            raise KeyError(
+                'Reaction %s not found in EnzymeML document %s'
+                % (id_, self.__name)
+            )
 
         else:
             for reaction in self.__ReactionDict.values():
                 if id_ == reaction.getName():
                     return reaction
 
-            raise KeyError('Reaction %s not found in EnzymeML document %s' % ( id_, self.__name ))
+            raise KeyError(
+                'Reaction %s not found in EnzymeML document %s'
+                % (id_, self.__name)
+            )
 
     def getReactant(self, id_, by_id=True):
         """
@@ -538,7 +546,8 @@ class EnzymeMLDocument(object):
 
         Args:
             id_ (string): Unique Identifier of reactant to retrieve
-            by_id (bool, optional): If set False id_ has to be reactants name. Defaults to True.
+            by_id (bool, optional): If set False id_ has to be reactants name.
+                                    Defaults to True.
 
         Raises:
             KeyError: If ID is unfindable
@@ -553,7 +562,10 @@ class EnzymeMLDocument(object):
             if id_ in self.__ReactantDict.keys():
                 return self.__ReactantDict[id_]
 
-            raise KeyError('Reactant %s not found in EnzymeML document %s' % ( id_, self.__name ))
+            raise KeyError(
+                'Reactant %s not found in EnzymeML document %s'
+                % (id_, self.__name)
+            )
 
         else:
             for reactant in self.__ReactantDict.values():
@@ -561,7 +573,10 @@ class EnzymeMLDocument(object):
                 if id_ == reactant.getName():
                     return reactant
 
-            raise KeyError('Reactant %s not found in EnzymeML document %s' % ( id_, self.__name ))
+            raise KeyError(
+                'Reactant %s not found in EnzymeML document %s'
+                % (id_, self.__name)
+            )
 
     def getProtein(self, id_, by_id=True):
         """
@@ -569,7 +584,8 @@ class EnzymeMLDocument(object):
 
         Args:
             id_ (string): Unique Identifier of protein to retrieve
-            by_id (bool, optional): If set False id_ has to be protein name. Defaults to True.
+            by_id (bool, optional): If set False id_ has to be protein name.
+                                    Defaults to True.
 
         Raises:
             KeyError: If ID is unfindable
@@ -584,26 +600,37 @@ class EnzymeMLDocument(object):
             if id_ in self.__ProteinDict.keys():
                 return self.__ProteinDict[id_]
 
-            raise KeyError('Protein %s not found in EnzymeML document %s' % ( id_, self.__name ))
+            raise KeyError(
+                'Protein %s not found in EnzymeML document %s'
+                % (id_, self.__name)
+            )
 
         else:
             for protein in self.__ProteinDict.values():
                 if id_ == protein.getName():
                     return protein
 
-            raise KeyError('Protein %s not found in EnzymeML document %s' % ( id_, self.__name ))
+            raise KeyError(
+                'Protein %s not found in EnzymeML document %s'
+                % (id_, self.__name)
+            )
 
     def addReactant(self, reactant, use_parser=True, custom_id='NULL'):
         """
-        Adds Reactant object to EnzymeMLDocument object. Automatically assigns ID and converts units.
+        Adds Reactant object to EnzymeMLDocument object.
+        Automatically assigns ID and converts units.
 
         Args:
             reactant (Reactant): Object describing reactant
-            use_parser (bool, optional): If set True, will use internal unit parser. Defaults to True.
-            custom_id (str, optional): Assigns custom ID instead of automatic. Defaults to 'NULL'.
+            use_parser (bool, optional): If set True, will use
+                                         internal unit parser.
+                                         Defaults to True.
+            custom_id (str, optional): Assigns custom ID instead of automatic.
+                                       Defaults to 'NULL'.
 
         Returns:
-            string: Internal identifier for the reactant. Use it for other objects!
+            string: Internal identifier for the reactant.
+                    Use it for other objects!
         """
 
         TypeChecker(reactant, Reactant)
@@ -624,9 +651,9 @@ class EnzymeMLDocument(object):
                     # Automatically set UnitCreator
                     if reactant.getSubstanceUnits() != 'NAN':
                         reactant.setSubstanceUnits(
-
-                            UnitCreator().getUnit( reactant.getSubstanceUnits(), self)
-
+                            UnitCreator().getUnit(
+                                reactant.getSubstanceUnits(), self
+                                )
                             )
 
                 reactant.setId(id_)
@@ -641,15 +668,20 @@ class EnzymeMLDocument(object):
 
     def addProtein(self, protein, use_parser=True, custom_id='NULL'):
         """
-        Adds Protein object to EnzymeMLDocument object. Automatically assigns ID and converts units.
+        Adds Protein object to EnzymeMLDocument object.
+        Automatically assigns ID and converts units.
 
         Args:
             protein (Protein): Object describing g
-            use_parser (bool, optional): If set True, will use internal unit parser. Defaults to True.
-            custom_id (str, optional): Assigns custom ID instead of automatic. Defaults to 'NULL'.
+            use_parser (bool, optional): If set True, will use
+                                         internal unit parser.
+                                         Defaults to True.
+            custom_id (str, optional): Assigns custom ID instead of automatic.
+                                       Defaults to 'NULL'.
 
         Returns:
-            string: Internal identifier for the protein. Use it for other objects!
+            string: Internal identifier for the protein.
+                    Use it for other objects!
         """
 
         TypeChecker(protein, Protein)
@@ -669,10 +701,10 @@ class EnzymeMLDocument(object):
 
                     # Automatically set UnitCreator
                     protein.setSubstanceUnits(
-
-                        UnitCreator().getUnit( protein.getSubstanceUnits(), self)
-
+                        UnitCreator().getUnit(
+                            protein.getSubstanceUnits(), self
                         )
+                    )
 
                 protein.setId(id_)
                 protein.setSboterm("SBO:0000252")
@@ -683,17 +715,20 @@ class EnzymeMLDocument(object):
                 index += 1
                 id_ = "p%i" % index
 
-
     def addReaction(self, reaction, use_parser=True):
         """
-        Adds EnzymeReaction object to EnzymeMLDocument object. Automatically assigns ID and converts units.
+        Adds EnzymeReaction object to EnzymeMLDocument object.
+        Automatically assigns ID and converts units.
 
         Args:
             reaction (EnzymeReaction): Object describing reaction
-            use_parser (bool, optional): If set True, will use internal unit parser. Defaults to True.
+            use_parser (bool, optional): If set True, will use
+                                         internal unit parser.
+                                         Defaults to True.
 
         Returns:
-            string: Internal identifier for the reaction. Use it for other objects!
+            string: Internal identifier for the reaction.
+            Use it for other objects!
         """
 
         TypeChecker(reaction, EnzymeReaction)
@@ -710,18 +745,22 @@ class EnzymeMLDocument(object):
                     self.__getReplicateUnits(reaction)
 
                 reaction.setId(id_)
-                reaction.setTemperature( reaction.getTemperature() + 273.15 )
+                reaction.setTemperature(reaction.getTemperature() + 273.15)
                 reaction.setTempunit(
-                    UnitCreator().getUnit( reaction.getTempunit(), self)
+                    UnitCreator().getUnit(reaction.getTempunit(), self)
                     )
 
                 # set model units
                 try:
-                    for key, item in reaction.getModel().getParameters().items():
+                    parameterDict = reaction.getModel().getParameters()
+                    for key, item in parameterDict.items():
 
-                        reaction.getModel().getParameters()[key] = (item[0], UnitCreator().getUnit( item[1] , self) )
+                        reaction.getModel().getParameters()[key] = (
+                            item[0],
+                            UnitCreator().getUnit(item[1], self)
+                        )
 
-                except Exception as e:
+                except Exception:
                     pass
 
                 self.__ReactionDict[reaction.getId()] = reaction
@@ -741,7 +780,6 @@ class EnzymeMLDocument(object):
 
         return self.__created
 
-
     def getModified(self):
         """
         Returns date of recent modification
@@ -751,7 +789,6 @@ class EnzymeMLDocument(object):
         """
 
         return self.__modified
-
 
     def setCreated(self, date):
         """
@@ -763,7 +800,6 @@ class EnzymeMLDocument(object):
 
         self.__created = TypeChecker(date, str)
 
-
     def setModified(self, date):
         """
         Sets date of recent modification
@@ -774,41 +810,37 @@ class EnzymeMLDocument(object):
 
         self.__modified = TypeChecker(date, str)
 
-
     def delCreated(self):
         del self.__created
-
 
     def delModified(self):
         del self.__modified
 
-
     def getCreator(self):
         return self.__creator
 
-
     def setCreator(self, creators):
         """
-        Sets creator information. Multiples are also allowed as a list of Creator classes
+        Sets creator information. Multiples are also allowed
+        as a list of Creator classes
 
         Args:
             creators (string, list<string>): Single or multiple author classes
         """
 
-
         if type(creators) == list:
-            self.__creator = [ TypeChecker(creator, Creator) for creator in creators ]
+            self.__creator = [
+                TypeChecker(creator, Creator)
+                for creator in creators
+                ]
         else:
             self.__creator = [TypeChecker(creators, Creator)]
-
 
     def delCreator(self):
         del self.__creator
 
-
     def getVessel(self):
         return self.__vessel
-
 
     def setVessel(self, vessel, use_parser=True):
         """
@@ -816,10 +848,13 @@ class EnzymeMLDocument(object):
 
         Args:
             vessel (Vessel): Object describing a vessel
-            use_parser (bool, optional): If set True, will user internal unit parser. Defaults to True.
+            use_parser (bool, optional): If set True, will use
+                                         internal unit parser.
+                                         Defaults to True.
 
         Returns:
-            string : Internal identifier for Vessel object. Use it for other objetcs!
+            string : Internal identifier for Vessel object.
+                     Use it for other objetcs!
         """
 
         # Automatically set unit
@@ -827,22 +862,19 @@ class EnzymeMLDocument(object):
 
             vessel.setUnit(
 
-                UnitCreator().getUnit( vessel.getUnit(), self)
+                UnitCreator().getUnit(vessel.getUnit(), self)
 
                 )
 
-            ## TODO Automatic ID assignment
+            # TODO Automatic ID assignment
             vessel.setId('v0')
-
 
         self.__vessel = TypeChecker(vessel, Vessel)
 
         return vessel.getId()
 
-
     def delVessel(self):
         del self.__vessel
-
 
     def getName(self):
         """
@@ -854,14 +886,11 @@ class EnzymeMLDocument(object):
 
         return self.__name
 
-
     def getLevel(self):
         return self.__level
 
-
     def getVersion(self):
         return self.__version
-
 
     def getProteinDict(self):
         """
@@ -873,7 +902,6 @@ class EnzymeMLDocument(object):
 
         return self.__ProteinDict
 
-
     def getReactantDict(self):
         """
         Return reactant dictionary for manual access
@@ -884,17 +912,16 @@ class EnzymeMLDocument(object):
 
         return self.__ReactantDict
 
-
     def getReactionDict(self):
         """
         Return reaction dictionary for manual access
 
         Returns:
-            dict: Dictionary containing EnzymeReaction objects describing reactions
+            dict: Dictionary containing EnzymeReaction
+                  objects describing reactions
         """
 
         return self.__ReactionDict
-
 
     def getUnitDict(self):
         """
@@ -906,7 +933,6 @@ class EnzymeMLDocument(object):
 
         return self.__UnitDict
 
-
     def setName(self, value):
         """
         Sets name of the EnzymeML document
@@ -916,7 +942,6 @@ class EnzymeMLDocument(object):
         """
 
         self.__name = value
-
 
     def setLevel(self, level):
         """
@@ -929,12 +954,12 @@ class EnzymeMLDocument(object):
             IndexError: If SBML level not in [1,3]
         """
 
-
         if 1 <= TypeChecker(level, int) <= 3:
             self.__level = level
         else:
-            raise IndexError("Level out of bounds. SBML level is defined from 1 to 3.")
-
+            raise IndexError(
+                "Level out of bounds. SBML level is defined from 1 to 3."
+            )
 
     def setVersion(self, version):
         """
@@ -946,10 +971,8 @@ class EnzymeMLDocument(object):
 
         self.__version = TypeChecker(version, int)
 
-
     def setProteinDict(self, proteinDict):
         self.__ProteinDict = TypeChecker(proteinDict, dict)
-
 
     def setReactantDict(self, reactantDict):
         self.__ReactantDict = TypeChecker(reactantDict, dict)
@@ -957,51 +980,26 @@ class EnzymeMLDocument(object):
     def setReactionDict(self, reactionDict):
         self.__ReactionDict = TypeChecker(reactionDict, dict)
 
-
     def setUnitDict(self, unitDict):
         self.__UnitDict = TypeChecker(unitDict, dict)
-
 
     def delName(self):
         del self.__name
 
-
     def delLevel(self):
         del self.__level
-
 
     def delVersion(self):
         del self.__version
 
-
     def delProteinDict(self):
         del self.__ProteinDict
-
 
     def delReactantDict(self):
         del self.__ReactantDict
 
-
     def delReactionDict(self):
         del self.__ReactionDict
 
-
     def delUnitDict(self):
         del self.__UnitDict
-
-    _name = property(getName, setName, delName, "_name's docstring")
-    _level = property(getLevel, setLevel, delLevel, "_level's docstring")
-    _version = property(getVersion, setVersion, delVersion, "_version's docstring")
-    _ProteinDict = property(getProteinDict, setProteinDict, delProteinDict, "_ProteinDict's docstring")
-    _ReactantDict = property(getReactantDict, setReactantDict, delReactantDict, "_ReactantDict's docstring")
-    _ReactionDict = property(getReactionDict, setReactionDict, delReactionDict, "_ReactionDict's docstring")
-    _UnitDict = property(getUnitDict, setUnitDict, delUnitDict, "_UnitDict's docstring")
-    _vessel = property(getVessel, setVessel, delVessel, "_vessel's docstring")
-    _creator = property(getCreator, setCreator, delCreator, "_creator's docstring")
-    _created = property(get_created, setCreated, delCreated, "_created's docstring")
-    _modified = property(getModified, setModified, delModified, "_modified's docstring")
-    _ConcDict = property(getConcDict, setConcDict, delConcDict, "_ConcDict's docstring")
-    _doi = property(getDoi, setDoi, delDoi, "_doi's docstring")
-    _pubmedID = property(getPubmedID, setPubmedID, delPubmedID, "_pubmedID's docstring")
-    _url = property(getUrl, setUrl, delUrl, "_url's docstring")
-
