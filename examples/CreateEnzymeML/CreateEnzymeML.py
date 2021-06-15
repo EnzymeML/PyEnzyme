@@ -43,4 +43,4 @@ enzmldoc.printReactants()
 enzmldoc.printProteins()
 enzmldoc.printReactions()
 
-enzmldoc.toFile('TEST')
+enzmldoc.toFile('.')
