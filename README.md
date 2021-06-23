@@ -1,5 +1,4 @@
-[![Build and Test](https://github.com/EnzymeML/PyEnzyme/actions/workflows/build.yml/badge.svg)](https://github.com/EnzymeML/PyEnzyme/actions/workflows/build.yml)
-
+[![Build and Test](https://github.com/EnzymeML/PyEnzyme/actions/workflows/build.yml/badge.svg)](https://github.com/EnzymeML/PyEnzyme/actions/workflows/build.yml) [![DOI](https://zenodo.org/badge/304390691.svg)](https://zenodo.org/badge/latestdoi/304390691)
 # PyEnzyme
 
 _**Authors**_:      [Jan Range](https://github.com/JR-1991)<br>
