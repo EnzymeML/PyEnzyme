@@ -1,60 +1,69 @@
-# @Author: Jan Range
-# @Date:   2021-03-18 22:33:21
-# @Last Modified by:   Jan Range
-# @Last Modified time: 2021-03-26 18:38:23
+'''
+File: GenerateArtificialData.py
+Project: ThinLayers
+Author: Jan Range
+License: BSD-2 clause
+-----
+Last Modified: Wednesday June 23rd 2021 7:11:02 pm
+Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
+-----
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
+'''
+
 from pyenzyme.enzymeml.core import Replicate
 from pyenzyme.enzymeml.tools import EnzymeMLReader, EnzymeMLWriter
 from pyenzyme.enzymeml.core.reactant import Reactant
 
 import os
 
+
 # Define Menten equation
 def menten(s, vmax, km):
-    
-    return ( (-1)*vmax*s ) / ( km + s )
+    return ((-1)*vmax*s) / (km + s)
 
 
 def generateData(init_conc, vmax, km):
-    
+
     s = init_conc
     time, data = [], []
-    
+
     for t in range(200):
-        
+
         s = s + menten(s, vmax, km)
-        
+
         time.append(t)
         data.append(s)
-        
+
     return time, data
-        
+
+
 if __name__ == '__main__':
-    
+
     # Read Strenda EnzymeML
-    path = os.path.join( 'STRENDA', 'Generated', '3IZNOK_TEST.omex' )
+    path = os.path.join('STRENDA', 'Generated', '3IZNOK_TEST.omex')
     enzmldoc = EnzymeMLReader().readFromFile(path)
-    
+
     # iterate through kinetic law parameters
     kinetic_law = enzmldoc.getReaction("r0").getModel()
-    
+
     # parse laws
     reactant_models = dict()
     for key, item in kinetic_law.getParameters().items():
-        
+
         param_name = key.split('_')[0]
         reactant = key.split('_')[1]
-        
+
         if reactant in reactant_models.keys():
-            
+
             reactant_models[reactant][param_name] = item
-            
+
         else:
-            
+
             reactant_models[reactant] = dict()
             reactant_models[reactant][param_name] = item
-            
+
     # replace missing protein sequence
-    proteinSequence =  "MAMRIRIDLPQDEIPAQWYNILPDLPEELPPPQDPTGKSLELLKEVLPSKVLELE\
+    proteinSequence = "MAMRIRIDLPQDEIPAQWYNILPDLPEELPPPQDPTGKSLELLKEVLPSKVLELE\
                         FAKERYVKIPDEVLERYLQVGRPTPIIRAKRLEEYLGNNIKIYLKMESYTYTGS\
                         HKINSALAHVYYAKLDNAKFVTTETGAGQWGSSVALASALFRMKAHIFMVRTSY\
                         YAKPYRKYMMQMYGAEVHPSPSDLTEFGRQLLAKDSNHPGSLGIAISDAVEYAH\
@@ -63,57 +72,62 @@ if __name__ == '__main__':
                         DFVPPPVYAGGLRYHGVAPTLSLLISKGIVQARDYSQEESFKWAKLFSELEGYI\
                         PAPETSHALPILAEIAEEAKKSGERKTVLVSFSGHGLLDLGNYASVLFKEKLAA\
                         ALEHHHHHH"
-                        
+
     enzmldoc.getProtein('p0').setSequence(proteinSequence)
-            
+
     # add missing product
     product = Reactant("L-Tryptophan", "v0", 0.00, "mmole / l", False)
     product.setInchi("InChI=1S/C11H12N2O2/c12-9(11(14)15)5-7-6-13-10-4-2-1-3-8(7)10/h1-4,6,9,13H,5,12H2,(H,14,15)/t9-/m1/s1")
     product.setSmiles("C1=CC=C2C(=C1)C(=CN2)CC(C(=O)O)N")
     product_id = enzmldoc.addReactant(product)
-    
+
     coproduct = Reactant("HPO4(2-)", "v0", 0.00, "mmole / l", False)
     coproduct.setInchi("InChI=1S/H3O4P/c1-5(2,3)4/h(H3,1,2,3,4)/p-2")
     coproduct.setSmiles("OP(=O)([O-])[O-]")
     coproduct_id = enzmldoc.addReactant(coproduct)
-    
-    enzmldoc.getReaction("r0").addProduct( product_id, 1.0, False, enzmldoc)
-    enzmldoc.getReaction("r0").addProduct( coproduct_id, 1.0, False, enzmldoc)
-    
+
+    enzmldoc.getReaction("r0").addProduct(product_id, 1.0, False, enzmldoc)
+    enzmldoc.getReaction("r0").addProduct(coproduct_id, 1.0, False, enzmldoc)
+
     # create replicates
     repl_index = 0
     for reac_id, km in reactant_models.items():
-        
-        for reactant_id in enzmldoc.getReactantDict(): 
-            
+
+        for reactant_id in enzmldoc.getReactantDict():
+
             if reac_id in reactant_id:
-                
+
                 init_concs = enzmldoc.getReaction('r0').getEduct(reac_id)[4]
                 reactant = enzmldoc.getReactant(reac_id)
-                
+
                 for init_conc, conc_unit in init_concs:
-                    
                     if init_conc > 0:
-                
+
                         kcat = reactant_models[reac_id]['kcat'][0]
-                        protein_conc = enzmldoc.getProtein("p0").getInitConc()*1e-3 # n mol
-                        vmax = protein_conc*kcat
+                        protConc = enzmldoc.getProtein("p0").getInitConc()*1e-3
+                        vmax = protConc*kcat
                         km = reactant_models[reac_id]['km'][0]
-                        
-                        time, data =  generateData(init_conc, vmax, km)
-                        
-                        repl = Replicate("repl_%s" % (repl_index), reac_id, "conc", reactant.getSubstanceUnits(), "s", init_conc)
+
+                        time, data = generateData(init_conc, vmax, km)
+
+                        repl = Replicate(
+                            replica="repl_%s" % (repl_index),
+                            reactant=reac_id,
+                            type_="conc",
+                            data_unit=reactant.getSubstanceUnits(),
+                            time_unit="s",
+                            init_conc=init_conc,
+                            measurement='m0'
+                        )
+
                         repl.setData(data, time)
                         repl_index += 1
-                        
+
                         enzmldoc.getReaction('r0').addReplicate(repl, enzmldoc)
 
     enzmldoc.printProteins()
     enzmldoc.printReactants()
     enzmldoc.printReactions()
-        
-    # Write Data to .omex file
-    #print(EnzymeMLWriter().toXMLString(enzmldoc))
-    
-    outdir =  os.path.join( 'COPASI' )
+
+    outdir = os.path.join('COPASI')
     EnzymeMLWriter().toFile(enzmldoc, outdir)
