@@ -1,7 +1,13 @@
 '''
-Created on 10.06.2020
-
-@author: JR
+File: enzymemlreader.py
+Project: tools
+Author: Jan Range
+License: BSD-2 clause
+-----
+Last Modified: Wednesday June 23rd 2021 7:18:49 pm
+Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
+-----
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
 from pyenzyme.enzymeml.core.creator import Creator
@@ -9,7 +15,7 @@ from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.protein import Protein
 from pyenzyme.enzymeml.core.reactant import Reactant
 from pyenzyme.enzymeml.core.replicate import Replicate
-from pyenzyme.enzymeml.core.unitdef  import UnitDef
+from pyenzyme.enzymeml.core.unitdef import UnitDef
 from pyenzyme.enzymeml.core.vessel import Vessel
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
 
@@ -20,514 +26,547 @@ from pyenzyme.enzymeml.models.kineticmodel import KineticModel
 from libcombine import CombineArchive
 from _io import StringIO
 
+
 class EnzymeMLReader():
 
-    def readFromFile(self, path, omex=True):
+    def readFromFile(
+        self,
+        path
+    ):
         '''
         Reads EnzymeML document to an object layer EnzymeMLDocument class.
-        
+
         Args:
-            String path: Path to .omex container or folder destination for plain .xml
-            Boolean omex: Determines whether reader handles an .omex file or not
+            String path: Path to .omex container or
+                         folder destination for plain .xml
         '''
-        
-        self.omex = omex
+
+        # Read omex archive
         self.__path = path
-        
-        if self.omex:
-            
-            self.archive = CombineArchive()
-            self.archive.initializeFromArchive(self.__path)
-        
-            sbmlfile = self.archive.getEntry(0)
-            content = self.archive.extractEntryToString(sbmlfile.getLocation())
-            
-            desc =  self.archive.getMetadataForLocation(sbmlfile.getLocation())
+        self.archive = CombineArchive()
+        self.archive.initializeFromArchive(self.__path)
 
+        sbmlfile = self.archive.getEntry(0)
+        content = self.archive.extractEntryToString(sbmlfile.getLocation())
+        desc = self.archive.getMetadataForLocation(sbmlfile.getLocation())
+
+        # Read experiment file (sbml)
         reader = SBMLReader()
-        
-        if self.omex:
-            document = reader.readSBMLFromString(content)
-
-        else:
-            document = reader.readSBMLFromFile(self.__path + '/experiment.xml')
-            
+        document = reader.readSBMLFromString(content)
         document.getErrorLog().printErrors()
-        
         model = document.getModel()
-        
-        enzmldoc = EnzymeMLDocument(model.getName(), model.getLevel(), model.getVersion())
-        
+
+        # Initialize EnzymeMLDocument object
+        enzmldoc = EnzymeMLDocument(
+            model.getName(),
+            model.getLevel(),
+            model.getVersion()
+        )
+
         # Fetch references
         self.__getRefs(model, enzmldoc)
-        
+
         # Fetch Creators
         numCreators = desc.getNumCreators()
         creators = list()
         for i in range(numCreators):
             creator = desc.getCreator(i)
             creators.append(
-                Creator(creator.getFamilyName(), creator.getGivenName(), creator.getEmail()) 
+                Creator(
+                    creator.getFamilyName(),
+                    creator.getGivenName(),
+                    creator.getEmail()
+                )
             )
-            
+
         enzmldoc.setCreator(creators)
-        
+
         try:
+            # TODO extract VCard
             model_hist = model.getModelHistory()
-            enzmldoc.setCreated(model_hist.getCreatedDate().getDateAsString())
-            enzmldoc.setModified(model_hist.getModifiedDate().getDateAsString())
+            enzmldoc.setCreated(
+                model_hist.getCreatedDate().getDateAsString()
+            )
+
+            enzmldoc.setModified(
+                model_hist.getModifiedDate().getDateAsString()
+            )
+
         except AttributeError:
             enzmldoc.setCreated("2020")
             enzmldoc.setModified("2020")
-               
+
         # Fetch units
         unitDict = self.__getUnits(model)
         enzmldoc.setUnitDict(unitDict)
-        
+
         # Fetch Vessel
         vessel = self.__getVessel(model)
         enzmldoc.setVessel(vessel, use_parser=False)
-        
+
         # Fetch Species
         proteinDict, reactantDict = self.__getSpecies(model)
         enzmldoc.setReactantDict(reactantDict)
         enzmldoc.setProteinDict(proteinDict)
-        
+
         # fetch reaction
         reactionDict = self.__getReactions(model, enzmldoc)
         enzmldoc.setReactionDict(reactionDict)
-        
+
         del self.__path
-        
+
         return enzmldoc
-    
+
     def __getRefs(self, model, enzmldoc):
-        
+
         if len(model.getAnnotationString()) > 0:
-            root = ET.fromstring( model.getAnnotationString() )[0]
-            
+            root = ET.fromstring(
+                model.getAnnotationString()
+            )[0]
+
             for elem in root:
                 if "doi" in elem.tag:
-                    enzmldoc.setDoi( elem.text )
+                    enzmldoc.setDoi(elem.text)
                 elif 'pubmedID' in elem.tag:
-                    enzmldoc.setPubmedID( elem.text )
+                    enzmldoc.setPubmedID(elem.text)
                 elif 'url' in elem.tag:
                     enzmldoc.setUrl(elem.text)
-        
+
     def __getCreators(self, model):
-        
+
         model_hist = model.getModelHistory()
         creator_list = model_hist.getListCreators()
         creators = list()
-        
+
         for creator in creator_list:
 
             creators.append(
-                
-                Creator(creator.getFamilyName(), creator.getGivenName(), creator.getEmail())
-                
+
+                Creator(
+                    creator.getFamilyName(),
+                    creator.getGivenName(),
+                    creator.getEmail()
                 )
-            
+
+            )
+
         return creators
-        
+
     def __getUnits(self, model):
-        
+
         unitDict = dict()
         unitdef_list = model.getListOfUnitDefinitions()
-        
+
         for unit in unitdef_list:
-            
+
             name = unit.getName()
             id_ = unit.getId()
             metaid = unit.getMetaId()
             ontology = unit.getCVTerms()[0].getResourceURI(0)
-            
-            unitdef = UnitDef( name, id_, ontology  )
+
+            unitdef = UnitDef(name, id_, ontology)
             unitdef.setMetaid(metaid)
-            
+
             for baseunit in unit.getListOfUnits():
-                
+
                 unitdef.addBaseUnit(
-                    
+
                     baseunit.toXMLNode().getAttrValue('kind'),
                     baseunit.getExponentAsDouble(),
                     baseunit.getScale(),
                     baseunit.getMultiplier()
-                    
+
                     )
-                
+
             unitDict[id_] = unitdef
-            
-        return unitDict   
+
+        return unitDict
 
     def __getVessel(self, model):
-        
+
         compartment = model.getListOfCompartments()[0]
-        
+
         vessel = Vessel(
-                            compartment.getName(), 
-                            compartment.getId(), 
-                            compartment.getSize(), 
-                            compartment.getUnits()
-                        )
-        
+            compartment.getName(),
+            compartment.getId(),
+            compartment.getSize(),
+            compartment.getUnits()
+        )
+
         return vessel
 
+    @staticmethod
+    def __parseAnnotation(annotationString):
+        # __getSpecies helper function
+        # extracts annotations to dict
+        speciesAnnot = ET.fromstring(
+            annotationString
+        )[0]
+
+        # Initialize annotation dictionary
+        annotDict = dict()
+
+        # fetch attributes from both types of species
+        speciesType = speciesAnnot.tag.split('}')[-1]
+
+        for enzymeMLAnnot in speciesAnnot:
+            key = enzymeMLAnnot.tag.split('}')[-1].lower()
+            attribute = enzymeMLAnnot.text
+
+            annotDict[key] = attribute
+
+        return speciesType, annotDict
+
     def __getSpecies(self, model):
-        
+
         proteinDict = dict()
         reactantDict = dict()
-        species_list = model.getListOfSpecies()
-        
-        for species in species_list:   
-            
-            try:
-                root = ET.fromstring(species.getAnnotationString())
-            except ET.ParseError :
-                root = None
-                
-            sequence = False
-            
-            if root != None:
-                # Iterate throufh annotation and fetch seqeunce
-                for child1 in root:
-                    if 'protein' in child1.tag:
-                        
-                        for child2 in child1:
-                        
-                            if 'sequence' in child2.tag:
-                            
-                                sequence = child2.text
-                                
-                            elif 'organism' in child2.tag:
-                                
-                                organism = child2.text
-                                
-                            elif 'uniprot' in child2.tag:
-                                
-                                uniprotid = child2.text
-            
-            if sequence != False:
-                
-                # make sure that a sequence has been fetched
-                # Future might include normal reactant annotations
-                # thus making sure its a protein will be important
-                
-                          
+        speciesList = model.getListOfSpecies()
+
+        for species in speciesList:
+
+            # get Annotations
+            speciesType, annotDict = self.__parseAnnotation(
+                species.getAnnotationString()
+            )
+
+            if speciesType == 'protein':
                 protein = Protein(
-                                species.getName(), 
-                                sequence, 
-                                species.getCompartment(), 
-                                species.getInitialConcentration(), 
-                                species.getSubstanceUnits(),
-                                species.getConstant()
-                                )
-                
+                            name=species.getName(),
+                            vessel=species.getCompartment(),
+                            init_conc=species.getInitialConcentration(),
+                            substanceunits=species.getSubstanceUnits(),
+                            constant=species.getConstant(),
+                            **annotDict
+                        )
+
+                # Set IDs manually
                 protein.setId(species.getId())
                 protein.setMetaid(species.getMetaId())
-                
-                try:
-                    protein.setOrganism(organism)
-                except UnboundLocalError:
-                    pass
-                
-                try:
-                    protein.setUniprotID(uniprotid)
-                except UnboundLocalError:
-                    pass
-                
+
+                # Add to document
                 proteinDict[species.getId()] = protein
-                
-                
-                
-                # Reactants are parsed here if the species is not
-                # matching protein conditions (sequence etc)
-                
-            else:
-                
-                # Store input params in a dictionary for felxibility
-                data = dict()
-                
-                
-                data["name"] = species.getName()
-                
-                if species.getSubstanceUnits():
-                    # Check for empty strings
-                    data["init_conc"] = species.getInitialConcentration()
-                    data["substanceunits"] = species.getSubstanceUnits()
-                    
-                data["constant"] = species.getConstant()
-                
-                
+
+            elif speciesType == 'reactant':
+
                 reactant = Reactant(
-                                    species.getName(),
-                                    species.getCompartment(), 
-                                    species.getInitialConcentration(), 
-                                    species.getSubstanceUnits(),
-                                    species.getConstant()
-                                    )
-                
+                            name=species.getName(),
+                            vessel=species.getCompartment(),
+                            init_conc=species.getInitialConcentration(),
+                            substanceunits=species.getSubstanceUnits(),
+                            constant=species.getConstant(),
+                            **annotDict
+                        )
+
+                # Set IDs manually
                 reactant.setMetaid(species.getMetaId())
                 reactant.setId(species.getId())
-                
-                if len(species.getAnnotationString()) > 0:
-                
-                    root = ET.fromstring(species.getAnnotationString())
-                    
-                    for child1 in root[0]:
-                        if 'inchi' in child1.tag:
-                            reactant.setInchi(child1.attrib['inchi'])
-                        elif 'smiles' in child1.tag:
-                            reactant.setSmiles(child1.attrib['smiles'])
-                                    
-                                      
-                
-                 
-                reactantDict[ species.getId() ] = reactant
-         
+
+                reactantDict[species.getId()] = reactant
+
         return proteinDict, reactantDict
-    
-    def __getInitConcs(self, specref, enzmldoc):
-        
-        if len( specref.getAnnotationString() ) > 0:
-            root = ET.fromstring(specref.getAnnotationString())
-            initconc = list()
-            
-            for node in root[0]:
-                
-                val = float( node.attrib['value'] )
-                id = node.attrib['id']
-                unit = node.attrib['unit']
-                
-                enzmldoc.getConcDict()[id] = (val, unit)
-                
-                initconc.append( (val, unit) )
-                
-            return initconc
-        
-        else:
+
+    @staticmethod
+    def __getInitConcs(specref, enzmldoc):
+
+        if len(specref.getAnnotationString()) == 0:
+            # Check if there are any initConcs
             return list()
 
-    def __getReactions(self, model, enzmldoc):
-        
-        reaction_list = model.getListOfReactions()
-        
-        try:
-            global_replicates = self.__getReplicates(reaction_list)
-        except ( ET.ParseError, pd.errors.EmptyDataError) as e:
-            global_replicates = dict()
-        
-        reaction_replicates = dict()
-        
-        reactionDict = dict()
-        
-        # parse annotations and filter replicates
-        for reac in reaction_list:
-            
-            root = ET.fromstring(reac.getAnnotationString())
-            
-            for child in list(root)[0]:
-                
-                if "conditions" in child.tag:
-                    
-                    for cond in child:
-                        # iterate through conditions 
-                        if 'ph' in cond.tag: ph=float(cond.attrib["value"])
-                        if 'temperature' in cond.tag: temperature=float(cond.attrib["value"])
-                        if 'temperature' in cond.tag: tempunit=cond.attrib["unit"]
-                        
-                elif 'replica' in child.tag:
+        initConcAnnot = ET.fromstring(specref.getAnnotationString())[0]
+        initConcs = list()
 
-                    for repl in child:
-                        # iterate through replicates
-                        repl_id = repl.attrib["replica"]
-                        replica = global_replicates[repl_id]
-                        
-                        try:
-                            reaction_replicates[replica.getReactant()].append( replica )
-                        except KeyError:
-                            reaction_replicates[replica.getReactant()] = [replica]
-            
-            # parse list of educts/products/modifiers
-            educts = [ 
-                
-                         ( species_ref.getSpecies(),
-                         species_ref.getStoichiometry(),
-                         species_ref.getConstant(),
-                         reaction_replicates[ species_ref.getSpecies() ],
-                         self.__getInitConcs(species_ref, enzmldoc)
-                         ) if species_ref.getSpecies() in reaction_replicates.keys()
-                         
-                         else ( species_ref.getSpecies(),
-                         species_ref.getStoichiometry(),
-                         species_ref.getConstant(),
-                         list(),
-                        self.__getInitConcs(species_ref, enzmldoc)
-                         )
-                      
-                        for species_ref in reac.getListOfReactants() 
-                        
-                        ]
-            
-            products = [ 
-                
-                         ( species_ref.getSpecies(),
-                         species_ref.getStoichiometry(),
-                         species_ref.getConstant(),
-                         reaction_replicates[ species_ref.getSpecies() ],
-                         self.__getInitConcs(species_ref, enzmldoc)
-                         ) if species_ref.getSpecies() in reaction_replicates.keys()
-                         
-                         else ( species_ref.getSpecies(),
-                         species_ref.getStoichiometry(),
-                         species_ref.getConstant(),
-                         list(),
-                         self.__getInitConcs(species_ref, enzmldoc)
-                         )
-                      
-                        for species_ref in reac.getListOfProducts()
-                        
-                        ]
-            
-            modifiers = [ 
-                
-                         ( species_ref.getSpecies(), 1.0, False,
-                         reaction_replicates[ species_ref.getSpecies() ],
-                         self.__getInitConcs(species_ref, enzmldoc)
-                         ) if species_ref.getSpecies() in reaction_replicates.keys()
-                         
-                         else ( species_ref.getSpecies(), 1.0, False,
-                         list(),
-                         self.__getInitConcs(species_ref, enzmldoc)
-                         )
-                      
-                        for species_ref in reac.getListOfModifiers()
-                        
-                        ]
-            
-            reactionDict[reac.getId()] = EnzymeReaction(
-                
-                temperature, 
-                tempunit, 
-                ph, 
-                reac.getName(), 
-                reac.getReversible(), 
-                educts, 
-                products, 
-                modifiers
-                
+        for initConc in initConcAnnot:
+
+            value = float(initConc.attrib['value'])
+            initConcID = initConc.attrib['id']
+            unit = initConc.attrib['unit']
+
+            enzmldoc.getConcDict()[initConcID] = (value, unit)
+            initConcs.append((value, unit))
+
+        return initConcs
+
+    @staticmethod
+    def __parseConditions(reactionAnnot):
+
+        conditions = reactionAnnot[0]
+        conditionDict = dict()
+
+        for condition in conditions:
+
+            if 'temperature' in condition.tag:
+                conditionDict['temperature'] = float(condition.attrib['value'])
+                conditionDict['tempunit'] = condition.attrib['unit']
+            elif 'ph' in condition.tag:
+                conditionDict['ph'] = float(condition.attrib['value'])
+
+        return conditionDict
+
+    @staticmethod
+    def __parseReactionReplicates(reactionAnnot, allReplicates):
+
+        try:
+            replicateAnnot = reactionAnnot[1]
+        except IndexError:
+            replicateAnnot = []
+
+        reactionReplicates = dict()
+
+        for replicate in replicateAnnot:
+
+            replicateID = replicate.attrib['replica']
+            replicate = allReplicates[replicateID]
+            speciesID = replicate.getReactant()
+
+            if speciesID in reactionReplicates.keys():
+                reactionReplicates[speciesID].append(
+                    replicate
                 )
-            
-            reactionDict[reac.getId()].setId(reac.getId())
-            
+            else:
+                reactionReplicates[speciesID] = \
+                    [replicate]
+
+        return reactionReplicates
+
+    def __getElements(
+        self,
+        speciesRefs,
+        reactionReplicates,
+        enzmldoc,
+        modifiers=False
+    ):
+        elements = list()
+        for speciesRef in speciesRefs:
+
+            speciesID = speciesRef.getSpecies()
+            stoichiometry = 1.0 if modifiers else speciesRef.getStoichiometry()
+            constant = True if modifiers else speciesRef.getConstant()
+            initConcs = self.__getInitConcs(speciesRef, enzmldoc)
+
+            if speciesID in reactionReplicates.keys():
+                replicates = reactionReplicates[speciesID]
+            else:
+                replicates = list()
+
+            elements.append(
+                (
+                    speciesID,
+                    stoichiometry,
+                    constant,
+                    replicates,
+                    initConcs
+                )
+            )
+
+        return elements
+
+    @staticmethod
+    def __getKineticModel(kineticLaw, enzmldoc):
+
+        equation = kineticLaw.getFormula()
+        parameters = {
+            localParam.getId():
+            (
+                localParam.getValue(),
+                localParam.getUnits()
+                )
+            for localParam in
+            kineticLaw.getListOfLocalParameters()
+                }
+
+        return KineticModel(
+            equation=equation,
+            parameters=parameters,
+            enzmldoc=enzmldoc
+        )
+
+    def __getReactions(self, model, enzmldoc):
+
+        reactionsList = model.getListOfReactions()
+        allReplicates = self.__getReplicates(reactionsList)
+
+        # Initialize reaction dictionary
+        reactionDict = dict()
+
+        # parse annotations and filter replicates
+        for reaction in reactionsList:
+
+            reactionAnnot = ET.fromstring(reaction.getAnnotationString())[0]
+
+            # Fetch conditions
+            conditions = self.__parseConditions(reactionAnnot)
+
+            # Fetch reaction replicates
+            reactionReplicates = self.__parseReactionReplicates(
+                reactionAnnot,
+                allReplicates
+            )
+
+            # Fetch Elements in SpeciesReference
+            educts = self.__getElements(
+                reaction.getListOfReactants(),
+                reactionReplicates,
+                enzmldoc
+            )
+
+            products = self.__getElements(
+                reaction.getListOfProducts(),
+                reactionReplicates,
+                enzmldoc
+            )
+
+            modifiers = self.__getElements(
+                reaction.getListOfModifiers(),
+                reactionReplicates,
+                enzmldoc,
+                modifiers=True
+            )
+
+            # Create object
+            enzymeReaction = EnzymeReaction(
+                name=reaction.getName(),
+                reversible=reaction.getReversible(),
+                educts=educts,
+                products=products,
+                modifiers=modifiers,
+                **conditions
+            )
+
+            # Check for kinetic model
             try:
-                
-                kinlaw = reac.getKineticLaw()
-                equation = kinlaw.getFormula()
-                
-                
-                    
-                
-                parameters = { loc_param.getId(): (loc_param.getValue(), loc_param.getUnits()) 
-                               for loc_param in kinlaw.getListOfLocalParameters() }
-                
-                reactionDict[reac.getId()].setModel(
-                    
-                    KineticModel(equation, parameters)
-                    
-                    )
-                
+                # Check if model exists
+                kineticLaw = reaction.getKineticLaw()
+                kineticModel = self.__getKineticModel(kineticLaw, enzmldoc)
+                enzymeReaction.setModel(kineticModel)
             except AttributeError:
                 pass
-            
-        return reactionDict   
-            
-            
-    def __getReplicates(self, reaction_list):
-        
-        root = ET.fromstring(reaction_list.getAnnotationString())[0]
-        
-        listOfFiles = [ file.attrib['file'] 
-                        for child in root 
-                            for file in child 
-                                if 'listOfFiles' in child.tag  ]
-        
-        # load csv file to extract replicate data
-        
-        if self.omex:
-            
-            csv_entry = self.archive.getEntry(1)
-            content = self.archive.extractEntryToString(csv_entry.getLocation())
-            csv_data = StringIO(content)
-        
-            listOfCSV = [
-                    
-                    pd.read_csv( csv_data, header=None )
-                
-                ]
-         
-        else:
-                
-            listOfCSV = [
-                    
-                    pd.read_csv( self.__path + path_csv[1::], header=None )
-                    for path_csv in listOfFiles
-                
-                ]
-        
-        """TODO PROCESS ALL MEAS DATA"""
-        
-        data = listOfCSV[0]
-        
-        listOfFormats = [ file 
-                        for child in root 
-                            for file in child 
-                                if 'listOfFormats' in child.tag  ]
-        
-        # Name columns accordingly
-        columns = [ "time/%s" % child.attrib["unit"]  if child.attrib["type"] == "time"
-                    else "%s/%s/%s" % ( child.attrib["replica"], child.attrib["species"], child.attrib["type"] )
-                        
-                        for format_ in listOfFormats
-                        for child in format_
-                    ]
-        
-        # get unit of time
-        time_unit = [ child.attrib["unit"]
-                        for format_ in listOfFormats
-                        for child in format_
-                        if child.attrib["type"] == "time"
-                    ][0]
-        
-        data.columns = columns
-        data.set_index("time/%s" % time_unit, inplace=True)
-        
-        # derive data from annotations
+
+            # Add reaction to reactionDict
+            enzymeReaction.setId(reaction.getId())
+            enzymeReaction.setMetaid(
+                'META_' + reaction.getId().upper()
+            )
+            reactionDict[enzymeReaction.getId()] = enzymeReaction
+
+        return reactionDict
+
+    @staticmethod
+    def __parseListOfFiles(dataAnnot):
+        # __getReplicates helper function
+        # reads file anntations to dict
+        fileAnnot = dataAnnot[1]
+        files = {
+            file.attrib['id']:
+            {
+                'file': file.attrib['file'],
+                'format': file.attrib['format'],
+                'id': file.attrib['id']
+
+                } for file in fileAnnot
+        }
+
+        return files
+
+    @staticmethod
+    def __parseListOfFormats(dataAnnot):
+        # __getReplicates helper function
+        # reads format anntations to dict
+        formatAnnot = dataAnnot[0]
+        formats = dict()
+
+        for format in formatAnnot:
+            formatID = format.attrib['id']
+            format = [
+                column.attrib
+                for column in format
+            ]
+
+            formats[formatID] = format
+
+        return formats
+
+    @staticmethod
+    def __parseListOfMeasurements(dataAnnot):
+        # __getReplicates helper function
+        # reads measurement anntations to
+        # tuple list
+        measurementAnnot = dataAnnot[2]
+        measurements = [
+            (
+                measurement.attrib['id'],
+                measurement.attrib['file'],
+                measurement.attrib['name']
+            )
+            for measurement in measurementAnnot
+        ]
+
+        return measurements
+
+    def __getReplicates(self, reactions):
+
+        # Parse EnzymeML:format annotation
+        dataAnnot = ET.fromstring(reactions.getAnnotationString())[0]
+
+        # Fetch list of files
+        files = self.__parseListOfFiles(dataAnnot)
+
+        # Fetch formats
+        formats = self.__parseListOfFormats(dataAnnot)
+
+        # Fetch measurements
+        measurements = self.__parseListOfMeasurements(dataAnnot)
+
+        # Initialize replicates dictionary
         replicates = dict()
-        for format_ in listOfFormats:
-            for child in format_:
-                
-                if child.attrib["type"] != "time":
 
-                    repl = Replicate(   child.attrib["replica"], 
-                                        child.attrib["species"], 
-                                        child.attrib["type"], 
-                                        child.attrib["unit"], 
-                                        time_unit,
-                                        child.attrib["initConcID"],
-                                        )
+        # Iterate over measurements and assign replicates
+        for measurementID, measurementFile, measurementName in measurements:
 
-                    # WORKAROUND FOR COMPATIBILITY
-                    if 'isCalculated' in child.attrib.keys():
-                        isCalculated = child.attrib['isCalculated']
-                    else:
-                        isCalculated = False
+            # Get file content
+            fileInfo = files[measurementFile]
+            fileContent = self.archive.extractEntryToString(fileInfo['file'])
+            csvFile = pd.read_csv(
+                StringIO(fileContent),
+                header=None
+            )
 
-                    repl.setIsCalculated(isCalculated)
+            # Get format data and extract time column
+            measurementFormat = formats[fileInfo['format']]
+            timeValues, timeUnitID = [
+                (
+                    csvFile.iloc[:, int(column['index'])],
+                    column['unit']
+                    )
+                for column in measurementFormat
+                if column['type'] == 'time'
+            ][0]
 
-                    col_name = "%s/%s/%s" % ( child.attrib["replica"], child.attrib["species"], child.attrib["type"] )
-                    repl.setData( data[ col_name ] )
-                    
-                    replicates[ repl.getReplica() ] = repl
-        
+            # Create replicate objects
+            for format in measurementFormat:
+
+                if format['type'] != 'time':
+
+                    # Get time course data
+                    replicateValues = csvFile.iloc[:, int(format['index'])]
+                    replicateReactant = format['species']
+                    replicateID = format['replica']
+                    replicateType = format['type']
+                    replicateUnitID = format['unit']
+                    replicateInitConcID = format['initConcID']
+
+                    replicate = Replicate(
+                        replica=replicateID,
+                        reactant=replicateReactant,
+                        type_=replicateType,
+                        measurement=measurementID,
+                        data_unit=replicateUnitID,
+                        time_unit=timeUnitID,
+                        init_conc=replicateInitConcID,
+                        data=replicateValues.values.tolist(),
+                        time=timeValues
+                    )
+
+                    replicates[replicateID] = replicate
+
         return replicates
