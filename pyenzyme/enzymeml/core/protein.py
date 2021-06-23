@@ -4,7 +4,7 @@ Project: core
 Author: Jan Range
 License: BSD-2 clause
 -----
-Last Modified: Tuesday June 15th 2021 8:41:26 pm
+Last Modified: Tuesday June 22nd 2021 9:53:42 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
@@ -125,8 +125,8 @@ class Protein(EnzymeMLBase):
 
     def setEcnumber(self, ecnumber):
         ecnumber = TypeChecker(ecnumber, str)
-        
-        pattern = "(\d+.)(\d+.)(\d+.)(\d+)"
+
+        pattern = r"(\d+.)(\d+.)(\d+.)(\d+)"
         match = re.search(pattern, ecnumber)
 
         if match is not None:
@@ -202,7 +202,9 @@ class Protein(EnzymeMLBase):
         self.__metaid = TypeChecker(metaid, str)
 
     def setSequence(self, sequence):
-        self.__sequence = TypeChecker(sequence, str)
+        sequence = TypeChecker(sequence, str)
+        self.__sequence = sequence.replace(
+            '\n', '').replace(' ', '').strip()
 
     def setSboterm(self, sboterm):
         self.__sboterm = TypeChecker(sboterm, str)

@@ -4,7 +4,7 @@ Project: core
 Author: Jan Range
 License: BSD-2 clause
 -----
-Last Modified: Tuesday June 15th 2021 6:26:22 pm
+Last Modified: Tuesday June 22nd 2021 8:47:30 am
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
@@ -338,6 +338,18 @@ class EnzymeMLDocument(object):
             else:
                 index += 1
                 id_ = 'c%i' % index
+
+    def getUnitDef(self, unitID):
+        """Return UnitDef
+
+        Args:
+            unitID (string): Unit identifier
+
+        Returns:
+            UnitDef: Unit definition object
+        """
+        assert isinstance(unitID, str)
+        return self.__UnitDict[unitID]
 
     def getDoi(self):
         """

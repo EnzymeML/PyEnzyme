@@ -4,7 +4,7 @@ Project: core
 Author: Jan Range
 License: BSD-2 clause
 -----
-Last Modified: Tuesday June 15th 2021 7:47:55 pm
+Last Modified: Wednesday June 23rd 2021 9:06:54 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
@@ -12,12 +12,13 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from pyenzyme.enzymeml.models.kineticmodel import KineticModel
-from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 
 import pandas as pd
 import json
+import re
+
 from copy import deepcopy
 
 
@@ -109,6 +110,8 @@ class EnzymeReaction(EnzymeMLBase):
                         def getInitConc(elementTuple):
                             return [
                                 (val, enzmldoc.getUnitDict()[unit].getName())
+                                if enzmldoc else
+                                (val, unit)
                                 for val, unit in elementTuple[4]
                                 ]
 
@@ -158,7 +161,7 @@ class EnzymeReaction(EnzymeMLBase):
 
         return self.toJSON()
 
-    def __setInitConc(self, conc, reactant, enzmldoc, conc_unit=None):
+    def __setInitConc(self, concValue, concUnit, enzmldoc):
         """
         INTERNAL. Sets initial concentrations of reactant.
 
@@ -166,38 +169,37 @@ class EnzymeReaction(EnzymeMLBase):
             conc (float): Concentration value
             reactant (string): Reactant ID
             enzmldoc (EnzymeMLDocument): To add and check IDs
-            conc_unit (boolean): If true, uses the reactants unit
+            conc_unit (boolean): If none, uses the reactants unit
 
         Returns:
             string: initConc ID
         """
 
-        if conc_unit is None:
-            conc_tup = (
-                conc,
-                enzmldoc.getReactant(reactant).getSubstanceUnits()
-            )
-        else:
-            conc_tup = (
-                conc,
-                UnitCreator().getUnit(conc_unit, enzmldoc)
-            )
+        # check if unit is an ID
+        regex = r"u[\d]+"
+        regex = re.compile(regex)
 
-        if conc_tup not in enzmldoc.getConcDict().values():
+        if regex.search(concUnit) is None:
+            # Create new ID for unit
+            concUnit = UnitCreator().getUnit(concUnit, enzmldoc)
+
+        # Check if initConc already defined
+        concTuple = (concValue, concUnit)
+
+        if concTuple not in enzmldoc.getConcDict().values():
 
             index = 0
             while True:
-                id_ = "c%i" % index
-                if id_ not in enzmldoc.getConcDict().keys():
-                    enzmldoc.getConcDict()[id_] = conc_tup
-                    return id_
+                concID = f"c{index}"
+                if concID not in enzmldoc.getConcDict().keys():
+                    enzmldoc.getConcDict()[concID] = concTuple
+                    return concTuple
                 index += 1
 
         else:
-
             return [
-                key for key, item in enzmldoc.getConcDict().items()
-                if conc_tup is item
+                item for key, item in enzmldoc.getConcDict().items()
+                if concTuple == item
                 ][0]
 
     def exportReplicates(self, ids):
@@ -315,10 +317,9 @@ class EnzymeReaction(EnzymeMLBase):
                 nu_initConc = list(set(
                     initConc + [
                         self.__setInitConc(
-                            conc_val,
-                            elem_id,
-                            enzmldoc,
-                            conc_unit
+                            concValue=conc_val,
+                            concUnit=conc_unit,
+                            enzmldoc=enzmldoc
                             )
                         ]
                     )
@@ -436,9 +437,21 @@ class EnzymeReaction(EnzymeMLBase):
             for elementIndex in range(len(elementList)):
 
                 if getName(elementList[elementIndex][0], by_id) == reactantID:
+
+                    # Add replicate object
                     elementList[elementIndex][3].append(
                         checkUnits(replicate, enzmldoc)
                     )
+
+                    # Add initial concentration
+                    initConcTuple = enzmldoc.getConcDict()[
+                            replicate.getInitConc()
+                        ]
+
+                    if initConcTuple not in elementList[elementIndex][4]:
+                        elementList[elementIndex][4].append(
+                            initConcTuple
+                        )
 
                     return 1
 
@@ -511,190 +524,156 @@ class EnzymeReaction(EnzymeMLBase):
                      not defined in reaction"
                 )
 
-    def addEduct(
+    def __addElement(
         self,
-        id_,
+        speciesID,
         stoichiometry,
-        constant,
+        isConstant,
+        elementList,
         enzmldoc,
         replicates=[],
-        init_concs=[]
+        initConcs=[]
+    ):
+
+        # Check if type of ID is correct
+        speciesID = TypeChecker(speciesID, str)
+        stoichiometry = TypeChecker(float(stoichiometry), float)
+        isConstant = TypeChecker(isConstant, bool)
+        replicates = TypeChecker(replicates, list)
+        initConcs = TypeChecker(initConcs, list)
+
+        # Check if species is part of document already
+        if speciesID not in enzmldoc.getReactantDict().keys():
+            if speciesID not in enzmldoc.getProteinDict().keys():
+                raise KeyError(
+                    f"Reactant/Protein with id {speciesID} is not defined yet"
+                )
+
+        # Add intial concentrations
+        initConcs = [
+            self.__setInitConc(
+                concValue=value,
+                concUnit=unit,
+                enzmldoc=enzmldoc
+            )
+            for value, unit in initConcs
+        ]
+
+        # Add altogether to the element list
+        elementList.append(
+            (
+                speciesID,
+                stoichiometry,
+                isConstant,
+                replicates,
+                initConcs
+            )
+        )
+
+    def addEduct(
+        self,
+        speciesID,
+        stoichiometry,
+        isConstant,
+        enzmldoc,
+        replicates=[],
+        initConcs=[]
     ):
         """
         Adds element to EnzymeReaction object. Replicates as well
         as initial concentrations are optional.
 
         Args:
-            id_ (string): Reactant/Protein ID - Needs to be pre-defined!
+            speciesID (string): Reactant/Protein ID - Needs to be pre-defined!
             stoichiometry (float): Stoichiometric coefficient
-            constant (bool): Whether constant or not
+            isConstant (bool): Whether constant or not
             enzmldoc (EnzymeMLDocument): Checks and adds IDs
             replicates (list, optional): Replicate object list. Defaults to [].
-            init_concs (list, optional): List of InitConcs. Defaults to [].
+            initConcs (list, optional): List of InitConcs. Defaults to [].
 
         Raises:
             KeyError: If Reactant/Protein hasnt been defined yet
         """
 
-        id_ = TypeChecker(id_, str)
-
-        if id_ not in list(enzmldoc.getReactantDict().keys()):
-            raise KeyError(
-                "Reactant with id %s is not defined yet" % id_
-            )
-
-        stoichiometry = TypeChecker(float(stoichiometry), float)
-        constant = TypeChecker(constant, bool)
-
-        if type(replicates) == list and len(replicates) > 0:
-            replicates = replicates
-        elif type(replicates) == list and len(replicates) == 0:
-            replicates = []
-        elif type(replicates) == Replicate:
-            replicates = [replicates]
-
-        # replace concentrations with identifiers
-        init_concs = [
-            self.__setInitConc(conc, id_, enzmldoc)
-            for conc in init_concs
-        ]
-
-        self.__educts.append(
-
-            (
-                id_,
-                stoichiometry,
-                constant,
-                replicates,
-                init_concs
-                )
-
-            )
+        self.__addElement(
+            speciesID=speciesID,
+            stoichiometry=stoichiometry,
+            isConstant=isConstant,
+            replicates=replicates,
+            initConcs=initConcs,
+            elementList=self.__educts,
+            enzmldoc=enzmldoc
+        )
 
     def addProduct(
         self,
-        id_,
+        speciesID,
         stoichiometry,
-        constant,
+        isConstant,
         enzmldoc,
         replicates=[],
-        init_concs=[]
+        initConcs=[]
     ):
         """
         Adds element to EnzymeReaction object. Replicates as well
         as initial concentrations are optional.
 
         Args:
-            id_ (string): Reactant/Protein ID - Needs to be pre-defined!
+            speciesID (string): Reactant/Protein ID - Needs to be pre-defined!
             stoichiometry (float): Stoichiometric coefficient
-            constant (bool): Whether constant or not
+            isConstant (bool): Whether constant or not
             enzmldoc (EnzymeMLDocument): Checks and adds IDs
-            replicates (list, optional): List of Replicates. Defaults to [].
-            init_concs (list, optional): List of InitConcs. Defaults to [].
+            replicates (list, optional): Replicate object list. Defaults to [].
+            initConcs (list, optional): List of InitConcs. Defaults to [].
 
         Raises:
             KeyError: If Reactant/Protein hasnt been defined yet
         """
 
-        id_ = TypeChecker(id_, str)
-
-        if id_ not in list(enzmldoc.getReactantDict().keys()):
-            raise KeyError(
-                "Reactant with id %s is not defined yet" % id_
-            )
-
-        stoichiometry = TypeChecker(float(stoichiometry), float)
-        constant = TypeChecker(constant, bool)
-
-        if type(replicates) == list and len(replicates) > 0:
-            replicates = replicates
-        elif type(replicates) == list and len(replicates) == 0:
-            replicates = []
-        elif type(replicates) == Replicate:
-            replicates = [replicates]
-
-        # replace concentrations with identifiers
-        init_concs = [
-            self.__setInitConc(conc, id_, enzmldoc)
-            for conc in init_concs
-        ]
-
-        self.__products.append(
-
-            (
-                id_,
-                stoichiometry,
-                constant,
-                replicates,
-                init_concs
-                )
-
-            )
+        self.__addElement(
+            speciesID=speciesID,
+            stoichiometry=stoichiometry,
+            isConstant=isConstant,
+            replicates=replicates,
+            initConcs=initConcs,
+            elementList=self.__products,
+            enzmldoc=enzmldoc
+        )
 
     def addModifier(
         self,
-        id_,
+        speciesID,
         stoichiometry,
-        constant,
+        isConstant,
         enzmldoc,
         replicates=[],
-        init_concs=[]
+        initConcs=[]
     ):
         """
         Adds element to EnzymeReaction object. Replicates as well
         as initial concentrations are optional.
 
         Args:
-            id_ (string): Reactant/Protein ID - Needs to be pre-defined!
+            speciesID (string): Reactant/Protein ID - Needs to be pre-defined!
             stoichiometry (float): Stoichiometric coefficient
-            constant (bool): Whether constant or not
+            isConstant (bool): Whether constant or not
             enzmldoc (EnzymeMLDocument): Checks and adds IDs
-            replicates (list, optional): List of Replicates. Defaults to [].
-            init_concs (list, optional): List of InitConcs. Defaults to [].
+            replicates (list, optional): Replicate object list. Defaults to [].
+            initConcs (list, optional): List of InitConcs. Defaults to [].
 
         Raises:
             KeyError: If Reactant/Protein hasnt been defined yet
         """
 
-        id_ = TypeChecker(id_, str)
-
-        allKeys = {
-            **enzmldoc.getReactantDict(),
-            **enzmldoc.getProteinDict()
-        }.keys()
-
-        if id_ not in allKeys:
-            raise KeyError(
-                "Reactant/Protein with id %s is not defined yet" % id_
-            )
-
-        stoichiometry = TypeChecker(float(stoichiometry), float)
-        constant = TypeChecker(constant, bool)
-
-        if type(replicates) == list and len(replicates) > 0:
-            replicates = replicates
-        elif type(replicates) == list and len(replicates) == 0:
-            replicates = []
-        elif type(replicates) == Replicate:
-            replicates = [replicates]
-
-        # replace concentrations with identifiers
-        init_concs = [
-            self.__setInitConc(conc, id_, enzmldoc)
-            for conc in init_concs
-        ]
-
-        self.__modifiers.append(
-
-            (
-                id_,
-                stoichiometry,
-                constant,
-                replicates,
-                init_concs
-                )
-
-            )
+        self.__addElement(
+            speciesID=speciesID,
+            stoichiometry=stoichiometry,
+            isConstant=isConstant,
+            replicates=replicates,
+            initConcs=initConcs,
+            elementList=self.__modifiers,
+            enzmldoc=enzmldoc
+        )
 
     def getTemperature(self):
         """

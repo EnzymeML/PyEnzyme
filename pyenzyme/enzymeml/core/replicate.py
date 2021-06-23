@@ -4,7 +4,7 @@ Project: core
 Author: Jan Range
 License: BSD-2 clause
 -----
-Last Modified: Tuesday June 15th 2021 8:45:48 pm
+Last Modified: Tuesday June 22nd 2021 6:53:17 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
@@ -24,6 +24,7 @@ class Replicate(EnzymeMLBase):
         replica,
         reactant,
         type_,
+        measurement,
         data_unit,
         time_unit,
         init_conc="NONE",
@@ -41,8 +42,11 @@ class Replicate(EnzymeMLBase):
             String replica: Replicate internal identifier
             String species: Species internal identifier
             String type: Type of time series data
+            String measurement: Measurement ID
             String data_unit: Unit definition for data
             String time_unit: Unit definition for time
+            List data: Raw time course data
+            List time: Time values corresponding to data
             Boolean isCalculated: Recursively derived values
             String uri: Custom unique identifier
             String creatorId: Identifier to credit Creator
@@ -57,6 +61,7 @@ class Replicate(EnzymeMLBase):
         self.setReplica(replica)
         self.setReactant(reactant)
         self.setType(type_)
+        self.setMeasurement(measurement)
         self.setDataUnit(data_unit)
         self.setTimeUnit(time_unit)
         self.setInitConc(init_conc)
@@ -103,6 +108,15 @@ class Replicate(EnzymeMLBase):
             indent=4
             )
 
+    def setMeasurement(self, measurement):
+        self.__measurement = TypeChecker(measurement, str)
+
+    def getMeasurement(self):
+        return self.__measurement
+
+    def delMeasurement(self):
+        del self.__measurement
+
     def setIsCalculated(self, isCalculated):
         self.__isCalculated = TypeChecker(isCalculated, bool)
 
@@ -139,7 +153,11 @@ class Replicate(EnzymeMLBase):
     def getTimeUnit(self):
         return self.__time_unit
 
-    def getData(self):
+    def getData(self, sep=False):
+        if sep:
+            time = self.__data.index.tolist()
+            data = self.__data.values.tolist()
+            return time, data
         return self.__data
 
     def setReplica(self, replica_id):
