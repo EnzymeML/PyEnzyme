@@ -4,7 +4,7 @@ Project: ThinLayers
 Author: Jan Range
 License: BSD-2 clause
 -----
-Last Modified: Wednesday June 23rd 2021 7:54:22 pm
+Last Modified: Wednesday June 23rd 2021 10:25:11 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
@@ -135,11 +135,10 @@ class ThinLayerCopasi(object):
             for i, repl in enumerate(reaction.getEduct(reactant)[3]):
 
                 data = repl.getData()
-                data.name = data.name.split('/')[1]
+                speciesID = repl.getReactant()
 
                 concVal, concUnit = enzmldoc.getConcDict()[repl.getInitConc()]
-                timeUnit = data.index.name.split('/')[-1]
-
+                timeUnit = repl.getTimeUnit()
                 metab = [
                     metab
                     for metab in dm.getModel().getMetabolites()
@@ -183,7 +182,7 @@ class ThinLayerCopasi(object):
                 obj_map = exp.getObjectMap()
                 obj_map.setNumCols(2)
 
-                for i, col in enumerate(["time"] + [data.name]):
+                for i, col in enumerate(["time"] + [speciesID]):
                     if col == "time":
                         role = COPASI.CExperiment.time
                         obj_map.setRole(i, role)
