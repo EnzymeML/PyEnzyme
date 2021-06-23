@@ -4,7 +4,7 @@ Project: models
 Author: Jan Range
 License: BSD-2 clause
 -----
-Last Modified: Tuesday June 22nd 2021 10:16:22 pm
+Last Modified: Wednesday June 23rd 2021 10:30:15 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
@@ -35,4 +35,4 @@ def MichaelisMenten(
 
     }
 
-    return KineticModel(equation, parameters)
+    return KineticModel(equation, parameters, enzmldoc)
