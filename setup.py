@@ -4,7 +4,7 @@ Project: PyEnzyme
 Author: Jan Range
 License: BSD-2 clause
 -----
-Last Modified: Wednesday June 23rd 2021 7:42:43 pm
+Last Modified: Wednesday June 23rd 2021 9:57:56 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
@@ -15,7 +15,7 @@ from setuptools import setup
 
 setup(      
     name='PyEnzyme',
-    version='1.2.0',
+    version='1.1.0',
     description='Handling of EnzymeML files',
     url='https://github.com/EnzymeML/PyEnzyme',
     author='Range, Jan',

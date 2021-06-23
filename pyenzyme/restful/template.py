@@ -4,7 +4,7 @@ Project: restful
 Author: Jan Range
 License: BSD-2 clause
 -----
-Last Modified: Wednesday June 23rd 2021 12:21:40 am
+Last Modified: Wednesday June 23rd 2021 9:57:02 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
@@ -519,7 +519,7 @@ class convertTemplate(MethodResource):
                                     protein_id,
                                     protein_init_val,
                                     protein_init_unit,
-                                    senzmldoc
+                                    enzmldoc
                             )
 
                             enzmldoc.getProtein(
