@@ -1,7 +1,14 @@
-# @Author: Jan Range
-# @Date:   2021-03-18 22:33:21
-# @Last Modified by:   Jan Range
-# @Last Modified time: 2021-05-18 07:31:03
+'''
+File: __init__.py
+Project: restful
+Author: Jan Range
+License: BSD-2 clause
+-----
+Last Modified: Tuesday June 22nd 2021 10:17:24 pm
+Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
+-----
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
+'''
 
 from pyenzyme.restful.create import Create
 from pyenzyme.restful.read import Read
