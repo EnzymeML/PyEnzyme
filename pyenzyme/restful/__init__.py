@@ -12,8 +12,6 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 
 from pyenzyme.restful.create import Create
 from pyenzyme.restful.read import Read
-from pyenzyme.restful.copasi import restfulCOPASI
-from pyenzyme.restful.model import parameterEstimation
 from pyenzyme.restful.template import convertTemplate
 from pyenzyme.restful.exportData import exportData
 from pyenzyme.restful.enzymeData import enzymeData
