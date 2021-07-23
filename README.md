@@ -1,4 +1,4 @@
-[![Build and Test](https://github.com/EnzymeML/PyEnzyme/actions/workflows/build.yml/badge.svg)](https://github.com/EnzymeML/PyEnzyme/actions/workflows/build.yml) [![DOI](https://zenodo.org/badge/304390691.svg)](https://zenodo.org/badge/latestdoi/304390691)
+[![Build and Test](https://github.com/EnzymeML/PyEnzyme/actions/workflows/build.yml/badge.svg)](https://github.com/EnzymeML/PyEnzyme/actions/workflows/build.yml) [![DOI](https://zenodo.org/badge/304390691.svg)](https://zenodo.org/badge/latestdoi/304390691) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/EnzymeML/PyEnzyme/HEAD)
 # PyEnzyme
 
 _**Authors**_:      [Jan Range](https://github.com/JR-1991)<br>
