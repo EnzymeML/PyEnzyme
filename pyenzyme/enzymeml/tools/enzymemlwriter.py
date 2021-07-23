@@ -30,7 +30,6 @@ class EnzymeMLWriter(object):
         self.namespace = "http://sbml.org/enzymeml/version1"
 
     def toFile(self, enzmldoc, path):
-
         '''
         Writes EnzymeMLDocument object to an .omex container
 
@@ -45,7 +44,7 @@ class EnzymeMLWriter(object):
         try:
             os.makedirs(
                 os.path.join(self.path, 'data')
-                )
+            )
         except FileExistsError:
             pass
 
@@ -84,7 +83,7 @@ class EnzymeMLWriter(object):
             os.path.join(
                 self.path,
                 'experiment.xml'
-                )
+            )
         )
 
         # Write to OMEX
@@ -98,11 +97,10 @@ class EnzymeMLWriter(object):
         os.remove(
             os.path.join(
                 self.path, 'experiment.xml'
-                )
+            )
         )
 
     def toXMLString(self, enzmldoc):
-
         '''
         Converts EnzymeMLDocument to XML string.
 
@@ -145,7 +143,6 @@ class EnzymeMLWriter(object):
         return writer.writeToString(doc)
 
     def toSBML(self, enzmldoc):
-
         '''
         Returns libSBML model.
 
@@ -510,7 +507,7 @@ class EnzymeMLWriter(object):
             return [
                 key for key, item in enzmldoc.getConcDict().items()
                 if concTuple == item
-                ][0]
+            ][0]
 
     def writeElements(
         self,
@@ -566,7 +563,7 @@ class EnzymeMLWriter(object):
             replicaMapping = {
                 'measurement': prefix + 'measurement',
                 'replica': prefix + 'replica'
-                }
+            }
 
             for replicate in replicates:
 
@@ -686,8 +683,8 @@ class EnzymeMLWriter(object):
         # for replicate object
 
         column = self.setupXMLNode(
-                'enzymeml:column',
-                namespace=False
+            'enzymeml:column',
+            namespace=False
         )
 
         # Add attributes
@@ -712,13 +709,13 @@ class EnzymeMLWriter(object):
         dataAnnotation = self.setupXMLNode('enzymeml:data')
         listOfFiles = self.setupXMLNode(
             'enzymeml:listOfFiles', namespace=False
-            )
+        )
         listOfFormats = self.setupXMLNode(
             'enzymeml:listOfFormats', namespace=False
-            )
+        )
         listOfMeasurements = self.setupXMLNode(
             'enzymeml:listOfMasurements', namespace=False
-            )
+        )
         listOfPaths = dict()
 
         for Index, (measurementID, replicates) \
