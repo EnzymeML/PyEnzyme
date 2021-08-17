@@ -4,7 +4,7 @@ Project: core
 Author: Jan Range
 License: BSD-2 clause
 -----
-Last Modified: Tuesday June 22nd 2021 8:47:30 am
+Last Modified: Thursday July 15th 2021 1:00:05 am
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
@@ -50,6 +50,7 @@ class EnzymeMLDocument(object):
         self.setProteinDict(dict())
         self.setReactantDict(dict())
         self.setReactionDict(dict())
+        self.setMeasurementDict(dict())
         self.setUnitDict(dict())
         self.setConcDict(dict())
 
@@ -196,10 +197,12 @@ class EnzymeMLDocument(object):
 
             log['EnzymeReaction'][reaction['id']]['replicates'] = dict()
             for replicate in replicates:
-                log['EnzymeReaction'][reaction['id']]['replicates'][replicate['replica']] = dict()
+                log['EnzymeReaction'][reaction['id']
+                                      ]['replicates'][replicate['replica']] = dict()
 
                 self.__validField(
-                    log['EnzymeReaction'][reaction['id']]['replicates'][replicate['replica']],
+                    log['EnzymeReaction'][reaction['id']
+                                          ]['replicates'][replicate['replica']],
                     replicate,
                     "Replicate",
                     valid
@@ -292,7 +295,7 @@ class EnzymeMLDocument(object):
             self,
             default=transformAttr,
             indent=4
-            )
+        )
 
     def __str__(self):
         """
@@ -468,7 +471,7 @@ class EnzymeMLDocument(object):
                     if replicate.getInitConc() == 'NONE':
                         reactant = self.getReactant(
                             replicate.getReactant()
-                            )
+                        )
 
                         replicate.setInitConc(
                             reactant.getInitConc()
@@ -521,6 +524,43 @@ class EnzymeMLDocument(object):
 
         Args:
             id_ (string): Unique Identifier of reaction to retrieve
+            by_id (bool, optional): If set False id_ has to be reactions name.
+                                    Defaults to True.
+
+        Raises:
+            KeyError: If ID is unfindable
+            KeyError: If Name is unfindable
+
+        Returns:
+            EnzymeReaction: Object describing a reaction
+        """
+
+        if by_id:
+
+            if id_ in self.__ReactionDict.keys():
+                return self.__ReactionDict[id_]
+
+            raise KeyError(
+                'Reaction %s not found in EnzymeML document %s'
+                % (id_, self.__name)
+            )
+
+        else:
+            for reaction in self.__ReactionDict.values():
+                if id_ == reaction.getName():
+                    return reaction
+
+            raise KeyError(
+                'Reaction %s not found in EnzymeML document %s'
+                % (id_, self.__name)
+            )
+
+    def getMeasurement(self, id_, by_id=True):
+        """
+        Returns reaction object by ID or name
+
+        Args:
+            id_ (string): Unique Identifier of measurement to retrieve
             by_id (bool, optional): If set False id_ has to be reactions name.
                                     Defaults to True.
 
@@ -665,8 +705,8 @@ class EnzymeMLDocument(object):
                         reactant.setSubstanceUnits(
                             UnitCreator().getUnit(
                                 reactant.getSubstanceUnits(), self
-                                )
                             )
+                        )
 
                 reactant.setId(id_)
                 reactant.setSboterm("SBO:0000247")
@@ -760,7 +800,7 @@ class EnzymeMLDocument(object):
                 reaction.setTemperature(reaction.getTemperature() + 273.15)
                 reaction.setTempunit(
                     UnitCreator().getUnit(reaction.getTempunit(), self)
-                    )
+                )
 
                 # set model units
                 try:
@@ -844,7 +884,7 @@ class EnzymeMLDocument(object):
             self.__creator = [
                 TypeChecker(creator, Creator)
                 for creator in creators
-                ]
+            ]
         else:
             self.__creator = [TypeChecker(creators, Creator)]
 
@@ -876,7 +916,7 @@ class EnzymeMLDocument(object):
 
                 UnitCreator().getUnit(vessel.getUnit(), self)
 
-                )
+            )
 
             # TODO Automatic ID assignment
             vessel.setId('v0')
@@ -935,6 +975,17 @@ class EnzymeMLDocument(object):
 
         return self.__ReactionDict
 
+    def getMeasuremntDict(self):
+        """
+        Return reaction dictionary for manual access
+
+        Returns:
+            dict: Dictionary containing EnzymeReaction
+                  objects describing reactions
+        """
+
+        return self.__MeasurementDict
+
     def getUnitDict(self):
         """
         Return unit dictionary for manual access
@@ -989,6 +1040,9 @@ class EnzymeMLDocument(object):
     def setReactantDict(self, reactantDict):
         self.__ReactantDict = TypeChecker(reactantDict, dict)
 
+    def setMeasurementDict(self, measurementDict):
+        self.__MeasurementDict = TypeChecker(measurementDict, dict)
+
     def setReactionDict(self, reactionDict):
         self.__ReactionDict = TypeChecker(reactionDict, dict)
 
@@ -1012,6 +1066,9 @@ class EnzymeMLDocument(object):
 
     def delReactionDict(self):
         del self.__ReactionDict
+
+    def delMeasurementDict(self):
+        del self.__MeasurementDict
 
     def delUnitDict(self):
         del self.__UnitDict

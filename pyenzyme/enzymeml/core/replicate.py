@@ -4,7 +4,7 @@ Project: core
 Author: Jan Range
 License: BSD-2 clause
 -----
-Last Modified: Tuesday June 22nd 2021 6:53:17 pm
+Last Modified: Thursday July 15th 2021 1:00:51 am
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
@@ -24,9 +24,9 @@ class Replicate(EnzymeMLBase):
         replica,
         reactant,
         type_,
-        measurement,
         data_unit,
         time_unit,
+        measurement="unspecified",
         init_conc="NONE",
         data=None,
         time=None,
@@ -34,7 +34,6 @@ class Replicate(EnzymeMLBase):
         uri=None,
         creatorId=None
     ):
-
         '''
         Object describing an EnzymeML replicate.
 
@@ -106,7 +105,7 @@ class Replicate(EnzymeMLBase):
             self,
             default=transformAttr,
             indent=4
-            )
+        )
 
     def setMeasurement(self, measurement):
         self.__measurement = TypeChecker(measurement, str)
