@@ -13,6 +13,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from pyenzyme.enzymeml.core.replicate import Replicate
+from pyenzyme.enzymeml.core.measurementData import MeasurementData
 
 import json
 
@@ -22,9 +23,6 @@ class Measurement(EnzymeMLBase):
     def __init__(
         self,
         name,
-        reactants=dict(),
-        proteins=dict(),
-        replicates=dict(),
         uri=None,
         creatorId=None,
     ):
@@ -32,50 +30,157 @@ class Measurement(EnzymeMLBase):
 
         # Initialize attributes
         self.setName(name)
-        self.setReactants(reactants)
-        self.setProteins(proteins)
-        self.addReplicates(replicates)
+        self.setReactions(dict())
 
-    def addReplicates(self, replicates):
-        if not isinstance(replicates, list):
-            replicates = [replicates]
+    def toJSON(self, d=False):
 
-        self.__updateReactants(replicates)
+        jsonObject = dict()
 
-    def __updateReactants(self, replicates):
+        jsonObject['name'] = self.__name
+        jsonObject['reactions'] = dict()
+
+        for reactionID, reaction in self.__reactions.items():
+
+            proteins = {
+                proteinID: proteinData.toJSON()
+                for proteinID, proteinData in reaction['proteins'].items()
+            }
+
+            reactants = {
+                reactantID: reactantData.toJSON()
+                for reactantID, reactantData in reaction['reactants'].items()
+            }
+
+            jsonObject["reactions"][reactionID] = {
+                "reactants": reactants,
+                "proteins": proteins
+            }
+
+        if d:
+            return jsonObject
+        else:
+            return json.dumps(jsonObject, indent=4)
+
+    def __str__(self):
+        return self.toJSON()
+
+    def addData(
+        self,
+        reactionID,
+        initConc,
+        unit,
+        reactantID=None,
+        proteinID=None,
+        replicates=list()
+    ):
+        """Adds data via reaction ID to the measurement class.
+
+        Args:
+            reactionID (string): Identifier of the reaction that the measurement refers toself.
+            reactantID (string): Identifier of the reactant/protein that has been measured.
+            initConcValue (float): Numeric value of the initial concentration
+            initConcUnit (string): UnitID of the initial concentration
+            replicates (list<Replicate>, optional): List of actual time-coiurse data in Replicate objects. Defaults to None.
+        """
+
+        # Initialize reaction measurement data if not given yet
+        if reactionID not in self.__reactions.keys():
+            self.__initializeReactionData(
+                reactionID=reactionID,
+                reactantID=reactantID,
+                proteinID=proteinID,
+                initConc=initConc,
+                unit=unit,
+                replicates=replicates
+            )
+
+        else:
+            self.__appendReactantData(
+                reactionID=reactionID,
+                reactantID=reactantID,
+                proteinID=proteinID,
+                initConc=initConc,
+                unit=unit,
+                replicates=replicates
+            )
+
+    def __initializeReactionData(
+        self,
+        reactionID,
+        reactantID,
+        proteinID,
+        initConc,
+        unit,
+        replicates
+    ):
+
+        # initialiaze reaction data structure to add data
+        self.__reactions[reactionID] = {
+            'reactants': dict(),
+            'proteins': dict()
+        }
+
+        # Add data to matching species (reactant/protein)
+        self.__appendReactantData(
+            reactionID=reactionID,
+            reactantID=reactantID,
+            proteinID=proteinID,
+            initConc=initConc,
+            unit=unit,
+            replicates=replicates
+        )
+
+    def __appendReactantData(
+        self,
+        reactionID,
+        reactantID,
+        proteinID,
+        initConc,
+        unit,
+        replicates
+    ):
+
+        # Create measurement data class before sorting
+        measData = MeasurementData(
+            reactantID=reactantID,
+            proteinID=proteinID,
+            initConc=initConc,
+            unit=unit,
+            replicates=self.__updateReplicates(replicates, initConc)
+        )
+
+        # Reference reaction ro reduce boilerplate
+        reactionRef = self.__reactions[reactionID]
+
+        if reactantID:
+            reactionRef['reactants'][reactantID] = measData
+        elif proteinID:
+            reactionRef['proteins'][proteinID] = measData
+        else:
+            raise ValueError(
+                "Please enter a reactant or protein ID to add measurement data"
+            )
+
+    def __updateReplicates(self, replicates, initConc):
+
         for replicate in replicates:
-            replicate = TypeChecker(replicate, Replicate)
-            reactantID = replicate.getReactant()
-            replicateConcValue = replicate.getInitConc()
-            replicateUnit = replicate.getDataUnit()
 
-            # Check if the reactantID is already defined
-            if reactantID in self.__reactants.keys():
+            # Check if the initConc given in the replicates matches
+            self.__checkReplicate(replicate, initConc)
 
-                reactantConcValue, reactantConcUnit = self.__reactants[
-                    reactantID
-                ]["initConc"]
+            # Set the measurement name for the replicate
+            replicate.setMeasurement(self.__name)
 
-                # Check if initConc matches
-                if replicateConcValue == reactantConcValue:
+        return replicates
 
-                    self.__reactants[reactantID]["replicates"].append(
-                        replicate)
-
-                else:
-
-                    raise KeyError(
-                        f"Replicate {replicate.getReplica()} initConc {replicateConcValue} doesnt match."
-                    )
-
-            else:
-
-                raise KeyError(
-                    f"Reactant {reactantID} is not defined in the measurement."
-                )
+    def __checkReplicate(self, replicate, initConc):
+        if replicate.getInitConc() != initConc:
+            raise ValueError(
+                f"The given concentration value of replicate {replicate.getInitConc()} does not match the measurement object's value of {initConc}. Please make sure to only add replicates, which share the same initial concentration. If you like to track different initial concentrations, create a new measurement object, since these are fixed per measurement object."
+            )
 
     def setName(self, name):
-        self.__name = TypeChecker(name, str)
+        self.__name = name
 
     def getName(self):
         return self.__name
@@ -83,37 +188,14 @@ class Measurement(EnzymeMLBase):
     def delName(self):
         del self.__name
 
-    def setReactants(self, reactants):
-        self.__reactants = TypeChecker(reactants, dict)
-        self.__checkObjectCompliance(self.__reactants)
+    def setReactions(self, reactions):
+        self.__reactions = TypeChecker(reactions, dict)
 
-    def __checkObjectCompliance(self, elementDict):
+    def getReactions(self):
+        return self.__reactions
 
-        for key, item in elementDict.items():
-            if "initConc" not in item.keys():
-                raise KeyError(
-                    f"Please specify an initial concentration for the element {key}"
-                )
-            if "replicates" not in item.keys():
-                elementDict[key]["replicates"] = list()
-
-        print(elementDict)
-
-    def getReactants(self):
-        return self.__reactants
-
-    def delReactants(self):
-        del self.__reactants
-
-    def setProteins(self, proteins):
-        self.__proteins = TypeChecker(proteins, dict)
-        self.__checkObjectCompliance(self.__proteins)
-
-    def getProteins(self):
-        return self.__proteins
-
-    def delProteins(self):
-        del self.__proteins
+    def delReactions(self):
+        del self.__reactions
 
 
 if __name__ == "__main__":
@@ -121,77 +203,40 @@ if __name__ == "__main__":
     repl1 = Replicate(
         replica="repl1",
         reactant="s1",
+        reaction="r1",
         type_="conc",
         data_unit="u1",
         time_unit="u2",
         init_conc=10.0
     )
 
+    repl1.setData([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
+
     repl2 = Replicate(
         replica="repl2",
         reactant="s2",
+        reaction="r1",
         type_="conc",
         data_unit="u1",
         time_unit="u2",
         init_conc=200.0
     )
 
-    repls = [repl1, repl2]
-    reactants = {
-        "s1": {
-            "initConc": (10.0, "u2")
-        },
-        "s2": {
-            "initConc": (200.0, "u1")
-        }
-    }
+    meas = Measurement("Test")
 
-    proteins = {
-        "p1": {
-            "initConc": (100.0, "u2")
-        }
-    }
-
-    meas = Measurement(
-        "Test",
-        reactants=reactants,
-        proteins=proteins,
-        replicates=repls
+    meas.addData(
+        reactionID="r1",
+        reactantID="s1",
+        initConc=10.0,
+        unit="u2",
+        replicates=[repl1]
     )
 
-    def toJSON(object, d=True):
-
-        d = dict()
-
-        for key, item in object.__dict__.items():
-            key = key.split('__')[-1]
-
-            if key == "reactants" or key == "proteins":
-                elementDict = dict()
-                for elementID, elementItem in item.items():
-
-                    elementDict[elementID] = dict()
-
-                    concValue, concUnit = elementItem["initConc"]
-                    elementDict[elementID]["initConc"] = {
-                        "value": concValue,
-                        "unit": concUnit
-                    }
-
-                    if "replicates" in elementItem.keys():
-                        replicates = [
-                            replicate.toJSON(d=True)
-                            for replicate in elementItem["replicates"]
-                        ]
-                        elementDict[elementID]["replicates"] = replicates
-
-                d[key] = elementDict
-
-            else:
-                d[key] = item
-
-        return d
-
-    print(
-        json.dumps(toJSON(meas), indent=4)
+    meas.addData(
+        reactionID="r1",
+        proteinID="p1",
+        initConc=10.0,
+        unit="u3"
     )
+
+    print(meas)
