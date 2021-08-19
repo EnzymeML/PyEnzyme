@@ -10,6 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
+from os import sep
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from pyenzyme.enzymeml.core.replicate import Replicate
@@ -38,8 +39,11 @@ class Measurement(EnzymeMLBase):
 
         jsonObject['name'] = self.__name
         jsonObject['reactions'] = dict()
+        jsonObject['global-time'] = self.__globalTime
+        jsonObject['global-time-unit'] = self.__globalTimeUnit
 
         for reactionID, reaction in self.__reactions.items():
+            self.setGlobalTimeUnit
 
             proteins = {
                 proteinID: proteinData.toJSON()
@@ -130,6 +134,12 @@ class Measurement(EnzymeMLBase):
             replicates=replicates
         )
 
+        if replicates:
+            # Set the measurements global time with
+            # the initial measurement point
+            self.setGlobalTime(replicates[0].getData(sep=True)[0])
+            self.setGlobalTimeUnit(replicates[0].getTimeUnit())
+
     def __appendReactantData(
         self,
         reactionID,
@@ -178,6 +188,24 @@ class Measurement(EnzymeMLBase):
             raise ValueError(
                 f"The given concentration value of replicate {replicate.getInitConc()} does not match the measurement object's value of {initConc}. Please make sure to only add replicates, which share the same initial concentration. If you like to track different initial concentrations, create a new measurement object, since these are fixed per measurement object."
             )
+
+    def setGlobalTimeUnit(self, unit):
+        self.__globalTimeUnit = TypeChecker(unit, str)
+
+    def getGlobalTimeUnit(self):
+        return self.__globalTimeUnit
+
+    def delGlobalTimeUnit(self):
+        del self.__globalTimeUnit
+
+    def setGlobalTime(self, time):
+        self.__globalTime = TypeChecker(time, list)
+
+    def getGlobalTime(self):
+        return self.__globalTime
+
+    def delGlobalTime(self):
+        del self.__globalTime
 
     def setName(self, name):
         self.__name = name
