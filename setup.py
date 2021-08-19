@@ -13,9 +13,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 import setuptools
 from setuptools import setup
 
-setup(      
+setup(
     name='PyEnzyme',
-    version='1.1.1',
+    version='1.1.2',
     description='Handling of EnzymeML files',
     url='https://github.com/EnzymeML/PyEnzyme',
     author='Range, Jan',
@@ -35,11 +35,12 @@ setup(
         'openpyxl',
         'marshmallow',
         'scipy',
-        'apispec'
+        'apispec',
+        'texttable'
     ],
     extras_require={
         'test': [
             'pytest'
         ]
     },
-    )
+)
