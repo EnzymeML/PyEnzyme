@@ -37,7 +37,6 @@ class EnzymeReaction(EnzymeMLBase):
         uri=None,
         creatorId=None
     ):
-
         """
         Class describing an enzymatic reaction, including
         assay conditions as well as equation
@@ -113,7 +112,7 @@ class EnzymeReaction(EnzymeMLBase):
                                 if enzmldoc else
                                 (val, unit)
                                 for val, unit in elementTuple[4]
-                                ]
+                            ]
 
                         nu_lst = [
 
@@ -124,7 +123,7 @@ class EnzymeReaction(EnzymeMLBase):
                                 'replicates': [
                                     repl.toJSON(d=True, enzmldoc=enzmldoc)
                                     for repl in elementTuple[3]
-                                    ],
+                                ],
                                 'init_conc': getInitConc(elementTuple)
 
                             }
@@ -149,7 +148,7 @@ class EnzymeReaction(EnzymeMLBase):
             self,
             default=transformAttr,
             indent=4
-            )
+        )
 
     def __str__(self):
         """
@@ -200,7 +199,7 @@ class EnzymeReaction(EnzymeMLBase):
             return [
                 item for key, item in enzmldoc.getConcDict().items()
                 if concTuple == item
-                ][0]
+            ][0]
 
     def exportReplicates(self, ids):
         """
@@ -320,9 +319,9 @@ class EnzymeReaction(EnzymeMLBase):
                             concValue=conc_val,
                             concUnit=conc_unit,
                             enzmldoc=enzmldoc
-                            )
-                        ]
-                    )
+                        )
+                    ]
+                )
                 )
 
                 d[tup_id] = (elem, stoich, constant, replicates, nu_initConc)
@@ -367,7 +366,7 @@ class EnzymeReaction(EnzymeMLBase):
         else:
             raise KeyError(
                 f"Reactant/Protein {elem_id} not defined in reaction!"
-                )
+            )
 
     def addReplicate(self, replicate, enzmldoc, by_id=True):
         """
@@ -445,8 +444,8 @@ class EnzymeReaction(EnzymeMLBase):
 
                     # Add initial concentration
                     initConcTuple = enzmldoc.getConcDict()[
-                            replicate.getInitConc()
-                        ]
+                        replicate.getInitConc()
+                    ]
 
                     if initConcTuple not in elementList[elementIndex][4]:
                         elementList[elementIndex][4].append(
@@ -507,7 +506,7 @@ class EnzymeReaction(EnzymeMLBase):
             raise AttributeError(
                 "Replicate has no series data. \
                 Add data via replicate.setData( pandas.Series )"
-                )
+            )
 
         if checkExistingReactant(self.__educts):
             return 1
@@ -522,7 +521,7 @@ class EnzymeReaction(EnzymeMLBase):
             raise AttributeError(
                 f"Replicate's reactant {replicate.getReactant()}\
                      not defined in reaction"
-                )
+            )
 
     def __addElement(
         self,
@@ -832,7 +831,7 @@ class EnzymeReaction(EnzymeMLBase):
             name (string): Name of reaction
         """
 
-        self.__name = TypeChecker(name, str)
+        self.__name = TypeChecker(name, str).lower()
 
     def setReversible(self, reversible):
         """
