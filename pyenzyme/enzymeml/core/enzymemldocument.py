@@ -76,6 +76,9 @@ class EnzymeMLDocument(object):
         # Check consistency
         self.__checkMeasurementConsistency(measurement)
 
+        # Convert all measurement units to UnitDefs
+        self.__convertMeasurementUnits(measurement)
+
         # Finally generate the ID and add it to the dictionary
         measurementID = self.__generateID(
             prefix="m", dictionary=self.__MeasurementDict
@@ -84,6 +87,37 @@ class EnzymeMLDocument(object):
         self.__MeasurementDict[measurementID] = measurement
 
         return measurementID
+
+    def __convertMeasurementUnits(self, measurement):
+        """Converts string SI units to UnitDef objects and IDs
+
+        Args:
+            measurement (Measurement): Object defining a measurement
+        """
+        reactions = measurement.getReactions()
+
+        for reaction in reactions.values():
+
+            for data in reaction['proteins'].values():
+                data.setUnit(
+                    self.__convertUnit(data.getUnit())
+                )
+                self.__convertReplicateUnits(data)
+
+            for data in reaction['reactants'].values():
+                data.setUnit(
+                    self.__convertUnit(data.getUnit())
+                )
+                self.__convertReplicateUnits(data)
+
+    def __convertReplicateUnits(self, data):
+        for replicate in data.getReplicates():
+            replicate.setDataUnit(
+                self.__convertUnit(replicate.getDataUnit())
+            )
+            replicate.setTimeUnit(
+                self.__convertUnit(replicate.getTimeUnit())
+            )
 
     def __checkMeasurementConsistency(self, measurement):
         for reactionID, reactionMeas in measurement.getReactions().items():
@@ -115,6 +149,7 @@ class EnzymeMLDocument(object):
 
             try:
                 reactionMeta.getModifier(speciesID)
+                continue
             except KeyError:
                 pass
 
@@ -287,6 +322,9 @@ class EnzymeMLDocument(object):
 
     def toFile(self, path):
         EnzymeMLWriter().toFile(self, path)
+
+    def toXMLString(self):
+        return EnzymeMLWriter().toXMLString(self)
 
     def toJSON(self, d=False, only_reactions=False):
         """
@@ -509,48 +547,6 @@ class EnzymeMLDocument(object):
     def delConcDict(self):
         del self.__ConcDict
 
-    def __getReplicateUnits(self, reaction):
-        """
-        INTERNAL. Updates Replicate units when reaction is added.add()
-
-        Args:
-            reaction (EnzymeReaction): Reaction object to add.
-        """
-
-        def updateReplicateUnits(getFunction):
-
-            for elementTuple in getFunction():
-                elementReplicates = elementTuple[3]
-
-                for replicateIndex, replicate in enumerate(elementReplicates):
-
-                    timeUnit = replicate.getTimeUnit()
-                    dataUnit = replicate.getDataUnit()
-
-                    if dataUnit not in self.getUnitDict().keys():
-                        replicate.setDataUnit(
-                            UnitCreator().getUnit(dataUnit, self)
-                        )
-
-                    if timeUnit not in self.getUnitDict().keys():
-                        replicate.setTimeUnit(
-                            UnitCreator().getUnit(timeUnit)
-                        )
-
-                    if replicate.getInitConc() == 'NONE':
-                        reactant = self.getReactant(
-                            replicate.getReactant()
-                        )
-
-                        replicate.setInitConc(
-                            reactant.getInitConc()
-                        )
-
-        # Update replicate units and add to EnzymeMLDocument
-        updateReplicateUnits(reaction.getEducts)
-        updateReplicateUnits(reaction.getProducts)
-        updateReplicateUnits(reaction.getModifiers)
-
     def printReactions(self):
         """
         Prints reactions found in the object
@@ -615,14 +611,20 @@ class EnzymeMLDocument(object):
                             reactionID,
                             speciesID,
                             species.getInitConc(),
-                            species.getUnit()
+                            self.getUnitString(species.getUnit())
                         ]
                     )
 
+            # Add empty row for better readablity
+            rows.append([" "] * 5)
+
         table.add_rows(rows)
-        print('\n \n')
+        print('\n')
         print(table.draw())
-        print('\n \n')
+        print('\n')
+
+    def getUnitString(self, unitID):
+        return self.__UnitDict[unitID].getName()
 
     def getReaction(self, id_, by_id=True):
         """
@@ -816,7 +818,7 @@ class EnzymeMLDocument(object):
 
         # Update unit to UnitDefID
         if use_parser:
-            speciesUnit = self.__setUnit(species.getSubstanceUnits())
+            speciesUnit = self.__convertUnit(species.getSubstanceUnits())
             species.setSubstanceUnits(speciesUnit)
 
         # Add species to dictionary
@@ -846,15 +848,11 @@ class EnzymeMLDocument(object):
         reactionID = self.__generateID("r", self.__ReactionDict)
         reaction.setId(reactionID)
 
-        # Convert units if wished
-        if use_parser:
-            self.__getReplicateUnits(reaction)
-
         if use_parser:
             # Reset temperature for SBML compliance to Kelvin
             reaction.setTemperature(reaction.getTemperature() + 273.15)
             reaction.setTempunit(
-                self.__setUnit(reaction.getTempunit())
+                self.__convertUnit(reaction.getTempunit())
             )
 
         # Set model units
@@ -871,10 +869,10 @@ class EnzymeMLDocument(object):
         for name, (value, unit) in model.getParameters():
             model.getParameters()[name] = (
                 value,
-                self.__setUnit(unit)
+                self.__convertUnit(unit)
             )
 
-    def __setUnit(self, unit):
+    def __convertUnit(self, unit):
         return UnitCreator().getUnit(unit, self)
 
     def get_created(self):
@@ -1030,7 +1028,7 @@ class EnzymeMLDocument(object):
 
         return self.__ReactionDict
 
-    def getMeasuremntDict(self):
+    def getMeasurementDict(self):
         """
         Return reaction dictionary for manual access
 
