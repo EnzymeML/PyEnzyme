@@ -529,17 +529,13 @@ class EnzymeReaction(EnzymeMLBase):
         stoichiometry,
         isConstant,
         elementList,
-        enzmldoc,
-        replicates=[],
-        initConcs=[]
+        enzmldoc
     ):
 
         # Check if type of ID is correct
         speciesID = TypeChecker(speciesID, str)
         stoichiometry = TypeChecker(float(stoichiometry), float)
         isConstant = TypeChecker(isConstant, bool)
-        replicates = TypeChecker(replicates, list)
-        initConcs = TypeChecker(initConcs, list)
 
         # Check if species is part of document already
         if speciesID not in enzmldoc.getReactantDict().keys():
@@ -548,24 +544,12 @@ class EnzymeReaction(EnzymeMLBase):
                     f"Reactant/Protein with id {speciesID} is not defined yet"
                 )
 
-        # Add intial concentrations
-        initConcs = [
-            self.__setInitConc(
-                concValue=value,
-                concUnit=unit,
-                enzmldoc=enzmldoc
-            )
-            for value, unit in initConcs
-        ]
-
         # Add altogether to the element list
         elementList.append(
             (
                 speciesID,
                 stoichiometry,
-                isConstant,
-                replicates,
-                initConcs
+                isConstant
             )
         )
 
@@ -574,9 +558,7 @@ class EnzymeReaction(EnzymeMLBase):
         speciesID,
         stoichiometry,
         isConstant,
-        enzmldoc,
-        replicates=[],
-        initConcs=[]
+        enzmldoc
     ):
         """
         Adds element to EnzymeReaction object. Replicates as well
@@ -598,8 +580,6 @@ class EnzymeReaction(EnzymeMLBase):
             speciesID=speciesID,
             stoichiometry=stoichiometry,
             isConstant=isConstant,
-            replicates=replicates,
-            initConcs=initConcs,
             elementList=self.__educts,
             enzmldoc=enzmldoc
         )
@@ -609,9 +589,7 @@ class EnzymeReaction(EnzymeMLBase):
         speciesID,
         stoichiometry,
         isConstant,
-        enzmldoc,
-        replicates=[],
-        initConcs=[]
+        enzmldoc
     ):
         """
         Adds element to EnzymeReaction object. Replicates as well
@@ -633,8 +611,6 @@ class EnzymeReaction(EnzymeMLBase):
             speciesID=speciesID,
             stoichiometry=stoichiometry,
             isConstant=isConstant,
-            replicates=replicates,
-            initConcs=initConcs,
             elementList=self.__products,
             enzmldoc=enzmldoc
         )
@@ -644,9 +620,7 @@ class EnzymeReaction(EnzymeMLBase):
         speciesID,
         stoichiometry,
         isConstant,
-        enzmldoc,
-        replicates=[],
-        initConcs=[]
+        enzmldoc
     ):
         """
         Adds element to EnzymeReaction object. Replicates as well
@@ -668,8 +642,6 @@ class EnzymeReaction(EnzymeMLBase):
             speciesID=speciesID,
             stoichiometry=stoichiometry,
             isConstant=isConstant,
-            replicates=replicates,
-            initConcs=initConcs,
             elementList=self.__modifiers,
             enzmldoc=enzmldoc
         )
