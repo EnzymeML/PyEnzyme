@@ -240,7 +240,7 @@ class EnzymeMLWriter(object):
 
         archive.writeToFile(self.path + '/' + out_file)
 
-        print('\nArchive created:', out_file,  '\n')
+        print('\nArchive created:', out_file, '\n')
 
     def setupXMLNode(self, name, namespace=True):
         # Helper function
