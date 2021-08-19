@@ -86,6 +86,12 @@ class MeasurementData(object):
             for repl in replicates
         ]
 
+    def getReplicates(self):
+        return self.__replicates
+
+    def delReplicates(self):
+        del self.__replicates
+
     def addReplicate(self, replicate):
         self.__replicates.append(
             TypeChecker(replicate, Replicate)
