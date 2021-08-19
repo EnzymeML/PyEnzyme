@@ -71,10 +71,10 @@ class EnzymeMLWriter(object):
         self.__addReactants(model, enzmldoc)
 
         # Add reactions
-        measurementDict = self.__addReactions(model, enzmldoc)
+        self.__addReactions(model, enzmldoc)
 
         # Add data
-        listOfPaths = self.__addData(measurementDict, model)
+        listOfPaths = self.__addData(model, enzmldoc)
 
         # Write to EnzymeML
         writer = SBMLWriter()
@@ -133,10 +133,10 @@ class EnzymeMLWriter(object):
         self.__addReactants(model, enzmldoc)
 
         # Add reactions
-        measurementDict = self.__addReactions(model, enzmldoc)
+        self.__addReactions(model, enzmldoc)
 
         # Add data
-        self.__addData(measurementDict, model)
+        self.__addData(model, enzmldoc)
 
         # Write to EnzymeML
         writer = SBMLWriter()
@@ -509,83 +509,7 @@ class EnzymeMLWriter(object):
                 if concTuple == item
             ][0]
 
-    def writeElements(
-        self,
-        elementTuples,
-        createFunction,
-        measurementDict,
-        replicaAnnot,
-        enzmldoc
-    ):
-
-        for species, stoich, isConstant, \
-                replicates, initConcs in elementTuples:
-
-            speciesRef = createFunction()
-            speciesRef.setSpecies(species)
-
-            try:
-                # Catch modifiers --> No stoich/constant in SBML
-                speciesRef.setStoichiometry(stoich)
-                speciesRef.setConstant(isConstant)
-            except AttributeError:
-                pass
-
-            # Add initConcs
-            initConcAnnot = self.setupXMLNode('enzymeml:initConcs')
-            for value, unit in initConcs:
-
-                initConcID = self.__setInitConc(
-                    concValue=value,
-                    concUnit=unit,
-                    enzmldoc=enzmldoc
-                )
-
-                initConcNode = XMLNode(
-                    XMLTriple('enzymeml:initConc'),
-                    XMLAttributes(),
-                    XMLNamespaces()
-                )
-
-                initConcNode.addAttr('id', initConcID)
-                initConcNode.addAttr('value', str(value))
-                initConcNode.addAttr('unit', unit)
-
-                initConcAnnot.addChild(initConcNode)
-
-            if initConcAnnot.getNumChildren() > 0:
-                speciesRef.appendAnnotation(
-                    initConcAnnot
-                )
-
-            # Parse replicates
-            prefix = '_Replicate__'
-            replicaMapping = {
-                'measurement': prefix + 'measurement',
-                'replica': prefix + 'replica'
-            }
-
-            for replicate in replicates:
-
-                self.appendMultiAttributes(
-                    attributeName='enzymeml:replica',
-                    object=replicate,
-                    objectMapping=replicaMapping,
-                    annotationNode=replicaAnnot
-                )
-
-                measurementID = replicate.getMeasurement()
-                if measurementID in measurementDict.keys():
-                    measurementDict[measurementID].append(
-                        replicate
-                    )
-                else:
-                    measurementDict[measurementID] = [replicate]
-
     def __addReactions(self, model, enzmldoc):
-
-        # Initialize dictionary for measurements
-        measurementDict = dict()
 
         for enzymeReaction in enzmldoc.getReactionDict().values():
 
@@ -629,53 +553,51 @@ class EnzymeMLWriter(object):
                     annotationNode=conditionsAnnotation
                 )
 
-            # Parse elements
-            replicaAnnotation = self.setupXMLNode(
-                'enzymeml:replicas',
-                namespace=False
-            )
-
             # Write educts
             self.writeElements(
                 elementTuples=enzymeReaction.getEducts(),
-                createFunction=reaction.createReactant,
-                measurementDict=measurementDict,
-                replicaAnnot=replicaAnnotation,
-                enzmldoc=enzmldoc
+                createFunction=reaction.createReactant
             )
 
             # Write products
             self.writeElements(
                 elementTuples=enzymeReaction.getProducts(),
-                createFunction=reaction.createProduct,
-                measurementDict=measurementDict,
-                replicaAnnot=replicaAnnotation,
-                enzmldoc=enzmldoc
+                createFunction=reaction.createProduct
             )
 
             # Write modifiers
             self.writeElements(
                 elementTuples=enzymeReaction.getModifiers(),
-                createFunction=reaction.createModifier,
-                measurementDict=measurementDict,
-                replicaAnnot=replicaAnnotation,
-                enzmldoc=enzmldoc
+                createFunction=reaction.createModifier
             )
 
             # Finally, add EnzymeML annotations if given
             if conditionsAnnotation.getNumChildren() > 0:
                 reactionAnnotation.addChild(conditionsAnnotation)
-            if replicaAnnotation.getNumChildren() > 0:
-                reactionAnnotation.addChild(replicaAnnotation)
 
             reaction.appendAnnotation(reactionAnnotation)
 
-        return measurementDict
+    def writeElements(
+        self,
+        elementTuples,
+        createFunction
+    ):
+
+        for species, stoich, isConstant in elementTuples:
+
+            speciesRef = createFunction()
+            speciesRef.setSpecies(species)
+
+            try:
+                # Catch modifiers --> No stoich/constant in SBML
+                speciesRef.setStoichiometry(stoich)
+                speciesRef.setConstant(isConstant)
+            except AttributeError:
+                pass
 
     def writeReplicateData(
         self,
         replicate,
-        index,
         formatAnnot
     ):
         # Helper function
@@ -692,8 +614,7 @@ class EnzymeMLWriter(object):
         column.addAttr('species', replicate.getReactant())
         column.addAttr('type', replicate.getType())
         column.addAttr('unit', replicate.getDataUnit())
-        column.addAttr('index', str(index))
-        column.addAttr('initConcID', replicate.getInitConc())
+        column.addAttr('index', str(self.index))
         column.addAttr('isCalculated', str(replicate.getIsCalculated()))
 
         # Add colum to format annotation
@@ -701,8 +622,8 @@ class EnzymeMLWriter(object):
 
     def __addData(
         self,
-        measurementDict,
-        model
+        model,
+        enzmldoc
     ):
 
         # Initialize data lists
@@ -718,10 +639,10 @@ class EnzymeMLWriter(object):
         )
         listOfPaths = dict()
 
-        for Index, (measurementID, replicates) \
-                in enumerate(measurementDict.items()):
+        measurementDict = enzmldoc.getMeasurementDict()
+        for Index, (measurementID, measurement) in enumerate(measurementDict.items()):
 
-            # setup format ID/node and file ID
+            # setup format/Measurement ID/node and file ID
             formatID = f'format{Index}'
             fileID = f'file{Index}'
 
@@ -732,11 +653,14 @@ class EnzymeMLWriter(object):
 
             formatAnnot.addAttr('id', formatID)
 
+            measurementAnnot = self.setupXMLNode(
+                'enzymeml:measurement',
+                namespace=False
+            )
+
             # Get time and add to format node
-            time = [
-                replicate.getData(sep=True)[0]
-                for replicate in replicates
-            ][0]
+            time = measurement.getGlobalTime()
+            timeUnit = measurement.getGlobalTimeUnit()
 
             timeColumn = XMLNode(
                 XMLTriple('enzymeml:column'),
@@ -744,25 +668,19 @@ class EnzymeMLWriter(object):
             )
 
             timeColumn.addAttr('type', 'time')
-            timeColumn.addAttr('unit', replicates[0].getTimeUnit())
+            timeColumn.addAttr('unit', timeUnit)
             timeColumn.addAttr('index', '0')
 
             formatAnnot.addChild(timeColumn)
 
-            # create DataFrame from replicate data
+            # write initConc annotation and prepare raw data
             dataColumns = [time]
-
-            for replicate in replicates:
-
-                self.writeReplicateData(
-                    replicate=replicate,
-                    index=len(dataColumns),
-                    formatAnnot=formatAnnot
-                )
-
-                # save raw data for DataFrame
-                _, data = replicate.getData(sep=True)
-                dataColumns.append(data)
+            self.index = 1
+            dataColumns += self.writeMeasurementData(
+                measurement=measurement,
+                measurementAnnot=measurementAnnot,
+                formatAnnot=formatAnnot
+            )
 
             # Create DataFrame to save measurement
             fileName = f'{measurementID}.csv'
@@ -788,14 +706,9 @@ class EnzymeMLWriter(object):
             fileAnnot.addAttr('format', formatID)
             fileAnnot.addAttr('id', fileID)
 
-            measurementAnnot = self.setupXMLNode(
-                'enzymeml:measurement',
-                namespace=False
-            )
-
             measurementAnnot.addAttr('file', fileID)
             measurementAnnot.addAttr('id', measurementID)
-            measurementAnnot.addAttr('name', 'AnyName')
+            measurementAnnot.addAttr('name', measurement.getName())
 
             listOfFormats.addChild(formatAnnot)
             listOfFiles.addChild(fileAnnot)
@@ -809,3 +722,80 @@ class EnzymeMLWriter(object):
         model.getListOfReactions().appendAnnotation(dataAnnotation)
 
         return listOfPaths
+
+    def writeMeasurementData(
+        self,
+        measurement,
+        measurementAnnot,
+        formatAnnot
+    ):
+        reactions = measurement.getReactions().items()
+        dataColumns = list()
+        for reactionID, reactionObj in reactions:
+
+            # Init Conc
+            # Extract measurementData objects
+            proteins = reactionObj['proteins']
+            reactants = reactionObj['reactants']
+
+            # Append initConc data to measurement
+            self.appendInitConcData(
+                measurementAnnot=measurementAnnot,
+                dictionary=proteins, reactionID=reactionID, speciesType="protein"
+            )
+            self.appendInitConcData(
+                measurementAnnot=measurementAnnot,
+                dictionary=reactants, reactionID=reactionID, speciesType="reactant"
+            )
+
+            # Replicates
+            dataColumns += self.appendReplicateData(
+                {**proteins, **reactants},
+                formatAnnot=formatAnnot,
+            )
+
+        return dataColumns
+
+    def appendReplicateData(self, species, formatAnnot):
+
+        # Initialize data columns
+        dataColumns = list()
+
+        # Collect all replicates
+        replicates = [
+            replicate
+            for data in species.values()
+            for replicate in data.getReplicates()
+        ]
+
+        for replicate in replicates:
+
+            # Write data to formatAnnot
+            self.writeReplicateData(
+                replicate=replicate, formatAnnot=formatAnnot
+            )
+
+            # Extract series data
+            dataColumns.append(
+                replicate.getData(sep=True)[1]
+            )
+
+            self.index += 1
+
+        return dataColumns
+
+    def appendInitConcData(self, measurementAnnot, dictionary, reactionID, speciesType):
+
+        for speciesID, data in dictionary.items():
+
+            # Create the initConc annotation
+            initConcAnnot = self.setupXMLNode(
+                'enzymeml:initConc', namespace=False
+            )
+
+            initConcAnnot.addAttr('reactionID', reactionID)
+            initConcAnnot.addAttr(f'{speciesType}ID', speciesID)
+            initConcAnnot.addAttr('value', str(data.getInitConc()))
+            initConcAnnot.addAttr('unit', data.getUnit())
+
+            measurementAnnot.addChild(initConcAnnot)
