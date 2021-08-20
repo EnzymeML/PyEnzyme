@@ -39,8 +39,10 @@ class Measurement(EnzymeMLBase):
 
         jsonObject['name'] = self.__name
         jsonObject['reactions'] = dict()
-        jsonObject['global-time'] = self.__globalTime
-        jsonObject['global-time-unit'] = self.__globalTimeUnit
+
+        if hasattr(self, '_Measurement__globalTime'):
+            jsonObject['global-time'] = self.__globalTime
+            jsonObject['global-time-unit'] = self.__globalTimeUnit
 
         for reactionID, reaction in self.__reactions.items():
             self.setGlobalTimeUnit
@@ -67,6 +69,39 @@ class Measurement(EnzymeMLBase):
 
     def __str__(self):
         return self.toJSON()
+
+    def addReplicates(self, replicates, reactionID):
+        """Adds a replicate to the corresponding measurementData object. This method is meant to be called if the measurement metadata of a reaction/species has already been done and replicate data has to be added afterwards. If not, use addData instead to introduce the species metadata.
+
+        Args:
+            replicate (List<Replicate>): Objects describing time course data
+            reactionID (String): Reaction identifier where the data is added to.
+        """
+
+        # Check if just a single Replicate has been handed
+        if isinstance(replicates, Replicate):
+            replicates = [replicates]
+
+        for replicate in replicates:
+
+            # Check for the species type
+            speciesID = replicate.getReactant()
+            speciesType = "reactants" if speciesID[0] == "s" else "proteins"
+
+            try:
+                reactionData = self.__reactions[reactionID][speciesType]
+            except KeyError:
+                raise KeyError(
+                    f"Reaction {reactionID} is not part of the measurement yet. If a reaction hasnt been yet defined in a measurement object, use the addData method to define metadata first-hand. You can add the replicates in the same function call then."
+                )
+
+            try:
+                data = reactionData[speciesID]
+                data.addReplicate(replicate)
+            except KeyError:
+                raise KeyError(
+                    f"{speciesType[0:-1]} {speciesID} is not part of the measurement yet. If a {speciesType[0:-1]} hasnt been yet defined in a measurement object, use the addData method to define metadata first-hand. You can add the replicates in the same function call then."
+                )
 
     def addData(
         self,
@@ -188,6 +223,15 @@ class Measurement(EnzymeMLBase):
             raise ValueError(
                 f"The given concentration value of replicate {replicate.getInitConc()} does not match the measurement object's value of {initConc}. Please make sure to only add replicates, which share the same initial concentration. If you like to track different initial concentrations, create a new measurement object, since these are fixed per measurement object."
             )
+
+    def setId(self, ID):
+        self.__id = TypeChecker(ID, str)
+
+    def getId(self):
+        return self.__id
+
+    def delId(self):
+        del self.__id
 
     def setGlobalTimeUnit(self, unit):
         self.__globalTimeUnit = TypeChecker(unit, str)
