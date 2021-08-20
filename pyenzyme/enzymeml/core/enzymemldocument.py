@@ -83,6 +83,7 @@ class EnzymeMLDocument(object):
         measurementID = self.__generateID(
             prefix="m", dictionary=self.__MeasurementDict
         )
+        measurement.setId(measurementID)
 
         self.__MeasurementDict[measurementID] = measurement
 
@@ -95,6 +96,9 @@ class EnzymeMLDocument(object):
             measurement (Measurement): Object defining a measurement
         """
         reactions = measurement.getReactions()
+        measurement.setGlobalTimeUnit(
+            self.__convertUnit(measurement.getGlobalTimeUnit())
+        )
 
         for reaction in reactions.values():
 
@@ -431,6 +435,9 @@ class EnzymeMLDocument(object):
         for key, item in self.__ReactionDict.items():
             fin_string.append('\tID: %s \t Name: %s' % (key, item.getName()))
 
+        fin_string.append('>>> Measurements')
+        fin_string.append(self.printMeasurements())
+
         return "\n".join(fin_string)
 
     def addConc(self, tup):
@@ -619,9 +626,7 @@ class EnzymeMLDocument(object):
             rows.append([" "] * 5)
 
         table.add_rows(rows)
-        print('\n')
-        print(table.draw())
-        print('\n')
+        return "\n" + table.draw() + "\n"
 
     def getUnitString(self, unitID):
         return self.__UnitDict[unitID].getName()
