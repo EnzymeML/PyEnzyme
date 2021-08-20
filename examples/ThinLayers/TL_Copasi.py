@@ -28,7 +28,6 @@ class ThinLayerCopasi(object):
         path,
         outdir=None
     ):
-
         '''
         ThinLayer interface from an .omex EnzymeML container
         to COPASI comatible .cps fiel format.
@@ -53,7 +52,7 @@ class ThinLayerCopasi(object):
         dirpath = os.path.join(
             outdir,
             f"Modeled_{reaction_id}_{reactant}"
-            )
+        )
 
         try:
             os.mkdir(dirpath)
@@ -86,7 +85,6 @@ class ThinLayerCopasi(object):
         print(km_val, km_unit, vmax_val, vmax_unit)
 
     def importEnzymeML(self, reaction_id, reactants, dirpath, enzmldoc):
-
         '''
         ThinLayer interface from an .omex EnzymeML container
         to COPASI comatible .cps fiel format.
@@ -239,12 +237,12 @@ class ThinLayerCopasi(object):
                 if tup[0][0] == 's':
                     unit_r = enzmldoc.getUnitDict()[
                         enzmldoc.getReactant(tup[0]).getSubstanceUnits()
-                        ]
+                    ]
 
                 if tup[0][0] == 'p':
                     unit_r = enzmldoc.getUnitDict()[
                         enzmldoc.getProtein(tup[0]).getSubstanceUnits()
-                        ]
+                    ]
 
                 units_r = unit_r.getUnits()
                 exponent_r = [tup[1] for tup in units_r if tup[0] == kind][0]
@@ -286,10 +284,10 @@ class ThinLayerCopasi(object):
                             time_unit=repl.getTimeUnit(),
                             init_conc=repl.getInitConc()*(10**nu_scale),
                             measurement=repl.getMeasurement()
-                                             )
+                        )
 
                         for repl in tup[3]
-                        ]
+                    ]
 
                     # Reset initial concentrations
                     nu_inits = list()
@@ -299,20 +297,20 @@ class ThinLayerCopasi(object):
                         enzmldoc.addConc((nu_conc, initUnit))
 
                     # Remove old element
-                    elementTuple = ( tup[0], tup[1], tup[2], nu_repls, nu_inits )
-                    
+                    elementTuple = (tup[0], tup[1], tup[2], nu_repls, nu_inits)
+
                     if i == 0:
                         reaction.getEducts()[
                             reaction.getEduct(tup[0], index=True)
-                            ] = elementTuple
+                        ] = elementTuple
                     if i == 1:
                         reaction.getProducts()[
                             reaction.getProduct(tup[0], index=True)
-                            ] = elementTuple
+                        ] = elementTuple
                     if i == 2:
                         reaction.getModifiers()[
                             reaction.getModifier(tup[0], index=True)
-                            ] = elementTuple
+                        ] = elementTuple
 
     ##### COPASI FUNCTIONS #####
 
@@ -325,7 +323,7 @@ class ThinLayerCopasi(object):
             return
 
         if reaction.isReversible():  # for now force the kinetic to be irreversible
-                                    # (otherwise the kinetic law does not apply)
+            # (otherwise the kinetic law does not apply)
             reaction.setReversible(False)
 
         # now since we have 2 substrates in this case and we would automatically assign the first substrate
@@ -378,7 +376,8 @@ class ThinLayerCopasi(object):
             item.setStartValue(value)  # the current initial concentration
             item.setLowerBound(COPASI.CCommonName(str(value * 0.0001)))
             item.setUpperBound(COPASI.CCommonName(str(value * 10000)))
-            cn_name_map[param.getValueObject().getCN().getString()] = param.getObjectName()
+            cn_name_map[param.getValueObject().getCN().getString()
+                        ] = param.getObjectName()
 
         # switch optimization method
         task.setMethodType(COPASI.CTaskEnum.Method_LevenbergMarquardt)
@@ -401,8 +400,10 @@ class ThinLayerCopasi(object):
                 continue
             value = results.get(i)
 
-            if cn_name_map[cn] == 'V': vmax = value;
-            if cn_name_map[cn] == 'Km': km = value;
+            if cn_name_map[cn] == 'V':
+                vmax = value
+            if cn_name_map[cn] == 'Km':
+                km = value
 
         return km, vmax
 
