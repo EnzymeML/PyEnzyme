@@ -10,13 +10,14 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from os import sep
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
 
 import json
+import pandas as pd
+import numpy as np
 
 
 class Measurement(EnzymeMLBase):
@@ -69,6 +70,62 @@ class Measurement(EnzymeMLBase):
 
     def __str__(self):
         return self.toJSON()
+
+    def exportData(self):
+        """Returns data stored in the measurement object as DataFrames nested in dictionaries. These are sorted hierarchially by reactions where each holds a DataFrame each for proteins and reactants.
+
+        Returns:
+            measurements (dict): Follows the hierarchy Reactions > Proteins/Reactants > { initConcs, data }
+        """
+
+        measurements = dict()
+
+        # Combine Replicate objects for each reaction
+        for reactionID, reaction in self.__reactions.items():
+
+            proteins = self.__combineReplicates(
+                measurementSpecies=reaction['proteins']
+            )
+            reactants = self.__combineReplicates(
+                measurementSpecies=reaction['reactants']
+            )
+
+            measurements[reactionID] = {
+                "proteins": proteins,
+                "reactants": reactants
+            }
+
+        return measurements
+
+    def __combineReplicates(self, measurementSpecies):
+
+        # Initialize columns and headers
+        columns = [self.__globalTime]
+        header = [f"time/{self.__globalTimeUnit}"]
+        initConcs = dict()
+
+        # Iterate over measurementData to fill columns
+        for speciesID, data in measurementSpecies.items():
+
+            for replicate in data.getReplicates():
+
+                columns.append(
+                    replicate.getData(sep=True)[1]
+                )
+
+                header.append(
+                    f"{replicate.getReplica()}/{speciesID}/{replicate.getDataUnit()}"
+                )
+
+                initConcs[speciesID] = (data.getInitConc(), data.getUnit())
+
+        print(columns, header)
+
+        if len(columns) > 1:
+            return {
+                "data": pd.DataFrame(np.array(columns).T, columns=header),
+                "initConc": initConcs
+            }
 
     def addReplicates(self, replicates, reactionID):
         """Adds a replicate to the corresponding measurementData object. This method is meant to be called if the measurement metadata of a reaction/species has already been done and replicate data has to be added afterwards. If not, use addData instead to introduce the species metadata.
@@ -268,47 +325,3 @@ class Measurement(EnzymeMLBase):
 
     def delReactions(self):
         del self.__reactions
-
-
-if __name__ == "__main__":
-
-    repl1 = Replicate(
-        replica="repl1",
-        reactant="s1",
-        reaction="r1",
-        type_="conc",
-        data_unit="u1",
-        time_unit="u2",
-        init_conc=10.0
-    )
-
-    repl1.setData([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
-
-    repl2 = Replicate(
-        replica="repl2",
-        reactant="s2",
-        reaction="r1",
-        type_="conc",
-        data_unit="u1",
-        time_unit="u2",
-        init_conc=200.0
-    )
-
-    meas = Measurement("Test")
-
-    meas.addData(
-        reactionID="r1",
-        reactantID="s1",
-        initConc=10.0,
-        unit="u2",
-        replicates=[repl1]
-    )
-
-    meas.addData(
-        reactionID="r1",
-        proteinID="p1",
-        initConc=10.0,
-        unit="u3"
-    )
-
-    print(meas)
