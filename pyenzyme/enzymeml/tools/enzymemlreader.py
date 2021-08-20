@@ -17,6 +17,7 @@ from pyenzyme.enzymeml.core.reactant import Reactant
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.unitdef import UnitDef
 from pyenzyme.enzymeml.core.vessel import Vessel
+from pyenzyme.enzymeml.core.measurement import Measurement
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
 
 from libsbml import SBMLReader
@@ -113,6 +114,10 @@ class EnzymeMLReader():
         reactionDict = self.__getReactions(model, enzmldoc)
         enzmldoc.setReactionDict(reactionDict)
 
+        # fetch Measurements
+        measurementDict = self.__getData(model)
+        enzmldoc.setMeasurementDict(measurementDict)
+
         del self.__path
 
         return enzmldoc
@@ -176,7 +181,7 @@ class EnzymeMLReader():
                     baseunit.getScale(),
                     baseunit.getMultiplier()
 
-                    )
+                )
 
             unitDict[id_] = unitdef
 
@@ -199,6 +204,9 @@ class EnzymeMLReader():
     def __parseAnnotation(annotationString):
         # __getSpecies helper function
         # extracts annotations to dict
+        if len(annotationString) == 0:
+            return dict()
+
         speciesAnnot = ET.fromstring(
             annotationString
         )[0]
@@ -206,16 +214,13 @@ class EnzymeMLReader():
         # Initialize annotation dictionary
         annotDict = dict()
 
-        # fetch attributes from both types of species
-        speciesType = speciesAnnot.tag.split('}')[-1]
-
         for enzymeMLAnnot in speciesAnnot:
             key = enzymeMLAnnot.tag.split('}')[-1].lower()
             attribute = enzymeMLAnnot.text
 
             annotDict[key] = attribute
 
-        return speciesType, annotDict
+        return annotDict
 
     def __getSpecies(self, model):
 
@@ -226,19 +231,23 @@ class EnzymeMLReader():
         for species in speciesList:
 
             # get Annotations
-            speciesType, annotDict = self.__parseAnnotation(
+            annotDict = self.__parseAnnotation(
                 species.getAnnotationString()
             )
 
+            # Determine species via identifier
+            speciesType = 'protein' if species.getId()[
+                0] == 'p' else 'reactant'
+
             if speciesType == 'protein':
                 protein = Protein(
-                            name=species.getName(),
-                            vessel=species.getCompartment(),
-                            init_conc=species.getInitialConcentration(),
-                            substanceunits=species.getSubstanceUnits(),
-                            constant=species.getConstant(),
-                            **annotDict
-                        )
+                    name=species.getName(),
+                    vessel=species.getCompartment(),
+                    init_conc=species.getInitialConcentration(),
+                    substanceunits=species.getSubstanceUnits(),
+                    constant=species.getConstant(),
+                    **annotDict
+                )
 
                 # Set IDs manually
                 protein.setId(species.getId())
@@ -250,13 +259,13 @@ class EnzymeMLReader():
             elif speciesType == 'reactant':
 
                 reactant = Reactant(
-                            name=species.getName(),
-                            vessel=species.getCompartment(),
-                            init_conc=species.getInitialConcentration(),
-                            substanceunits=species.getSubstanceUnits(),
-                            constant=species.getConstant(),
-                            **annotDict
-                        )
+                    name=species.getName(),
+                    vessel=species.getCompartment(),
+                    init_conc=species.getInitialConcentration(),
+                    substanceunits=species.getSubstanceUnits(),
+                    constant=species.getConstant(),
+                    **annotDict
+                )
 
                 # Set IDs manually
                 reactant.setMetaid(species.getMetaId())
@@ -332,8 +341,6 @@ class EnzymeMLReader():
     def __getElements(
         self,
         speciesRefs,
-        reactionReplicates,
-        enzmldoc,
         modifiers=False
     ):
         elements = list()
@@ -342,20 +349,12 @@ class EnzymeMLReader():
             speciesID = speciesRef.getSpecies()
             stoichiometry = 1.0 if modifiers else speciesRef.getStoichiometry()
             constant = True if modifiers else speciesRef.getConstant()
-            initConcs = self.__getInitConcs(speciesRef, enzmldoc)
-
-            if speciesID in reactionReplicates.keys():
-                replicates = reactionReplicates[speciesID]
-            else:
-                replicates = list()
 
             elements.append(
                 (
                     speciesID,
                     stoichiometry,
-                    constant,
-                    replicates,
-                    initConcs
+                    constant
                 )
             )
 
@@ -370,10 +369,10 @@ class EnzymeMLReader():
             (
                 localParam.getValue(),
                 localParam.getUnits()
-                )
+            )
             for localParam in
             kineticLaw.getListOfLocalParameters()
-                }
+        }
 
         return KineticModel(
             equation=equation,
@@ -384,7 +383,6 @@ class EnzymeMLReader():
     def __getReactions(self, model, enzmldoc):
 
         reactionsList = model.getListOfReactions()
-        allReplicates = self.__getReplicates(reactionsList)
 
         # Initialize reaction dictionary
         reactionDict = dict()
@@ -397,29 +395,17 @@ class EnzymeMLReader():
             # Fetch conditions
             conditions = self.__parseConditions(reactionAnnot)
 
-            # Fetch reaction replicates
-            reactionReplicates = self.__parseReactionReplicates(
-                reactionAnnot,
-                allReplicates
-            )
-
             # Fetch Elements in SpeciesReference
             educts = self.__getElements(
                 reaction.getListOfReactants(),
-                reactionReplicates,
-                enzmldoc
             )
 
             products = self.__getElements(
                 reaction.getListOfProducts(),
-                reactionReplicates,
-                enzmldoc
             )
 
             modifiers = self.__getElements(
                 reaction.getListOfModifiers(),
-                reactionReplicates,
-                enzmldoc,
                 modifiers=True
             )
 
@@ -463,7 +449,7 @@ class EnzymeMLReader():
                 'format': file.attrib['format'],
                 'id': file.attrib['id']
 
-                } for file in fileAnnot
+            } for file in fileAnnot
         }
 
         return files
@@ -486,26 +472,72 @@ class EnzymeMLReader():
 
         return formats
 
-    @staticmethod
-    def __parseListOfMeasurements(dataAnnot):
+    def __parseListOfMeasurements(self, dataAnnot):
         # __getReplicates helper function
         # reads measurement anntations to
         # tuple list
-        measurementAnnot = dataAnnot[2]
-        measurements = [
-            (
-                measurement.attrib['id'],
-                measurement.attrib['file'],
-                measurement.attrib['name']
+        listOfMeasurements = dataAnnot[2]
+        measurementFiles = {
+            measurement.attrib['id']:
+            measurement.attrib['file']
+            for measurement in listOfMeasurements
+        }
+        measurementDict = {
+            measurement.attrib['id']:
+            self.__parseMeasurement(measurement)
+            for measurement in listOfMeasurements
+        }
+
+        return measurementDict, measurementFiles
+
+    @staticmethod
+    def __parseMeasurement(measurement):
+        """Extracts individual initial concentrations of a measurement.
+
+        Args:
+            measurement (XMLNode): Measurement XML information
+        """
+
+        # initialize Measurement object
+        measurementObject = Measurement(
+            name=measurement.attrib['name']
+        )
+
+        measurementObject.setId(
+            measurement.attrib['id']
+        )
+
+        for initConc in measurement:
+            reactionID = initConc.attrib['reactionID']
+            value = initConc.attrib['value']
+            unit = initConc.attrib['unit']
+
+            reactantID = None
+            proteinID = None
+
+            if 'reactantID' in initConc.attrib.keys():
+                reactantID = initConc.attrib['reactantID']
+            elif 'proteinID' in initConc.attrib.keys():
+                proteinID = initConc.attrib['proteinID']
+            else:
+                raise KeyError(
+                    "Neither reactant or protein ID defined."
+                )
+
+            measurementObject.addData(
+                reactionID=reactionID,
+                initConc=float(value),
+                unit=unit,
+                reactantID=reactantID,
+                proteinID=proteinID,
             )
-            for measurement in measurementAnnot
-        ]
 
-        return measurements
+        return measurementObject
 
-    def __getReplicates(self, reactions):
+    def __getData(self, model):
 
         # Parse EnzymeML:format annotation
+        reactions = model.getListOfReactions()
         dataAnnot = ET.fromstring(reactions.getAnnotationString())[0]
 
         # Fetch list of files
@@ -515,13 +547,15 @@ class EnzymeMLReader():
         formats = self.__parseListOfFormats(dataAnnot)
 
         # Fetch measurements
-        measurements = self.__parseListOfMeasurements(dataAnnot)
+        measurementDict, measurementFiles = self.__parseListOfMeasurements(
+            dataAnnot
+        )
 
         # Initialize replicates dictionary
         replicates = dict()
 
         # Iterate over measurements and assign replicates
-        for measurementID, measurementFile, measurementName in measurements:
+        for measurementID, measurementFile in measurementFiles.items():
 
             # Get file content
             fileInfo = files[measurementFile]
@@ -537,7 +571,7 @@ class EnzymeMLReader():
                 (
                     csvFile.iloc[:, int(column['index'])],
                     column['unit']
-                    )
+                )
                 for column in measurementFormat
                 if column['type'] == 'time'
             ][0]
@@ -553,7 +587,7 @@ class EnzymeMLReader():
                     replicateID = format['replica']
                     replicateType = format['type']
                     replicateUnitID = format['unit']
-                    replicateInitConcID = format['initConcID']
+                    reactionID = format['reaction']
 
                     replicate = Replicate(
                         replica=replicateID,
@@ -562,11 +596,12 @@ class EnzymeMLReader():
                         measurement=measurementID,
                         data_unit=replicateUnitID,
                         time_unit=timeUnitID,
-                        init_conc=replicateInitConcID,
                         data=replicateValues.values.tolist(),
                         time=timeValues
                     )
 
-                    replicates[replicateID] = replicate
+                    measurementDict[measurementID].addReplicates(
+                        replicate, reactionID
+                    )
 
-        return replicates
+        return measurementDict
