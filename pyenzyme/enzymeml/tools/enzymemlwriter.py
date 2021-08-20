@@ -611,6 +611,7 @@ class EnzymeMLWriter(object):
 
         # Add attributes
         column.addAttr('replica', replicate.getReplica())
+        column.addAttr('reaction', replicate.getReaction())
         column.addAttr('species', replicate.getReactant())
         column.addAttr('type', replicate.getType())
         column.addAttr('unit', replicate.getDataUnit())
