@@ -92,6 +92,10 @@ class MeasurementData(object):
     def delReplicates(self):
         del self.__replicates
 
+    def setMeasurementIDs(self, ID):
+        for replicate in self.__replicates:
+            replicate.setMeasurement(ID)
+
     def addReplicate(self, replicate):
         self.__replicates.append(
             TypeChecker(replicate, Replicate)

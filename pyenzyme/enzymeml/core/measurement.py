@@ -298,10 +298,10 @@ class Measurement(EnzymeMLBase):
         for reaction in self.__reactions.values():
 
             for measData in reaction['proteins'].values():
-                measData.setReplicateIDs(self.__id)
+                measData.setMeasurementIDs(self.__id)
 
             for measData in reaction['reactants'].values():
-                measData.setReplicateIDs(self.__id)
+                measData.setMeasurementIDs(self.__id)
 
     def getId(self):
         return self.__id
