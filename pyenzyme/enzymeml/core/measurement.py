@@ -130,7 +130,8 @@ class Measurement(EnzymeMLBase):
                     f"{replicate.getReplica()}/{speciesID}/{replicate.getDataUnit()}"
                 )
 
-                initConcs[speciesID] = (data.getInitConc(), data.getUnit())
+            # Fetch initial concentration
+            initConcs[speciesID] = (data.getInitConc(), data.getUnit())
 
             # Fetch the stoichiometry of the reactant
             if speciesType == 'reactants' and enzmldoc is not None:
