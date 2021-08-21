@@ -291,6 +291,18 @@ class Measurement(EnzymeMLBase):
     def setId(self, ID):
         self.__id = TypeChecker(ID, str)
 
+        self.__setReplicateMeasIDs()
+
+    def __setReplicateMeasIDs(self):
+
+        for reaction in self.__reactions.values():
+
+            for measData in reaction['proteins'].values():
+                measData.setReplicateIDs(self.__id)
+
+            for measData in reaction['reactants'].values():
+                measData.setReplicateIDs(self.__id)
+
     def getId(self):
         return self.__id
 
@@ -329,6 +341,15 @@ class Measurement(EnzymeMLBase):
 
     def getReactions(self):
         return self.__reactions
+
+    def getReaction(self, reactionID):
+
+        try:
+            return self.__reactions[reactionID]
+        except KeyError:
+            raise KeyError(
+                f"Reaction {reactionID} is not part of the measurement. Please add the reaction to your measurement by using the addData-method."
+            )
 
     def delReactions(self):
         del self.__reactions
