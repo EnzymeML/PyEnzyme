@@ -70,7 +70,7 @@ class Measurement(EnzymeMLBase):
     def __str__(self):
         return self.toJSON()
 
-    def exportData(self):
+    def exportData(self, enzmldoc=None):
         """Returns data stored in the measurement object as DataFrames nested in dictionaries. These are sorted hierarchially by reactions where each holds a DataFrame each for proteins and reactants.
 
         Returns:
@@ -83,10 +83,16 @@ class Measurement(EnzymeMLBase):
         for reactionID, reaction in self.__reactions.items():
 
             proteins = self.__combineReplicates(
-                measurementSpecies=reaction['proteins']
+                measurementSpecies=reaction['proteins'],
+                reactionID=reactionID,
+                enzmldoc=enzmldoc,
+                speciesType='proteins'
             )
             reactants = self.__combineReplicates(
-                measurementSpecies=reaction['reactants']
+                measurementSpecies=reaction['reactants'],
+                reactionID=reactionID,
+                enzmldoc=enzmldoc,
+                speciesType='reactants'
             )
 
             measurements[reactionID] = {
@@ -96,16 +102,24 @@ class Measurement(EnzymeMLBase):
 
         return measurements
 
-    def __combineReplicates(self, measurementSpecies):
+    def __combineReplicates(
+        self,
+        measurementSpecies,
+        reactionID,
+        enzmldoc,
+        speciesType
+    ):
 
         # Initialize columns and headers
         columns = [self.__globalTime]
         header = [f"time/{self.__globalTimeUnit}"]
         initConcs = dict()
+        stoichiometries = dict()
 
         # Iterate over measurementData to fill columns
         for speciesID, data in measurementSpecies.items():
 
+            # Fetch replicate data
             for replicate in data.getReplicates():
 
                 columns.append(
@@ -118,13 +132,35 @@ class Measurement(EnzymeMLBase):
 
                 initConcs[speciesID] = (data.getInitConc(), data.getUnit())
 
-        print(columns, header)
+            # Fetch the stoichiometry of the reactant
+            if speciesType == 'reactants' and enzmldoc is not None:
+                stoichiometries[speciesID] = self.__getStoichiometry(
+                    reaction=enzmldoc.getReaction(reactionID),
+                    speciesID=speciesID
+                )
 
         if len(columns) > 1:
             return {
                 "data": pd.DataFrame(np.array(columns).T, columns=header),
-                "initConc": initConcs
+                "initConc": initConcs,
+                "stoichiometries": stoichiometries
             }
+
+    def __getStoichiometry(self, reaction, speciesID):
+
+        try:
+            return (-1) * reaction.getEduct(speciesID)[1]
+        except KeyError:
+            pass
+
+        try:
+            return reaction.getProduct(speciesID)[1]
+        except KeyError:
+            pass
+
+        raise KeyError(
+            f"Reactant {speciesID} is not part of reaction {reaction.getId()}."
+        )
 
     def addReplicates(self, replicates, reactionID):
         """Adds a replicate to the corresponding measurementData object. This method is meant to be called if the measurement metadata of a reaction/species has already been done and replicate data has to be added afterwards. If not, use addData instead to introduce the species metadata.
