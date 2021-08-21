@@ -46,7 +46,6 @@ class Measurement(EnzymeMLBase):
             jsonObject['global-time-unit'] = self.__globalTimeUnit
 
         for reactionID, reaction in self.__reactions.items():
-            self.setGlobalTimeUnit
 
             proteins = {
                 proteinID: proteinData.toJSON()
@@ -153,8 +152,16 @@ class Measurement(EnzymeMLBase):
                 )
 
             try:
+
                 data = reactionData[speciesID]
                 data.addReplicate(replicate)
+
+                if hasattr(self, "_Measurement__globalTime") is False:
+
+                    # Add global time if this is the first replicate to be added
+                    self.setGlobalTime(replicate.getData(sep=True)[0])
+                    self.setGlobalTimeUnit(replicate.getTimeUnit())
+
             except KeyError:
                 raise KeyError(
                     f"{speciesType[0:-1]} {speciesID} is not part of the measurement yet. If a {speciesType[0:-1]} hasnt been yet defined in a measurement object, use the addData method to define metadata first-hand. You can add the replicates in the same function call then."
