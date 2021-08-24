@@ -794,8 +794,8 @@ class EnzymeMLWriter(object):
                 'enzymeml:initConc', namespace=False
             )
 
-            initConcAnnot.addAttr('reactionID', reactionID)
-            initConcAnnot.addAttr(f'{speciesType}ID', speciesID)
+            initConcAnnot.addAttr('reaction', reactionID)
+            initConcAnnot.addAttr(f'{speciesType}', speciesID)
             initConcAnnot.addAttr('value', str(data.getInitConc()))
             initConcAnnot.addAttr('unit', data.getUnit())
 

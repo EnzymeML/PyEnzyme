@@ -508,17 +508,17 @@ class EnzymeMLReader():
         )
 
         for initConc in measurement:
-            reactionID = initConc.attrib['reactionID']
+            reactionID = initConc.attrib['reaction']
             value = float(initConc.attrib['value'])
             unit = initConc.attrib['unit']
 
             reactantID = None
             proteinID = None
 
-            if 'reactantID' in initConc.attrib.keys():
-                reactantID = initConc.attrib['reactantID']
-            elif 'proteinID' in initConc.attrib.keys():
-                proteinID = initConc.attrib['proteinID']
+            if 'reactant' in initConc.attrib.keys():
+                reactantID = initConc.attrib['reactant']
+            elif 'protein' in initConc.attrib.keys():
+                proteinID = initConc.attrib['protein']
             else:
                 raise KeyError(
                     "Neither reactant or protein ID defined."
