@@ -19,6 +19,8 @@ from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
 
+import pyenzyme.enzymeml.tools.enzymemlreader as reader
+
 from texttable import Texttable
 
 import json
@@ -62,6 +64,11 @@ class EnzymeMLDocument(object):
             self.setDoi(doi)
         if url:
             self.setUrl(url)
+
+    @staticmethod
+    def fromFile(path):
+        TypeChecker(path, str)
+        return reader.EnzymeMLReader().readFromFile(path)
 
     def addMeasurement(self, measurement):
         """Adds a measurement to an EnzymeMLDocument and validates consistency with already defined elements of the documentself.
