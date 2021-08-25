@@ -830,8 +830,11 @@ class EnzymeMLDocument(object):
 
         # Update unit to UnitDefID
         if use_parser:
-            speciesUnit = self.__convertUnit(species.getSubstanceUnits())
-            species.setSubstanceUnits(speciesUnit)
+            try:
+                speciesUnit = self.__convertUnit(species.getSubstanceUnits())
+                species.setSubstanceUnits(speciesUnit)
+            except AttributeError:
+                pass
 
         # Add species to dictionary
         dictionary[speciesID] = species
