@@ -351,11 +351,12 @@ class EnzymeMLWriter(object):
             unit.setName(unitDef.getName())
 
             # Add ontology
-            cvterm = CVTerm()
-            cvterm.addResource(unitDef.getOntology())
-            cvterm.setQualifierType(BIOLOGICAL_QUALIFIER)
-            cvterm.setBiologicalQualifierType(BQB_IS)
-            unit.addCVTerm(cvterm)
+            if unitDef.getOntology() != "NONE":
+                cvterm = CVTerm()
+                cvterm.addResource(unitDef.getOntology())
+                cvterm.setQualifierType(BIOLOGICAL_QUALIFIER)
+                cvterm.setBiologicalQualifierType(BQB_IS)
+                unit.addCVTerm(cvterm)
 
             for baseUnit in unitDef.getUnits():
 

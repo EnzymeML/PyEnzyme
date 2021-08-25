@@ -167,7 +167,12 @@ class EnzymeMLReader():
             name = unit.getName()
             id_ = unit.getId()
             metaid = unit.getMetaId()
-            ontology = unit.getCVTerms()[0].getResourceURI(0)
+
+            try:
+                ontology = unit.getCVTerms()[0].getResourceURI(0)
+            except IndexError as e:
+                # If there is not ontology, skip this
+                ontology = "NONE"
 
             unitdef = UnitDef(name, id_, ontology)
             unitdef.setMetaid(metaid)
