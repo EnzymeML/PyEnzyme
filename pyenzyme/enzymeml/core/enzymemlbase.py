@@ -11,6 +11,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
+from copy import deepcopy
 
 
 class EnzymeMLBase(object):
@@ -43,3 +44,6 @@ class EnzymeMLBase(object):
 
     def delCreatorId(self):
         del self.__creatorId
+
+    def copy(self):
+        return deepcopy(self)
