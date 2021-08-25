@@ -47,10 +47,9 @@ class UnitCreator(object):
             "dimensionless": self.__Dimensionless
 
 
-            }
+        }
 
     def getUnit(self, unit_string, enzmldoc):
-
         '''
         Args:
             String unit_string: Standard short form of unit
@@ -105,16 +104,14 @@ class UnitCreator(object):
             if float(exponent) > 0:
                 if abs(float(exponent)) > 1:
                     nominator.append(
-                        pre_unit +
-                        f"**{exponent}"
+                        pre_unit + f"**{exponent}"
                     )
                 if abs(float(exponent)) == 1:
                     nominator.append(pre_unit)
             else:
                 if abs(float(exponent)) > 1:
                     denominator.append(
-                        pre_unit +
-                        f"**{exponent}"
+                        pre_unit + f"**{exponent}"
                     )
                 if abs(float(exponent)) == 1:
                     denominator.append(pre_unit)
@@ -122,9 +119,9 @@ class UnitCreator(object):
         # Reformat unit string to a convenient format
         if len(denominator) > 0:
             name = " / ".join([
-                    " ".join(nominator),
-                    " ".join(denominator)
-                    ])
+                " ".join(nominator),
+                " ".join(denominator)
+            ])
         if len(denominator) == 0:
             name = " ".join(nominator)
 
@@ -197,7 +194,7 @@ class UnitCreator(object):
 
         kind = libsbml.UnitKind_toString(
             libsbml.UNIT_KIND_LITRE
-            )
+        )
         scale = self.__getPrefix(prefix)
         multiplier = 1
 
@@ -251,7 +248,7 @@ class UnitCreator(object):
 
         kind = libsbml.UnitKind_toString(libsbml.UNIT_KIND_SECOND)
         scale = 1
-        multiplier = 60*60
+        multiplier = 60 * 60
 
         unitdef.addBaseUnit(
             kind,
@@ -331,7 +328,7 @@ class UnitCreator(object):
         elif baseunit == "m" or baseunit == "min" or baseunit == "minutes":
             return 60
         elif baseunit == "h" or baseunit == "hours":
-            return 60*60
+            return 60 * 60
         else:
             raise KeyError(
                 f"Time unit {baseunit} is unknown. Please define unit manually"

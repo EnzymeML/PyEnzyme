@@ -21,7 +21,6 @@ class UnitDef(object):
         id_,
         ontology
     ):
-
         '''
         Object describing an EnzymeML unit.
 
@@ -52,7 +51,6 @@ class UnitDef(object):
         del self.__footprint
 
     def addBaseUnit(self, kind, exponent, scale, multiplier):
-
         '''
         Adds defining base unit such as litre or grams to a unit definition
 
@@ -70,8 +68,8 @@ class UnitDef(object):
                 TypeChecker(float(exponent), float),
                 TypeChecker(scale, int),
                 TypeChecker(float(multiplier), float)
-              )
             )
+        )
 
     def getUnits(self):
         return self.__units

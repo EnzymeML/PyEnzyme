@@ -803,7 +803,7 @@ class EnzymeReaction(EnzymeMLBase):
             name (string): Name of reaction
         """
 
-        self.__name = TypeChecker(name, str).lower()
+        self.__name = TypeChecker(name, str)
 
     def setReversible(self, reversible):
         """
