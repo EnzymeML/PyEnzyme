@@ -513,7 +513,6 @@ class EnzymeMLReader():
         )
 
         for initConc in measurement:
-            reactionID = initConc.attrib['reaction']
             value = float(initConc.attrib['value'])
             unit = initConc.attrib['unit']
 
@@ -530,7 +529,6 @@ class EnzymeMLReader():
                 )
 
             measurementObject.addData(
-                reactionID=reactionID,
                 initConc=float(value),
                 unit=unit,
                 reactantID=reactantID,
@@ -592,12 +590,10 @@ class EnzymeMLReader():
                     replicateID = format['replica']
                     replicateType = format['type']
                     replicateUnitID = format['unit']
-                    reactionID = format['reaction']
 
                     replicate = Replicate(
                         replica=replicateID,
                         reactant=replicateReactant,
-                        reaction=reactionID,
                         type_=replicateType,
                         measurement=measurementID,
                         data_unit=replicateUnitID,
@@ -607,7 +603,7 @@ class EnzymeMLReader():
                     )
 
                     measurementDict[measurementID].addReplicates(
-                        replicate, reactionID
+                        replicate
                     )
 
         return measurementDict

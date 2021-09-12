@@ -10,14 +10,16 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
+import json
+
+import numpy as np
+import pandas as pd
+
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
-from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
-
-import json
-import pandas as pd
-import numpy as np
+from pyenzyme.enzymeml.core.replicate import Replicate
+from pprint import pprint
 
 
 class Measurement(EnzymeMLBase):
@@ -32,35 +34,33 @@ class Measurement(EnzymeMLBase):
 
         # Initialize attributes
         self.setName(name)
-        self.setReactions(dict())
+        self.setSpeciesDict({
+            "proteins": dict(),
+            "reactants": dict()
+        })
 
     def toJSON(self, d=False):
 
         jsonObject = dict()
 
         jsonObject['name'] = self.__name
-        jsonObject['reactions'] = dict()
 
         if hasattr(self, '_Measurement__globalTime'):
             jsonObject['global-time'] = self.__globalTime
             jsonObject['global-time-unit'] = self.__globalTimeUnit
 
-        for reactionID, reaction in self.__reactions.items():
+        proteins = {
+            proteinID: proteinData.toJSON()
+            for proteinID, proteinData in self.__speciesDict['proteins'].items()
+        }
 
-            proteins = {
-                proteinID: proteinData.toJSON()
-                for proteinID, proteinData in reaction['proteins'].items()
-            }
+        reactants = {
+            reactantID: reactantData.toJSON()
+            for reactantID, reactantData in self.__speciesDict['reactants'].items()
+        }
 
-            reactants = {
-                reactantID: reactantData.toJSON()
-                for reactantID, reactantData in reaction['reactants'].items()
-            }
-
-            jsonObject["reactions"][reactionID] = {
-                "reactants": reactants,
-                "proteins": proteins
-            }
+        jsonObject['reactants'] = reactants
+        jsonObject['proteins'] = proteins
 
         if d:
             return jsonObject
@@ -80,7 +80,7 @@ class Measurement(EnzymeMLBase):
         measurements = dict()
 
         # Combine Replicate objects for each reaction
-        for reactionID, reaction in self.__reactions.items():
+        for reactionID, reaction in self.__speciesDict.items():
 
             proteins = self.__combineReplicates(
                 measurementSpecies=reaction['proteins'],
@@ -163,7 +163,7 @@ class Measurement(EnzymeMLBase):
             f"Reactant {speciesID} is not part of reaction {reaction.getId()}."
         )
 
-    def addReplicates(self, replicates, reactionID):
+    def addReplicates(self, replicates):
         """Adds a replicate to the corresponding measurementData object. This method is meant to be called if the measurement metadata of a reaction/species has already been done and replicate data has to be added afterwards. If not, use addData instead to introduce the species metadata.
 
         Args:
@@ -180,17 +180,11 @@ class Measurement(EnzymeMLBase):
             # Check for the species type
             speciesID = replicate.getReactant()
             speciesType = "reactants" if speciesID[0] == "s" else "proteins"
-
-            try:
-                reactionData = self.__reactions[reactionID][speciesType]
-            except KeyError:
-                raise KeyError(
-                    f"Reaction {reactionID} is not part of the measurement yet. If a reaction hasnt been yet defined in a measurement object, use the addData method to define metadata first-hand. You can add the replicates in the same function call then."
-                )
+            speciesData = self.__speciesDict[speciesType]
 
             try:
 
-                data = reactionData[speciesID]
+                data = speciesData[speciesID]
                 data.addReplicate(replicate)
 
                 if hasattr(self, "_Measurement__globalTime") is False:
@@ -206,7 +200,6 @@ class Measurement(EnzymeMLBase):
 
     def addData(
         self,
-        reactionID,
         initConc,
         unit,
         reactantID=None,
@@ -223,26 +216,13 @@ class Measurement(EnzymeMLBase):
             replicates (list<Replicate>, optional): List of actual time-coiurse data in Replicate objects. Defaults to None.
         """
 
-        # Initialize reaction measurement data if not given yet
-        if reactionID not in self.__reactions.keys():
-            self.__initializeReactionData(
-                reactionID=reactionID,
-                reactantID=reactantID,
-                proteinID=proteinID,
-                initConc=initConc,
-                unit=unit,
-                replicates=replicates
-            )
-
-        else:
-            self.__appendReactantData(
-                reactionID=reactionID,
-                reactantID=reactantID,
-                proteinID=proteinID,
-                initConc=initConc,
-                unit=unit,
-                replicates=replicates
-            )
+        self.__appendReactantData(
+            reactantID=reactantID,
+            proteinID=proteinID,
+            initConc=initConc,
+            unit=unit,
+            replicates=replicates
+        )
 
     def __initializeReactionData(
         self,
@@ -255,7 +235,7 @@ class Measurement(EnzymeMLBase):
     ):
 
         # initialiaze reaction data structure to add data
-        self.__reactions[reactionID] = {
+        self.__speciesDict[reactionID] = {
             'reactants': dict(),
             'proteins': dict()
         }
@@ -278,7 +258,6 @@ class Measurement(EnzymeMLBase):
 
     def __appendReactantData(
         self,
-        reactionID,
         reactantID,
         proteinID,
         initConc,
@@ -295,13 +274,10 @@ class Measurement(EnzymeMLBase):
             replicates=self.__updateReplicates(replicates, initConc)
         )
 
-        # Reference reaction ro reduce boilerplate
-        reactionRef = self.__reactions[reactionID]
-
         if reactantID:
-            reactionRef['reactants'][reactantID] = measData
+            self.__speciesDict['reactants'][reactantID] = measData
         elif proteinID:
-            reactionRef['proteins'][proteinID] = measData
+            self.__speciesDict['proteins'][proteinID] = measData
         else:
             raise ValueError(
                 "Please enter a reactant or protein ID to add measurement data"
@@ -332,13 +308,11 @@ class Measurement(EnzymeMLBase):
 
     def __setReplicateMeasIDs(self):
 
-        for reaction in self.__reactions.values():
+        for measData in self.__speciesDict['proteins'].values():
+            measData.setMeasurementIDs(self.__id)
 
-            for measData in reaction['proteins'].values():
-                measData.setMeasurementIDs(self.__id)
-
-            for measData in reaction['reactants'].values():
-                measData.setMeasurementIDs(self.__id)
+        for measData in self.__speciesDict['reactants'].values():
+            measData.setMeasurementIDs(self.__id)
 
     def getId(self):
         return self.__id
@@ -373,20 +347,28 @@ class Measurement(EnzymeMLBase):
     def delName(self):
         del self.__name
 
-    def setReactions(self, reactions):
-        self.__reactions = TypeChecker(reactions, dict)
+    def setSpeciesDict(self, reactions):
+        self.__speciesDict = TypeChecker(reactions, dict)
 
-    def getReactions(self):
-        return self.__reactions
+    def getSpeciesDict(self):
+        return self.__speciesDict
 
-    def getReaction(self, reactionID):
+    def delSpeciesDict(self):
+        del self.__speciesDict
+
+    def getReactant(self, reactantID):
+        return self.__getSpecies(reactantID, "reactants")
+
+    def getProtein(self, proteinID):
+        return self.__getSpecies(proteinID, "proteins")
+
+    def __getSpecies(self, speciesID, type_):
+        TypeChecker(speciesID, str)
+        TypeChecker(type_, str)
 
         try:
-            return self.__reactions[reactionID]
+            return self.__speciesDict[type_][speciesID]
         except KeyError:
             raise KeyError(
-                f"Reaction {reactionID} is not part of the measurement. Please add the reaction to your measurement by using the addData-method."
+                f"{type_[0:-1]}ID {speciesID} is not defined yet. Please use the addData method to add the corresponding {type_[0:-1]}"
             )
-
-    def delReactions(self):
-        del self.__reactions

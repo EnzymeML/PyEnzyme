@@ -26,7 +26,6 @@ class Replicate(EnzymeMLBase):
         type_,
         data_unit,
         time_unit,
-        reaction=None,
         measurement="unspecified",
         init_conc="NONE",
         data=None,
@@ -66,9 +65,6 @@ class Replicate(EnzymeMLBase):
         self.setTimeUnit(time_unit)
         self.setInitConc(init_conc)
         self.setIsCalculated(isCalculated)
-
-        if reaction:
-            self.setReaction(reaction)
 
         if data is not None and time is not None:
             self.setData(data, time)
@@ -110,15 +106,6 @@ class Replicate(EnzymeMLBase):
             default=transformAttr,
             indent=4
         )
-
-    def setReaction(self, reaction):
-        self.__reaction = TypeChecker(reaction, str)
-
-    def getReaction(self):
-        return self.__reaction
-
-    def delReaction(self):
-        del self.__reaction
 
     def setMeasurement(self, measurement):
         self.__measurement = TypeChecker(measurement, str)

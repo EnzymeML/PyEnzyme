@@ -102,24 +102,22 @@ class EnzymeMLDocument(object):
         Args:
             measurement (Measurement): Object defining a measurement
         """
-        reactions = measurement.getReactions()
+        speciesDict = measurement.getSpeciesDict()
         measurement.setGlobalTimeUnit(
             self.__convertUnit(measurement.getGlobalTimeUnit())
         )
 
-        for reaction in reactions.values():
+        for data in speciesDict['proteins'].values():
+            data.setUnit(
+                self.__convertUnit(data.getUnit())
+            )
+            self.__convertReplicateUnits(data)
 
-            for data in reaction['proteins'].values():
-                data.setUnit(
-                    self.__convertUnit(data.getUnit())
-                )
-                self.__convertReplicateUnits(data)
-
-            for data in reaction['reactants'].values():
-                data.setUnit(
-                    self.__convertUnit(data.getUnit())
-                )
-                self.__convertReplicateUnits(data)
+        for data in speciesDict['reactants'].values():
+            data.setUnit(
+                self.__convertUnit(data.getUnit())
+            )
+            self.__convertReplicateUnits(data)
 
     def __convertReplicateUnits(self, data):
         for replicate in data.getReplicates():
@@ -131,43 +129,21 @@ class EnzymeMLDocument(object):
             )
 
     def __checkMeasurementConsistency(self, measurement):
-        for reactionID, reactionMeas in measurement.getReactions().items():
 
-            if reactionID in self.__ReactionDict.keys():
+        speciesDict = measurement.getSpeciesDict()
 
-                reactionMeta = self.getReaction(reactionID)
+        self.__checkSpecies(speciesDict["reactants"])
+        self.__checkSpecies(speciesDict["proteins"])
 
-                # Check if individual species occur in the given reaction
-                self.__checkReactionSpecies(
-                    reactionMeta, reactionMeas['proteins'])
-                self.__checkReactionSpecies(
-                    reactionMeta, reactionMeas['reactants'])
+    def __checkSpecies(self, measurementSpecies):
 
-    def __checkReactionSpecies(self, reactionMeta, measSpecies):
-        for speciesID in measSpecies.keys():
+        for speciesID in measurementSpecies.keys():
+            speciesType = "Reactant" if speciesID[0] == "s" else "Protein"
+            speciesDict = self.__ReactantDict if speciesType == "Reactant" else self.__ProteinDict
 
-            try:
-                reactionMeta.getEduct(speciesID)
-                continue
-            except KeyError:
-                pass
-
-            try:
-                reactionMeta.getProduct(speciesID)
-                continue
-            except KeyError:
-                pass
-
-            try:
-                reactionMeta.getModifier(speciesID)
-                continue
-            except KeyError:
-                pass
-
-            # Raise an error if none of those functions worked
-            raise KeyError(
-                f"Reactant/Protein {speciesID} is not part of the reaction. You may add it to the reaction {reactionMeta.getId()}."
-            )
+            if speciesID not in speciesDict.keys():
+                raise KeyError(
+                    f"{speciesType} {speciesID} is not defined in the EnzymeMLDocument yet. Please define via the {speciesType} class and add it to the document via the add{speciesType} method.")
 
     @staticmethod
     def __generateID(prefix, dictionary):
@@ -601,36 +577,33 @@ class EnzymeMLDocument(object):
 
         table = Texttable()
         table.set_deco(Texttable.HEADER)
-        table.set_cols_align(["l", "l", "l", "l", "l"])
+        table.set_cols_align(["l", "l", "l", "l"])
 
         # Initialize rows
-        rows = [["ID", "ReactionID", "Species", "Conc", "Unit"]]
+        rows = [["ID", "Species", "Conc", "Unit"]]
 
         # Generate and append rows
         for measurementID, measurement in self.__MeasurementDict.items():
 
-            # Iterate over reactions
-            for reactionID, reactionObj in measurement.getReactions().items():
+            speciesDict = measurement.getSpeciesDict()
+            proteins = speciesDict['proteins']
+            reactants = speciesDict['reactants']
 
-                proteins = reactionObj['proteins']
-                reactants = reactionObj['reactants']
+            # succesively add rows with schema
+            # [ measID, speciesID, initConc, unit ]
 
-                # succesively add rows with schema
-                # [ measID, reactionID, speciesID, initConc, unit ]
+            for speciesID, species in {**proteins, **reactants}.items():
+                rows.append(
+                    [
+                        measurementID,
+                        speciesID,
+                        species.getInitConc(),
+                        self.getUnitString(species.getUnit())
+                    ]
+                )
 
-                for speciesID, species in {**proteins, **reactants}.items():
-                    rows.append(
-                        [
-                            measurementID,
-                            reactionID,
-                            speciesID,
-                            species.getInitConc(),
-                            self.getUnitString(species.getUnit())
-                        ]
-                    )
-
-            # Add empty row for better readablity
-            rows.append([" "] * 5)
+        # Add empty row for better readablity
+        rows.append([" "] * 4)
 
         table.add_rows(rows)
         return "\n" + table.draw() + "\n"

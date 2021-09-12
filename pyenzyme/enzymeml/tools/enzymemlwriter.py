@@ -612,7 +612,6 @@ class EnzymeMLWriter(object):
 
         # Add attributes
         column.addAttr('replica', replicate.getReplica())
-        column.addAttr('reaction', replicate.getReaction())
         column.addAttr('species', replicate.getReactant())
         column.addAttr('type', replicate.getType())
         column.addAttr('unit', replicate.getDataUnit())
@@ -731,30 +730,29 @@ class EnzymeMLWriter(object):
         measurementAnnot,
         formatAnnot
     ):
-        reactions = measurement.getReactions().items()
+        speciesDict = measurement.getSpeciesDict()
         dataColumns = list()
-        for reactionID, reactionObj in reactions:
 
-            # Init Conc
-            # Extract measurementData objects
-            proteins = reactionObj['proteins']
-            reactants = reactionObj['reactants']
+        # Init Conc
+        # Extract measurementData objects
+        proteins = speciesDict['proteins']
+        reactants = speciesDict['reactants']
 
-            # Append initConc data to measurement
-            self.appendInitConcData(
-                measurementAnnot=measurementAnnot,
-                dictionary=proteins, reactionID=reactionID, speciesType="protein"
-            )
-            self.appendInitConcData(
-                measurementAnnot=measurementAnnot,
-                dictionary=reactants, reactionID=reactionID, speciesType="reactant"
-            )
+        # Append initConc data to measurement
+        self.appendInitConcData(
+            measurementAnnot=measurementAnnot,
+            dictionary=proteins, speciesType="protein"
+        )
+        self.appendInitConcData(
+            measurementAnnot=measurementAnnot,
+            dictionary=reactants, speciesType="reactant"
+        )
 
-            # Replicates
-            dataColumns += self.appendReplicateData(
-                {**proteins, **reactants},
-                formatAnnot=formatAnnot,
-            )
+        # Replicates
+        dataColumns += self.appendReplicateData(
+            {**proteins, **reactants},
+            formatAnnot=formatAnnot,
+        )
 
         return dataColumns
 
@@ -786,7 +784,7 @@ class EnzymeMLWriter(object):
 
         return dataColumns
 
-    def appendInitConcData(self, measurementAnnot, dictionary, reactionID, speciesType):
+    def appendInitConcData(self, measurementAnnot, dictionary, speciesType):
 
         for speciesID, data in dictionary.items():
 
@@ -795,7 +793,6 @@ class EnzymeMLWriter(object):
                 'enzymeml:initConc', namespace=False
             )
 
-            initConcAnnot.addAttr('reaction', reactionID)
             initConcAnnot.addAttr(f'{speciesType}', speciesID)
             initConcAnnot.addAttr('value', str(data.getInitConc()))
             initConcAnnot.addAttr('unit', data.getUnit())
