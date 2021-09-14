@@ -43,18 +43,18 @@ class Creator(object):
 
         def transformAttr(classDict):
             return {
-                    key.split('__')[-1]: item
-                    for key, item in classDict.items()
-                    }
+                key.split('__')[-1]: item
+                for key, item in classDict.items()
+            }
 
         if d:
             return transformAttr(self.__dict__)
 
         return json.dumps(
-            self,
+            self.__dict__,
             default=transformAttr,
             indent=4
-            )
+        )
 
     def __str__(self):
         """Returns Creator object as JSON-formatted string
