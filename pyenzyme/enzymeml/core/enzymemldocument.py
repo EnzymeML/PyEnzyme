@@ -892,22 +892,17 @@ class EnzymeMLDocument(object):
         # Set model units
         if hasattr(reaction, '_EnzymeReaction__model'):
             model = reaction.getModel()
-            self.__updateModelParameters(model)
 
         # Finally add the reaction to the document
         self.__ReactionDict[reactionID] = reaction
 
         return reactionID
 
-    def __updateModelParameters(self, model):
-        for name, (value, unit) in model.getParameters():
-            model.getParameters()[name] = (
-                value,
-                self.__convertUnit(unit)
-            )
-
     def __convertUnit(self, unit):
-        return UnitCreator().getUnit(unit, self)
+        if unit in self.__UnitDict.keys():
+            return unit
+        else:
+            return UnitCreator().getUnit(unit, self)
 
     def get_created(self):
         """
