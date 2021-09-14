@@ -27,7 +27,6 @@ class Replicate(EnzymeMLBase):
         data_unit,
         time_unit,
         measurement="unspecified",
-        init_conc="NONE",
         data=None,
         time=None,
         isCalculated=False,
@@ -63,7 +62,6 @@ class Replicate(EnzymeMLBase):
         self.setMeasurement(measurement)
         self.setDataUnit(data_unit)
         self.setTimeUnit(time_unit)
-        self.setInitConc(init_conc)
         self.setIsCalculated(isCalculated)
 
         if data is not None and time is not None:
@@ -127,15 +125,6 @@ class Replicate(EnzymeMLBase):
 
     def __str__(self):
         return self.toJSON()
-
-    def getInitConc(self):
-        return self.__init_conc
-
-    def setInitConc(self, value):
-        self.__init_conc = value
-
-    def delInitConc(self):
-        del self.__init_conc
 
     def getReplica(self):
         return self.__replica

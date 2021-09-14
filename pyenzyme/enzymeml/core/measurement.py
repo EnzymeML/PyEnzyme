@@ -249,20 +249,10 @@ class Measurement(EnzymeMLBase):
     def __updateReplicates(self, replicates, initConc):
 
         for replicate in replicates:
-
-            # Check if the initConc given in the replicates matches
-            self.__checkReplicate(replicate, initConc)
-
             # Set the measurement name for the replicate
             replicate.setMeasurement(self.__name)
 
         return replicates
-
-    def __checkReplicate(self, replicate, initConc):
-        if replicate.getInitConc() != initConc:
-            raise ValueError(
-                f"The given concentration value of replicate {replicate.getInitConc()} does not match the measurement object's value of {initConc}. Please make sure to only add replicates, which share the same initial concentration. If you like to track different initial concentrations, create a new measurement object, since these are fixed per measurement object."
-            )
 
     def setId(self, ID):
         self.__id = TypeChecker(ID, str)
