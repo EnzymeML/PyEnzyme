@@ -320,10 +320,42 @@ class Measurement(EnzymeMLBase):
         del self.__speciesDict
 
     def getReactant(self, reactantID):
+        """Returns a single MeasurementData object for the given reactantID.
+
+        Args:
+            reactantID (String): Unqiue identifier of the reactant
+
+        Returns:
+            MeasurementData: Object representing the data and initial concentration
+        """
         return self.__getSpecies(reactantID, "reactants")
 
     def getProtein(self, proteinID):
+        """Returns a single MeasurementData object for the given proteinID.
+
+        Args:
+            reactantID (String): Unqiue identifier of the protein
+
+        Returns:
+            MeasurementData: Object representing the data and initial concentration
+        """
         return self.__getSpecies(proteinID, "proteins")
+
+    def getReactants(self):
+        """Returns a list of all participating reactants in the measurement.
+
+        Returns:
+            list: List of MeasurementData objects representing data
+        """
+        return self.__speciesDict["reactants"]
+
+    def getProteins(self):
+        """Returns a list of all participating proteins in the measurement.
+
+        Returns:
+            list: List of MeasurementData objects representing data
+        """
+        return self.__speciesDict["proteins"]
 
     def __getSpecies(self, speciesID, type_):
         TypeChecker(speciesID, str)
