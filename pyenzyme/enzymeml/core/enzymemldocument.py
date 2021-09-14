@@ -18,8 +18,10 @@ from pyenzyme.enzymeml.core.vessel import Vessel
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
+from pyenzyme.enzymeml.tools.dataverse import toDataverseJSON
 
 import pyenzyme.enzymeml.tools.enzymemlreader as reader
+
 
 from texttable import Texttable
 
@@ -69,6 +71,14 @@ class EnzymeMLDocument(object):
     def fromFile(path):
         TypeChecker(path, str)
         return reader.EnzymeMLReader().readFromFile(path)
+
+    def toDataverseJSON(self):
+        """Generates a Dataverse compatible JSON representation of this EnzymeML document.
+
+        Returns:
+            String: JSON string representation of this EnzymeML document.
+        """
+        return json.dumps(toDataverseJSON(self), indent=4)
 
     def addMeasurement(self, measurement):
         """Adds a measurement to an EnzymeMLDocument and validates consistency with already defined elements of the documentself.
@@ -726,6 +736,42 @@ class EnzymeMLDocument(object):
             raise ValueError(
                 f"{elementType} {name} not found in the EnzymeML document {self.__name}"
             )
+
+    def getReactantList(self):
+        """Returns a list of all Reactant objects
+
+        Returns:
+            list<Reactant>: List of Reactant objects in the document
+        """
+        return self.__getSpeciesList(self.__ReactantDict)
+
+    def getProteinList(self):
+        """Returns a list of all Protein objects
+
+        Returns:
+            list<Protein>: List of Protein objects in the document
+        """
+        return self.__getSpeciesList(self.__ReactantDict)
+
+    def getReactionList(self):
+        """Returns a list of all Reaction objects
+
+        Returns:
+            list<Reaction>: List of Reaction objects in the document
+        """
+        return self.__getSpeciesList(self.__ReactionDict)
+
+    @staticmethod
+    def __getSpeciesList(dictionary):
+        """Helper function to retrieve lists of dicitonary objects
+
+        Args:
+            dictionary (dict): Dictionary of corresponding elements
+
+        Returns:
+            list<Objects>: Returns all values in the dictionary
+        """
+        return list(dictionary.values())
 
     def addReactant(self, reactant, use_parser=True, custom_id=None):
         """
