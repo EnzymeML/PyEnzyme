@@ -71,7 +71,12 @@ class UnitCreator(object):
         if unit_string.lower().endswith(dimlessToCheck):
 
             # Initialize UnitDef object
-            unitdef = UnitDef("absorption", id_, "NONE")
+            if unit_string.lower() == "abs":
+                unitName = "absorption"
+            else:
+                unitName = unit_string.lower()
+
+            unitdef = UnitDef(unitName, id_, "NONE")
 
             self.__functionDict["dimensionless"](
                 unitdef,
@@ -319,17 +324,4 @@ class UnitCreator(object):
         else:
             raise KeyError(
                 f"Prefix {prefix} is unknown. Please define unit manually"
-            )
-
-    def __Time(self, baseunit):
-
-        if baseunit == "s" or baseunit == "sec" or baseunit == "seconds":
-            return 1
-        elif baseunit == "m" or baseunit == "min" or baseunit == "minutes":
-            return 60
-        elif baseunit == "h" or baseunit == "hours":
-            return 60 * 60
-        else:
-            raise KeyError(
-                f"Time unit {baseunit} is unknown. Please define unit manually"
             )

@@ -103,7 +103,7 @@ class UnitParser(object):
 
     def __getPrefix(self, string, exponent):
 
-        regex = "^([f|p|n|u|m|c|d|k]?)([s]?|C|celsius|K|kelvin|M|molar|mole|g|gram|l|L|litre|liter|sec|seconds|second|min|mins|minutes|h|hour|hours|abs|absorption|dimensionless)$"
+        regex = "^([f|p|n|u|m|c|d|k]?)([s]?|C|celsius|K|kelvin|M|molar|mole|g|gram|l|L|litre|liter|sec|seconds|second|min|mins|minutes|h|hour|hours)$"
         string = string.lower()[0:-1] + string[-1]
 
         try:
