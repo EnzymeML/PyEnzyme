@@ -441,9 +441,8 @@ class EnzymeMLWriter(object):
             species.setBoundaryCondition(reactant.getBoundary())
             species.setConstant(reactant.getConstant())
             species.setHasOnlySubstanceUnits(False)
+            species.setInitialConcentration(reactant.getInitConc())
 
-            if reactant.getInitConc() > 0:
-                species.setInitialConcentration(reactant.getInitConc())
             if reactant.getSubstanceUnits() != 'NAN':
                 species.setSubstanceUnits(reactant.getSubstanceUnits())
 
