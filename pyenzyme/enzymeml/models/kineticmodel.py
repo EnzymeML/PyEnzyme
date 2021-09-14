@@ -18,8 +18,7 @@ import json
 
 class KineticModel(object):
 
-    def __init__(self, equation, parameters, enzmldoc):
-
+    def __init__(self, name, equation, parameters, enzmldoc):
         '''
         Model class to define kinetic laws and store modeling parameters.
 
@@ -28,6 +27,7 @@ class KineticModel(object):
             Dict parameters: Dictionary of parameters from formula
         '''
 
+        self.setName(name)
         self.setEquation(equation)
         self.setParameters(parameters, enzmldoc)
         self.setEqObject(self.getEquation())
@@ -49,7 +49,7 @@ class KineticModel(object):
                                 enzmldoc.getUnitDict()[it[1]].getName()
                             )
                             for k, it in item.items()
-                            }
+                        }
 
                     d[key] = item
 
@@ -62,13 +62,12 @@ class KineticModel(object):
             self,
             default=transformAttr,
             indent=4
-            )
+        )
 
     def __str__(self):
         return self.toJSON()
 
     def addToReaction(self, reaction):
-
         '''
         Adds kinetic law to SBML reaction.
         Only relevant for EnzymeML > SBML conversion.
@@ -87,6 +86,7 @@ class KineticModel(object):
             local_param.setUnits(item[1])
 
         kl.setMath(self.__eqObject)
+        kl.setName(self.__name)
 
     def getEquation(self):
         return self.__equation
@@ -119,9 +119,9 @@ class KineticModel(object):
                 paramUnit = UnitCreator().getUnit(paramUnit, enzmldoc)
 
             self.__parameters[paramName] = (
-                    paramValue,
-                    paramUnit
-                )
+                paramValue,
+                paramUnit
+            )
 
     def setEqObject(self, equation):
         self.__eqObject = parseL3Formula(equation)
@@ -134,3 +134,24 @@ class KineticModel(object):
 
     def delEqObject(self):
         del self.__eqObject
+
+    def setName(self, name):
+        TypeChecker(name, str)
+        self.__name = name
+
+    def getName(self):
+        return self.__name
+
+    def delName(self):
+        del self.__name
+
+    def setReaction(self, reactionID):
+        """Helper function for Dataverse integration. Has no effect on the resulting EnzymeMLDocument
+
+        Args:
+            reactionID (string): Identifier for the reaction
+        """
+
+        TypeChecker(reactionID, str)
+
+        self.__reaction = reactionID

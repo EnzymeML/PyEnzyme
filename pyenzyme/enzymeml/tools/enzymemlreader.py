@@ -368,6 +368,7 @@ class EnzymeMLReader():
     @staticmethod
     def __getKineticModel(kineticLaw, enzmldoc):
 
+        name = kineticLaw.getName()
         equation = kineticLaw.getFormula()
         parameters = {
             localParam.getId():
@@ -380,6 +381,7 @@ class EnzymeMLReader():
         }
 
         return KineticModel(
+            name=name,
             equation=equation,
             parameters=parameters,
             enzmldoc=enzmldoc
