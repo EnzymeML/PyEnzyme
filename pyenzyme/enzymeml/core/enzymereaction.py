@@ -106,25 +106,12 @@ class EnzymeReaction(EnzymeMLBase):
 
                     elif type(item) == list:
 
-                        def getInitConc(elementTuple):
-                            return [
-                                (val, enzmldoc.getUnitDict()[unit].getName())
-                                if enzmldoc else
-                                (val, unit)
-                                for val, unit in elementTuple[4]
-                            ]
-
                         nu_lst = [
 
                             {
                                 'species': elementTuple[0],
                                 'stoich': elementTuple[1],
-                                'constant': elementTuple[2],
-                                'replicates': [
-                                    repl.toJSON(d=True, enzmldoc=enzmldoc)
-                                    for repl in elementTuple[3]
-                                ],
-                                'init_conc': getInitConc(elementTuple)
+                                'constant': elementTuple[2]
 
                             }
                             for elementTuple in item
@@ -133,8 +120,7 @@ class EnzymeReaction(EnzymeMLBase):
                         d[key.split('__')[-1]] = nu_lst
 
                     elif 'unit' in key and enzmldoc is not False and item:
-                        unitDef = enzmldoc.getUnitDict()[item]
-                        d[key.split('__')[-1]] = unitDef.getName()
+                        d[key.split('__')[-1]] = enzmldoc.getUnitString(item)
 
                     else:
                         d[key.split('__')[-1]] = item
