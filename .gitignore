@@ -140,3 +140,6 @@ pyenzyme/Examples/getJSONValid.py
 
 # test dirs 
 tests/tmp
+
+# PyCharm IDE
+.idea/
