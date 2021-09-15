@@ -120,11 +120,12 @@ class Measurement(EnzymeMLBase):
             # Fetch initial concentration
             initConcs[speciesID] = (data.getInitConc(), data.getUnit())
 
-        if len(columns) > 1:
-            return {
-                "data": pd.DataFrame(np.array(columns).T, columns=header),
-                "initConc": initConcs,
-            }
+        return {
+            "data": pd.DataFrame(np.array(columns).T, columns=header)
+            if len(columns) > 1
+            else None,
+            "initConc": initConcs,
+        }
 
     def addReplicates(self, replicates):
         """Adds a replicate to the corresponding measurementData object. This method is meant to be called if the measurement metadata of a reaction/species has already been done and replicate data has to be added afterwards. If not, use addData instead to introduce the species metadata.
