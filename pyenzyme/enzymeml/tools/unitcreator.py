@@ -44,9 +44,9 @@ class UnitCreator(object):
             "celsius": self.__Celsius,
             "K": self.__Kelvin,
             "kelvin": self.__Kelvin,
-            "dimensionless": self.__Dimensionless
-
-
+            "dimensionless": self.__Dimensionless,
+            "abs": self.__Dimensionless,
+            "absorption": self.__Dimensionless
         }
 
     def getUnit(self, unit_string, enzmldoc):
@@ -64,37 +64,6 @@ class UnitCreator(object):
                 break
             else:
                 index += 1
-
-        # Check dimensionless units
-        dimlessToCheck = ('abs', 'absorption', 'dimensionless')
-
-        if unit_string.lower().endswith(dimlessToCheck):
-
-            # Initialize UnitDef object
-            if unit_string.lower() == "abs":
-                unitName = "absorption"
-            else:
-                unitName = unit_string.lower()
-
-            unitdef = UnitDef(unitName, id_, "NONE")
-
-            self.__functionDict["dimensionless"](
-                unitdef,
-                1.0,
-                1.0
-            )
-
-            # Check if there is already a similar unit defined
-            if self.__checkFootprints(
-                enzmldoc,
-                unitdef.getFootprint()
-            ) != "NEW":
-
-                return self.__checkFootprints(enzmldoc, unitdef.getFootprint())
-
-            enzmldoc.getUnitDict()[unitdef.getId()] = unitdef
-
-            return unitdef.getId()
 
         # Call unit parser to identify units
         parser = UnitParser()
@@ -293,6 +262,7 @@ class UnitCreator(object):
         kind = libsbml.UnitKind_toString(libsbml.UNIT_KIND_DIMENSIONLESS)
         scale = 1
         multiplier = 1
+        exponent = 1
 
         unitdef.addBaseUnit(
             kind,

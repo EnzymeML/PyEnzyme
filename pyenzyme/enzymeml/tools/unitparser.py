@@ -103,7 +103,7 @@ class UnitParser(object):
 
     def __getPrefix(self, string, exponent):
 
-        regex = "^([f|p|n|u|m|c|d|k]?)([s]?|C|celsius|K|kelvin|M|molar|mole|g|gram|l|L|litre|liter|sec|seconds|second|min|mins|minutes|h|hour|hours)$"
+        regex = "^([f|p|n|u|m|c|d|k]?)(C|celsius|K|kelvin|M|molar|mole|g|gram|l|L|litre|liter|[s]?|sec|seconds|second|min|mins|minutes|h|hour|hours|dimensionless)$"
         string = string.lower()[0:-1] + string[-1]
 
         try:
@@ -121,9 +121,25 @@ class UnitParser(object):
             )
 
         except IndexError:
-            unit = re.findall(regex, string)[0][0]
-            return (
-                "NONE",
-                unit,
-                exponent
-            )
+
+            try:
+                unit = re.findall(regex, string)[0][0]
+                return (
+                    "NONE",
+                    unit,
+                    exponent
+                )
+            except IndexError:
+                supportedUnits = regex.split()
+                raise KeyError(
+                    f'Could not parse unit, because "{string}" is not supported. PyEnzyme currently supports the following {self.__getSupportUnitString(regex)}'
+                )
+
+    @staticmethod
+    def __getSupportUnitString(regex):
+        prefixes, units = tuple(regex.split(")("))
+
+        units = units.replace("[s]?", "s").replace(")$", "").split('|')
+        prefixes = prefixes.replace("^([", "").replace("]?", "").split('|')
+
+        return f"prefixes [{', '.join(prefixes)}] and units [{', '.join(units)}]"
