@@ -44,9 +44,7 @@ class UnitCreator(object):
             "celsius": self.__Celsius,
             "K": self.__Kelvin,
             "kelvin": self.__Kelvin,
-            "dimensionless": self.__Dimensionless,
-            "abs": self.__Dimensionless,
-            "absorption": self.__Dimensionless
+            "dimensionless": self.__Dimensionless
         }
 
     def getUnit(self, unit_string, enzmldoc):
