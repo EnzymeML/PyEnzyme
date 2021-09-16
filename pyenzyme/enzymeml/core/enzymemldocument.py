@@ -751,7 +751,7 @@ class EnzymeMLDocument(object):
         Returns:
             list<Protein>: List of Protein objects in the document
         """
-        return self.__getSpeciesList(self.__ReactantDict)
+        return self.__getSpeciesList(self.__ProteinDict)
 
     def getReactionList(self):
         """Returns a list of all Reaction objects
