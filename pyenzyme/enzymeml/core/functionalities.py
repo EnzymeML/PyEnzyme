@@ -10,7 +10,15 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from builtins import isinstance
+
+class ValidationError(Exception):
+    """Raised when a Dataverse validation has failed"""
+    pass
+
+
+class DataverseError(Exception):
+    """Raised when a Dataverse validation has failed"""
+    pass
 
 
 def TypeChecker(value, obj):

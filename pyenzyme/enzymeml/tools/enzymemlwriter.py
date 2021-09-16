@@ -29,7 +29,7 @@ class EnzymeMLWriter(object):
     def __init__(self):
         self.namespace = "http://sbml.org/enzymeml/version1"
 
-    def toFile(self, enzmldoc, path):
+    def toFile(self, enzmldoc, path, verbose=1):
         '''
         Writes EnzymeMLDocument object to an .omex container
 
@@ -87,7 +87,7 @@ class EnzymeMLWriter(object):
         )
 
         # Write to OMEX
-        self.__createArchive(enzmldoc, listOfPaths)
+        self.__createArchive(enzmldoc, listOfPaths, verbose)
 
         shutil.rmtree(
             os.path.join(self.path, 'data'),
@@ -178,7 +178,7 @@ class EnzymeMLWriter(object):
 
         return doc
 
-    def __createArchive(self, enzmldoc, listofPaths):
+    def __createArchive(self, enzmldoc, listofPaths, verbose=1):
 
         archive = CombineArchive()
 
@@ -240,7 +240,8 @@ class EnzymeMLWriter(object):
 
         archive.writeToFile(self.path + '/' + out_file)
 
-        print('\nArchive created:', out_file, '\n')
+        if verbose > 0:
+            print('\nArchive created:', out_file, '\n')
 
     def setupXMLNode(self, name, namespace=True):
         # Helper function

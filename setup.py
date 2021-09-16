@@ -36,7 +36,8 @@ setup(
         'marshmallow',
         'scipy',
         'apispec',
-        'texttable'
+        'texttable',
+        'pydataverse'
     ],
     extras_require={
         'test': [

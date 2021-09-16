@@ -1,6 +1,24 @@
-import json
+'''
+File: functionalities.py
+Project: core
+Author: Jan Range
+License: BSD-2 clause
+-----
+Last Modified: Thursday September 16th 2021 6:43:34 pm
+Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
+-----
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
+'''
 
-from pyenzyme.enzymeml.tools.dataverseMapping import DataverseMapping
+from pyenzyme.enzymeml.databases.dataverseMapping import DataverseMapping
+from pyenzyme.enzymeml.core.functionalities import DataverseError, ValidationError
+from pyDataverse.models import Datafile, Dataset
+from pyDataverse.api import NativeApi
+
+import pyenzyme.enzymeml.core.enzymemldocument as EnzDoc
+
+import json
+import os
 
 
 class DataverseFieldBase(object):
@@ -70,6 +88,61 @@ class ParameterSet(object):
             return jsonData
         else:
             return json.dumps(jsonData, sort_keys=True, indent=4)
+
+
+def uploadToDataverse(baseURL, API_Token, dataverseName, filename=None, enzmldoc=None):
+    """Uploads an EnzymeML document to Dataverse. Can be done using either a path to upload an existing OMEX archive or directly from an EnzymeMLDocument object. Please note, that when this method is used with an object, the OMEX archive will be written to your current working directory.
+
+    Args:
+        baseURL (String): URL to a Dataverse installation
+        API_Token (String): API Token given from your Dataverse installation for authentication.
+        dataverseName (String): Name of the dataverse to upload the EnzymeML document. You can find the name in the link of your dataverse (e.g. https://dataverse.installation/dataverse/{dataverseName})
+        filename (String, optional): Specifies the path to an already existing OMEX archive. Please note, if given, any EnzymeMLDocument in the 'enzmldoc' argument are overriden. Defaults to None.
+        enzmldoc (EnzymeMLDocument, optional): EnzymeML document object describing an experiment. Defaults to None.
+
+    Raises:
+        AttributeError: Raised when neither a filename nor an EnzymeMLDocument object was provided.
+        ValidationError: Raised when the validation fails.
+    """
+
+    if filename:
+        enzmldoc = EnzDoc.EnzymeMLDocument.fromFile(filename)
+    elif enzmldoc:
+        enzmldoc.toFile(".", verbose=0)
+        filename = f"{enzmldoc.getName().replace(' ', '_')}.omex"
+        filename = os.path.join(".", filename)
+    else:
+        raise AttributeError(
+            "Please specify either a path to an EnzymeML document or an EnzymeMLDocument object"
+        )
+
+    # Initialize pyDataverse API and Dataset
+    api = NativeApi(baseURL, API_Token)
+    ds = Dataset()
+    ds.from_json(enzmldoc.toDataverseJSON())
+
+    # Finally, validate the JSON
+    if ds.validate_json():
+        response = api.create_dataset(
+            dataverseName, enzmldoc.toDataverseJSON()
+        )
+
+        if response.json()["status"] == "OK":
+            df = Datafile()
+            ds_pid = response.json()["data"]["persistentId"]
+            df.set({"pid": ds_pid, "filename": filename})
+
+            response = api.upload_datafile(ds_pid, filename, df.json())
+
+        else:
+            raise DataverseError(
+                f"Your dataset could not be uploaded to the dataverse. Please revisit the error log: \n\n{response.text}"
+            )
+
+    else:
+        raise ValidationError(
+            f"The EnzymeML document for {dataverseName} is invalid. Please revisit the logs that were printed while validation."
+        )
 
 
 def toDataverseJSON(enzmldoc):
@@ -158,7 +231,7 @@ def toDataverseJSON(enzmldoc):
         typeName="dsDescription",
         multiple=True,
         typeClass="compound",
-        value=[dsDescripitonValueField]
+        value=[{"dsDescriptionValue": dsDescripitonValueField}]
     ).toJSON(d=True)
 
     # Subject information
@@ -227,6 +300,7 @@ def toDataverseJSON(enzmldoc):
         "fields": [
             titleField,
             datasetContactCompound,
+            dsDescriptionField,
             authorCompound,
             subject
         ]
@@ -235,7 +309,7 @@ def toDataverseJSON(enzmldoc):
     # Finally, compose both fields
     dataverseDataset = {"datasetVersion":
                         {
-                            "metadataBlocks": {"enzymeml": enzymeMLMetadata, "citation": citationMetadata}
+                            "metadataBlocks": {"enzymeML": enzymeMLMetadata, "citation": citationMetadata}
                         }
                         }
 
@@ -256,7 +330,7 @@ def generateCompoundField(objects, className, enzmldoc, multiple=False):
 
     # create the compund field
     compound = DataverseFieldBase(
-        typeName=typeName,
+        typeName=className,
         multiple=multiple,
         typeClass="compound",
         value=fields
@@ -280,6 +354,23 @@ def __populateFields(dictionary, className, enzmldoc=None):
             if isinstance(item, bool) is False and isinstance(item, list) is False:
                 # Catch bools --> All other types are handled as strings
                 item = str(item)
+
+                if "unit" in key.lower():
+
+                    if "mole / l" in item.lower():
+                        item = item.replace("mole / l", "M")
+                    elif "K" in item:
+                        item = "Kelvin"
+
+                else:
+                    item = str(item)
+
+            elif "constant" in key:
+                # Match metadatablock
+                if item is True:
+                    item = "Constant"
+                else:
+                    item = "Not constant"
 
             # Generatew field and add to fields dictionary
             field = DataverseFieldBase(**options, value=item)
@@ -329,7 +420,12 @@ def __reorderReaction(reactionJSON, enzmldoc):
                 )
 
         # Add to JSON data
-        reactionJSON[key] = "; ".join(elementString)
+        reactionJSON[key] = DataverseFieldBase(
+            typeName=key,
+            multiple=False,
+            typeClass="primitive",
+            value="; ".join(elementString)
+        ).toJSON(d=True)
 
     # Turn everything to a string and add it to the dictionary
     equationString = " -> ".join([

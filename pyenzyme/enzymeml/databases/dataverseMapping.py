@@ -63,12 +63,12 @@ DataverseMapping = {
             "typeName": "enzymeMLReactantSBOTerm",
             "multiple": False,
             "typeClass": "primitive"
-        },
-        "id": {
-            "typeName": "enzymeMLReactantID",
-            "multiple": False,
-            "typeClass": "primitive"
         }
+        # "id": {
+        #     "typeName": "enzymeMLReactantID",
+        #     "multiple": False,
+        #     "typeClass": "primitive"
+        # }
     },
     "Protein": {
         "name": {
@@ -105,12 +105,12 @@ DataverseMapping = {
             "typeName": "enzymeMLProteinSubstanceUnit",
             "multiple": False,
             "typeClass": "controlledVocabulary"
-        },
-        "id": {
-            "typeName": "enzymeMLProteinID",
-            "multiple": False,
-            "typeClass": "primitive"
         }
+        # "id": {
+        #     "typeName": "enzymeMLProteinID",
+        #     "multiple": False,
+        #     "typeClass": "primitive"
+        # }
     },
     "Reaction": {
         "name": {
