@@ -116,6 +116,12 @@ def uploadToDataverse(baseURL, API_Token, dataverseName, filename=None, enzmldoc
             "Please specify either a path to an EnzymeML document or an EnzymeMLDocument object"
         )
 
+    # Check if the minimal requirement (Dataset authors) is given
+    if enzmldoc.hasCreator() is False:
+        raise ValidationError(
+            "Please provide at least one author for the dataset. Otherwise Dataverse wont accept the dataset. For this, initialize a `Creator` object and add it to the EnzymeMLDocument via enzmldoc.setCreator() method."
+        )
+
     # Initialize pyDataverse API and Dataset
     api = NativeApi(baseURL, API_Token)
     ds = Dataset()

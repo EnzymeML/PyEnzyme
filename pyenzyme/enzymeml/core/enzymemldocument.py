@@ -993,6 +993,9 @@ class EnzymeMLDocument(object):
             creators (string, list<string>): Single or multiple author classes
         """
 
+        # Set hasCreatorFlag for Dataverse check
+        self.__hasCreator = True
+
         if type(creators) == list:
             self.__creator = [
                 TypeChecker(creator, Creator)
@@ -1003,6 +1006,10 @@ class EnzymeMLDocument(object):
 
     def delCreator(self):
         del self.__creator
+        self.__hasCreator = False
+
+    def hasCreator(self):
+        return self.__hasCreator
 
     def getVessel(self):
         return self.__vessel
