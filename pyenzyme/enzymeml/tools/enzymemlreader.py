@@ -80,7 +80,9 @@ class EnzymeMLReader():
                 )
             )
 
-        enzmldoc.setCreator(creators)
+        if len(creators) > 0:
+            # Dont add anything if there is no creator
+            enzmldoc.setCreator(creators)
 
         try:
             # TODO extract VCard

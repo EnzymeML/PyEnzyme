@@ -60,6 +60,8 @@ class EnzymeMLDocument(object):
         self.setUnitDict(dict())
         self.setConcDict(dict())
 
+        self.__hasCreator = False
+
         if pubmedID:
             self.setPubmedID(pubmedID)
         if doi:
