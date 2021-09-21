@@ -1,5 +1,5 @@
 '''
-File: functionalities.py
+File: dataverse.py
 Project: core
 Author: Jan Range
 License: BSD-2 clause

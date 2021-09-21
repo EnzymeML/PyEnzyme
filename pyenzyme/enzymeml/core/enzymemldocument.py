@@ -18,10 +18,10 @@ from pyenzyme.enzymeml.core.vessel import Vessel
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
-from pyenzyme.enzymeml.tools.dataverse import toDataverseJSON
+from pyenzyme.enzymeml.databases.dataverse import toDataverseJSON
+from pyenzyme.enzymeml.databases.dataverse import uploadToDataverse
 
 import pyenzyme.enzymeml.tools.enzymemlreader as reader
-
 
 from texttable import Texttable
 
@@ -317,8 +317,8 @@ class EnzymeMLDocument(object):
         else:
             return self.is_valid
 
-    def toFile(self, path):
-        EnzymeMLWriter().toFile(self, path)
+    def toFile(self, path, verbose=1):
+        EnzymeMLWriter().toFile(self, path, verbose=verbose)
 
     def toXMLString(self):
         return EnzymeMLWriter().toXMLString(self)
@@ -897,6 +897,37 @@ class EnzymeMLDocument(object):
         self.__ReactionDict[reactionID] = reaction
 
         return reactionID
+
+    def appendFiles(self, files):
+        """Adds any arbitrary file to an OMEX archive
+
+        Args:
+            files (list<String>): List of files to add to the EnzymeML document. Please provide these in a file handler or as an already parsed bytes string.
+        """
+
+    def uploadToDataverse(
+        self,
+        baseURL,
+        API_Token,
+        dataverseName
+    ):
+        """Uploads an EnzymeML document to a Dataverse installation of choice.
+
+        Args:
+            baseURL (String): URL to a Dataverse installation
+            API_Token (String): API Token given from your Dataverse installation for authentication.
+            dataverseName (String): Name of the dataverse to upload the EnzymeML document. You can find the name in the link of your dataverse (e.g. https://dataverse.installation/dataverse/{dataverseName})
+
+        Raises:
+            AttributeError: Raised when neither a filename nor an EnzymeMLDocument object was provided.
+            ValidationError: Raised when the validation fails.
+        """
+        uploadToDataverse(
+            baseURL=baseURL,
+            API_Token=API_Token,
+            dataverseName=dataverseName,
+            enzmldoc=self
+        )
 
     def __convertUnit(self, unit):
         if unit in self.__UnitDict.keys():
