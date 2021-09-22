@@ -39,7 +39,7 @@ class Measurement(EnzymeMLBase):
             "reactants": dict()
         })
 
-    def toJSON(self, d=False):
+    def toJSON(self, d=False, enzmldoc=None):
 
         jsonObject = dict()
 
@@ -50,12 +50,12 @@ class Measurement(EnzymeMLBase):
             jsonObject['global-time-unit'] = self.__globalTimeUnit
 
         proteins = {
-            proteinID: proteinData.toJSON()
+            proteinID: proteinData.toJSON(enzmldoc=enzmldoc)
             for proteinID, proteinData in self.__speciesDict['proteins'].items()
         }
 
         reactants = {
-            reactantID: reactantData.toJSON()
+            reactantID: reactantData.toJSON(enzmldoc=enzmldoc)
             for reactantID, reactantData in self.__speciesDict['reactants'].items()
         }
 

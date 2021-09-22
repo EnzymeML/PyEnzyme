@@ -1,3 +1,5 @@
+import json
+
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 
@@ -27,18 +29,25 @@ class MeasurementData(object):
         self.setUnit(unit)
         self.setReplicates(replicates)
 
-    def toJSON(self, d=True):
+    def toJSON(self, d=True, enzmldoc=None):
 
         jsonObject = dict()
 
         jsonObject['initConc'] = self.__initConc
-        jsonObject['unit'] = self.__unit
         jsonObject['replicates'] = [
-            replicate.toJSON(d=True)
+            replicate.toJSON(d=True, enzmldoc=enzmldoc)
             for replicate in self.__replicates
         ]
 
-        return jsonObject
+        if enzmldoc:
+            jsonObject['unit'] = enzmldoc.getUnitString(self.__unit)
+        else:
+            jsonObject['unit'] = self.__unit
+
+        if d:
+            return jsonObject
+        else:
+            return json.dumps(jsonObject, sort_keys=True, indent=4)
 
     def setReactantID(self, reactantID):
         self.__reactantID = TypeChecker(reactantID, str)

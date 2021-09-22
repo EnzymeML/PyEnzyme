@@ -351,7 +351,8 @@ class EnzymeMLDocument(object):
 
             # create JSON file with correct names
             enzmldoc_dict = dict()
-            kwds = ['ProteinDict', 'ReactantDict', 'ReactionDict']
+            kwds = ['ProteinDict', 'ReactantDict',
+                    'ReactionDict', 'MeasurementDict']
 
             if only_reactions:
                 kwds = ['ReactionDict']
@@ -373,7 +374,7 @@ class EnzymeMLDocument(object):
                         for creator in item
                     ]
 
-                # GET VESSEL/Creator
+                # GET VESSEL
                 elif key == 'vessel':
                     # add vessel to the dictionary
                     enzmldoc_dict[key.lower()] = item.toJSON(
