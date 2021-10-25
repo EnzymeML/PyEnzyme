@@ -64,6 +64,8 @@ class Create(MethodResource):
                 Reactant(**reactant)
             )
 
+        print(enzmldoc)
+
         # parse reactions
         for reaction in json_data['reaction']:
             # initialize reaction meta data
@@ -114,13 +116,13 @@ class Create(MethodResource):
                     reactant = enzmldoc.getReactant(
                         parameter['reactant'],
                         by_id=False
-                        ).getId()
+                    ).getId()
                     value = parameter['value']
                     unit = parameter['unit']
 
                     parameters[f"{name}_{reactant}"] = (value, unit)
 
-                km = KineticModel(equation, parameters)
+                km = KineticModel(equation, parameters, enzmldoc)
                 reac.setModel(km)
 
             enzmldoc.addReaction(reac)
@@ -139,9 +141,9 @@ class Create(MethodResource):
         enzmldoc.toFile(dirpath)
 
         path = os.path.join(
-                            dirpath,
-                            enzmldoc.getName() + '.omex'
-                            )
+            dirpath,
+            enzmldoc.getName() + '.omex'
+        )
 
         f = io.BytesIO(open(path, "rb").read())
         f.name = enzmldoc.getName() + '.omex'
@@ -194,7 +196,7 @@ class Create(MethodResource):
             body['stoich'],
             body['constant'],
             enzmldoc
-            )
+        )
 
         for repl in body['replicates']:
 

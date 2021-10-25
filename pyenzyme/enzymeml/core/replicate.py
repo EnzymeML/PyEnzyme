@@ -24,9 +24,9 @@ class Replicate(EnzymeMLBase):
         replica,
         reactant,
         type_,
-        measurement,
         data_unit,
         time_unit,
+        measurement="m0",
         init_conc="NONE",
         data=None,
         time=None,
@@ -34,7 +34,6 @@ class Replicate(EnzymeMLBase):
         uri=None,
         creatorId=None
     ):
-
         '''
         Object describing an EnzymeML replicate.
 
@@ -106,7 +105,7 @@ class Replicate(EnzymeMLBase):
             self,
             default=transformAttr,
             indent=4
-            )
+        )
 
     def setMeasurement(self, measurement):
         self.__measurement = TypeChecker(measurement, str)

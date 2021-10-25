@@ -30,7 +30,6 @@ class Reactant(EnzymeMLBase):
         uri=None,
         creatorId=None
     ):
-
         '''
         Object describing an EnzymeML reactant.
 
@@ -92,7 +91,7 @@ class Reactant(EnzymeMLBase):
             self,
             default=transformAttr,
             indent=4
-            )
+        )
 
     def __str__(self):
         return self.toJSON()
@@ -149,7 +148,7 @@ class Reactant(EnzymeMLBase):
         return self.__constant
 
     def setName(self, name):
-        self.__name = TypeChecker(name, str).lower()
+        self.__name = TypeChecker(name, str)
 
     def setId(self, id_):
         self.__id = TypeChecker(id_, str)
