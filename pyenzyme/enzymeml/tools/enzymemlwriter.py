@@ -13,6 +13,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 from libsbml import SBMLDocument, CVTerm, XMLNode, XMLTriple, XMLAttributes,\
     XMLNamespaces, SBMLWriter
 import libsbml
+import tempfile
 from libsbml._libsbml import BIOLOGICAL_QUALIFIER, BQB_IS
 from libcombine import CombineArchive, OmexDescription, KnownFormats, VCard
 
@@ -29,7 +30,7 @@ class EnzymeMLWriter(object):
     def __init__(self):
         self.namespace = "http://sbml.org/enzymeml/version1"
 
-    def toFile(self, enzmldoc, path, verbose=1):
+    def toFile(self, enzmldoc, path: str, verbose=1):
         '''
         Writes EnzymeMLDocument object to an .omex container
 
@@ -174,7 +175,7 @@ class EnzymeMLWriter(object):
         self.__addReactants(model, enzmldoc)
 
         # Add reactions
-        self.__addReactions(model, enzmldoc, csv=False)
+        self.__addReactions(model, enzmldoc)
 
         return doc
 
@@ -184,7 +185,7 @@ class EnzymeMLWriter(object):
 
         # add experiment file to archive
         archive.addFile(
-            self.path + '/experiment.xml',
+            f'{self.path}/experiment.xml',
             "./experiment.xml",
             KnownFormats.lookupFormat("sbml"),
             True
@@ -199,7 +200,6 @@ class EnzymeMLWriter(object):
 
         try:
             for creat in enzmldoc.getCreator():
-
                 creator = VCard()
                 creator.setFamilyName(creat.getFname())
                 creator.setGivenName(creat.getGname())
@@ -212,36 +212,82 @@ class EnzymeMLWriter(object):
         archive.addMetadata(".", description)
         archive.addMetadata(location, description)
 
+        # Add CSV files to archive
         for csvPath, filePath in listofPaths.items():
 
-            # Add file to archive
-            archive.addFile(
-                csvPath,
-                filePath,
-                KnownFormats.lookupFormat("csv"),
-                False
+            self.addFileToArchive(
+                archive=archive,
+                filePath=csvPath,
+                targetPath=filePath,
+                format=KnownFormats.lookupFormat("csv"),
+                description="Time course data",
             )
 
-            # add metadata to the csv file
-            location = filePath
-            description = OmexDescription()
-            description.setAbout(location)
-            description.setDescription("EnzymeML Time Course Data")
-            description.setCreated(OmexDescription.getCurrentDateAndTime())
-            archive.addMetadata(location, description)
+        # Add files from fileDict
+        tmpFolder = None
+        if enzmldoc.getFileDict() != {}:
+            # create temporary directory for files
+            tmpFolder = tempfile.mkdtemp()
 
-        # write the archive
+            for fileDict in enzmldoc.getFileDict().values():
+
+                fileContent = fileDict["content"]
+                fileName = fileDict["name"]
+                fileDescription = fileDict["description"]
+                tmpPath = os.path.join(tmpFolder, fileName)
+
+                # Write file locally and add it to the document
+                with open(tmpPath, "wb") as fileHandle:
+                    fileHandle.write(fileContent)
+
+                self.addFileToArchive(
+                    archive=archive,
+                    filePath=tmpPath,
+                    targetPath=f"./files/{fileName}",
+                    format=KnownFormats.guessFormat(fileName),
+                    description=fileDescription
+                )
+
         out_file = "%s.omex" % enzmldoc.getName().replace(' ', '_')
+        outPath = os.path.join(self.path, out_file)
 
         try:
-            os.remove(self.path + '/' + out_file)
+            os.remove(outPath)
         except FileNotFoundError:
             pass
 
-        archive.writeToFile(self.path + '/' + out_file)
+        archive.writeToFile(outPath)
+
+        # Remove temporary directory
+        if tmpFolder is not None:
+            shutil.rmtree(tmpFolder, ignore_errors=True)
 
         if verbose > 0:
             print('\nArchive created:', out_file, '\n')
+
+    @staticmethod
+    def addFileToArchive(
+        archive,
+        filePath,
+        targetPath,
+        format,
+        description
+    ):
+
+        # Add file to archive
+        archive.addFile(
+            filePath,
+            targetPath,
+            format,
+            False
+        )
+
+        # Add metadata to the file
+        omexDesc = OmexDescription()
+        omexDesc.setAbout(targetPath)
+        omexDesc.setDescription(description)
+        omexDesc.setCreated(OmexDescription.getCurrentDateAndTime())
+        archive.addMetadata(targetPath, omexDesc)
 
     def setupXMLNode(self, name, namespace=True):
         # Helper function

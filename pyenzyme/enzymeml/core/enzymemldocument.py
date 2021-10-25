@@ -9,6 +9,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
+import os
 
 from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from pyenzyme.enzymeml.core.reactant import Reactant
@@ -57,6 +58,7 @@ class EnzymeMLDocument(object):
         self.setReactantDict(dict())
         self.setReactionDict(dict())
         self.setMeasurementDict(dict())
+        self.setFileDict(dict())
         self.setUnitDict(dict())
         self.setConcDict(dict())
 
@@ -461,8 +463,20 @@ class EnzymeMLDocument(object):
         Returns:
             UnitDef: Unit definition object
         """
-        assert isinstance(unitID, str)
+        TypeChecker(unitID, str)
         return self.__UnitDict[unitID]
+
+    def getFile(self, fileID):
+        """Returns a file from the file dictionary
+
+        Args:
+            fileID (String): Unqie identifier of the file
+
+        Returns:
+            Byte-String: Byte-String of the file
+        """
+        TypeChecker(fileID, str)
+        return self.__FileDict[fileID]
 
     def getDoi(self):
         """
@@ -720,6 +734,27 @@ class EnzymeMLDocument(object):
             by_id=by_id
         )
 
+    def getFile(self, id_):
+        """
+        Returns file object by ID
+
+        Args:
+            id_ (string): Unique Identifier of file to retrieve.
+
+        Raises:
+            KeyError: If ID is unfindable
+
+        Returns:
+            Dict: Dictionary containining the filename and content of the file.
+        """
+
+        return self.__getElement(
+            id_=id_,
+            dictionary=self.__FileDict,
+            elementType="File",
+            by_id=True
+        )
+
     def __getElement(self, id_, dictionary, elementType, by_id=True):
 
         if by_id:
@@ -763,6 +798,14 @@ class EnzymeMLDocument(object):
             list<Reaction>: List of Reaction objects in the document
         """
         return self.__getSpeciesList(self.__ReactionDict)
+
+    def getFilesList(self):
+        """Returns a list of all File objects
+
+        Returns:
+            list<Dict>: List of File objects in the document
+        """
+        return self.__getSpeciesList(self.__FileDict)
 
     @staticmethod
     def __getSpeciesList(dictionary):
@@ -901,12 +944,38 @@ class EnzymeMLDocument(object):
 
         return reactionID
 
-    def appendFiles(self, files):
-        """Adds any arbitrary file to an OMEX archive
+    def addFile(self, filepath=None, fileHandle=None, description="Undefined"):
+        """Adds any arbitrary file to the document. Please note, that if a filepath is given, any fileHandle will be ignored.
 
         Args:
-            files (list<String>): List of files to add to the EnzymeML document. Please provide these in a file handler or as an already parsed bytes string.
+            filepath (String, optional): Path to the file that is added to the document. Defaults to None.
+            fileHandle (io.BufferedReader, optional): File handle that will be read to a bytes string. Defaults to None.
+
+        Returns:
+            String: Internal identifier for the file.
         """
+
+        fileID = self.__generateID("f", self.__FileDict)
+
+        if filepath:
+            # Open file handle
+            TypeChecker(filepath, str)
+            fileHandle = open(filepath, "rb")
+        elif filepath is None and fileHandle is None:
+            raise ValueError(
+                "Please specify either a file path or a file handle"
+            )
+
+        # Finally, add the file and close the handler
+        self.__FileDict[fileID] = {
+            "name": os.path.basename(fileHandle.name),
+            "content": fileHandle.read(),
+            "description": description
+        }
+
+        fileHandle.close()
+
+        return fileID
 
     def uploadToDataverse(
         self,
@@ -1119,6 +1188,16 @@ class EnzymeMLDocument(object):
 
         return self.__UnitDict
 
+    def getFileDict(self):
+        """
+        Return file dictionary for manual access
+
+        Returns:
+            dict: Dictionary containing File objects describing units
+        """
+
+        return self.__FileDict
+
     def setName(self, value):
         """
         Sets name of the EnzymeML document
@@ -1171,6 +1250,9 @@ class EnzymeMLDocument(object):
 
     def setUnitDict(self, unitDict):
         self.__UnitDict = TypeChecker(unitDict, dict)
+
+    def setFileDict(self, fileDict):
+        self.__FileDict = TypeChecker(fileDict, dict)
 
     def delName(self):
         del self.__name

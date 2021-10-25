@@ -10,6 +10,8 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
+import os
+
 from pyenzyme.enzymeml.core.creator import Creator
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.protein import Protein
@@ -25,7 +27,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 from pyenzyme.enzymeml.models.kineticmodel import KineticModel
 from libcombine import CombineArchive
-from _io import StringIO
+from _io import StringIO, BytesIO
 
 
 class EnzymeMLReader():
@@ -119,6 +121,9 @@ class EnzymeMLReader():
         # fetch Measurements
         measurementDict = self.__getData(model)
         enzmldoc.setMeasurementDict(measurementDict)
+
+        # fetch added files
+        self.__getFiles(enzmldoc)
 
         del self.__path
 
@@ -611,3 +616,27 @@ class EnzymeMLReader():
                     )
 
         return measurementDict
+
+    def __getFiles(self, enzmldoc):
+        """Extracts all added files fro the archive.
+
+        Args:
+            archive (CombineArchive): The OMEX archive to extract files from.
+            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to add files to.
+        """
+
+        # Iterate over enries and extract files
+        for fileLocation in self.archive.getAllLocations():
+            fileLocation = str(fileLocation)
+            if "./files/" in fileLocation:
+
+                # Convert raw file to fileHandle
+                fileHandle = BytesIO(
+                    str.encode(self.archive.extractEntryToString(fileLocation))
+                )
+
+                # Set name of file to the one that is given within the EnzymeMLDocument
+                fileHandle.name = os.path.basename(fileLocation)
+
+                # Add the file to the EnzymeMLDocument
+                enzmldoc.addFile(fileHandle=fileHandle)
