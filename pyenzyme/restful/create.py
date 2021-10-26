@@ -64,8 +64,6 @@ class Create(MethodResource):
                 Reactant(**reactant)
             )
 
-        print(enzmldoc)
-
         # parse reactions
         for reaction in json_data['reaction']:
             # initialize reaction meta data
