@@ -163,7 +163,7 @@ class EnzymeMLDocument(object):
     def __generateID(prefix, dictionary):
         # fetch all keys and sort the
         if dictionary.keys():
-            number = max([int(ID[1::]) for ID in dictionary]) + 1
+            number = max(int(ID[1::]) for ID in dictionary) + 1
             return prefix + str(number)
 
         else:
@@ -189,14 +189,13 @@ class EnzymeMLDocument(object):
                 elif importance == 'Not supported':
                     log[key] = 'Not supported'
 
-            else:
-                if importance == 'Mandatory':
-                    log[key] = 'Mandatory missing'
-                    self.is_valid = False
-                elif importance == 'Optional':
-                    log[key] = 'Optional missing'
-                elif importance == 'Not supported':
-                    log[key] = 'Not supported'
+            elif importance == 'Mandatory':
+                log[key] = 'Mandatory missing'
+                self.is_valid = False
+            elif importance == 'Optional':
+                log[key] = 'Optional missing'
+            elif importance == 'Not supported':
+                log[key] = 'Not supported'
 
     def validate(self, JSON=None, link=None, log=False):
         """
@@ -352,7 +351,7 @@ class EnzymeMLDocument(object):
             """
 
             # create JSON file with correct names
-            enzmldoc_dict = dict()
+            enzmldoc_dict = {}
             kwds = ['ProteinDict', 'ReactantDict',
                     'ReactionDict', 'MeasurementDict']
 
@@ -365,18 +364,16 @@ class EnzymeMLDocument(object):
                 key = key.split('__')[-1]
 
                 # GET SINGLE ATTRIBUTES
-                if type(item) == str or type(item) == int:
+                if type(item) in [str, int]:
                     # store basic meta information
                     enzmldoc_dict[key.lower()] = item
 
-                # Get Creator
                 elif key.lower() == "creator":
                     enzmldoc_dict[key.lower()] = [
                         creator.toJSON(d=True, enzmldoc=self)
                         for creator in item
                     ]
 
-                # GET VESSEL
                 elif key == 'vessel':
                     # add vessel to the dictionary
                     enzmldoc_dict[key.lower()] = item.toJSON(
@@ -384,12 +381,11 @@ class EnzymeMLDocument(object):
                         enzmldoc=self
                     )
 
-                # GET DICTIONARIES
                 elif type(item) == dict and key in kwds:
 
                     # store dictionaries and transform IDs
                     cleanedElementKey = key.replace('Dict', '').lower()
-                    enzmldoc_dict[cleanedElementKey] = list()
+                    enzmldoc_dict[cleanedElementKey] = []
 
                     # iterate over entries and use toJSON method
                     for elem in item.values():
@@ -886,10 +882,9 @@ class EnzymeMLDocument(object):
     ):
 
         # Generate ID
-        if custom_id:
-            speciesID = custom_id
-        else:
-            speciesID = self.__generateID(prefix=prefix, dictionary=dictionary)
+        speciesID = custom_id or self.__generateID(
+            prefix=prefix, dictionary=dictionary
+        )
 
         species.setId(speciesID)
 

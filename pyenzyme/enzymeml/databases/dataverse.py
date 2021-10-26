@@ -34,7 +34,7 @@ class DataverseFieldBase(object):
     def toJSON(self, d=False):
 
         def transformAttr(self):
-            jsonData = dict()
+            jsonData = {}
             for key, item in self.__dict__.items():
 
                 if key == "value":
@@ -76,13 +76,10 @@ class ParameterSet(object):
         self.unit = unit
 
     def toJSON(self, d=False, enzmldoc=None):
-        jsonData = dict()
-        for key, item in self.__dict__.items():
-
-            if key == "unit":
-                jsonData[key] = enzmldoc.getUnitString(item)
-            else:
-                jsonData[key] = item
+        jsonData = {
+            key: enzmldoc.getUnitString(item) if key == "unit" else item
+            for key, item in self.__dict__.items()
+        }
 
         if d:
             return jsonData
@@ -128,27 +125,25 @@ def uploadToDataverse(baseURL, API_Token, dataverseName, filename=None, enzmldoc
     ds.from_json(enzmldoc.toDataverseJSON())
 
     # Finally, validate the JSON
-    if ds.validate_json():
-        response = api.create_dataset(
-            dataverseName, enzmldoc.toDataverseJSON()
-        )
-
-        if response.json()["status"] == "OK":
-            df = Datafile()
-            ds_pid = response.json()["data"]["persistentId"]
-            df.set({"pid": ds_pid, "filename": filename})
-
-            response = api.upload_datafile(ds_pid, filename, df.json())
-
-        else:
-            raise DataverseError(
-                f"Your dataset could not be uploaded to the dataverse. Please revisit the error log: \n\n{response.text}"
-            )
-
-    else:
+    if not ds.validate_json():
         raise ValidationError(
             f"The EnzymeML document for {dataverseName} is invalid. Please revisit the logs that were printed while validation."
         )
+
+    response = api.create_dataset(
+        dataverseName, enzmldoc.toDataverseJSON()
+    )
+
+    if response.json()["status"] != "OK":
+        raise DataverseError(
+            f"Your dataset could not be uploaded to the dataverse. Please revisit the error log: \n\n{response.text}"
+        )
+
+    df = Datafile()
+    ds_pid = response.json()["data"]["persistentId"]
+    df.set({"pid": ds_pid, "filename": filename})
+
+    response = api.upload_datafile(ds_pid, filename, df.json())
 
 
 def toDataverseJSON(enzmldoc):
@@ -249,7 +244,7 @@ def toDataverseJSON(enzmldoc):
     ).toJSON(d=True)
 
     # Author information
-    creators = list()
+    creators = []
 
     for i, creator in enumerate(enzmldoc.getCreator()):
 
@@ -312,14 +307,14 @@ def toDataverseJSON(enzmldoc):
         ]
     }
 
-    # Finally, compose both fields
-    dataverseDataset = {"datasetVersion":
-                        {
-                            "metadataBlocks": {"enzymeML": enzymeMLMetadata, "citation": citationMetadata}
-                        }
-                        }
-
-    return dataverseDataset
+    return {
+        "datasetVersion": {
+            "metadataBlocks": {
+                "enzymeML": enzymeMLMetadata,
+                "citation": citationMetadata,
+            }
+        }
+    }
 
 
 def generateCompoundField(objects, className, enzmldoc, multiple=False):
@@ -349,7 +344,7 @@ def __populateFields(dictionary, className, enzmldoc=None):
 
     # Initialize data structures
     mapping = DataverseMapping[className]
-    fields = dict()
+    fields = {}
 
     for key, item in dictionary.items():
 
@@ -373,11 +368,7 @@ def __populateFields(dictionary, className, enzmldoc=None):
 
             elif "constant" in key:
                 # Match metadatablock
-                if item is True:
-                    item = "Constant"
-                else:
-                    item = "Not constant"
-
+                item = "Constant" if item is True else "Not constant"
             # Generatew field and add to fields dictionary
             field = DataverseFieldBase(**options, value=item)
             fields[field.typeName] = field.toJSON(d=True)
@@ -455,8 +446,8 @@ def __getSpeciesName(id_, enzmldoc):
 
 
 def __getAllKineticLaws(enzmldoc):
-    kineticLaws = list()
-    parameters = list()
+    kineticLaws = []
+    parameters = []
 
     for reaction in enzmldoc.getReactionList():
         try:

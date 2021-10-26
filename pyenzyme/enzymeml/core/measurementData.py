@@ -31,13 +31,13 @@ class MeasurementData(object):
 
     def toJSON(self, d=True, enzmldoc=None):
 
-        jsonObject = dict()
-
-        jsonObject['initConc'] = self.__initConc
-        jsonObject['replicates'] = [
-            replicate.toJSON(d=True, enzmldoc=enzmldoc)
-            for replicate in self.__replicates
-        ]
+        jsonObject = {
+            'initConc': self.__initConc,
+            'replicates': [
+                replicate.toJSON(d=True, enzmldoc=enzmldoc)
+                for replicate in self.__replicates
+            ],
+        }
 
         if enzmldoc:
             jsonObject['unit'] = enzmldoc.getUnitString(self.__unit)

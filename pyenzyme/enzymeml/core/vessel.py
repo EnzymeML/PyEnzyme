@@ -27,7 +27,6 @@ class Vessel(EnzymeMLBase):
         uri=None,
         creatorId=None
     ):
-
         '''
         Object describing an EnzymeML vessel.
 
@@ -57,16 +56,14 @@ class Vessel(EnzymeMLBase):
     def toJSON(self, d=False, enzmldoc=False):
 
         def transformAttr(self):
-            d = dict()
+            d = {}
             for key, item in self.__dict__.items():
 
-                if enzmldoc is not False:
-
-                    if 'unit' in key:
-                        if item:
-                            item = enzmldoc.getUnitDict()[item].getName()
-                        if not item:
-                            item = "nan"
+                if enzmldoc is not False and 'unit' in key:
+                    if item:
+                        item = enzmldoc.getUnitDict()[item].getName()
+                    if not item:
+                        item = "nan"
 
                 if str(item) != "nan":
                     d[key.split('__')[-1]] = item
@@ -80,7 +77,7 @@ class Vessel(EnzymeMLBase):
             self,
             default=transformAttr,
             indent=4
-            )
+        )
 
     def __str__(self):
         return self.toJSON()

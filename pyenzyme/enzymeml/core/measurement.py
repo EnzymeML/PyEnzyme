@@ -41,9 +41,7 @@ class Measurement(EnzymeMLBase):
 
     def toJSON(self, d=False, enzmldoc=None):
 
-        jsonObject = dict()
-
-        jsonObject['name'] = self.__name
+        jsonObject = {'name': self.__name}
 
         if hasattr(self, '_Measurement__globalTime'):
             jsonObject['global-time'] = self.__globalTime
@@ -85,12 +83,10 @@ class Measurement(EnzymeMLBase):
             measurementSpecies=self.__speciesDict['reactants'],
         )
 
-        measurements = {
+        return {
             "proteins": proteins,
             "reactants": reactants
         }
-
-        return measurements
 
     def __combineReplicates(
         self,
@@ -100,8 +96,7 @@ class Measurement(EnzymeMLBase):
         # Initialize columns and headers
         columns = [self.__globalTime]
         header = [f"time/{self.__globalTimeUnit}"]
-        initConcs = dict()
-        stoichiometries = dict()
+        initConcs = {}
 
         # Iterate over measurementData to fill columns
         for speciesID, data in measurementSpecies.items():

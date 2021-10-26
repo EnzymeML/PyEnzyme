@@ -63,7 +63,7 @@ class createValidate(MethodResource):
 
                 df_red = df[df.clss == clss]
                 df_red = df_red.replace(np.nan, 'nan', regex=True)
-                fields = dict()
+                fields = {}
 
                 for _, row in df_red.iterrows():
 
@@ -76,16 +76,11 @@ class createValidate(MethodResource):
                         val_min = row['Range'].split('-')[0]
                         val_range = [float(val_min), float(val_max)]
 
-                    elif row['Range'] == 'nan':
+                    else:
                         val_range = None
 
-                    if row['Vocabulary'] != 'nan':
-
-                        vocab = row['Vocabulary'].split(',')
-
-                    elif row['Vocabulary'] == 'nan':
-                        vocab = None
-
+                    vocab = row['Vocabulary'].split(
+                        ',') if row['Vocabulary'] != 'nan' else None
                     # Create Field for JSON valid file
                     importance = row['Attribute Importance']
                     fields[att_name] = self.generateValidField(
@@ -119,7 +114,7 @@ class createValidate(MethodResource):
 
         if vocab:
             # Vocab check
-            if type(vocab) != list: 
+            if type(vocab) != list:
                 vocab = [vocab]
 
             for voc in vocab:
@@ -145,14 +140,12 @@ class createValidate(MethodResource):
         }
 
         # generate dicionary
-        valid_template = dict()
-        valid_template["importance"] = importance
-
-        if type_ in type_dict.keys():
+        valid_template = {'importance': importance}
+        if type_ in type_dict:
             valid_template["type"] = type_
 
         if val_range:
-            if type_ == "int" or type_ == "float":
+            if type_ in ["int", "float"]:
                 valid_template["val_range"] = [val_range[0], val_range[1]]
 
         elif vocab:
@@ -161,18 +154,18 @@ class createValidate(MethodResource):
         return valid_template
 
     def composeValidationTemplate(
-                                self,
-                                enzmldoc=None,
-                                creator=None,
-                                reaction=None,
-                                protein=None,
-                                reactant=None,
-                                replicate=None,
-                                vessel=None,
-                                model=None,
-                                ):
+        self,
+        enzmldoc=None,
+        creator=None,
+        reaction=None,
+        protein=None,
+        reactant=None,
+        replicate=None,
+        vessel=None,
+        model=None,
+    ):
 
-        valid_temp = dict()
+        valid_temp = {}
 
         if enzmldoc:
             valid_temp["EnzymeMLDocument"] = enzmldoc

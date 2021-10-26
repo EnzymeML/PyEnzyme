@@ -26,7 +26,6 @@ desc = 'This endpoint is used to deploy data on the EnzymeData Dataverse reposit
 class enzymeData(MethodResource):
 
     def post(self):
-
         """
         Reads JSON formatted data and converts to an EnzymeML container.
         """
@@ -98,11 +97,11 @@ class enzymeData(MethodResource):
             "metadataBlocks": {
                 "enzymeML": {
                     "displayName": "EnzymeML Metadata"
-                    },
+                },
                 'citation': {
                     "displayName": "Citation Metadata"
-                    }
                 }
+            }
         }
 
         fields = list()
@@ -150,7 +149,7 @@ class enzymeData(MethodResource):
                 "given_name": " ".join([
                     creator.getGname(),
                     creator.getFname()
-                    ]),
+                ]),
                 "mail": creator.getMail()
             }
             author_dv = self.getCompound('author', data, multiple=True)
@@ -276,7 +275,7 @@ class enzymeData(MethodResource):
 
     def getCompound(self, compound_name, json_data, multiple):
 
-        compound = dict()
+        compound = {}
 
         for key, item in self.keys[compound_name].items():
 
@@ -293,11 +292,8 @@ class enzymeData(MethodResource):
                     print(
                         f"Couldnt find required data {key} - \
                             Please make sure to fill out all required fields."
-                        )
-                else:
-                    pass
-
-        if len(compound) > 0:
+                    )
+        if compound:
             # transform compund to dictionary
             return self.getEnzymeDataField(
                 compound_name,

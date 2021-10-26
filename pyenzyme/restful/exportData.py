@@ -111,7 +111,7 @@ class exportData(MethodResource):
                             for repl in elem[3]
                         ]
 
-                        if len(repls) > 0:
+                        if repls:
                             # Add data to JSON response
                             JSON[role][reactant] = repls
 

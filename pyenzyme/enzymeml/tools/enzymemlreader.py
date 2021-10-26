@@ -71,7 +71,7 @@ class EnzymeMLReader():
 
         # Fetch Creators
         numCreators = desc.getNumCreators()
-        creators = list()
+        creators = []
         for i in range(numCreators):
             creator = desc.getCreator(i)
             creators.append(
@@ -82,7 +82,7 @@ class EnzymeMLReader():
                 )
             )
 
-        if len(creators) > 0:
+        if creators:
             # Dont add anything if there is no creator
             enzmldoc.setCreator(creators)
 
@@ -148,25 +148,15 @@ class EnzymeMLReader():
 
         model_hist = model.getModelHistory()
         creator_list = model_hist.getListCreators()
-        creators = list()
-
-        for creator in creator_list:
-
-            creators.append(
-
-                Creator(
-                    creator.getFamilyName(),
-                    creator.getGivenName(),
-                    creator.getEmail()
-                )
-
-            )
-
-        return creators
+        return [Creator(
+            creator.getFamilyName(),
+            creator.getGivenName(),
+            creator.getEmail()
+        ) for creator in creator_list]
 
     def __getUnits(self, model):
 
-        unitDict = dict()
+        unitDict = {}
         unitdef_list = model.getListOfUnitDefinitions()
 
         for unit in unitdef_list:
@@ -203,14 +193,12 @@ class EnzymeMLReader():
 
         compartment = model.getListOfCompartments()[0]
 
-        vessel = Vessel(
+        return Vessel(
             compartment.getName(),
             compartment.getId(),
             compartment.getSize(),
             compartment.getUnits()
         )
-
-        return vessel
 
     @staticmethod
     def __parseAnnotation(annotationString):
@@ -224,7 +212,7 @@ class EnzymeMLReader():
         )[0]
 
         # Initialize annotation dictionary
-        annotDict = dict()
+        annotDict = {}
 
         for enzymeMLAnnot in speciesAnnot:
             key = enzymeMLAnnot.tag.split('}')[-1].lower()
@@ -236,8 +224,8 @@ class EnzymeMLReader():
 
     def __getSpecies(self, model):
 
-        proteinDict = dict()
-        reactantDict = dict()
+        proteinDict = {}
+        reactantDict = {}
         speciesList = model.getListOfSpecies()
 
         for species in speciesList:
@@ -295,7 +283,7 @@ class EnzymeMLReader():
             return list()
 
         initConcAnnot = ET.fromstring(specref.getAnnotationString())[0]
-        initConcs = list()
+        initConcs = []
 
         for initConc in initConcAnnot:
 
@@ -312,7 +300,7 @@ class EnzymeMLReader():
     def __parseConditions(reactionAnnot):
 
         conditions = reactionAnnot[0]
-        conditionDict = dict()
+        conditionDict = {}
 
         for condition in conditions:
 
@@ -332,7 +320,7 @@ class EnzymeMLReader():
         except IndexError:
             replicateAnnot = []
 
-        reactionReplicates = dict()
+        reactionReplicates = {}
 
         for replicate in replicateAnnot:
 
@@ -340,7 +328,7 @@ class EnzymeMLReader():
             replicate = allReplicates[replicateID]
             speciesID = replicate.getReactant()
 
-            if speciesID in reactionReplicates.keys():
+            if speciesID in reactionReplicates:
                 reactionReplicates[speciesID].append(
                     replicate
                 )
@@ -355,7 +343,7 @@ class EnzymeMLReader():
         speciesRefs,
         modifiers=False
     ):
-        elements = list()
+        elements = []
         for speciesRef in speciesRefs:
 
             speciesID = speciesRef.getSpecies()
@@ -399,7 +387,7 @@ class EnzymeMLReader():
         reactionsList = model.getListOfReactions()
 
         # Initialize reaction dictionary
-        reactionDict = dict()
+        reactionDict = {}
 
         # parse annotations and filter replicates
         for reaction in reactionsList:
@@ -456,7 +444,7 @@ class EnzymeMLReader():
         # __getReplicates helper function
         # reads file anntations to dict
         fileAnnot = dataAnnot[1]
-        files = {
+        return {
             file.attrib['id']:
             {
                 'file': file.attrib['file'],
@@ -466,14 +454,12 @@ class EnzymeMLReader():
             } for file in fileAnnot
         }
 
-        return files
-
     @staticmethod
     def __parseListOfFormats(dataAnnot):
         # __getReplicates helper function
         # reads format anntations to dict
         formatAnnot = dataAnnot[0]
-        formats = dict()
+        formats = {}
 
         for format in formatAnnot:
             formatID = format.attrib['id']
@@ -564,7 +550,7 @@ class EnzymeMLReader():
         )
 
         # Initialize replicates dictionary
-        replicates = dict()
+        replicates = {}
 
         # Iterate over measurements and assign replicates
         for measurementID, measurementFile in measurementFiles.items():

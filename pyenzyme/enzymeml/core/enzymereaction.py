@@ -96,7 +96,7 @@ class EnzymeReaction(EnzymeMLBase):
                 dict: Object serialized as dictionary
             """
 
-            d = dict()
+            d = {}
             for key, item in self.__dict__.items():
 
                 if 'KineticModel' not in key:
@@ -171,21 +171,19 @@ class EnzymeReaction(EnzymeMLBase):
         # Check if initConc already defined
         concTuple = (concValue, concUnit)
 
-        if concTuple not in enzmldoc.getConcDict().values():
-
-            index = 0
-            while True:
-                concID = f"c{index}"
-                if concID not in enzmldoc.getConcDict().keys():
-                    enzmldoc.getConcDict()[concID] = concTuple
-                    return concTuple
-                index += 1
-
-        else:
+        if concTuple in enzmldoc.getConcDict().values():
             return [
                 item for key, item in enzmldoc.getConcDict().items()
                 if concTuple == item
             ][0]
+
+        index = 0
+        while True:
+            concID = f"c{index}"
+            if concID not in enzmldoc.getConcDict().keys():
+                enzmldoc.getConcDict()[concID] = concTuple
+                return concTuple
+            index += 1
 
     def exportReplicates(self, ids):
         """
@@ -389,13 +387,13 @@ class EnzymeReaction(EnzymeMLBase):
 
             # Check if units are already given as an ID
             def isID(string):
-                if string[0] == "u":
-                    try:
-                        int(string[1::])
-                        return 1
-                    except ValueError:
-                        return 0
-                else:
+                if string[0] != "u":
+                    return 0
+
+                try:
+                    int(string[1::])
+                    return 1
+                except ValueError:
                     return 0
 
             # perform checks
@@ -524,11 +522,13 @@ class EnzymeReaction(EnzymeMLBase):
         isConstant = TypeChecker(isConstant, bool)
 
         # Check if species is part of document already
-        if speciesID not in enzmldoc.getReactantDict().keys():
-            if speciesID not in enzmldoc.getProteinDict().keys():
-                raise KeyError(
-                    f"Reactant/Protein with id {speciesID} is not defined yet"
-                )
+        if (
+            speciesID not in enzmldoc.getReactantDict().keys()
+            and speciesID not in enzmldoc.getProteinDict().keys()
+        ):
+            raise KeyError(
+                f"Reactant/Protein with id {speciesID} is not defined yet"
+            )
 
         # Add altogether to the element list
         elementList.append(
@@ -832,7 +832,7 @@ class EnzymeReaction(EnzymeMLBase):
 
         self.__model = TypeChecker(model, KineticModel)
 
-    def setEducts(self, educts):
+    def setEducts(self, educts):  # sourcery skip: assign-if-exp
         """
         INTERNAL. USE addXXX instead!
         """
@@ -842,23 +842,23 @@ class EnzymeReaction(EnzymeMLBase):
         else:
             self.__educts = TypeChecker(educts, list)
 
-    def setProducts(self, products):
+    def setProducts(self, products):    # sourcery skip: assign-if-exp
         """
         INTERNAL. USE addXXX instead!
         """
 
         if products is None:
-            self.__products = list()
+            self.__products = []
         else:
             self.__products = TypeChecker(products, list)
 
-    def setModifiers(self, modifiers):
+    def setModifiers(self, modifiers):  # sourcery skip: assign-if-exp
         """
         INTERNAL. USE addXXX instead!
         """
 
         if modifiers is None:
-            self.__modifiers = list()
+            self.__modifiers = []
         else:
             self.__modifiers = TypeChecker(modifiers, list)
 

@@ -39,9 +39,11 @@ class Create(MethodResource):
 
         # create enzymeml document
         param_doc = {
-            key: item for key, item in json_data.items()
-            if type(item) != list and type(item) != dict
+            key: item
+            for key, item in json_data.items()
+            if type(item) not in [list, dict]
         }
+
         enzmldoc = EnzymeMLDocument(**param_doc)
 
         # create Creator
@@ -68,8 +70,9 @@ class Create(MethodResource):
         for reaction in json_data['reaction']:
             # initialize reaction meta data
             param_reac = {
-                key: item for key, item in reaction.items()
-                if type(item) != list and type(item) != dict
+                key: item
+                for key, item in reaction.items()
+                if type(item) not in [list, dict]
             }
 
             reac = EnzymeReaction(**param_reac)
@@ -106,7 +109,7 @@ class Create(MethodResource):
                 # kinetic models
                 model = reaction['kineticmodel']
                 equation = model['equation']
-                parameters = dict()
+                parameters = {}
 
                 for parameter in model['parameters']:
 
@@ -114,7 +117,7 @@ class Create(MethodResource):
                     reactant = enzmldoc.getReactant(
                         parameter['reactant'],
                         by_id=False
-                        ).getId()
+                    ).getId()
                     value = parameter['value']
                     unit = parameter['unit']
 
@@ -139,9 +142,9 @@ class Create(MethodResource):
         enzmldoc.toFile(dirpath)
 
         path = os.path.join(
-                            dirpath,
-                            enzmldoc.getName() + '.omex'
-                            )
+            dirpath,
+            enzmldoc.getName() + '.omex'
+        )
 
         f = io.BytesIO(open(path, "rb").read())
         f.name = enzmldoc.getName() + '.omex'
@@ -194,7 +197,7 @@ class Create(MethodResource):
             body['stoich'],
             body['constant'],
             enzmldoc
-            )
+        )
 
         for repl in body['replicates']:
 

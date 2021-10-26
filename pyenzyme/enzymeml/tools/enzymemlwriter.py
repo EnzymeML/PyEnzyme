@@ -56,23 +56,8 @@ class EnzymeMLWriter(object):
         model.setName(enzmldoc.getName())
         model.setId(enzmldoc.getName())
 
-        # Add references
-        self.__addRefs(model, enzmldoc)
-
-        # Add units
-        self.__addUnits(model, enzmldoc)
-
-        # Add Vessel
-        self.__addVessel(model, enzmldoc)
-
-        # Add protein
-        self.__addProteins(model, enzmldoc)
-
-        # Add reactants
-        self.__addReactants(model, enzmldoc)
-
-        # Add reactions
-        self.__addReactions(model, enzmldoc)
+        # Convert the SBML model to EnzymeML
+        self.convertEnzymeMLToSBML(model, enzmldoc)
 
         # Add data
         listOfPaths = self.__addData(model, enzmldoc)
@@ -118,23 +103,8 @@ class EnzymeMLWriter(object):
 
         self.path = None
 
-        # Add references
-        self.__addRefs(model, enzmldoc)
-
-        # Add units
-        self.__addUnits(model, enzmldoc)
-
-        # Add Vessel
-        self.__addVessel(model, enzmldoc)
-
-        # Add protein
-        self.__addProteins(model, enzmldoc)
-
-        # Add reactants
-        self.__addReactants(model, enzmldoc)
-
-        # Add reactions
-        self.__addReactions(model, enzmldoc)
+        # Convert the SBML model to EnzymeML
+        self.convertEnzymeMLToSBML(model, enzmldoc)
 
         # Add data
         self.__addData(model, enzmldoc)
@@ -159,25 +129,25 @@ class EnzymeMLWriter(object):
         model.setName(enzmldoc.getName())
         model.setId(enzmldoc.getName())
 
-        # Add references
-        self.__addRefs(model, enzmldoc)
-
-        # Add units
-        self.__addUnits(model, enzmldoc)
-
-        # Add Vessel
-        self.__addVessel(model, enzmldoc)
-
-        # Add protein
-        self.__addProteins(model, enzmldoc)
-
-        # Add reactants
-        self.__addReactants(model, enzmldoc)
-
-        # Add reactions
-        self.__addReactions(model, enzmldoc)
+        # Convert the SBML model to EnzymeML
+        self.convertEnzymeMLToSBML(model, enzmldoc)
 
         return doc
+
+    def convertEnzymeMLToSBML(self, model, enzmldoc):
+        """Manages the conversion of EnzymeML to SBML.
+
+        Args:
+            model (SBMLModel): The blank SBML model, where the EnzymeML document is converted to.
+            enzmldoc (EnzymeMLDocument): The EnzymeML document to be converted.
+        """
+
+        self.__addRefs(model, enzmldoc)
+        self.__addUnits(model, enzmldoc)
+        self.__addVessel(model, enzmldoc)
+        self.__addProteins(model, enzmldoc)
+        self.__addReactants(model, enzmldoc)
+        self.__addReactions(model, enzmldoc)
 
     def __createArchive(self, enzmldoc, listofPaths, verbose=1):
 
@@ -540,21 +510,19 @@ class EnzymeMLWriter(object):
         # Check if initConc already defined
         concTuple = (concValue, concUnit)
 
-        if concTuple not in enzmldoc.getConcDict().values():
-
-            index = 0
-            while True:
-                concID = f"c{index}"
-                if concID not in enzmldoc.getConcDict().keys():
-                    enzmldoc.getConcDict()[concID] = concTuple
-                    return concID
-                index += 1
-
-        else:
+        if concTuple in enzmldoc.getConcDict().values():
             return [
                 key for key, item in enzmldoc.getConcDict().items()
                 if concTuple == item
             ][0]
+
+        index = 0
+        while True:
+            concID = f"c{index}"
+            if concID not in enzmldoc.getConcDict().keys():
+                enzmldoc.getConcDict()[concID] = concTuple
+                return concID
+            index += 1
 
     def __addReactions(self, model, enzmldoc):
 
@@ -684,7 +652,7 @@ class EnzymeMLWriter(object):
         listOfMeasurements = self.setupXMLNode(
             'enzymeml:listOfMasurements', namespace=False
         )
-        listOfPaths = dict()
+        listOfPaths = {}
 
         measurementDict = enzmldoc.getMeasurementDict()
         for Index, (measurementID, measurement) in enumerate(measurementDict.items()):
@@ -777,7 +745,7 @@ class EnzymeMLWriter(object):
         formatAnnot
     ):
         speciesDict = measurement.getSpeciesDict()
-        dataColumns = list()
+        dataColumns = []
 
         # Init Conc
         # Extract measurementData objects
@@ -805,7 +773,7 @@ class EnzymeMLWriter(object):
     def appendReplicateData(self, species, formatAnnot):
 
         # Initialize data columns
-        dataColumns = list()
+        dataColumns = []
 
         # Collect all replicates
         replicates = [

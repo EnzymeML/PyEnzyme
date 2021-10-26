@@ -35,7 +35,7 @@ class KineticModel(object):
     def toJSON(self, d=False, enzmldoc=None):
 
         def transformAttr(self):
-            d = dict()
+            d = {}
             for key, item in self.__dict__.items():
                 key = key.split('__')[-1]
 
@@ -112,7 +112,7 @@ class KineticModel(object):
         '''
         parameters = TypeChecker(parameters, dict)
 
-        self.__parameters = dict()
+        self.__parameters = {}
         for paramName, (paramValue, paramUnit) in parameters.items():
 
             if paramUnit not in enzmldoc.getUnitDict().keys():

@@ -89,7 +89,7 @@ class addModel(MethodResource):
             os.remove(omexpath)
 
             # parse parameters
-            parameters = dict()
+            parameters = {}
             for param in body['parameters']:
 
                 name = param["name"]
@@ -110,9 +110,9 @@ class addModel(MethodResource):
             enzmldoc.toFile(dirpath)
 
             path = os.path.join(
-                                dirpath,
-                                enzmldoc.getName().replace(' ', '_') + '.omex'
-                                )
+                dirpath,
+                enzmldoc.getName().replace(' ', '_') + '.omex'
+            )
 
             f = io.BytesIO(open(path, "rb").read())
             f.name = enzmldoc.getName() + '_Modeled.omex'

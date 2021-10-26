@@ -70,7 +70,7 @@ class Replicate(EnzymeMLBase):
     def toJSON(self, d=False, enzmldoc=False):
 
         def transformAttr(self):
-            d = dict()
+            d = {}
             for key, item in self.__dict__.items():
                 if type(item) == Series:
                     d['data'] = list(item)

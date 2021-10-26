@@ -89,12 +89,12 @@ class UnitCreator(object):
                     denominator.append(pre_unit)
 
         # Reformat unit string to a convenient format
-        if len(denominator) > 0:
+        if denominator:
             name = " / ".join([
                 " ".join(nominator),
                 " ".join(denominator)
             ])
-        if len(denominator) == 0:
+        if not denominator:
             name = " ".join(nominator)
 
         # Convert Celsius to Kelvin - No SBML kind for C!
