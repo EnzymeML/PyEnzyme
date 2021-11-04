@@ -137,3 +137,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 pyenzyme/Examples/getJSONValid.py
+
+# test dirs 
+tests/tmp
+
+# PyCharm IDE
+.idea/
