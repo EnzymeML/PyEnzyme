@@ -110,4 +110,29 @@ class ThinLayerPysces():
         if params is None:
             params = self._makeLmfitParameters()
         self.mini = lmfit.Minimizer(self._residual, params)
-        return self.mini.minimize()
+        self.fit = self.mini.minimize()
+        return self.fit
+
+    def _addResultsToEnzymeML(self):
+        '''
+        Add fit results to EnzymeML document.
+        '''
+        for name, value in self.fit.params.valuesdict().items():
+            reaction_id = name.split('_')[0]
+            parameter_name = "_".join(name.split('_')[1:])
+            parameters = self.enzmldoc.getReaction(reaction_id).getModel().getParameters()
+            (value_old, unit) = parameters[parameter_name]
+            parameters[parameter_name] = (value, unit)
+
+    def writeEnzymeML(self, name=None):
+        '''
+        Write EnzymeML document with fit results.
+        WARNING: will overwrite old EnzymeML document if no new name is provided.
+
+        Args:
+            name (str): new name for EnzymeML document
+        '''
+        if name is not None:
+            self.enzmldoc.setName(name)
+        self._addResultsToEnzymeML()
+        self.enzmldoc.toFile('.')
