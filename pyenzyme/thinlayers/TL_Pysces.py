@@ -89,8 +89,12 @@ class ThinLayerPysces():
 
     def _residual(self, params):
         exp_data, inits = self._getExperimentalData()
+        # get columns of experimental data, corresponding to measured reactants
+        cols = list(exp_data.columns) 
         model_data = self._simulateExpData(params)
-        return np.array(exp_data - model_data)
+        # create dataframe containing only modelled data for reactants that have also been measured
+        new_model_data = model_data.drop(model_data.columns.difference(cols), axis=1)
+        return np.array(exp_data - new_model_data)
 
     def _getParamsFromEnzymeML(self):
         params = {}
