@@ -113,7 +113,7 @@ class ThinLayerPysces():
         self.fit = self.mini.minimize()
         return self.fit
 
-    def writeEnzymeML(self, name=None, path=None):
+    def writeEnzymeML(self, name=None, path='.'):
         '''
         Write EnzymeML document with fit results.
         WARNING: will overwrite old EnzymeML document if no new name is provided.
@@ -125,11 +125,7 @@ class ThinLayerPysces():
         if name:
             self.enzmldoc.setName(name)
         self._addResultsToEnzymeML()
-        if path:
-            self.enzmldoc.toFile(path)
-        else:
-            self.enzmldoc.toFile('.')
-        
+        self.enzmldoc.toFile(path)
 
     def _addResultsToEnzymeML(self):
         '''
