@@ -571,19 +571,22 @@ class EnzymeMLWriter(object):
             # Write educts
             self.writeElements(
                 elementTuples=enzymeReaction.getEducts(),
-                createFunction=reaction.createReactant
+                createFunction=reaction.createReactant,
+                sboTerm="SBO:0000015"
             )
 
             # Write products
             self.writeElements(
                 elementTuples=enzymeReaction.getProducts(),
-                createFunction=reaction.createProduct
+                createFunction=reaction.createProduct,
+                sboTerm="SBO:0000460"
             )
 
             # Write modifiers
             self.writeElements(
                 elementTuples=enzymeReaction.getModifiers(),
-                createFunction=reaction.createModifier
+                createFunction=reaction.createModifier,
+                sboTerm="SBO:0000011"
             )
 
             # Finally, add EnzymeML annotations if given
@@ -595,18 +598,20 @@ class EnzymeMLWriter(object):
     def writeElements(
         self,
         elementTuples,
-        createFunction
+        createFunction,
+        sboTerm
     ):
 
         for species, stoich, isConstant in elementTuples:
 
             speciesRef = createFunction()
             speciesRef.setSpecies(species)
+            speciesRef.setSBOTerm(sboTerm)
 
             try:
                 # Catch modifiers --> No stoich/constant in SBML
-                speciesRef.setStoichiometry(stoich)
                 speciesRef.setConstant(isConstant)
+                speciesRef.setStoichiometry(stoich)
             except AttributeError:
                 pass
 
