@@ -10,65 +10,74 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-import json
-
 import numpy as np
 import pandas as pd
 
+from typing import Optional, Any, TYPE_CHECKING
+from dataclasses import dataclass
+from pydantic import PositiveFloat, validate_arguments, Field
+
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
 from pyenzyme.enzymeml.core.replicate import Replicate
-from pprint import pprint
+from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
+from pyenzyme.enzymeml.core.utils import (
+    type_checking,
+    deprecated_getter
+)
+
+if TYPE_CHECKING:  # pragma: no cover
+    static_check_init_args = dataclass
+else:
+    static_check_init_args = type_checking
 
 
+@static_check_init_args
 class Measurement(EnzymeMLBase):
 
-    def __init__(
-        self,
-        name,
-        uri=None,
-        creatorId=None,
-    ):
-        super().__init__(uri, creatorId)
+    name: str = Field(
+        description="Name of the measurement",
+        required=True
+    )
 
-        # Initialize attributes
-        self.setName(name)
-        self.setSpeciesDict({
-            "proteins": dict(),
-            "reactants": dict()
-        })
+    species_dict: dict[str, dict[str, MeasurementData]] = Field(
+        default={"proteins": {}, "reactants": {}},
+        description="Species of the measurement.",
+        required=True
+    )
 
-    def toJSON(self, d=False, enzmldoc=None):
+    global_time: list[float] = Field(
+        default_factory=list,
+        description="Global time of the measurement all replicates agree on.",
+        required=True
+    )
 
-        jsonObject = {'name': self.__name}
+    global_time_unit: Optional[str] = Field(
+        default=None,
+        description="Unit of the global time.",
+        required=True,
+    )
 
-        if hasattr(self, '_Measurement__globalTime'):
-            jsonObject['global-time'] = self.__globalTime
-            jsonObject['global-time-unit'] = self.__globalTimeUnit
+    id: Optional[str] = Field(
+        description="Unique identifier of the measurement.",
+        required=True,
+        regex=r"m[\d]+"
+    )
 
-        proteins = {
-            proteinID: proteinData.toJSON(enzmldoc=enzmldoc)
-            for proteinID, proteinData in self.__speciesDict['proteins'].items()
-        }
+    uri: Optional[str] = Field(
+        default=None,
+        description="URI of the reaction.",
+        required=False
+    )
 
-        reactants = {
-            reactantID: reactantData.toJSON(enzmldoc=enzmldoc)
-            for reactantID, reactantData in self.__speciesDict['reactants'].items()
-        }
+    creator_id: Optional[str] = Field(
+        default=None,
+        description="Unique identifier of the author.",
+        required=False
+    )
 
-        jsonObject['reactants'] = reactants
-        jsonObject['proteins'] = proteins
-
-        if d:
-            return jsonObject
-        else:
-            return json.dumps(jsonObject, indent=4)
-
-    def __str__(self):
-        return self.toJSON()
-
-    def exportData(self):
+    # Utility methods
+    def exportData(self) -> dict[str, dict[str, Any]]:
         """Returns data stored in the measurement object as DataFrames nested in dictionaries. These are sorted hierarchially by reactions where each holds a DataFrame each for proteins and reactants.
 
         Returns:
@@ -77,10 +86,10 @@ class Measurement(EnzymeMLBase):
 
         # Combine Replicate objects for each reaction
         proteins = self.__combineReplicates(
-            measurementSpecies=self.__speciesDict['proteins'],
+            measurement_species=self.species_dict['proteins'],
         )
         reactants = self.__combineReplicates(
-            measurementSpecies=self.__speciesDict['reactants'],
+            measurement_species=self.species_dict['reactants'],
         )
 
         return {
@@ -90,16 +99,16 @@ class Measurement(EnzymeMLBase):
 
     def __combineReplicates(
         self,
-        measurementSpecies
-    ):
+        measurement_species: dict[str, MeasurementData]
+    ) -> dict[str, Any]:
 
         # Initialize columns and headers
-        columns = [self.__globalTime]
-        header = [f"time/{self.__globalTimeUnit}"]
+        columns = [self.global_time]
+        header = [f"time/{self.global_time_unit}"]
         initConcs = {}
 
         # Iterate over measurementData to fill columns
-        for speciesID, data in measurementSpecies.items():
+        for speciesID, data in measurement_species.items():
 
             # Fetch replicate data
             for replicate in data.getReplicates():
@@ -122,12 +131,12 @@ class Measurement(EnzymeMLBase):
             "initConc": initConcs,
         }
 
-    def addReplicates(self, replicates):
+    @validate_arguments
+    def addReplicates(self, replicates: list[Replicate]) -> None:
         """Adds a replicate to the corresponding measurementData object. This method is meant to be called if the measurement metadata of a reaction/species has already been done and replicate data has to be added afterwards. If not, use addData instead to introduce the species metadata.
 
         Args:
             replicate (List<Replicate>): Objects describing time course data
-            reactionID (String): Reaction identifier where the data is added to.
         """
 
         # Check if just a single Replicate has been handed
@@ -139,173 +148,94 @@ class Measurement(EnzymeMLBase):
             # Check for the species type
             speciesID = replicate.getReactant()
             speciesType = "reactants" if speciesID[0] == "s" else "proteins"
-            speciesData = self.__speciesDict[speciesType]
+            speciesData = self.species_dict[speciesType]
 
             try:
 
                 data = speciesData[speciesID]
                 data.addReplicate(replicate)
 
-                if hasattr(self, "_Measurement__globalTime") is False:
+                if len(self.global_time) == 0:
 
                     # Add global time if this is the first replicate to be added
-                    self.setGlobalTime(replicate.getData(sep=True)[0])
-                    self.setGlobalTimeUnit(replicate.getTimeUnit())
+                    self.global_time = replicate.getData(sep=True)[0]
+                    self.global_time_unit = (replicate.getTimeUnit())
 
             except KeyError:
                 raise KeyError(
                     f"{speciesType[0:-1]} {speciesID} is not part of the measurement yet. If a {speciesType[0:-1]} hasnt been yet defined in a measurement object, use the addData method to define metadata first-hand. You can add the replicates in the same function call then."
                 )
 
+    @validate_arguments
     def addData(
         self,
-        initConc,
-        unit,
-        reactantID=None,
-        proteinID=None,
-        replicates=list()
-    ):
+        init_conc: PositiveFloat,
+        unit: str,
+        reactant_id: str,
+        protein_id: str,
+        replicates: list[Replicate] = []
+    ) -> None:
         """Adds data via reaction ID to the measurement class.
 
         Args:
-            reactionID (string): Identifier of the reaction that the measurement refers toself.
-            reactantID (string): Identifier of the reactant/protein that has been measured.
-            initConcValue (float): Numeric value of the initial concentration
-            initConcUnit (string): UnitID of the initial concentration
+            reactant_id (string): Identifier of the reactant/protein that has been measured.
+            init_concValue (float): Numeric value of the initial concentration
+            init_concUnit (string): UnitID of the initial concentration
             replicates (list<Replicate>, optional): List of actual time-coiurse data in Replicate objects. Defaults to None.
         """
 
         self.__appendReactantData(
-            reactantID=reactantID,
-            proteinID=proteinID,
-            initConc=initConc,
+            reactant_id=reactant_id,
+            protein_id=protein_id,
+            init_conc=init_conc,
             unit=unit,
             replicates=replicates
         )
-
-    def __initializeReactionData(
-        self,
-        reactionID,
-        reactantID,
-        proteinID,
-        initConc,
-        unit,
-        replicates
-    ):
-
-        # initialiaze reaction data structure to add data
-        self.__speciesDict[reactionID] = {
-            'reactants': dict(),
-            'proteins': dict()
-        }
-
-        # Add data to matching species (reactant/protein)
-        self.__appendReactantData(
-            reactionID=reactionID,
-            reactantID=reactantID,
-            proteinID=proteinID,
-            initConc=initConc,
-            unit=unit,
-            replicates=replicates
-        )
-
-        if replicates:
-            # Set the measurements global time with
-            # the initial measurement point
-            self.setGlobalTime(replicates[0].getData(sep=True)[0])
-            self.setGlobalTimeUnit(replicates[0].getTimeUnit())
 
     def __appendReactantData(
         self,
-        reactantID,
-        proteinID,
-        initConc,
-        unit,
-        replicates
-    ):
+        reactant_id: str,
+        protein_id: str,
+        init_conc: PositiveFloat,
+        unit: str,
+        replicates: list[Replicate]
+    ) -> None:
 
         # Create measurement data class before sorting
         measData = MeasurementData(
-            reactantID=reactantID,
-            proteinID=proteinID,
-            initConc=initConc,
+            reactant_id=reactant_id,
+            protein_id=protein_id,
+            init_conc=init_conc,
             unit=unit,
-            replicates=self.__updateReplicates(replicates, initConc)
+            replicates=self._updateReplicates(replicates)
         )
 
-        if reactantID:
-            self.__speciesDict['reactants'][reactantID] = measData
-        elif proteinID:
-            self.__speciesDict['proteins'][proteinID] = measData
+        if reactant_id:
+            self.species_dict['reactants'][reactant_id] = measData
+        elif protein_id:
+            self.species_dict['proteins'][protein_id] = measData
         else:
             raise ValueError(
                 "Please enter a reactant or protein ID to add measurement data"
             )
 
-    def __updateReplicates(self, replicates, initConc):
-
+    def _updateReplicates(self, replicates: list[Replicate]) -> list[Replicate]:
         for replicate in replicates:
             # Set the measurement name for the replicate
-            replicate.setMeasurement(self.__name)
+            replicate.measurement_id = self.name
 
         return replicates
 
-    def setId(self, ID):
-        self.__id = TypeChecker(ID, str)
+    def _setReplicateMeasIDs(self) -> None:
+        """Sets the measurement IDs for the replicates."""
+        for measData in self.species_dict['proteins'].values():
+            measData.measurement_id = self.id
 
-        self.__setReplicateMeasIDs()
+        for measData in self.species_dict['reactants'].values():
+            measData.measurement_id = self.id
 
-    def __setReplicateMeasIDs(self):
-
-        for measData in self.__speciesDict['proteins'].values():
-            measData.setMeasurementIDs(self.__id)
-
-        for measData in self.__speciesDict['reactants'].values():
-            measData.setMeasurementIDs(self.__id)
-
-    def getId(self):
-        return self.__id
-
-    def delId(self):
-        del self.__id
-
-    def setGlobalTimeUnit(self, unit):
-        self.__globalTimeUnit = TypeChecker(unit, str)
-
-    def getGlobalTimeUnit(self):
-        return self.__globalTimeUnit
-
-    def delGlobalTimeUnit(self):
-        del self.__globalTimeUnit
-
-    def setGlobalTime(self, time):
-        self.__globalTime = TypeChecker(time, list)
-
-    def getGlobalTime(self):
-        return self.__globalTime
-
-    def delGlobalTime(self):
-        del self.__globalTime
-
-    def setName(self, name):
-        self.__name = name
-
-    def getName(self):
-        return self.__name
-
-    def delName(self):
-        del self.__name
-
-    def setSpeciesDict(self, reactions):
-        self.__speciesDict = TypeChecker(reactions, dict)
-
-    def getSpeciesDict(self):
-        return self.__speciesDict
-
-    def delSpeciesDict(self):
-        del self.__speciesDict
-
-    def getReactant(self, reactantID):
+    @ validate_arguments
+    def getReactant(self, reactantID: str) -> MeasurementData:
         """Returns a single MeasurementData object for the given reactantID.
 
         Args:
@@ -314,9 +244,9 @@ class Measurement(EnzymeMLBase):
         Returns:
             MeasurementData: Object representing the data and initial concentration
         """
-        return self.__getSpecies(reactantID, "reactants")
+        return self.__getSpecies(reactantID)
 
-    def getProtein(self, proteinID):
+    def getProtein(self, proteinID: str) -> MeasurementData:
         """Returns a single MeasurementData object for the given proteinID.
 
         Args:
@@ -325,31 +255,55 @@ class Measurement(EnzymeMLBase):
         Returns:
             MeasurementData: Object representing the data and initial concentration
         """
-        return self.__getSpecies(proteinID, "proteins")
+        return self.__getSpecies(proteinID)
 
-    def getReactants(self):
+    def getReactants(self) -> dict[str, MeasurementData]:
         """Returns a list of all participating reactants in the measurement.
 
         Returns:
             list: List of MeasurementData objects representing data
         """
-        return self.__speciesDict["reactants"]
+        return self.species_dict["reactants"]
 
-    def getProteins(self):
+    def getProteins(self) -> dict[str, MeasurementData]:
         """Returns a list of all participating proteins in the measurement.
 
         Returns:
             list: List of MeasurementData objects representing data
         """
-        return self.__speciesDict["proteins"]
+        return self.species_dict["proteins"]
 
-    def __getSpecies(self, speciesID, type_):
-        TypeChecker(speciesID, str)
-        TypeChecker(type_, str)
+    @ validate_arguments
+    def __getSpecies(self, species_id: str) -> MeasurementData:
+        all_species = {
+            **self.species_dict["proteins"],
+            **self.species_dict["reactants"]
+        }
 
         try:
-            return self.__speciesDict[type_][speciesID]
+            return all_species[species_id]
         except KeyError:
-            raise KeyError(
-                f"{type_[0:-1]}ID {speciesID} is not defined yet. Please use the addData method to add the corresponding {type_[0:-1]}"
+            raise SpeciesNotFoundError(
+                species_id=species_id,
+                enzymeml_part="Measurement"
             )
+
+    @deprecated_getter("id")
+    def getId(self):
+        return self.id
+
+    @deprecated_getter("global_time_unit")
+    def getGlobalTimeUnit(self):
+        return self.global_time_unit
+
+    @deprecated_getter("global_time")
+    def getGlobalTime(self):
+        return self.global_time
+
+    @deprecated_getter("name")
+    def getName(self):
+        return self.name
+
+    @deprecated_getter("species_dict")
+    def getSpeciesDict(self):
+        return self.species_dict

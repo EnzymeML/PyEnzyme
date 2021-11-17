@@ -1,111 +1,107 @@
-import json
+'''
+File: measurementData.py
+Project: core
+Author: Jan Range
+License: BSD-2 clause
+-----
+Last Modified: Thursday July 15th 2021 1:19:51 am
+Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
+-----
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
+'''
+
+from pydantic import PositiveFloat, validate_arguments, BaseModel, validator, Field
+from dataclasses import dataclass
+from typing import Optional, TYPE_CHECKING
 
 from pyenzyme.enzymeml.core.replicate import Replicate
-from pyenzyme.enzymeml.core.functionalities import TypeChecker
+from pyenzyme.enzymeml.core.exceptions import IdentifierError
+from pyenzyme.enzymeml.core.utils import (
+    type_checking,
+    deprecated_getter
+)
+
+if TYPE_CHECKING:  # pragma: no cover
+    static_check_init_args = dataclass
+else:
+    static_check_init_args = type_checking
 
 
-class MeasurementData(object):
+@static_check_init_args
+class MeasurementData(BaseModel):
     """Helper class to organize elements"""
 
-    def __init__(
-        self,
-        initConc,
-        unit,
-        reactantID=None,
-        proteinID=None,
-        replicates=list()
-    ):
-        # Check species --> Reactant overrides protein
-        if reactantID:
-            self.setReactantID(reactantID)
-        elif proteinID:
-            self.setProteinID(proteinID)
-        else:
-            raise ValueError(
-                "Please enter a reactant or protein ID to add measurement data"
+    init_conc: PositiveFloat = Field(
+        description="Initial concentration of the measurement data.",
+        required=True
+    )
+
+    unit: str = Field(
+        description="The unit of the measurement data.",
+        required=True
+    )
+
+    measurement_id: Optional[str] = Field(
+        description="Unique measurement identifier this dataset belongs to.",
+    )
+
+    reactant_id: Optional[str] = Field(
+        description="The identifier for the described reactant.",
+        required=False
+    )
+
+    protein_id: Optional[str] = Field(
+        description="The identifier for the described protein.",
+        required=False
+    )
+
+    replicates: list[Replicate] = Field(
+        default_factory=list,
+        description="A list of replicate objects holding raw data of the measurement.",
+        required=False
+    )
+
+    @validator("protein_id")
+    def check_id_occurences(cls, protein_id: str, values: dict):
+        reactant_id = values.get("reactant_id")
+
+        if reactant_id is None and protein_id is None:
+            raise IdentifierError(
+                "Neither a reactant nor protein identifier has been provided. Please specify either one or the other."
             )
 
-        self.setInitConc(initConc)
-        self.setUnit(unit)
-        self.setReplicates(replicates)
+        elif reactant_id and protein_id:
+            raise IdentifierError(
+                "Both a reactant and protein identifier have been provided. Please specify either one or the other"
+            )
 
-    def toJSON(self, d=True, enzmldoc=None):
+        return protein_id
 
-        jsonObject = {
-            'initConc': self.__initConc,
-            'replicates': [
-                replicate.toJSON(d=True, enzmldoc=enzmldoc)
-                for replicate in self.__replicates
-            ],
-        }
+    @validate_arguments
+    def addReplicate(self, replicate: Replicate) -> None:
+        self.replicates.append(replicate)
 
-        if enzmldoc:
-            jsonObject['unit'] = enzmldoc.getUnitString(self.__unit)
-        else:
-            jsonObject['unit'] = self.__unit
+    @validate_arguments
+    def setMeasurementIDs(self, id: str) -> None:
+        for replicate in self.replicates:
+            replicate.measurement_id = id
 
-        if d:
-            return jsonObject
-        else:
-            return json.dumps(jsonObject, sort_keys=True, indent=4)
+    @deprecated_getter("reactant_id")
+    def getReactantID(self) -> Optional[str]:
+        return self.reactant_id
 
-    def setReactantID(self, reactantID):
-        self.__reactantID = TypeChecker(reactantID, str)
+    @deprecated_getter("protein_id")
+    def getProteinID(self) -> Optional[str]:
+        return self.protein_id
 
-    def getReactantID(self):
-        return self.__reactantID
+    @deprecated_getter("init_conc")
+    def getInitConc(self) -> PositiveFloat:
+        return self.init_conc
 
-    def delReactantID(self):
-        del self.__reactantID
+    @deprecated_getter("unit")
+    def getUnit(self) -> str:
+        return self.unit
 
-    def setProteinID(self, proteinID):
-        self.__proteinID = TypeChecker(proteinID, str)
-
-    def getProteinID(self):
-        return self.__proteinID
-
-    def delProteinID(self):
-        del self.__proteinID
-
-    def setInitConc(self, initConc):
-        self.__initConc = TypeChecker(initConc, float)
-
-    def getInitConc(self):
-        return self.__initConc
-
-    def delInitConc(self):
-        del self.__initConc
-
-    def setUnit(self, unit):
-        self.__unit = TypeChecker(unit, str)
-
-    def getUnit(self):
-        return self.__unit
-
-    def delUnit(self):
-        del self.__unit
-
-    def setReplicates(self, replicates):
-
-        if isinstance(replicates, Replicate):
-            replicates = [replicates]
-
-        self.__replicates = [
-            TypeChecker(repl, Replicate)
-            for repl in replicates
-        ]
-
-    def getReplicates(self):
-        return self.__replicates
-
-    def delReplicates(self):
-        del self.__replicates
-
-    def setMeasurementIDs(self, ID):
-        for replicate in self.__replicates:
-            replicate.setMeasurement(ID)
-
-    def addReplicate(self, replicate):
-        self.__replicates.append(
-            TypeChecker(replicate, Replicate)
-        )
+    @deprecated_getter("replicates")
+    def getReplicates(self) -> list[Replicate]:
+        return self.replicates

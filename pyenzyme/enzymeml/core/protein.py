@@ -10,238 +10,216 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pyenzyme.enzymeml.core.functionalities import TypeChecker
-from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-
-import json
 import re
 
+from pydantic import PositiveFloat, validator, Field
+from typing import Optional, TYPE_CHECKING
+from enum import Enum
+from dataclasses import dataclass
 
+from pyenzyme.enzymeml.core.ontology import SBOTerm
+from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
+from pyenzyme.enzymeml.core.exceptions import ECNumberError
+from pyenzyme.enzymeml.core.utils import (
+    type_checking,
+    deprecated_getter
+)
+
+if TYPE_CHECKING:  # pragma: no cover
+    static_check_init_args = dataclass
+else:
+    static_check_init_args = type_checking
+
+
+@static_check_init_args
 class Protein(EnzymeMLBase):
 
-    def __init__(
-        self,
-        name,
-        sequence,
-        vessel=None,
-        init_conc=None,
-        substanceunits=None,
-        constant=True,
-        ecnumber=None,
-        uniprotid=None,
-        organism=None,
-        organismTaxId=None,
-        uri=None,
-        creatorId=None
-    ):
-        '''
-        Object describing an EnzymeML protein.
+    class Config:
+        validate_assignment = True
 
-        Args:
-            String name: Systematic protein name
-            String id_: Internal identifier
-            String sequence: Protein amino acid sequence
-            String vessel: Vessel Identifier
-            Float init_conc: Initial protein concentration
-            String substance_units: Unit definition
-            Boolean boundary: boolean
-            Boolean constant: boolean
-            String uri: Custom unique identifier
-            String creatorId: Identifier to credit Creator
-        '''
+    name: str = Field(
+        description="Name of the protein",
+        required=True
+    )
 
-        # Initialize base attributes
-        super().__init__(
-            uri,
-            creatorId
-        )
+    sequence: str = Field(
+        description="Amino acid sequence of the protein",
+        required=True
+    )
 
-        self.setName(name)
-        self.setSequence(sequence)
-        self.setBoundary(False)
-        self.setConstant(constant)
-        self.setSboterm("SBO:0000252")
+    vessel_id: str = Field(
+        description="Identifier of the vessel in which the protein was stored.",
+        required=True,
+        regex=r"v[\d.]+"
+    )
 
-        if vessel is not None:
-            self.setVessel(vessel)
-        if init_conc is not None:
-            self.setInitConc(init_conc)
-        if substanceunits is not None:
-            self.setSubstanceUnits(substanceunits)
-        if ecnumber is not None:
-            self.setEcnumber(ecnumber)
-        if uniprotid is not None:
-            self.setUniprotID(uniprotid)
-        if organism is not None:
-            self.setOrganism(organism)
-        if organismTaxId:
-            self.setOrganismTaxId(organismTaxId)
+    init_conc: PositiveFloat = Field(
+        description="Initial concentration of the protein.",
+        required=True,
+        inclusiveMinimum=0.0
+    )
 
-    def toJSON(self, d=False, enzmldoc=False):
+    unit: str = Field(
+        description="Unit of the proteins intial concentration.",
+        required=True
+    )
 
-        def transformAttr(self):
-            d = {}
-            for key, item in self.__dict__.items():
+    constant: bool = Field(
+        default=True,
+        description="Whether the proteins concentration remains constant or not.",
+        required=True
+    )
 
-                if enzmldoc is not False and 'unit' in key:
-                    if item:
-                        item = enzmldoc.getUnitDict()[item].getName()
-                    if not item:
-                        item = "nan"
+    id: Optional[str] = Field(
+        default=None,
+        description="Unique identifier of the protein.",
+        required=False,
+        regex=r"p[\d]+"
+    )
 
-                if str(item) != "nan":
-                    d[key.split('__')[-1]] = item
+    meta_id: Optional[str] = Field(
+        default=None,
+        description="Unique meta identifier of the protein.",
+        required=False
+    )
 
-            return d
+    ec_number: Optional[str] = Field(
+        default=None,
+    )
 
-        if d:
-            return transformAttr(self)
+    uniprot_id: Optional[str] = Field(
+        default=None,
+        description="Unique identifier referencing a protein entry at UniProt.",
+        required=False
+    )
 
-        return json.dumps(
-            self,
-            default=transformAttr,
-            indent=4
-        )
+    organism: Optional[str] = Field(
+        default=None,
+        description="Organism the protein was expressed in.",
+        required=False
+    )
 
-    def __str__(self):
-        return self.toJSON()
+    organism_tax_id: Optional[str] = Field(
+        default=None,
+        description="Taxonomy identifier of the expression host.",
+        required=False
+    )
 
-    def setOrganismTaxId(self, organismTaxId):
-        self.__organismTaxId = TypeChecker(organismTaxId, str)
+    boundary: bool = Field(
+        default=False,
+        description="Whether the protein is under any boundary conditions (SBML Technicality, better leave it to default)",
+        required=True
+    )
 
-    def getOrganismTaxId(self):
-        return self.__organismTaxId
+    ontology: Enum = Field(
+        default=SBOTerm.PROTEIN,
+        description="Ontology describing the characteristic of the protein.",
+        required=True
+    )
 
-    def delOrganismTaxId(self):
-        del self.__organismTaxId
+    uri: Optional[str] = Field(
+        default=None,
+        description="URI of the protein.",
+        required=False
+    )
 
-    def getEcnumber(self):
-        return self.__ecnumber
+    creator_id: Optional[str] = Field(
+        default=None,
+        description="Unique identifier of the author.",
+        required=False
+    )
 
-    def getUniprotID(self):
-        return self.__uniprotID
+    # Validators
+    @validator("id")
+    def set_meta_id(cls, id: Optional[str], values: dict):
+        """Sets the meta ID when an ID is provided"""
 
-    def setEcnumber(self, ecnumber):
-        ecnumber = TypeChecker(ecnumber, str)
+        if id:
+            # Set Meta ID with ID
+            values["meta_id"] = f"METAID_{id.upper()}"
+
+        return id
+
+    @validator("meta_id")
+    def check_meta_id(cls, meta_id: Optional[str], values: dict):
+        """Checks if the meta ID provided is following the standard"""
+
+        if values.get("meta_id"):
+            # When the ID init already set the meta ID
+            return values.get("meta_id")
+
+        return None
+
+    @validator("sequence")
+    def clean_sequence(cls, sequence):
+        """Cleans a sequence from whitespaces as well as newlines and transforms uppercase"""
+
+        return re.sub(r"\s+", "", sequence).upper()
+
+    @validator("ec_number")
+    def validate_ec_number(cls, ec_number: str):
+        """Validates whether given EC number complies to the established pattern."""
 
         pattern = r"(\d+.)(\d+.)(\d+.)(\d+)"
-        match = re.search(pattern, ecnumber)
+        match = re.search(pattern, ec_number)
 
         if match is not None:
-            self.__ecnumber = "".join(match.groups())
+            return "".join(match.groups())
         else:
-            raise TypeError(
-                f'EC number {ecnumber} is not valid. \
-                Please provide with X.X.X.X pattern'
-            )
+            raise ECNumberError(ec_number=ec_number)
 
-    def setUniprotID(self, uniprotID):
-        self.__uniprotID = TypeChecker(uniprotID, str)
+    @deprecated_getter("organism_tax_id")
+    def getOrganismTaxId(self):
+        return self.organism_tax_id
 
-    def delEcnumber(self):
-        del self.__ecnumber
+    @deprecated_getter("ec_number")
+    def getEcnumber(self):
+        return self.ec_number
 
-    def delUniprotID(self):
-        del self.__uniprotID
+    @deprecated_getter("uniprot_id")
+    def getUniprotID(self):
+        return self.uniprot_id
 
+    @deprecated_getter("organism")
     def getOrganism(self):
-        return self.__organism
+        return self.organism
 
-    def setOrganism(self, organism):
-        self.__organism = TypeChecker(organism, str)
-
-    def delOrganism(self):
-        del self.__organism
-
+    @deprecated_getter("init_conc")
     def getInitConc(self):
-        return self.__init_conc
+        return self.init_conc
 
-    def setInitConc(self, init_conc):
-        self.__init_conc = TypeChecker(init_conc, float)
-
-    def delInitConc(self):
-        del self.__init_conc
-
+    @deprecated_getter("name")
     def getName(self):
-        return self.__name
+        return self.name
 
+    @deprecated_getter("id")
     def getId(self):
-        return self.__id
+        return self.id
 
+    @deprecated_getter("meta_id")
     def getMetaid(self):
-        return self.__metaid
+        return self.meta_id
 
+    @deprecated_getter("sequence")
     def getSequence(self):
-        return self.__sequence
+        return self.sequence
 
+    @deprecated_getter("ontology")
     def getSboterm(self):
-        return self.__sboterm
+        return self.ontology
 
+    @deprecated_getter("vessel_id")
     def getVessel(self):
-        return self.__vessel
+        return self.vessel_id
 
+    @deprecated_getter("unit")
     def getSubstanceUnits(self):
-        return self.__substanceunits
+        return self.unit
 
+    @deprecated_getter("boundary")
     def getBoundary(self):
-        return self.__boundary
+        return self.boundary
 
+    @deprecated_getter("constant")
     def getConstant(self):
-        return self.__constant
-
-    def setName(self, name):
-        self.__name = TypeChecker(name, str)
-
-    def setId(self, id_):
-        self.__id = TypeChecker(id_, str)
-        self.setMetaid("METAID_" + id_.upper())
-
-    def setMetaid(self, metaid):
-        self.__metaid = TypeChecker(metaid, str)
-
-    def setSequence(self, sequence):
-        sequence = TypeChecker(sequence, str)
-        self.__sequence = sequence.replace(
-            '\n', '').replace(' ', '').strip()
-
-    def setSboterm(self, sboterm):
-        self.__sboterm = TypeChecker(sboterm, str)
-
-    def setVessel(self, vessel):
-        self.__vessel = TypeChecker(vessel, str)
-
-    def setSubstanceUnits(self, unit_id):
-        self.__substanceunits = TypeChecker(unit_id, str)
-
-    def setBoundary(self, boundary):
-        self.__boundary = TypeChecker(boundary, bool)
-
-    def setConstant(self, constant):
-        self.__constant = TypeChecker(constant, bool)
-
-    def delName(self):
-        del self.__name
-
-    def delId(self):
-        del self.__id
-
-    def delMetaid(self):
-        del self.__metaid
-
-    def delSequence(self):
-        del self.__sequence
-
-    def delSboterm(self):
-        del self.__sboterm
-
-    def delVessel(self):
-        del self.__vessel
-
-    def delSubstanceUnits(self):
-        del self.__substanceunits
-
-    def delBoundary(self):
-        del self.__boundary
-
-    def delConstant(self):
-        del self.__constant
+        return self.constant

@@ -10,109 +10,146 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pyenzyme.enzymeml.core.functionalities import TypeChecker
+import libsbml
+
+from pydantic import Field, validator, validate_arguments
+from typing import TYPE_CHECKING, Optional
+from dataclasses import dataclass
+
+from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
+from pyenzyme.enzymeml.core.exceptions import UnitKindError
+from pyenzyme.enzymeml.core.utils import (
+    type_checking,
+    deprecated_getter
+)
 
 
-class UnitDef(object):
+if TYPE_CHECKING:  # pragma: no cover
+    static_check_init_args = dataclass
+else:
+    static_check_init_args = type_checking
 
-    def __init__(
-        self,
-        name,
-        id_,
-        ontology
-    ):
-        '''
-        Object describing an EnzymeML unit.
+
+@static_check_init_args
+class BaseUnit(EnzymeMLBase):
+    """Base unit description including kind, exponent, scale and multiplier"""
+
+    kind: str = Field(
+        description="Unit kind used to write SBML.",
+        required=True
+    )
+
+    exponent: float = Field(
+        description="Unit exponent.",
+        required=True
+    )
+
+    scale: float = Field(
+        description="Unit scale.",
+        required=True
+    )
+
+    multiplier: float = Field(
+        description="Unit multiplier.",
+        required=True
+    )
+
+    @validator("kind")
+    def check_sbml_unit_enum(cls, kind_int: int):
+        kind_string: str = libsbml.UnitKind_toString(kind_int)
+
+        if "Invalid UnitKind" in kind_string:
+            raise UnitKindError()
+
+
+@static_check_init_args
+class UnitDef(EnzymeMLBase):
+
+    name: str = Field(
+        description="Name of the SI unit.",
+        required=True
+    )
+
+    id: str = Field(
+        description="Interal Identifier of the SI unit.",
+        required=True
+    )
+
+    meta_id: Optional[str] = Field(
+        description="Interal meta identifier of the SI unit.",
+        required=True
+    )
+
+    units: list[BaseUnit] = Field(
+        default_factory=list,
+        description="List of SI baseunits.",
+        required=True
+    )
+
+    ontology: str = Field(
+        default="NONE",
+        description="Ontology of the SI unit.",
+        required=False
+    )
+
+    # Validators
+    @validator("id")
+    def set_meta_id(cls, id: Optional[str], values: dict):
+        """Sets the meta ID when an ID is provided"""
+
+        if id:
+            # Set Meta ID with ID
+            values["meta_id"] = f"METAID_{id.upper()}"
+
+        return id
+
+    @validator("meta_id")
+    def check_meta_id(cls, meta_id: Optional[str], values: dict):
+        """Checks if the meta ID provided is following the standard"""
+
+        if values.get("meta_id"):
+            # When the ID init already set the meta ID
+            return values.get("meta_id")
+
+        return None
+
+    @validate_arguments
+    def addBaseUnit(self, kind: str, exponent: float, scale: float, multiplier: float) -> None:
+        """Adds a base unit to the units element and sort the units.
 
         Args:
-            Tuple units: List of BaseUnits
-            String name: Systematical name of unit
-            String id_: Internal Identifier
-            String metaid: Internal Meta Identifier
-            String ontology: Link to ontology
-        '''
+            kind (str): SBML unit kind string.
+            exponent (float): Exponent of the unit.
+            scale (float): Scale of the unit.
+            multiplier (float): Muliplier of the unit.
+        """
 
-        self.setUnits(list())
-        self.setName(name)
-        self.setId(id_)
-        self.setOntology(ontology)
+        # Create baseunit
+        baseunit = BaseUnit(kind=kind, exponent=exponent,
+                            scale=scale, multiplier=multiplier)
 
-    def getFootprint(self):
-        try:
-            return self.__footprint
-        except AttributeError:
-            self.__footprint = sorted(self.__units)
-            return self.__footprint
-
-    def setFootprint(self, value):
-        self.__footprint = TypeChecker(value, list)
-
-    def delFootprint(self):
-        del self.__footprint
-
-    def addBaseUnit(self, kind, exponent, scale, multiplier):
-        '''
-        Adds defining base unit such as litre or grams to a unit definition
-
-        Args:
-            SBMLKind kind: SBML internal definition for Base Units
-            Float exponent: Float value of exponent in Unit
-            Integer scale: Integer value to define (m, mu etc)
-            Float multiplier: FLoat value to multiply unit
-        '''
-
-        self.__units.append(
-
-            (
-                kind,
-                TypeChecker(float(exponent), float),
-                TypeChecker(scale, int),
-                TypeChecker(float(multiplier), float)
-            )
+        # Merge both and sort them via kind
+        self.units = sorted(
+            self.units,
+            key=lambda unit: unit.kind
         )
 
+    @deprecated_getter("units")
     def getUnits(self):
-        return self.__units
+        return self.units
 
+    @deprecated_getter("name")
     def getName(self):
-        return self.__name
+        return self.name
 
+    @deprecated_getter("id")
     def getId(self):
-        return self.__id
+        return self.id
 
+    @deprecated_getter("meta_id")
     def getMetaid(self):
-        return self.__metaid
+        return self.meta_id
 
+    @deprecated_getter("ontology")
     def getOntology(self):
-        return self.__ontology
-
-    def setUnits(self, units):
-        self.__units = TypeChecker(units, list)
-
-    def setName(self, name):
-        self.__name = TypeChecker(name, str)
-
-    def setId(self, id_):
-        self.__id = TypeChecker(id_, str)
-        self.setMetaid("METAID_%s" % id_.upper())
-
-    def setMetaid(self, metaid):
-        self.__metaid = TypeChecker(metaid, str)
-
-    def setOntology(self, ontology):
-        self.__ontology = TypeChecker(ontology, str)
-
-    def delUnits(self):
-        del self.__units
-
-    def delName(self):
-        del self.__name
-
-    def delId(self):
-        del self.__id
-
-    def delMetaid(self):
-        del self.__metaid
-
-    def delOntology(self):
-        del self.__ontology
+        return self.ontology

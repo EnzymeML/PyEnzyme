@@ -10,128 +10,110 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pyenzyme.enzymeml.core.functionalities import TypeChecker
+from pydantic import Field, PositiveFloat, validator
+from typing import TYPE_CHECKING, Optional
+from dataclasses import dataclass
+
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
+from pyenzyme.enzymeml.core.utils import (
+    type_checking,
+    deprecated_getter
+)
 
-import json
+if TYPE_CHECKING:  # pragma: no cover
+    static_check_init_args = dataclass
+else:
+    static_check_init_args = type_checking
 
 
+@static_check_init_args
 class Vessel(EnzymeMLBase):
 
-    def __init__(
-        self,
-        name,
-        id_,
-        size,
-        unit,
-        uri=None,
-        creatorId=None
-    ):
-        '''
-        Object describing an EnzymeML vessel.
+    name: str = Field(
+        description="Name of the used vessel.",
+        required=True
+    )
 
-        Args:
-            String name: Name of Vessel
-            String id: Internal Vessel identifier
-            String constant: Volume is not chaning over time
-            Float size: Numerical value of Vessel volume
-            String unit: Unit of given size
-            String uri: Custom unique identifier
-            String creatorId: Identifier to credit Creator
-        '''
+    id: str = Field(
+        description="Unique identifier of the vessel.",
+        required=True,
+        regex=r"v[\d]+"
+    )
 
-        # Initialize base attributes
-        super().__init__(
-            uri,
-            creatorId
-        )
+    meta_id: Optional[str] = Field(
+        default=None,
+        description="Unique meta identifier of the vessel.",
+        required=True
+    )
 
-        self.setName(name)
-        self.setId(id_)
-        self.setMetaid("METAID_" + id_.upper())
-        self.setConstant(True)
-        self.setSize(size)
-        self.setUnit(unit)
+    volume: PositiveFloat = Field(
+        description="Volumetric value of the vessel.",
+        required=True
+    )
 
-    def toJSON(self, d=False, enzmldoc=False):
+    unit: str = Field(
+        description="Volumetric unit of the vessel.",
+        required=True
+    )
 
-        def transformAttr(self):
-            d = {}
-            for key, item in self.__dict__.items():
+    constant: bool = Field(
+        default=True,
+        description="Whether the volume of the vessel is constant or not.",
+        required=True
+    )
 
-                if enzmldoc is not False and 'unit' in key:
-                    if item:
-                        item = enzmldoc.getUnitDict()[item].getName()
-                    if not item:
-                        item = "nan"
+    uri: Optional[str] = Field(
+        default=None,
+        description="URI of the vessel.",
+        required=False
+    )
 
-                if str(item) != "nan":
-                    d[key.split('__')[-1]] = item
+    creator_id: Optional[str] = Field(
+        default=None,
+        description="Unique identifier of the author.",
+        required=False
+    )
 
-            return d
+    @validator("id")
+    def set_meta_id(cls, id: Optional[str], values: dict):
+        """Sets the meta ID when an ID is provided"""
 
-        if d:
-            return transformAttr(self)
+        if id:
+            # Set Meta ID with ID
+            values["meta_id"] = f"METAID_{id.upper()}"
 
-        return json.dumps(
-            self,
-            default=transformAttr,
-            indent=4
-        )
+        return id
 
-    def __str__(self):
-        return self.toJSON()
+    @validator("meta_id")
+    def check_meta_id(cls, meta_id: Optional[str], values: dict):
+        """Checks if the meta ID provided is following the standard"""
 
+        if values.get("meta_id"):
+            # When the ID init already set the meta ID
+            return values.get("meta_id")
+
+        return None
+
+    @deprecated_getter("name")
     def getName(self):
-        return self.__name
+        return self.name
 
+    @deprecated_getter("id")
     def getId(self):
-        return self.__id
+        return self.id
 
+    @deprecated_getter("meta_id")
     def getMetaid(self):
-        return self.__metaid
+        return self.meta_id
 
+    @deprecated_getter("constant")
     def getConstant(self):
-        return self.__constant
+        return self.constant
 
+    @deprecated_getter("volume")
     def getSize(self):
-        return self.__size
+        return self.volume
 
+    @deprecated_getter("unit")
     def getUnit(self):
-        return self.__unit
-
-    def setName(self, name):
-        self.__name = TypeChecker(name, str)
-
-    def setId(self, id_):
-        self.__id = TypeChecker(id_, str)
-
-    def setMetaid(self, metaid):
-        self.__metaid = TypeChecker(metaid, str)
-
-    def setConstant(self, constant):
-        self.__constant = TypeChecker(constant, bool)
-
-    def setSize(self, size):
-        self.__size = TypeChecker(float(size), float)
-
-    def setUnit(self, unit):
-        self.__unit = TypeChecker(unit, str)
-
-    def delName(self):
-        del self.__name
-
-    def delId(self):
-        del self.__id
-
-    def delMetaid(self):
-        del self.__metaid
-
-    def delConstant(self):
-        del self.__constant
-
-    def delSize(self):
-        del self.__size
-
-    def delUnit(self):
-        del self.__unit
+        return self.unit

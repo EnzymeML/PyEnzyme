@@ -10,40 +10,21 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pyenzyme.enzymeml.core.functionalities import TypeChecker
-from copy import deepcopy
+from typing import TYPE_CHECKING
+from pydantic import BaseModel
+from dataclasses import dataclass
+from typing import Optional
+
+from pyenzyme.enzymeml.core.utils import type_checking
+
+if TYPE_CHECKING:  # pragma: no cover
+    static_check_init_args = dataclass
+else:
+    static_check_init_args = type_checking
 
 
-class EnzymeMLBase(object):
-
-    def __init__(
-        self,
-        uri,
-        creatorId
-    ):
-        if creatorId:
-            self.setCreatorId(creatorId)
-        if uri:
-            self.seturi(uri)
-
-    def setURI(self, uri):
-        self.__uri = TypeChecker(uri, str)
-
-    def getURI(self):
-        return self.__uri
-
-    def delURI(self):
-        del self.__uri
-
-    def setCreatorId(self, creatorId, enzmldoc):
-        if creatorId in enzmldoc.getCreatorDict().keys():
-            self.__creatorId = TypeChecker(creatorId, str)
-
-    def getCreatorId(self):
-        return self.__creatorId
-
-    def delCreatorId(self):
-        del self.__creatorId
-
-    def copy(self):
-        return deepcopy(self)
+@static_check_init_args
+class EnzymeMLBase(BaseModel):
+    class Config:
+        validate_assignment = True
+        validate_all = True

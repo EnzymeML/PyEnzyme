@@ -10,186 +10,162 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pyenzyme.enzymeml.core.functionalities import TypeChecker
-from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
+from pydantic import Field, PositiveFloat, validator
+from typing import TYPE_CHECKING, Optional
+from enum import Enum
+from dataclasses import dataclass
 
-import json
+from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
+from pyenzyme.enzymeml.core.ontology import SBOTerm
+from pyenzyme.enzymeml.core.utils import (
+    type_checking,
+    deprecated_getter
+)
+
+if TYPE_CHECKING:  # pragma: no cover
+    static_check_init_args = dataclass
+else:
+    static_check_init_args = type_checking
 
 
 class Reactant(EnzymeMLBase):
 
-    def __init__(
-        self,
-        name,
-        vessel,
-        init_conc=0.0,
-        substanceunits='NAN',
-        constant=False,
-        smiles=None,
-        inchi=None,
-        uri=None,
-        creatorId=None
-    ):
-        '''
-        Object describing an EnzymeML reactant.
+    name: str = Field(
+        description="Name of the reactant.",
+        required=True
+    )
 
-        Args:
-            String name: Systematic name of reactant
-            String id_: Internal ID for reactant
-            String metaid: MetaID for reactant
-            String vessel: Vessel ID
-            Float init_conc: Initial concentration value
-            String substanceunits: Unit ID
-            Boolean boundary: Has boundary condition boolean
-            Boolean constant: Is constant in reaction boolean
-            String uri: Custom unique identifier
-            String creatorId: Identifier to credit Creator
-        '''
+    vessel_id: str = Field(
+        description="Identifier of the vessel in which the reactant was stored.",
+        required=True
+    )
 
-        # Initialize base attributes
-        super().__init__(
-            uri,
-            creatorId
-        )
+    init_conc: PositiveFloat = Field(
+        default=0.0,
+        description="Initial concentration of the reactant.",
+        required=True,
+        inclusiveMinimum=0.0
+    )
 
-        self.setName(name)
-        self.setVessel(vessel)
-        self.setInitConc(init_conc)
-        self.setSubstanceUnits(substanceunits)
-        self.setBoundary(False)
-        self.setConstant(constant)
-        self.setSboterm("SBO:0000247")
+    unit: str = Field(
+        description="Unit of the reactant intial concentration.",
+        required=True
+    )
 
-        if inchi is not None:
-            self.setInchi(inchi)
-        if smiles is not None:
-            self.setSmiles(smiles)
+    constant: bool = Field(
+        default=True,
+        description="Whether the reactants concentration remains constant or not.",
+        required=True
+    )
 
-    def toJSON(self, d=False, enzmldoc=False):
+    id: Optional[str] = Field(
+        default=None,
+        description="Unique identifier of the protein.",
+        required=False,
+        regex=r"s[\d]+"
+    )
 
-        def transformAttr(self):
-            d = {}
-            for key, item in self.__dict__.items():
+    meta_id: Optional[str] = Field(
+        default=None,
+        description="Unique meta identifier of the protein.",
+        required=False
+    )
 
-                if enzmldoc is not False and 'unit' in key:
-                    if item:
-                        item = enzmldoc.getUnitDict()[item].getName()
-                    if not item:
-                        item = "nan"
+    smiles: Optional[str] = Field(
+        description="Simplified Molecular Input Line Entry System (SMILES) encoding of the reactant.",
+        required=False
+    )
 
-                if str(item) != "nan":
-                    d[key.split('__')[-1]] = item
+    inchi: Optional[str] = Field(
+        description="International Chemical Identifier (InChI) encoding of the reactant.",
+        required=False
+    )
 
-            return d
+    boundary: bool = Field(
+        default=False,
+        description="Whether the reactant is under any boundary conditions (SBML Technicality, better leave it to default)",
+        required=True
+    )
 
-        if d:
-            return transformAttr(self)
+    ontology: Enum = Field(
+        default=SBOTerm.SMALL_MOLECULE,
+        description="Ontology describing the characteristic of the reactant.",
+        required=True
+    )
 
-        return json.dumps(
-            self,
-            default=transformAttr,
-            indent=4
-        )
+    uri: Optional[str] = Field(
+        default=None,
+        description="URI of the protein.",
+        required=False
+    )
 
-    def __str__(self):
-        return self.toJSON()
+    creator_id: Optional[str] = Field(
+        default=None,
+        description="Unique identifier of the author.",
+        required=False
+    )
 
+    # Validators
+    @validator("id")
+    def set_meta_id(cls, id: Optional[str], values: dict):
+        """Sets the meta ID when an ID is provided"""
+
+        if id:
+            # Set Meta ID with ID
+            values["meta_id"] = f"METAID_{id.upper()}"
+
+        return id
+
+    @validator("meta_id")
+    def check_meta_id(cls, meta_id: Optional[str], values: dict):
+        """Checks if the meta ID provided is following the standard"""
+
+        if values.get("meta_id"):
+            # When the ID init already set the meta ID
+            return values.get("meta_id")
+
+        return None
+
+    @deprecated_getter("inchi")
     def getInchi(self):
-        return self.__inchi
+        return self.inchi
 
+    @deprecated_getter("smiles")
     def getSmiles(self):
-        return self.__smiles
+        return self.smiles
 
-    def setInchi(self, inchi):
-        self.__inchi = TypeChecker(inchi, str)
-
-    def setSmiles(self, smiles):
-        self.__smiles = TypeChecker(smiles, str)
-
-    def delInchi(self):
-        del self.__inchi
-
-    def delSmiles(self):
-        del self.__smiles
-
+    @deprecated_getter("init_conc")
     def getInitConc(self):
-        return self.__init_conc
+        return self.init_conc
 
-    def setInitConc(self, init_conc):
-        self.__init_conc = TypeChecker(init_conc, float)
-
-    def delInitConc(self):
-        del self.__init_conc
-
+    @deprecated_getter("name")
     def getName(self):
-        return self.__name
+        return self.name
 
+    @deprecated_getter("id")
     def getId(self):
-        return self.__id
+        return self.id
 
+    @deprecated_getter("meta_id")
     def getMetaid(self):
-        return self.__metaid
+        return self.meta_id
 
+    @deprecated_getter("ontology")
     def getSboterm(self):
-        return self.__sboterm
+        return self.ontology
 
+    @deprecated_getter("vessel_id")
     def getVessel(self):
-        return self.__vessel
+        return self.vessel_id
 
+    @deprecated_getter("unit")
     def getSubstanceUnits(self):
-        return self.__substanceunits
+        return self.unit
 
+    @deprecated_getter("boundary")
     def getBoundary(self):
-        return self.__boundary
+        return self.boundary
 
+    @deprecated_getter("constant")
     def getConstant(self):
-        return self.__constant
-
-    def setName(self, name):
-        self.__name = TypeChecker(name, str)
-
-    def setId(self, id_):
-        self.__id = TypeChecker(id_, str)
-        self.setMetaid("METAID_" + id_.upper())
-
-    def setMetaid(self, metaid):
-        self.__metaid = TypeChecker(metaid, str)
-
-    def setSboterm(self, sboterm):
-        self.__sboterm = TypeChecker(sboterm, str)
-
-    def setVessel(self, vessel):
-        self.__vessel = TypeChecker(vessel, str)
-
-    def setSubstanceUnits(self, substance_unit):
-        self.__substanceunits = TypeChecker(substance_unit, str)
-
-    def setBoundary(self, boundary):
-        self.__boundary = TypeChecker(boundary, bool)
-
-    def setConstant(self, constant):
-        self.__constant = TypeChecker(constant, bool)
-
-    def delName(self):
-        del self.__name
-
-    def delId(self):
-        del self.__id
-
-    def delMetaid(self):
-        del self.__metaid
-
-    def delSboterm(self):
-        del self.__sboterm
-
-    def delVessel(self):
-        del self.__vessel
-
-    def delSubstanceUnits(self):
-        del self.__substanceunits
-
-    def delBoundary(self):
-        del self.__boundary
-
-    def delConstant(self):
-        del self.__constant
+        return self.constant
