@@ -34,9 +34,6 @@ else:
 @static_check_init_args
 class Protein(EnzymeMLBase):
 
-    class Config:
-        validate_assignment = True
-
     name: str = Field(
         description="Name of the protein",
         required=True
