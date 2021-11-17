@@ -10,116 +10,49 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pyenzyme.enzymeml.core.functionalities import TypeChecker
-import json
+from pydantic import BaseModel, Field
+from typing import TYPE_CHECKING
+from dataclasses import dataclass
+from deprecation import deprecated
+
+from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
+from pyenzyme.enzymeml.core.utils import (
+    type_checking,
+    deprecated_getter
+)
+
+if TYPE_CHECKING:  # pragma: no cover
+    static_check_init_args = dataclass
+else:
+    static_check_init_args = type_checking
 
 
-class Creator(object):
+@static_check_init_args
+class Creator(EnzymeMLBase):
 
-    def __init__(self, family_name, given_name, mail):
-        """Author information class.
+    given_name: str = Field(
+        description='Given name of the author or contributor.',
+        required=True
+    )
 
-        Args:
-            family_name (string): Family name of author
-            given_name (string): Given name of author
-            mail (string): E-Mail of author
-        """
+    family_name: str = Field(
+        description='Family name of the author or contributor.',
+        required=True
+    )
 
-        self.setFname(family_name)
-        self.setGname(given_name)
-        self.setMail(mail)
+    mail: str = Field(
+        description='Email address of the author or contributor.',
+        required=True
+    )
 
-    def toJSON(self, d=False, enzmldoc=False):
-        """Turns object to either JSON formatted string or dictionary.
+    @deprecated_getter("family_name")
+    def getFname(self) -> str:
+        return self.family_name
 
-        Args:
-            d (bool, optional): Returns dictionary. Defaults to False.
-            enzmldoc (bool, optional): Used to convert unit/species IDs
-                                       to Name/JSON. Defaults to False.
+    @deprecated_getter("given_name")
+    def getGname(self) -> str:
+        return self.given_name
 
-        Returns:
-            string: JSON-formatted string
-        """
-
-        def transformAttr(classDict):
-            return {
-                key.split('__')[-1]: item
-                for key, item in classDict.items()
-            }
-
-        if d:
-            return transformAttr(self.__dict__)
-
-        return json.dumps(
-            self.__dict__,
-            default=transformAttr,
-            indent=4
-        )
-
-    def __str__(self):
-        """Returns Creator object as JSON-formatted string
-
-        Returns:
-            string: JSON-formatted string
-        """
-        return self.toJSON()
-
-    def getFname(self):
-        """
-
-        Returns:
-            string: Author family name
-        """
-        return self.__family_name
-
-    def getGname(self):
-        """
-        Returns:
-            string: Author given name
-        """
-        return self.__given_name
-
-    def getMail(self):
-        """
-
-        Returns:
-            string: Author E-Mail
-        """
-        return self.__mail
-
-    def setFname(self, family_name):
-        """Sets family name
-
-        Args:
-            family_name (string): Authors family name
-        """
-        self.__family_name = TypeChecker(family_name, str)
-
-    def setGname(self, given_name):
-        """Sets given name
-
-        Args:
-            given_name (string): Authors given name
-        """
-        self.__given_name = TypeChecker(given_name, str)
-
-    def setMail(self, mail):
-        """Sets E-Mail
-
-        Args:
-            mail (string): Authors E-Mail
-        """
-        self.__mail = TypeChecker(mail, str)
-
-    def delFname(self):
-        del self.__family_name
-
-    def delGname(self):
-        del self.__given_name
-
-    def delMail(self):
-        del self.__mail
-
-    _fname = property(getFname, setFname, delFname, "_fname's docstring")
-    _gname = property(getGname, setGname, delGname, "_gname's docstring")
-    _mail = property(getMail, setMail, delMail, "_mail's docstring")
+    @deprecated_getter("mail")
+    def getMail(self) -> str:
+        return self.mail
