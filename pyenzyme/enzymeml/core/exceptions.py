@@ -11,9 +11,6 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 
-from deprecation import deprecated
-
-
 class ValidationError(Exception):
     """Raised when a Dataverse validation has failed"""
     pass
