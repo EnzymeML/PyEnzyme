@@ -37,7 +37,9 @@ setup(
         'scipy',
         'apispec',
         'texttable',
-        'pydataverse'
+        'pydataverse',
+        'pydantic',
+        'deprecated'
     ],
     extras_require={
         'test': [
