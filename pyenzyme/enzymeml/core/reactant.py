@@ -16,6 +16,7 @@ from enum import Enum
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
+from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
@@ -28,7 +29,8 @@ else:
     static_check_init_args = type_checking
 
 
-class Reactant(EnzymeMLBase):
+@static_check_init_args
+class Reactant(EnzymeMLBase, AbstractSpecies):
 
     name: str = Field(
         description="Name of the reactant.",
@@ -105,7 +107,10 @@ class Reactant(EnzymeMLBase):
         required=False
     )
 
-    # Validators
+    # * Private
+    _unit_id: Optional[str] = None
+
+    # ! Validators
     @validator("id")
     def set_meta_id(cls, id: Optional[str], values: dict):
         """Sets the meta ID when an ID is provided"""
@@ -126,6 +131,7 @@ class Reactant(EnzymeMLBase):
 
         return None
 
+    # ! Getters
     @deprecated_getter("inchi")
     def getInchi(self):
         return self.inchi

@@ -35,10 +35,10 @@ else:
 @static_check_init_args
 class Protein(EnzymeMLBase, AbstractSpecies):
 
-    # name: str = Field(
-    #     description="Name of the protein",
-    #     required=True
-    # )
+    name: str = Field(
+        description="Name of the protein",
+        required=True
+    )
 
     sequence: str = Field(
         description="Amino acid sequence of the protein",
@@ -127,7 +127,11 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         required=False
     )
 
+    # * Private
+    _unit_id: Optional[str] = None
+
     # Validators
+
     @validator("id")
     def set_meta_id(cls, id: Optional[str], values: dict):
         """Sets the meta ID when an ID is provided"""

@@ -77,3 +77,7 @@ class UnitKindError(Exception):
         return (
             "The unit kind integer that has been given is not supported. Please check 'libsbml' for the supported ones."
         )
+
+
+class MissingUnitError(Exception):
+    """Raised when a unit is missing """
