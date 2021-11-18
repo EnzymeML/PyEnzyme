@@ -28,3 +28,6 @@ class EnzymeMLBase(BaseModel):
     class Config:
         validate_assignment = True
         validate_all = True
+
+    def json(self, indent: int = 2):
+        return super().json(indent=indent, exclude_none=True)

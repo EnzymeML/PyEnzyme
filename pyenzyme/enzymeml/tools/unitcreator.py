@@ -15,7 +15,7 @@ from pyenzyme.enzymeml.core.unitdef import UnitDef
 from pyenzyme.enzymeml.tools.unitparser import UnitParser
 
 
-class UnitCreator(object):
+class UnitCreator:
 
     def __init__(self):
 
@@ -42,8 +42,10 @@ class UnitCreator(object):
             "C": self.__Celsius,
             "c": self.__Celsius,
             "celsius": self.__Celsius,
+            "Celsius": self.__Celsius,
             "K": self.__Kelvin,
             "kelvin": self.__Kelvin,
+            "Kelvin": self.__Kelvin,
             "dimensionless": self.__Dimensionless
         }
 

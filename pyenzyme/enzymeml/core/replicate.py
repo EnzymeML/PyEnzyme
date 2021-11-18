@@ -65,6 +65,12 @@ class Replicate(EnzymeMLBase):
         required=True
     )
 
+    _time_unit_id: Optional[str] = Field(
+        default=None,
+        description="Time unit of the measurement.",
+        required=True
+    )
+
     data: list[float] = Field(
         default=None,
         description="Data that was measured.",
@@ -96,13 +102,13 @@ class Replicate(EnzymeMLBase):
 
     @validator("data")
     def check_data_completeness(cls, data: list[float], values: dict):
-        if values.get("time") is None:
+        if values.get("time") is None and data is not None:
             # Check if time is given
             raise DataError(
                 "No time values provided for the data yet. \
                 Please include time values too, using the 'time' attribute"
             )
-        else:
+        elif values.get("time"):
             # Check if the data complies with the time values
             timesteps = len(values["time"])
             if timesteps != len(data):

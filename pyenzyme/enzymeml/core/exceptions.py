@@ -44,6 +44,17 @@ class IdentifierError(Exception):
     pass
 
 
+class IdentifierNameError(Exception):
+    """Raised when an ID does not match the expected format"""
+
+    def __init__(self, id: str, prefix: str) -> None:
+        self.prefix = prefix
+        self.id = id
+
+    def __str__(self) -> str:
+        return f"Identifier '{self.id}' does not match the expected format of '{self.prefix}[digits]'."
+
+
 class ECNumberError(Exception):
     """Raised when an EC number does not match the pattern convenrtion"""
 

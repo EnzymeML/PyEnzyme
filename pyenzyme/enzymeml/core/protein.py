@@ -20,6 +20,7 @@ from dataclasses import dataclass
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.exceptions import ECNumberError
+from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
     deprecated_getter
@@ -32,12 +33,12 @@ else:
 
 
 @static_check_init_args
-class Protein(EnzymeMLBase):
+class Protein(EnzymeMLBase, AbstractSpecies):
 
-    name: str = Field(
-        description="Name of the protein",
-        required=True
-    )
+    # name: str = Field(
+    #     description="Name of the protein",
+    #     required=True
+    # )
 
     sequence: str = Field(
         description="Amino acid sequence of the protein",

@@ -11,7 +11,6 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
-from pyenzyme.enzymeml.core.functionalities import TypeChecker
 from libsbml._libsbml import parseL3Formula
 import json
 

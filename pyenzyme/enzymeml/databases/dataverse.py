@@ -11,7 +11,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 from pyenzyme.enzymeml.databases.dataverseMapping import DataverseMapping
-from pyenzyme.enzymeml.core.functionalities import DataverseError, ValidationError
+from pyenzyme.enzymeml.core.exceptions import DataverseError, ValidationError
 from pyDataverse.models import Datafile, Dataset
 from pyDataverse.api import NativeApi
 

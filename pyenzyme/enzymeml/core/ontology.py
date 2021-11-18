@@ -29,3 +29,20 @@ class DataTypes(str, Enum):
     ABSORPTION = "abs"
     FEED = "feed"
     BIOMASS = "biomass"
+
+
+class EnzymeMLPart(str, Enum):
+    """Mapping to identify where entities are stored in the EnzymeML model."""
+
+    # Chemical entities
+    PROTEIN = "protein_dict"
+    SMALL_MOLECULE = "reactant_dict"
+    ION = "reactant_dict"
+    RADICAL = "reactant_dict"
+
+    BLANK = "blank"
+
+    @classmethod
+    def fromSBOTerm(cls, sbo_term: str) -> str:
+        sbo_term = SBOTerm(sbo_term).name
+        return getattr(cls, sbo_term).value
