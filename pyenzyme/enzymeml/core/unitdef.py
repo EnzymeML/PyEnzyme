@@ -10,8 +10,6 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-import libsbml
-
 from pydantic import Field, validator, validate_arguments
 from typing import TYPE_CHECKING, Optional
 from dataclasses import dataclass
@@ -44,7 +42,7 @@ class BaseUnit(EnzymeMLBase):
         required=True
     )
 
-    scale: float = Field(
+    scale: int = Field(
         description="Unit scale.",
         required=True
     )
@@ -54,12 +52,12 @@ class BaseUnit(EnzymeMLBase):
         required=True
     )
 
-    @validator("kind")
-    def check_sbml_unit_enum(cls, kind_int: int):
-        kind_string: str = libsbml.UnitKind_toString(kind_int)
+    # @validator("kind")
+    # def check_sbml_unit_enum(cls, kind_int: int):
+    #     kind_string: str = libsbml.UnitKind_toString(kind_int)
 
-        if "Invalid UnitKind" in kind_string:
-            raise UnitKindError()
+    #     if "Invalid UnitKind" in kind_string:
+    #         raise UnitKindError()
 
 
 @static_check_init_args
@@ -86,8 +84,8 @@ class UnitDef(EnzymeMLBase):
         required=True
     )
 
-    ontology: str = Field(
-        default="NONE",
+    ontology: Optional[str] = Field(
+        default=None,
         description="Ontology of the SI unit.",
         required=False
     )
@@ -129,6 +127,7 @@ class UnitDef(EnzymeMLBase):
                             scale=scale, multiplier=multiplier)
 
         # Merge both and sort them via kind
+        self.units.append(baseunit)
         self.units = sorted(
             self.units,
             key=lambda unit: unit.kind
@@ -153,3 +152,11 @@ class UnitDef(EnzymeMLBase):
     @deprecated_getter("ontology")
     def getOntology(self):
         return self.ontology
+
+    @deprecated_getter("units")
+    def getFootprint(self):
+        return self.units
+
+
+if __name__ == "__main__":
+    unitdef = UnitDef(name="lol", id="u0")

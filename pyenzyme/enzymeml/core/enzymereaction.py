@@ -10,6 +10,8 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
+import re
+
 from typing import List, Optional, TYPE_CHECKING, Any
 from enum import Enum
 from dataclasses import dataclass
@@ -22,7 +24,7 @@ from pydantic import (
 )
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-from pyenzyme.enzymeml.models.kineticmodel import KineticModel
+from pyenzyme.enzymeml.models.kineticmodel import KineticModel, KineticParameter
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.exceptions import (
     ValidationError,
@@ -54,7 +56,7 @@ class ReactionElement(BaseModel):
         required=True
     )
 
-    is_constant: bool = Field(
+    constant: bool = Field(
         description="Whether or not the concentration of this species remains constant.",
         required=True
     )
@@ -89,6 +91,13 @@ class EnzymeReaction(EnzymeMLBase):
         description="Unit of the temperature of the reaction.",
         required=True,
         regex=r"kelvin|Kelvin|k|K|celsius|Celsius|C|c"
+    )
+
+    temperature_unit_id: Optional[str] = Field(
+        deafult=None,
+        description="Internal identifier of the temperature unit.",
+        required=False,
+        regex=r"u[\d]+"
     )
 
     ph: float = Field(
@@ -128,7 +137,7 @@ class EnzymeReaction(EnzymeMLBase):
         required=False
     )
 
-    model: Optional[Any] = Field(
+    model: Optional[KineticModel] = Field(
         default=None,
         description="Kinetic model decribing the reaction.",
         required=False
@@ -152,7 +161,7 @@ class EnzymeReaction(EnzymeMLBase):
         required=False
     )
 
-    # Validators
+    # ! Validators
     @validator("temperature_unit")
     def check_temperature_unit(cls, temperature_unit: str):
         valid_units = ["C", "c", "celsius", "K", "kelvin"]
@@ -163,7 +172,7 @@ class EnzymeReaction(EnzymeMLBase):
 
         return temperature_unit
 
-    # Utility methods
+    # ! Getters
     def getEduct(self, id: str) -> ReactionElement:
         """
         Returns a ReactionElement including information about the following properties:
@@ -248,21 +257,117 @@ class EnzymeReaction(EnzymeMLBase):
                 species_id=id, enzymeml_part=element_type
             )
 
+    # ! Adders
     @validate_arguments
-    def __addElement(
+    def addEduct(
         self,
         species_id: str,
         stoichiometry: PositiveFloat,
-        is_constant: bool,
-        element_list: List[ReactionElement],
+        constant: bool,
+        enzmldoc,
+        ontology: Enum = SBOTerm.SUBSTRATE
+    ) -> None:
+        """
+        Adds element to EnzymeReaction object. Replicates as well
+        as initial concentrations are optional.
+
+        Args:
+            species_id: str (string): Reactant/Protein ID - Needs to be pre-defined!
+            stoichiometry (float): Stoichiometric coefficient
+            constant:  (bool): Whether constant or not
+            enzmldoc (EnzymeMLDocument): Checks and adds IDs
+
+        Raises:
+            SpeciesNotFoundError: If Reactant/Protein hasnt been defined yet
+        """
+
+        self._addElement(
+            species_id=species_id,
+            stoichiometry=stoichiometry,
+            constant=constant,
+            element_list=self.educts,
+            ontology=ontology,
+            enzmldoc=enzmldoc
+        )
+
+    @validate_arguments
+    def addProduct(
+        self,
+        species_id: str,
+        stoichiometry: PositiveFloat,
+        constant: bool,
+        enzmldoc,
+        ontology: Enum = SBOTerm.PRODUCT
+    ) -> None:
+        """
+        Adds element to EnzymeReaction object. Replicates as well
+        as initial concentrations are optional.
+
+        Args:
+            species_id: str (string): Reactant/Protein ID - Needs to be pre-defined!
+            stoichiometry (float): Stoichiometric coefficient
+            constant:  (bool): Whether constant or not
+            enzmldoc (EnzymeMLDocument): Checks and adds IDs
+
+        Raises:
+            SpeciesNotFoundError: If Reactant/Protein hasnt been defined yet
+        """
+
+        self._addElement(
+            species_id=species_id,
+            stoichiometry=stoichiometry,
+            constant=constant,
+            element_list=self.products,
+            ontology=ontology,
+            enzmldoc=enzmldoc
+        )
+
+    @validate_arguments
+    def addModifier(
+        self,
+        species_id: str,
+        stoichiometry: PositiveFloat,
+        constant: bool,
+        enzmldoc,
+        ontology: Enum = SBOTerm.CATALYST
+    ) -> None:
+        """
+        Adds element to EnzymeReaction object. Replicates as well
+        as initial concentrations are optional.
+
+        Args:
+            species_id: str (string): Reactant/Protein ID - Needs to be pre-defined!
+            stoichiometry (float): Stoichiometric coefficient
+            constant:  (bool): Whether constant or not
+            enzmldoc (EnzymeMLDocument): Checks and adds IDs
+
+        Raises:
+            SpeciesNotFoundError: If Reactant/Protein hasnt been defined yet
+        """
+
+        self._addElement(
+            species_id=species_id,
+            stoichiometry=stoichiometry,
+            constant=constant,
+            element_list=self.modifiers,
+            ontology=ontology,
+            enzmldoc=enzmldoc
+        )
+
+    def _addElement(
+        self,
+        species_id: str,
+        stoichiometry: PositiveFloat,
+        constant: bool,
+        element_list: list[ReactionElement],
         ontology: Enum,
         enzmldoc
     ) -> None:
 
         # Check if species is part of document already
         all_species = [
-            list(enzmldoc.getProteinDict.keys()),
-            list(enzmldoc.getReactantDict.keys()),
+            *list(enzmldoc.protein_dict.keys()),
+            *list(enzmldoc.reactant_dict.keys()),
         ]
 
         if species_id not in all_species:
@@ -274,103 +379,11 @@ class EnzymeReaction(EnzymeMLBase):
         element_list.append(ReactionElement(
             species_id=species_id,
             stoichiometry=stoichiometry,
-            is_constant=is_constant,
+            constant=constant,
             ontology=ontology
         ))
 
-    def addEduct(
-        self,
-        species_id: str,
-        stoichiometry: PositiveFloat,
-        is_constant: bool,
-        enzmldoc,
-        ontology: Enum = SBOTerm.SUBSTRATE
-    ) -> None:
-        """
-        Adds element to EnzymeReaction object. Replicates as well
-        as initial concentrations are optional.
-
-        Args:
-            species_id: str (string): Reactant/Protein ID - Needs to be pre-defined!
-            stoichiometry (float): Stoichiometric coefficient
-            is_constant:  (bool): Whether constant or not
-            enzmldoc (EnzymeMLDocument): Checks and adds IDs
-
-        Raises:
-            SpeciesNotFoundError: If Reactant/Protein hasnt been defined yet
-        """
-
-        self.__addElement(
-            species_id=species_id,
-            stoichiometry=stoichiometry,
-            is_constant=is_constant,
-            element_list=self.educts,
-            ontology=ontology,
-            enzmldoc=enzmldoc
-        )
-
-    def addProduct(
-        self,
-        species_id: str,
-        stoichiometry: PositiveFloat,
-        is_constant: bool,
-        enzmldoc,
-        ontology: Enum = SBOTerm.PRODUCT
-    ) -> None:
-        """
-        Adds element to EnzymeReaction object. Replicates as well
-        as initial concentrations are optional.
-
-        Args:
-            species_id: str (string): Reactant/Protein ID - Needs to be pre-defined!
-            stoichiometry (float): Stoichiometric coefficient
-            is_constant:  (bool): Whether constant or not
-            enzmldoc (EnzymeMLDocument): Checks and adds IDs
-
-        Raises:
-            SpeciesNotFoundError: If Reactant/Protein hasnt been defined yet
-        """
-
-        self.__addElement(
-            species_id=species_id,
-            stoichiometry=stoichiometry,
-            is_constant=is_constant,
-            element_list=self.products,
-            ontology=ontology,
-            enzmldoc=enzmldoc
-        )
-
-    def addModifier(
-        self,
-        species_id: str,
-        stoichiometry: PositiveFloat,
-        is_constant: bool,
-        enzmldoc,
-        ontology: Enum = SBOTerm.CATALYST
-    ) -> None:
-        """
-        Adds element to EnzymeReaction object. Replicates as well
-        as initial concentrations are optional.
-
-        Args:
-            species_id: str (string): Reactant/Protein ID - Needs to be pre-defined!
-            stoichiometry (float): Stoichiometric coefficient
-            is_constant:  (bool): Whether constant or not
-            enzmldoc (EnzymeMLDocument): Checks and adds IDs
-
-        Raises:
-            SpeciesNotFoundError: If Reactant/Protein hasnt been defined yet
-        """
-
-        self.__addElement(
-            species_id=species_id,
-            stoichiometry=stoichiometry,
-            is_constant=is_constant,
-            element_list=self.modifiers,
-            ontology=ontology,
-            enzmldoc=enzmldoc
-        )
-
+    # ! Getters (old)
     @deprecated_getter("temperature")
     def getTemperature(self) -> float:
         return self.temperature

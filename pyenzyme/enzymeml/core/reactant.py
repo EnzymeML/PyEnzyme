@@ -110,27 +110,6 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
     # * Private
     _unit_id: Optional[str] = None
 
-    # ! Validators
-    @validator("id")
-    def set_meta_id(cls, id: Optional[str], values: dict):
-        """Sets the meta ID when an ID is provided"""
-
-        if id:
-            # Set Meta ID with ID
-            values["meta_id"] = f"METAID_{id.upper()}"
-
-        return id
-
-    @validator("meta_id")
-    def check_meta_id(cls, meta_id: Optional[str], values: dict):
-        """Checks if the meta ID provided is following the standard"""
-
-        if values.get("meta_id"):
-            # When the ID init already set the meta ID
-            return values.get("meta_id")
-
-        return None
-
     # ! Getters
     @deprecated_getter("inchi")
     def getInchi(self):

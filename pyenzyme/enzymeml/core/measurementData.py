@@ -10,7 +10,14 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import PositiveFloat, validate_arguments, BaseModel, validator, Field
+from pydantic import (
+    PositiveFloat,
+    validate_arguments,
+    BaseModel,
+    validator,
+    Field,
+    PrivateAttr
+)
 from dataclasses import dataclass
 from typing import Optional, TYPE_CHECKING
 
@@ -60,6 +67,9 @@ class MeasurementData(BaseModel):
         description="A list of replicate objects holding raw data of the measurement.",
         required=False
     )
+
+    # * Private
+    _unit_id: Optional[str] = PrivateAttr(default=None)
 
     @validator("protein_id")
     def check_id_occurences(cls, protein_id: str, values: dict):

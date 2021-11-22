@@ -10,7 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import Field, PositiveFloat, validator
+from pydantic import Field, PositiveFloat, validator, PrivateAttr
 from typing import TYPE_CHECKING, Optional
 from dataclasses import dataclass
 
@@ -34,18 +34,6 @@ class Vessel(EnzymeMLBase):
         required=True
     )
 
-    id: str = Field(
-        description="Unique identifier of the vessel.",
-        required=True,
-        regex=r"v[\d]+"
-    )
-
-    meta_id: Optional[str] = Field(
-        default=None,
-        description="Unique meta identifier of the vessel.",
-        required=True
-    )
-
     volume: PositiveFloat = Field(
         description="Volumetric value of the vessel.",
         required=True
@@ -62,6 +50,18 @@ class Vessel(EnzymeMLBase):
         required=True
     )
 
+    id: Optional[str] = Field(
+        description="Unique identifier of the vessel.",
+        required=True,
+        regex=r"v[\d]+"
+    )
+
+    meta_id: Optional[str] = Field(
+        default=None,
+        description="Unique meta identifier of the vessel.",
+        required=True
+    )
+
     uri: Optional[str] = Field(
         default=None,
         description="URI of the vessel.",
@@ -74,6 +74,10 @@ class Vessel(EnzymeMLBase):
         required=False
     )
 
+    # * Private
+    _unit_id: Optional[str] = PrivateAttr(default=None)
+
+    # ! Validators
     @validator("id")
     def set_meta_id(cls, id: Optional[str], values: dict):
         """Sets the meta ID when an ID is provided"""
@@ -94,6 +98,11 @@ class Vessel(EnzymeMLBase):
 
         return None
 
+    # ! Setters
+    def set_unit_id(self, unit_id: str):
+        self._unit_id = unit_id
+
+    # ! Getters (old)
     @deprecated_getter("name")
     def getName(self):
         return self.name

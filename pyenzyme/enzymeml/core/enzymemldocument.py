@@ -31,6 +31,7 @@ from pyenzyme.enzymeml.core.unitdef import UnitDef
 from pyenzyme.enzymeml.core.measurement import Measurement
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
+from pyenzyme.enzymeml.models.kineticmodel import KineticParameter
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
 from pyenzyme.enzymeml.databases.dataverse import toDataverseJSON
@@ -106,7 +107,8 @@ class EnzymeMLDocument(EnzymeMLBase):
         required=False
     )
 
-    vessel: Vessel = Field(
+    vessel: Optional[Vessel] = Field(
+        default=None,
         description="The vessel in which the experiment was performed.",
         required=True
     )
@@ -114,8 +116,14 @@ class EnzymeMLDocument(EnzymeMLBase):
     creator_dict: dict[str, Creator] = Field(
         alias="creators",
         default_factory=dict,
-        description="Dictionary of the authors of the EnzymeML document.",
+        description="Dictionary mapping from creator IDs to creator describing objects.",
         required=True
+    )
+
+    vessel_dict: dict[str, Vessel] = Field(
+        alias="vessels",
+        default_factory=dict,
+        description="Dictionary mapping from vessel IDs to vessel describing objects."
     )
 
     protein_dict: dict[str, Protein] = Field(
@@ -162,10 +170,12 @@ class EnzymeMLDocument(EnzymeMLBase):
 
     # ! Validators
     @validator("pubmed_id")
-    def add_identifier(cls, pubmed_id: str):
+    def add_identifier(cls, pubmed_id: Optional[str]):
         """Adds an identifiers.org link in front of the pubmed ID if not given"""
 
-        if pubmed_id.startswith("https://identifiers.org/pubmed:"):
+        if pubmed_id is None:
+            return pubmed_id
+        elif pubmed_id.startswith("https://identifiers.org/pubmed:"):
             return pubmed_id
         else:
             return "https://identifiers.org/pubmed:" + pubmed_id
@@ -248,7 +258,9 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         if dictionary.keys():
             # fetch all keys and sort them
-            number = max(list(dictionary.keys()), key=lambda id: int(id[1::]))
+            number = int(
+                max(list(dictionary.keys()), key=lambda id: int(id[1::]))[1::]
+            )
             return prefix + str(number + 1)
 
         return prefix + str(0)
@@ -330,11 +342,30 @@ class EnzymeMLDocument(EnzymeMLBase):
 
     # ! Add methods
     @validate_arguments
+    def addVessel(self, vessel: Vessel, use_parser: bool = True) -> str:
+        """Adds a Vessel object to the EnzymeML document.
+
+        Args:
+            vessel (Vessel): Vessel object to be added to the document.
+            use_parser (bool, optional): Whether to user the unit parser or not. Defaults to True.
+
+        Returns:
+            str: Unique internal identifier of the reactant.
+        """
+
+        return self._addSpecies(
+            species=vessel,
+            prefix="v",
+            dictionary=self.vessel_dict,
+            use_parser=use_parser
+        )
+
+    @validate_arguments
     def addReactant(self, reactant: Reactant, use_parser: bool = True) -> str:
         """Adds a Reactant object to the EnzymeML document.
 
         Args:
-            reactant (str): Unique internal identifier of the reactant.
+            reactant (Reactant): Reactant object to be added to the document.
             use_parser (bool, optional): Whether to user the unit parser or not. Defaults to True.
 
         Returns:
@@ -353,11 +384,11 @@ class EnzymeMLDocument(EnzymeMLBase):
         """Adds a Protein object to the EnzymeML document.
 
         Args:
-            protein (str): Unique internal identifier of the reactant.
+            protein (Protein): Protein object to be added to the document.
             use_parser (bool, optional): Whether to user the unit parser or not. Defaults to True.
 
         Returns:
-            str: Unique internal identifier of the reactant.
+            str: Unique internal identifier of the protein.
         """
 
         return self._addSpecies(
@@ -369,7 +400,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
     def _addSpecies(
         self,
-        species: AbstractSpecies,
+        species: Union[AbstractSpecies, Vessel],
         prefix: str,
         dictionary: dict,
         use_parser: bool = True
@@ -390,10 +421,14 @@ class EnzymeMLDocument(EnzymeMLBase):
         species.id = self._generateID(
             prefix=prefix, dictionary=dictionary
         )
+        species.meta_id = f"METAID_{species.id.upper()}"
+
+        print(species.meta_id)
 
         # Update unit to UnitDefID
         if species.unit and use_parser:
-            species._unit_id = self._convertToUnitDef(species.unit)
+            unit_id = self._convertToUnitDef(species.unit)
+            species._unit_id = unit_id
         elif species.unit and use_parser is False:
             species._unit_id = species.unit
             species.unit = self.getUnitString(species._unit_id)
@@ -403,7 +438,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return species.id
 
-    @validate_arguments
+    @ validate_arguments
     def addReaction(self, reaction: EnzymeReaction, use_parser=True) -> str:
         """
         Adds EnzymeReaction object to EnzymeMLDocument object.
@@ -422,6 +457,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         # Generate ID
         reaction.id = self._generateID("r", self.reaction_dict)
+        reaction.meta_id = f"METAID_{reaction.id.upper()}"
 
         if use_parser:
             # Reset temperature for SBML compliance to Kelvin
@@ -432,25 +468,69 @@ class EnzymeMLDocument(EnzymeMLBase):
             )
 
             # Generate internal ID for the unit
-            reaction._temperature_unit_id = self._convertToUnitDef(
+            reaction.temperature_unit_id = self._convertToUnitDef(
                 reaction.temperature_unit
             )
         else:
             # Set the temperature unit to the actual string
-            reaction._temperature_unit_id = reaction.temperature
+            reaction.temperature_unit_id = reaction.temperature_unit
             reaction.temperature_unit = self.getUnitString(
                 reaction.temperature_unit
             )
 
-        # Set model units
-        if hasattr(reaction, '_EnzymeReaction_model'):
-            # TODO implement model unit conversion
-            model = reaction.getModel()
+        # Set model units and check for consistency
+        if reaction.model:
+            # ID consistency
+            self._check_kinetic_model_ids(
+                equation=reaction.model.equation,
+                species_ids=self.getSpeciesIDs()
+            )
+
+            # Unit conversion
+            self._convert_kinetic_model_units(
+                reaction.model.parameters,
+                enzmldoc=self
+            )
 
         # Finally add the reaction to the document
         self.reaction_dict[reaction.id] = reaction
 
         return reaction.id
+
+    @ staticmethod
+    def _check_kinetic_model_ids(equation: str, species_ids: list[str]) -> None:
+        """Checks if the given species IDs are consistent with the EnzymeML document.
+
+        Args:
+            equation (str): The rate law given in the KineticModel
+            species_ids (list[str]): All species IDs from the EnzymeML document.
+        """
+
+        # Get all IDs from the KineticModel equation
+        kinetic_model_ids = re.findall(
+            r"[p|s][\d]+",
+            equation
+        )
+
+        for species_id in kinetic_model_ids:
+            if species_id not in species_ids:
+                raise SpeciesNotFoundError(
+                    species_id=species_id,
+                    enzymeml_part="KineticModel equation"
+                )
+
+    @staticmethod
+    def _convert_kinetic_model_units(parameters: list[KineticParameter], enzmldoc) -> None:
+        """Converts given unit strings to unit IDs and adds them to the model.
+
+        Args:
+            parameters (list[KineticParameter]): List of all kinetic parameters.
+            enzmldoc ([type]): Used to convert unit strings to unit IDs.
+        """
+
+        for parameter in parameters:
+            unit_id = enzmldoc._convertToUnitDef(parameter.unit)
+            parameter.unit_id = unit_id
 
     def addFile(
         self,
@@ -492,7 +572,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
     @validate_arguments
     def addMeasurement(self, measurement: Measurement) -> str:
-        """Adds a measurement to an EnzymeMLDocument and validates consistency with already defined elements of the documentself.
+        """Adds a measurement to an EnzymeMLDocument and validates consistency with already defined elements of the document.
 
         Args:
             measurement (Measurement): Collection of data and initial concentrations per reaction
@@ -507,15 +587,22 @@ class EnzymeMLDocument(EnzymeMLBase):
         # Convert all measurement units to UnitDefs
         self._convertMeasurementUnits(measurement)
 
-        # Finally generate the ID and add it to the dictionary
-        measurement_id = self._generateID(
+        # Generate the ID and add it to the dictionary
+        measurement.id = self._generateID(
             prefix="m", dictionary=self.measurement_dict
         )
-        measurement.id = measurement_id
 
-        self.measurement_dict[measurement_id] = measurement
+        # Update measurement ID to all replicates
+        protein_data = measurement.species_dict["proteins"]
+        reactant_data = measurement.species_dict["reactants"]
 
-        return measurement_id
+        self._updateReplicateMeasurementIDs(protein_data, measurement.id)
+        self._updateReplicateMeasurementIDs(reactant_data, measurement.id)
+
+        # Add it to the EnzymeMLDocument
+        self.measurement_dict[measurement.id] = measurement
+
+        return measurement.id
 
     def _convertMeasurementUnits(self, measurement: Measurement) -> None:
         """Converts string SI units to UnitDef objects and IDs
@@ -523,36 +610,60 @@ class EnzymeMLDocument(EnzymeMLBase):
         Args:
             measurement (Measurement): Object defining a measurement
         """
-        species_dict = measurement.species_dict
-        measurement.global_time_unit = self._convertToUnitDef(
+
+        # Update global time of the measurement
+        measurement.global_time_unit_id = self._convertToUnitDef(
             measurement.global_time_unit
         )
 
-        def update_unit(measurement_data: MeasurementData) -> None:
+        def update_dict_units(measurement_data_dict: dict[str, MeasurementData]) -> None:
             """Helper function to update units"""
-            unit = measurement_data.unit
-            measurement_data.unit = self._convertToUnitDef(unit)
-            self._convertReplicateUnits(measurement_data)
+            for measurement_data in measurement_data_dict.values():
+                measurement_data._unit_id = self._convertToUnitDef(
+                    measurement_data.unit
+                )
+
+                global_time = self._convertReplicateUnits(
+                    measurement_data
+                )
+
+                if global_time:
+                    measurement.global_time = global_time
 
         # Perform update
-        map(update_unit, species_dict["proteins"].values())
-        map(update_unit, species_dict["reactants"].values())
+        update_dict_units(measurement.species_dict["proteins"])
+        update_dict_units(measurement.species_dict["reactants"])
 
-    def _convertReplicateUnits(self, measurement_data: MeasurementData) -> None:
+    def _convertReplicateUnits(self, measurement_data: MeasurementData) -> Optional[list[float]]:
         """Converts replicate unit strings to unit definitions.
 
         Args:
             measurement_data (MeasurementData): Object holding measurement data for a species
         """
+
+        # TODO verify globally global time
+        global_time = None
+
         for replicate in measurement_data.replicates:
 
             # Convert unit
-            time_unit = self._convertToUnitDef(replicate.time_unit)
-            data_unit = self._convertToUnitDef(replicate.data_unit)
+            time_unit_id = self._convertToUnitDef(replicate.time_unit)
+            data_unit_id = self._convertToUnitDef(replicate.data_unit)
 
             # Assign unit IDs
-            replicate.data_unit = data_unit
-            replicate.time_unit = time_unit
+            replicate._data_unit_id = data_unit_id
+            replicate._time_unit_id = time_unit_id
+
+            global_time = replicate.time
+
+        return global_time
+
+    def _updateReplicateMeasurementIDs(self, measurement_data_dict: dict[str, MeasurementData], measurement_id: str):
+        """Updates the measurement IDs of replicates."""
+        for measurement_data in measurement_data_dict.values():
+            replicates = measurement_data.replicates
+            for replicate in replicates:
+                replicate.measurement_id = measurement_id
 
     def _checkMeasurementConsistency(self, measurement: Measurement) -> None:
         """Checks if the used species in the measurement are consistent with the EnzymeML document.
@@ -612,8 +723,13 @@ class EnzymeMLDocument(EnzymeMLBase):
         return UnitCreator().getUnit(unit, self)
 
     # ! Getter methods
+    def getSpeciesIDs(self) -> list[str]:
+        return list({
+            **self.protein_dict,
+            **self.reactant_dict
+        }.keys())
 
-    def getUnitString(self, unit_id: str) -> str:
+    def getUnitString(self, unit_id: Optional[str]) -> str:
         """Return the unit name corresponding to the given unit ID.
 
         Args:
@@ -625,6 +741,9 @@ class EnzymeMLDocument(EnzymeMLBase):
         Returns:
             str: String representation of the unit.
         """
+
+        if unit_id is None:
+            raise TypeError("No unit given.")
 
         try:
             return self.unit_dict[unit_id].name

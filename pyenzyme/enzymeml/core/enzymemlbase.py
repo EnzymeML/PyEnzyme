@@ -30,4 +30,16 @@ class EnzymeMLBase(BaseModel):
         validate_all = True
 
     def json(self, indent: int = 2):
-        return super().json(indent=indent, exclude_none=True)
+        return super().json(
+            indent=indent,
+            exclude_none=True,
+            exclude={
+                "unit_dict": ...,
+                "file_dict": ...,
+                "protein_dict":
+                    {
+                        "Protein": {"__all__": {"unit_id"}}
+                    }
+            },
+            by_alias=True
+        )

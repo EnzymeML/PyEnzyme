@@ -104,7 +104,7 @@ class UnitCreator:
             name = 'K'
 
         # Initialize UnitDef object
-        unitdef = UnitDef(name, id_, "NONE")
+        unitdef = UnitDef(name=name, id=id_)
 
         for prefix, baseunit, exponent in units:
             self.__functionDict[baseunit](
@@ -127,7 +127,7 @@ class UnitCreator:
         unitdict = enzmldoc.getUnitDict()
 
         def __compare(f1, f2):
-            return sorted(f1) == sorted(f2)
+            return f1 == f2
 
         for unitdef in unitdict:
             if __compare(unitdict[unitdef].getFootprint(), footprint):

@@ -10,7 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import Field, validator
+from pydantic import Field, validator, PrivateAttr
 from typing import TYPE_CHECKING, Optional
 from enum import Enum
 from dataclasses import dataclass
@@ -71,15 +71,15 @@ class Replicate(EnzymeMLBase):
         required=True
     )
 
-    data: list[float] = Field(
-        default=None,
-        description="Data that was measured.",
-        required=True
-    )
-
     time: list[float] = Field(
         default=None,
         description="Time steps of the measurement.",
+        required=True
+    )
+
+    data: list[float] = Field(
+        default=None,
+        description="Data that was measured.",
         required=True
     )
 
@@ -99,6 +99,10 @@ class Replicate(EnzymeMLBase):
         description="Unique identifier of the author.",
         required=False
     )
+
+    # * Private
+    _time_unit_id: Optional[str] = PrivateAttr(default=None)
+    _data_unit_id: Optional[str] = PrivateAttr(default=None)
 
     @validator("data")
     def check_data_completeness(cls, data: list[float], values: dict):

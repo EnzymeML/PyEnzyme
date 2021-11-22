@@ -83,6 +83,8 @@ class Protein(EnzymeMLBase, AbstractSpecies):
 
     ec_number: Optional[str] = Field(
         default=None,
+        description="EC number of the protein.",
+        required=False
     )
 
     uniprot_id: Optional[str] = Field(
@@ -127,11 +129,7 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         required=False
     )
 
-    # * Private
-    _unit_id: Optional[str] = None
-
-    # Validators
-
+    # ! Validators
     @validator("id")
     def set_meta_id(cls, id: Optional[str], values: dict):
         """Sets the meta ID when an ID is provided"""
@@ -142,16 +140,6 @@ class Protein(EnzymeMLBase, AbstractSpecies):
 
         return id
 
-    @validator("meta_id")
-    def check_meta_id(cls, meta_id: Optional[str], values: dict):
-        """Checks if the meta ID provided is following the standard"""
-
-        if values.get("meta_id"):
-            # When the ID init already set the meta ID
-            return values.get("meta_id")
-
-        return None
-
     @validator("sequence")
     def clean_sequence(cls, sequence):
         """Cleans a sequence from whitespaces as well as newlines and transforms uppercase"""
@@ -159,8 +147,11 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         return re.sub(r"\s+", "", sequence).upper()
 
     @validator("ec_number")
-    def validate_ec_number(cls, ec_number: str):
+    def validate_ec_number(cls, ec_number: Optional[str]):
         """Validates whether given EC number complies to the established pattern."""
+
+        if ec_number is None:
+            return ec_number
 
         pattern = r"(\d+.)(\d+.)(\d+.)(\d+)"
         match = re.search(pattern, ec_number)

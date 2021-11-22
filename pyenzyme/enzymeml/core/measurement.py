@@ -58,6 +58,12 @@ class Measurement(EnzymeMLBase):
         required=True,
     )
 
+    global_time_unit_id: Optional[str] = Field(
+        default=None,
+        description="Unique internal identifier of the global time unit.",
+        required=False,
+    )
+
     id: Optional[str] = Field(
         description="Unique identifier of the measurement.",
         required=True,
@@ -171,8 +177,8 @@ class Measurement(EnzymeMLBase):
         self,
         init_conc: PositiveFloat,
         unit: str,
-        reactant_id: str,
-        protein_id: str,
+        reactant_id: Optional[str] = None,
+        protein_id: Optional[str] = None,
         replicates: list[Replicate] = []
     ) -> None:
         """Adds data via reaction ID to the measurement class.
@@ -194,8 +200,8 @@ class Measurement(EnzymeMLBase):
 
     def __appendReactantData(
         self,
-        reactant_id: str,
-        protein_id: str,
+        reactant_id: Optional[str],
+        protein_id: Optional[str],
         init_conc: PositiveFloat,
         unit: str,
         replicates: list[Replicate]
@@ -207,7 +213,7 @@ class Measurement(EnzymeMLBase):
             protein_id=protein_id,
             init_conc=init_conc,
             unit=unit,
-            replicates=self._updateReplicates(replicates)
+            replicates=replicates
         )
 
         if reactant_id:
@@ -219,12 +225,10 @@ class Measurement(EnzymeMLBase):
                 "Please enter a reactant or protein ID to add measurement data"
             )
 
-    def _updateReplicates(self, replicates: list[Replicate]) -> list[Replicate]:
+    def updateReplicates(self, replicates: list[Replicate]) -> None:
         for replicate in replicates:
             # Set the measurement name for the replicate
             replicate.measurement_id = self.name
-
-        return replicates
 
     def _setReplicateMeasIDs(self) -> None:
         """Sets the measurement IDs for the replicates."""
