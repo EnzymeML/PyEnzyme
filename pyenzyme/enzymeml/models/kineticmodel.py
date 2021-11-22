@@ -10,147 +10,122 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
+from typing import TYPE_CHECKING, Optional, Any
+from enum import Enum
+from pydantic import Field, validator
+from dataclasses import dataclass
+
+from libsbml import parseL3Formula, Reaction, ASTNode
+from pydantic.fields import PrivateAttr
+
+from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
-from libsbml._libsbml import parseL3Formula
-import json
+from pyenzyme.enzymeml.core.utils import (
+    type_checking,
+    deprecated_getter
+)
+
+if TYPE_CHECKING:  # pragma: no cover
+    static_check_init_args = dataclass
+else:
+    static_check_init_args = type_checking
 
 
-class KineticModel(object):
+@static_check_init_args
+class KineticParameter(EnzymeMLBase):
 
-    def __init__(self, name, equation, parameters, enzmldoc):
-        '''
-        Model class to define kinetic laws and store modeling parameters.
+    name: str = Field(
+        description="Name of the estimated parameter.",
+        required=True
+    )
 
-        Args:
-            String equation: String describing mathematical formula of model
-            Dict parameters: Dictionary of parameters from formula
-        '''
+    value: float = Field(
+        description="Numerical value of the estimated parameter.",
+        required=True
+    )
 
-        self.setName(name)
-        self.setEquation(equation)
-        self.setParameters(parameters, enzmldoc)
-        self.setEqObject(self.getEquation())
+    unit: str = Field(
+        description="Unit of the estimated parameter.",
+        required=True
+    )
 
-    def toJSON(self, d=False, enzmldoc=None):
+    ontology: Enum = Field(
+        description="Type of the estimated parameter.",
+        required=False
+    )
 
-        def transformAttr(self):
-            d = {}
-            for key, item in self.__dict__.items():
-                key = key.split('__')[-1]
+    unit_id: Optional[str] = Field(
+        default=None,
+        description="Internal identifier for the unit of the estimated parameter.",
+        regex=r"u[\d]+",
+        required=False
+    )
 
-                if 'eqObject' not in key:
 
-                    if type(item) == dict and enzmldoc is not None:
+@static_check_init_args
+class KineticModel(EnzymeMLBase):
 
-                        item = {
-                            k: (
-                                it[0],
-                                enzmldoc.getUnitDict()[it[1]].getName()
-                            )
-                            for k, it in item.items()
-                        }
+    name: str = Field(
+        description="Name of the kinetic law.",
+        required=True
+    )
 
-                    d[key] = item
+    equation: str = Field(
+        description="Equation for the kinetic law.",
+        required=True
+    )
 
-            return d
+    parameters: list[KineticParameter] = Field(
+        default_factory=list,
+        description="List of estimated parameters.",
+        required=True
+    )
 
-        if d:
-            return transformAttr(self)
+    ontology: Optional[Enum] = Field(
+        description="Type of the estimated parameter.",
+        required=False
+    )
 
-        return json.dumps(
-            self,
-            default=transformAttr,
-            indent=4
-        )
-
-    def __str__(self):
-        return self.toJSON()
-
-    def addToReaction(self, reaction):
+    # ! Utilities
+    def addToReaction(self, reaction: Reaction) -> None:
         '''
         Adds kinetic law to SBML reaction.
         Only relevant for EnzymeML > SBML conversion.
 
         Args:
-            Reaction (SBML) reaction: SBML reaciton class
+            reaction (libsbml.Reaction): SBML reaciton class
         '''
 
+        # Set up SBML kinetic law node
         kl = reaction.createKineticLaw()
 
-        for key, item in self.__parameters.items():
+        for kinetic_parameter in self.parameters:
+
+            print(kinetic_parameter)
 
             local_param = kl.createLocalParameter()
-            local_param.setId(key)
-            local_param.setValue(item[0])
-            local_param.setUnits(item[1])
+            local_param.setId(kinetic_parameter.name)
+            local_param.setValue(kinetic_parameter.value)
+            local_param.setUnits(kinetic_parameter.unit_id)
 
-        kl.setMath(self.__eqObject)
-        kl.setName(self.__name)
+            if kinetic_parameter.ontology:
+                local_param.setSBOTerm(kinetic_parameter.ontology)
 
+        kl.setMath(parseL3Formula(self.equation))
+        kl.setName(self.name)
+
+        if self.ontology:
+            kl.setSBOTerm(self.ontology)
+
+    # ! Getters
+    @deprecated_getter("equation")
     def getEquation(self):
-        return self.__equation
+        return self.equation
 
+    @deprecated_getter("parameters")
     def getParameters(self):
-        return self.__parameters
+        return self.parameters
 
-    def getEqObject(self):
-        return self.__eqObject
-
-    def setEquation(self, equation):
-        '''
-        Args:
-            String equation: mathematical description of kinetic law
-        '''
-        self.__equation = TypeChecker(equation, str)
-
-    def setParameters(self, parameters, enzmldoc):
-        '''
-        Args:
-            Dict parameters: Float parameters indexed by String names
-
-        '''
-        parameters = TypeChecker(parameters, dict)
-
-        self.__parameters = {}
-        for paramName, (paramValue, paramUnit) in parameters.items():
-
-            if paramUnit not in enzmldoc.getUnitDict().keys():
-                paramUnit = UnitCreator().getUnit(paramUnit, enzmldoc)
-
-            self.__parameters[paramName] = (
-                paramValue,
-                paramUnit
-            )
-
-    def setEqObject(self, equation):
-        self.__eqObject = parseL3Formula(equation)
-
-    def delEquation(self):
-        del self.__equation
-
-    def delParameters(self):
-        del self.__parameters
-
-    def delEqObject(self):
-        del self.__eqObject
-
-    def setName(self, name):
-        TypeChecker(name, str)
-        self.__name = name
-
+    @deprecated_getter("name")
     def getName(self):
-        return self.__name
-
-    def delName(self):
-        del self.__name
-
-    def setReaction(self, reactionID):
-        """Helper function for Dataverse integration. Has no effect on the resulting EnzymeMLDocument
-
-        Args:
-            reactionID (string): Identifier for the reaction
-        """
-
-        TypeChecker(reactionID, str)
-
-        self.__reaction = reactionID
+        return self.name

@@ -21,6 +21,13 @@ class SBOTerm(str, Enum):
     NON_ESSENTIAL_ACTIVATOR = "SBO:0000462"
     POTENTIATOR = "SBO:0000021"
 
+    # Kinetic models
+    MICHAELIS_MENTEN = "SBO:0000028"
+
+    # Kinetic parameters
+    K_CAT = "SBO:0000025"
+    K_M = "SBO:0000027"
+
 
 class DataTypes(str, Enum):
     """String enumeration used to assign replicate type ontologies"""
