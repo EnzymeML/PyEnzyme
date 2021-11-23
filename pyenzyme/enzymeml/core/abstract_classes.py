@@ -1,7 +1,7 @@
 from pydantic import BaseModel, PositiveFloat, PrivateAttr, validator
 from typing import Optional
 from enum import Enum
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class AbstractSpeciesDataclass(BaseModel):
@@ -13,10 +13,10 @@ class AbstractSpeciesDataclass(BaseModel):
     init_conc: PositiveFloat
     constant: bool
     unit: str
-    _unit_id: Optional[str] = PrivateAttr(default=None)
     ontology: Enum
-    uri: str
-    creator_id: str
+    _unit_id: Optional[str] = PrivateAttr(default=None)
+    uri: Optional[str]
+    creator_id: Optional[str]
 
 
 class AbstractSpecies(ABC, AbstractSpeciesDataclass):
@@ -35,3 +35,17 @@ class AbstractSpecies(ABC, AbstractSpeciesDataclass):
             values["meta_id"] = f"METAID_{id.upper()}"
 
         return id
+
+
+class AbstractSpeciesFactory(ABC):
+    """
+    Factory that returns a specific species instance.
+    """
+
+    enzymeml_part: str
+
+    @abstractmethod
+    def get_species(
+        self, **kwargs
+    ) -> AbstractSpecies:
+        """Return a new species object"""
