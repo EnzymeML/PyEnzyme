@@ -362,7 +362,7 @@ class EnzymeMLWriter:
         # Optional attributes
         referenceAttributes = {
             'enzymeml:doi': 'doi',
-            'enzymeml:pubmedID': 'pubmed_id',
+            'enzymeml:pubmedID': 'pubmedid',
             'enzymeml:url': 'url'
         }
 
@@ -420,7 +420,7 @@ class EnzymeMLWriter:
                 baseUnitDef.setScale(scale)
                 baseUnitDef.setMultiplier(multiplier)
 
-    def __addVessel(self, model, vessel_dict: dict[Vessel]) -> None:
+    def __addVessel(self, model, vessel_dict: dict[str, Vessel]) -> None:
         """Converts EnzymeMLDocument vessel to SBML.
 
         Args:
@@ -465,8 +465,8 @@ class EnzymeMLWriter:
             # EnzymeML attributes
             proteinAttributes = {
                 'enzymeml:sequence': 'sequence',
-                'enzymeml:ECnumber': 'ec_number',
-                'enzymeml:uniprotID': 'uniprot_id',
+                'enzymeml:ECnumber': 'ecnumber',
+                'enzymeml:uniprotID': 'uniprotid',
                 'enzymeml:organism': 'organism'
             }
 
@@ -537,6 +537,7 @@ class EnzymeMLWriter:
             reaction.setMetaId(enzyme_reaction.meta_id)
             reaction.setName(enzyme_reaction.name)
             reaction.setReversible(enzyme_reaction.reversible)
+            reaction.setSBOTerm(enzyme_reaction.ontology)
 
             # Add kinetic model
             if enzyme_reaction.model:
