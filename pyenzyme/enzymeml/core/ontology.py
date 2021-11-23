@@ -4,6 +4,19 @@ from enum import Enum
 class SBOTerm(str, Enum):
     """String enumeration used to assign ontologies derived from SBOTerms."""
 
+    # Chemical reactions
+    BIOCHEMICAL_REACTION = "SBO:0000176"
+    ACID_BASE_REACTION = "SBO:0000208"
+    CONFORMATIONAL_TRANSITION = "SBO:0000181"
+    CONVERSION = "SBO:0000182"
+    DEGRADATION = "SBO:0000179"
+    DISSOCIATION = "SBO:0000180"
+    IONISATION = "SBO:0000209"
+    ISOMERISATION = "SBO:0000377"
+    NON_COVALENT_BINDING = "SBO:0000177"
+    REDOX_REACTION = "SBO:0000200"
+    SPONTANEOUS_REACTION = "SBO:0000672"
+
     # Chemical entities
     PROTEIN = "SBO:0000252"
     GENE = "SBO:0000251"
@@ -50,6 +63,15 @@ class EnzymeMLPart(str, Enum):
     BLANK = "blank"
 
     @classmethod
-    def fromSBOTerm(cls, sbo_term: str) -> str:
+    def partFromSBOTerm(cls, sbo_term: str) -> str:
         sbo_term = SBOTerm(sbo_term).name
         return getattr(cls, sbo_term).value
+
+    @classmethod
+    def entityFromSBOTerm(cls, sbo_term: str) -> str:
+        sbo_term = SBOTerm(sbo_term).name
+        return getattr(cls, sbo_term).name
+
+
+if __name__ == "__main__":
+    SBOTerm("lol")
