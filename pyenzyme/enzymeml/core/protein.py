@@ -81,13 +81,13 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         required=False
     )
 
-    ec_number: Optional[str] = Field(
+    ecnumber: Optional[str] = Field(
         default=None,
         description="EC number of the protein.",
         required=False
     )
 
-    uniprot_id: Optional[str] = Field(
+    uniprotid: Optional[str] = Field(
         default=None,
         description="Unique identifier referencing a protein entry at UniProt.",
         required=False
@@ -146,28 +146,28 @@ class Protein(EnzymeMLBase, AbstractSpecies):
 
         return re.sub(r"\s+", "", sequence).upper()
 
-    @validator("ec_number")
-    def validate_ec_number(cls, ec_number: Optional[str]):
+    @validator("ecnumber")
+    def validate_ecnumber(cls, ecnumber: Optional[str]):
         """Validates whether given EC number complies to the established pattern."""
 
-        if ec_number is None:
-            return ec_number
+        if ecnumber is None:
+            return ecnumber
 
         pattern = r"(\d+.)(\d+.)(\d+.)(\d+)"
-        match = re.search(pattern, ec_number)
+        match = re.search(pattern, ecnumber)
 
         if match is not None:
             return "".join(match.groups())
         else:
-            raise ECNumberError(ec_number=ec_number)
+            raise ECNumberError(ecnumber=ecnumber)
 
     @deprecated_getter("organism_tax_id")
     def getOrganismTaxId(self):
         return self.organism_tax_id
 
-    @deprecated_getter("ec_number")
+    @deprecated_getter("ecnumber")
     def getEcnumber(self):
-        return self.ec_number
+        return self.ecnumber
 
     @deprecated_getter("uniprot_id")
     def getUniprotID(self):
