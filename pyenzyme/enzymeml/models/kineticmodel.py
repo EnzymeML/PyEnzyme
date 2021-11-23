@@ -49,12 +49,13 @@ class KineticParameter(EnzymeMLBase):
         required=True
     )
 
-    ontology: Enum = Field(
+    ontology: Optional[Enum] = Field(
+        default=None,
         description="Type of the estimated parameter.",
         required=False
     )
 
-    unit_id: Optional[str] = Field(
+    _unit_id: Optional[str] = Field(
         default=None,
         description="Internal identifier for the unit of the estimated parameter.",
         regex=r"u[\d]+",
