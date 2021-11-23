@@ -112,6 +112,12 @@ class EnzymeReaction(EnzymeMLBase):
         required=True
     )
 
+    ontology: Optional[Enum] = Field(
+        default=SBOTerm.BIOCHEMICAL_REACTION,
+        description="Ontology defining the role of the given species.",
+        required=True
+    )
+
     id: Optional[str] = Field(
         default=None,
         description="Unique identifier of the reaction.",
