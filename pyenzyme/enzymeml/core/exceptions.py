@@ -58,11 +58,11 @@ class IdentifierNameError(Exception):
 class ECNumberError(Exception):
     """Raised when an EC number does not match the pattern convenrtion"""
 
-    def __init__(self, ec_number: str):
-        self.ec_number = ec_number
+    def __init__(self, ecnumber: str):
+        self.ecnumber = ecnumber
 
     def __str__(self) -> str:
-        return f"EC number {self.ec_number} does not match the pattern. Please specifify as X.X.X.X"
+        return f"EC number {self.ecnumber} does not match the pattern. Please specifify as X.X.X.X"
 
 
 class DataError(Exception):
