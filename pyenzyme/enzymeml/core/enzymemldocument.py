@@ -77,7 +77,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         required=True
     )
 
-    pubmed_id: Optional[str] = Field(
+    pubmedid: Optional[str] = Field(
         default=None,
         description="Pubmed ID reference.",
         required=False
@@ -169,20 +169,20 @@ class EnzymeMLDocument(EnzymeMLBase):
     )
 
     # ! Validators
-    @validator("pubmed_id")
-    def add_identifier(cls, pubmed_id: Optional[str]):
+    @validator("pubmedid")
+    def add_identifier(cls, pubmedid: Optional[str]):
         """Adds an identifiers.org link in front of the pubmed ID if not given"""
 
-        if pubmed_id is None:
-            return pubmed_id
-        elif pubmed_id.startswith("https://identifiers.org/pubmed:"):
-            return pubmed_id
+        if pubmedid is None:
+            return pubmedid
+        elif pubmedid.startswith("https://identifiers.org/pubmed:"):
+            return pubmedid
         else:
-            return "https://identifiers.org/pubmed:" + pubmed_id
+            return "https://identifiers.org/pubmed:" + pubmedid
 
     # ! Imports and exports
     @staticmethod
-    def fromFile(path: Path):
+    def fromFile(path: str):
         """Initializes an EnzymeMLDocument from an OMEX container."
 
         Args:
@@ -422,8 +422,6 @@ class EnzymeMLDocument(EnzymeMLBase):
             prefix=prefix, dictionary=dictionary
         )
         species.meta_id = f"METAID_{species.id.upper()}"
-
-        print(species.meta_id)
 
         # Update unit to UnitDefID
         if species.unit and use_parser:
@@ -969,9 +967,9 @@ class EnzymeMLDocument(EnzymeMLBase):
     def getDoi(self) -> Optional[str]:
         return self.doi
 
-    @deprecated_getter("pubmed_id")
+    @deprecated_getter("pubmedid")
     def getPubmedID(self) -> Optional[str]:
-        return self.pubmed_id
+        return self.pubmedid
 
     @deprecated_getter("url")
     def getUrl(self) -> Optional[str]:
