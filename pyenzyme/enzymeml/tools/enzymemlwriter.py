@@ -74,7 +74,7 @@ class EnzymeMLWriter:
         self.convertEnzymeMLToSBML(model, enzmldoc)
 
         # Add data
-        paths = self.__addData(model, enzmldoc.measurement_dict)
+        paths = self._addData(model, enzmldoc.measurement_dict)
 
         # Write to EnzymeML
         writer = SBMLWriter()
@@ -87,7 +87,7 @@ class EnzymeMLWriter:
         )
 
         # Write to OMEX
-        self.__createArchive(enzmldoc, paths, verbose)
+        self._createArchive(enzmldoc, paths, verbose)
 
         shutil.rmtree(
             os.path.join(self.path, 'data'),
@@ -121,7 +121,7 @@ class EnzymeMLWriter:
         self.convertEnzymeMLToSBML(model, enzmldoc)
 
         # Add data
-        self.__addData(model, enzmldoc.measurement_dict)
+        self._addData(model, enzmldoc.measurement_dict)
 
         # Write to EnzymeML
         writer = SBMLWriter()
@@ -156,14 +156,14 @@ class EnzymeMLWriter:
             enzmldoc (EnzymeMLDocument): The EnzymeML document to be converted.
         """
 
-        self.__addRefs(model, enzmldoc)
-        self.__addUnits(model, enzmldoc.unit_dict)
-        self.__addVessel(model, enzmldoc.vessel_dict)
-        self.__addProteins(model, enzmldoc.protein_dict)
-        self.__addReactants(model, enzmldoc.reactant_dict)
-        self.__addReactions(model, enzmldoc.reaction_dict)
+        self._addRefs(model, enzmldoc)
+        self._addUnits(model, enzmldoc.unit_dict)
+        self._addVessel(model, enzmldoc.vessel_dict)
+        self._addProteins(model, enzmldoc.protein_dict)
+        self._addReactants(model, enzmldoc.reactant_dict)
+        self._addReactions(model, enzmldoc.reaction_dict)
 
-    def __createArchive(self, enzmldoc, listofPaths, verbose=1):
+    def _createArchive(self, enzmldoc, listofPaths, verbose=1):
 
         archive = CombineArchive()
 
@@ -346,7 +346,7 @@ class EnzymeMLWriter:
             )
             annotationNode.addChild(value)
 
-    def __addRefs(self, model: libsbml.Model, enzmldoc):
+    def _addRefs(self, model: libsbml.Model, enzmldoc):
         """Converts EnzymeMLDocument refrences to SBML.
 
         Args:
@@ -377,7 +377,7 @@ class EnzymeMLWriter:
         if referenceAnnotation.getNumChildren() > 0:
             model.appendAnnotation(referenceAnnotation)
 
-    def __addUnits(self, model: libsbml.Model, unit_dict: dict[str, UnitDef]) -> None:
+    def _addUnits(self, model: libsbml.Model, unit_dict: dict[str, UnitDef]) -> None:
         """Converts EnzymeMLDocument units to SBML.
 
         Args:
@@ -420,7 +420,7 @@ class EnzymeMLWriter:
                 baseUnitDef.setScale(scale)
                 baseUnitDef.setMultiplier(multiplier)
 
-    def __addVessel(self, model, vessel_dict: dict[str, Vessel]) -> None:
+    def _addVessel(self, model, vessel_dict: dict[str, Vessel]) -> None:
         """Converts EnzymeMLDocument vessel to SBML.
 
         Args:
@@ -437,7 +437,7 @@ class EnzymeMLWriter:
             compartment.setConstant(vessel.constant)
             compartment.setSpatialDimensions(3)
 
-    def __addProteins(self, model: libsbml.Model, protein_dict: dict[str, Protein]) -> None:
+    def _addProteins(self, model: libsbml.Model, protein_dict: dict[str, Protein]) -> None:
         """Converts EnzymeMLDocument proteins to SBML.
 
         Args:
@@ -480,7 +480,7 @@ class EnzymeMLWriter:
 
             species.appendAnnotation(proteinAnnotation)
 
-    def __addReactants(self, model: libsbml.Model, reactant_dict: dict[str, Reactant]):
+    def _addReactants(self, model: libsbml.Model, reactant_dict: dict[str, Reactant]):
         """Converts EnzymeMLDocument reactants to SBML.
 
         Args:
@@ -522,7 +522,7 @@ class EnzymeMLWriter:
             if reactantAnnotation.getNumChildren() > 0:
                 species.appendAnnotation(reactantAnnotation)
 
-    def __addReactions(self, model: libsbml.Model, reaction_dict: dict[str, EnzymeReaction]):
+    def _addReactions(self, model: libsbml.Model, reaction_dict: dict[str, EnzymeReaction]):
         """Converts EnzymeMLDocument reactions to SBML.
 
         Args:
@@ -647,7 +647,7 @@ class EnzymeMLWriter:
         # Add colum to format annotation
         format_annot.addChild(column)
 
-    def __addData(
+    def _addData(
         self,
         model: libsbml.Model,
         measurement_dict: dict[str, Measurement]
@@ -709,18 +709,20 @@ class EnzymeMLWriter:
             format_annot.addChild(time_column)
 
             # write initConc annotation and prepare raw data
-            data_columns = [time]
+            data_columns = {f"time/{time_unit}": time}
             self.index = 1
-            data_columns += self.writeMeasurementData(
+
+            self.writeMeasurementData(
                 measurement=measurement,
                 measurement_annot=measurement_annot,
-                format_annot=format_annot
+                format_annot=format_annot,
+                data_columns=data_columns
             )
 
             # Create DataFrame to save measurement
             file_name = f'{measurement_id}.csv'
             file_path = f'./data/{file_name}'
-            df = pd.DataFrame(data_columns).T
+            df = pd.DataFrame(data_columns)
 
             if self.path:
                 df_path = os.path.join(self.path, 'data', file_name)
@@ -762,8 +764,9 @@ class EnzymeMLWriter:
         self,
         measurement: Measurement,
         measurement_annot: XMLNode,
-        format_annot: XMLNode
-    ) -> list[list[float]]:
+        format_annot: XMLNode,
+        data_columns: dict[str, list[float]]
+    ) -> None:
         """Writes measurement metadata as columns to the SBML document annotation enzymeml:column.
 
         Args:
@@ -775,13 +778,12 @@ class EnzymeMLWriter:
             list[list[float]]: The time course data from the replicate objects.
         """
 
-        speciesDict = measurement.species_dict
-        data_columns = []
+        species_dict = measurement.species_dict
 
         # Init Conc
         # Extract measurementData objects
-        proteins = speciesDict['proteins']
-        reactants = speciesDict['reactants']
+        proteins = species_dict['proteins']
+        reactants = species_dict['reactants']
 
         # Append initConc data to measurement
         self.appendInitConcData(
@@ -794,12 +796,11 @@ class EnzymeMLWriter:
         )
 
         # Replicates
-        data_columns += self.appendReplicateData(
+        self.appendReplicateData(
             {**proteins, **reactants},
             format_annot=format_annot,
+            data_columns=data_columns
         )
-
-        return data_columns
 
     def appendInitConcData(
         self,
@@ -831,8 +832,9 @@ class EnzymeMLWriter:
     def appendReplicateData(
         self,
         species: dict[str, MeasurementData],
-        format_annot: XMLNode
-    ) -> list[list[float]]:
+        format_annot: XMLNode,
+        data_columns: dict[str, list[float]]
+    ) -> dict[str, list[float]]:
         """Extracts all time course data from the replicate objects and adds them to the the enzymeml:format annotation.
 
         Args:
@@ -842,9 +844,6 @@ class EnzymeMLWriter:
         Returns:
             list[list[float]]: The time course data from the replicate objects.
         """
-
-        # Initialize data columns
-        data_columns = []
 
         # Collect all replicates
         replicates = [
@@ -861,9 +860,13 @@ class EnzymeMLWriter:
             )
 
             # Extract series data
-            data_columns.append(
-                replicate.getData(sep=True)[1]
-            )
+            header_info = "/".join([
+                replicate.replicate_id,
+                replicate.reactant_id,
+                replicate.data_type.value
+            ])
+
+            data_columns[header_info] = replicate.data
 
             self.index += 1
 

@@ -27,7 +27,7 @@ from pyenzyme.enzymeml.core.vessel import Vessel
 from pyenzyme.enzymeml.core.measurement import Measurement
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction, ReactionElement
 from pyenzyme.enzymeml.models.kineticmodel import KineticModel, KineticParameter
-from pyenzyme.enzymeml.core.ontology import EnzymeMLPart, SBOTerm
+from pyenzyme.enzymeml.core.ontology import DataTypes, EnzymeMLPart, SBOTerm
 from pyenzyme.enzymeml.core.abstract_classes import AbstractSpeciesFactory, AbstractSpecies
 
 from libsbml import SBMLReader
@@ -72,7 +72,7 @@ def species_factory_mapping(sbo_term: str) -> AbstractSpeciesFactory:
     return factory_mapping[entity]
 
 
-class EnzymeMLReader():
+class EnzymeMLReader:
 
     def readFromFile(
         self,
@@ -82,7 +82,7 @@ class EnzymeMLReader():
         Reads EnzymeML document to an object layer EnzymeMLDocument class.
 
         Args:
-            String path: Path to .omex container or
+            path (str): Path to .omex container or
                          folder destination for plain .xml
         '''
 
@@ -140,11 +140,11 @@ class EnzymeMLReader():
 
         # fetch reaction
         reaction_dict = self._getReactions(model, enzmldoc)
-        enzmldoc.setReactionDict(reaction_dict)
+        enzmldoc.reaction_dict = reaction_dict
 
         # fetch Measurements
-        measurementDict = self._getData(model)
-        enzmldoc.setMeasurementDict(measurementDict)
+        measurement_dict = self._getData(model, enzmldoc)
+        enzmldoc.measurement_dict = measurement_dict
 
         # fetch added files
         self._getFiles(enzmldoc)
@@ -218,17 +218,17 @@ class EnzymeMLReader():
         for unit in unitdef_list:
 
             # Get infos from the SBML model
-            name = unit.getName()
-            id_ = unit.getId()
-            metaid = unit.getMetaId()
+            name = unit.name
+            id = unit.id
+            meta_id = unit.meta_id
             ontology = "NONE"  # TODO get unit ontology
 
             # Create unit definition
             unitdef = UnitDef(
                 name=name,
-                id=id_,
+                id=id,
                 ontology=ontology,
-                meta_id=metaid
+                meta_id=meta_id
             )
 
             for baseunit in unit.getListOfUnits():
@@ -241,7 +241,7 @@ class EnzymeMLReader():
                 )
 
             # Finally add the unit definition
-            unitDict[id_] = unitdef
+            unitDict[id] = unitdef
 
         return unitDict
 
@@ -387,7 +387,7 @@ class EnzymeMLReader():
             )
 
             # Check for kinetic model
-            if reaction.hasKineticLaw():
+            if reaction.getKineticLaw():
                 # Check if model exists
                 kinetic_law = reaction.getKineticLaw()
                 kinetic_model = self._getKineticModel(kinetic_law, enzmldoc)
@@ -429,7 +429,7 @@ class EnzymeMLReader():
                 # Parse unit ID to Unit string
                 condition_dict['_temperature_unit_id'] = condition.attrib['unit']
                 condition_dict['temperature_unit'] = enzmldoc.getUnitString(
-                    condition_dict['temperature_unit_id']
+                    condition_dict['_temperature_unit_id']
                 )
 
             elif 'ph' in condition.tag:
@@ -516,11 +516,94 @@ class EnzymeMLReader():
             ontology=ontology
         )
 
+    def _getData(self, model: libsbml.Model, enzmldoc: 'EnzymeMLDocument') -> dict[str, Measurement]:
+        """Retrieves all available measurements found in the EnzymeML document.
+
+        Args:
+            model (libsbml.Model): The SBML model from which the measurements are feteched,
+
+        Returns:
+            dict[str, Measurement]: Mapping from measurement ID to the associated object.
+        """
+
+        # Parse EnzymeML:format annotation
+        reactions = model.getListOfReactions()
+        data_annotation = ET.fromstring(reactions.getAnnotationString())[0]
+
+        # Fetch list of files
+        files = self._parseListOfFiles(data_annotation)
+
+        # Fetch formats
+        formats = self._parseListOfFormats(data_annotation)
+
+        # Fetch measurements
+        measurement_dict, measurement_files = self._parseListOfMeasurements(
+            data_annotation
+        )
+
+        # Iterate over measurements and assign replicates
+        for measurement_id, measurement_file in measurement_files.items():
+
+            # Get file content
+            fileInfo = files[measurement_file]
+            file_content = self.archive.extractEntryToString(fileInfo['file'])
+            csvFile = pd.read_csv(
+                StringIO(file_content)
+            )
+
+            # Get format data and extract time column
+            measurement_format = formats[fileInfo['format']]
+            time, time_unit_id = [
+                (
+                    csvFile.iloc[:, int(column['index'])].tolist(),
+                    column['unit']
+                )
+                for column in measurement_format
+                if column['type'] == 'time'
+            ][0]
+
+            # Create replicate objects
+            for format in measurement_format:
+
+                if format['type'] != 'time':
+
+                    # Get time course data
+                    data = csvFile.iloc[:, int(format['index'])].tolist()
+                    reactant_id = format['species']
+                    replicateID = format['replica']
+                    data_type = DataTypes(format['type'])
+                    data_unit_id = format['unit']
+
+                    replicate = Replicate(
+                        replicate_id=replicateID,
+                        reactant_id=reactant_id,
+                        data_type=data_type,
+                        measurement_id=measurement_id,
+                        data_unit=enzmldoc.unit_dict[data_unit_id].name,
+                        time_unit=enzmldoc.unit_dict[time_unit_id].name,
+                        _data_unit_id=data_unit_id,
+                        _time_unit_id=time_unit_id,
+                        data=data,
+                        time=time
+                    )
+
+                    measurement_dict[measurement_id].addReplicates(
+                        replicate
+                    )
+
+        return measurement_dict
+
     @staticmethod
-    def _parseListOfFiles(dataAnnot):
-        # _getReplicates helper function
-        # reads file anntations to dict
-        fileAnnot = dataAnnot[1]
+    def _parseListOfFiles(data_annotation: ET.Element) -> dict[str, dict[str, str]]:
+        """Extracts the list of files that are present in the annotation enzymeml:files.
+
+        Args:
+            data_annotation (ET.Element): ElementTree object containing the enzymeml:files annotation.
+
+        Returns:
+            dict[str, dict[str, str]]: Dictionary of all files present in the annotation.
+        """
+
         return {
             file.attrib['id']:
             {
@@ -528,157 +611,94 @@ class EnzymeMLReader():
                 'format': file.attrib['format'],
                 'id': file.attrib['id']
 
-            } for file in fileAnnot
+            } for file in data_annotation[1]
         }
 
     @ staticmethod
-    def _parseListOfFormats(dataAnnot):
-        # _getReplicates helper function
-        # reads format anntations to dict
-        formatAnnot = dataAnnot[0]
-        formats = {}
+    def _parseListOfFormats(data_annotation: ET.Element) -> dict[str, list[dict]]:
+        """Extracts the list of formats that areb present in the annotation enzymeml:formats.
 
-        for format in formatAnnot:
-            formatID = format.attrib['id']
-            format = [
+        Args:
+            data_annotation (ET.Element): ElementTree object containing the enzymeml:files annotation.
+
+        Returns:
+            dict[str, list[dict]]: Dictionary of all the formats present in the annotation.
+        """
+
+        return {
+            format.attrib['id']: [
                 column.attrib
                 for column in format
             ]
+            for format in data_annotation[0]
+        }
 
-            formats[formatID] = format
+    def _parseListOfMeasurements(self, data_annotation: ET.Element) -> tuple[dict[str, Measurement], dict]:
+        """Extracts teh list of measurements that are present in the annotation enzymeml:measurements.
 
-        return formats
+        Args:
+            data_annotation (ET.Element): ElementTree object containing the enzymeml:measurements annotation.
 
-    def _parseListOfMeasurements(self, dataAnnot):
-        # _getReplicates helper function
-        # reads measurement anntations to
-        # tuple list
-        listOfMeasurements = dataAnnot[2]
-        measurementFiles = {
+        Returns:
+            tuple[dict[str, dict], dict[str, Measurement]]: Two dictionaries returning the measurement objects and files.
+        """
+
+        measurements = data_annotation[2]
+        measurement_files = {
             measurement.attrib['id']:
             measurement.attrib['file']
-            for measurement in listOfMeasurements
+            for measurement in measurements
         }
-        measurementDict = {
+        measurement_dict = {
             measurement.attrib['id']:
             self._parseMeasurement(measurement)
-            for measurement in listOfMeasurements
+            for measurement in measurements
         }
 
-        return measurementDict, measurementFiles
+        return (measurement_dict, measurement_files)
 
     @ staticmethod
-    def _parseMeasurement(measurement):
+    def _parseMeasurement(measurement: ET.Element) -> Measurement:
         """Extracts individual initial concentrations of a measurement.
 
         Args:
-            measurement (XMLNode): Measurement XML information
+            measurement (ET.Element): Measurement XML information
+
+        Returns:
+            Measurement: Initialized measurement object.
         """
 
         # initialize Measurement object
-        measurementObject = Measurement(
+        measurement_object = Measurement(
             name=measurement.attrib['name']
         )
 
-        measurementObject.setId(
-            measurement.attrib['id']
-        )
+        measurement_object.id = measurement.attrib['id']
 
         for initConc in measurement:
             value = float(initConc.attrib['value'])
             unit = initConc.attrib['unit']
 
-            reactantID = None
-            proteinID = None
+            reactant_id = None
+            protein_id = None
 
             if 'reactant' in initConc.attrib.keys():
-                reactantID = initConc.attrib['reactant']
+                reactant_id = initConc.attrib['reactant']
             elif 'protein' in initConc.attrib.keys():
-                proteinID = initConc.attrib['protein']
+                protein_id = initConc.attrib['protein']
             else:
                 raise KeyError(
                     "Neither reactant or protein ID defined."
                 )
 
-            measurementObject.addData(
-                initConc=float(value),
+            measurement_object.addData(
+                init_conc=float(value),
                 unit=unit,
-                reactantID=reactantID,
-                proteinID=proteinID,
+                reactant_id=reactant_id,
+                protein_id=protein_id,
             )
 
-        return measurementObject
-
-    def _getData(self, model):
-
-        # Parse EnzymeML:format annotation
-        reactions = model.getListOfReactions()
-        dataAnnot = ET.fromstring(reactions.getAnnotationString())[0]
-
-        # Fetch list of files
-        files = self._parseListOfFiles(dataAnnot)
-
-        # Fetch formats
-        formats = self._parseListOfFormats(dataAnnot)
-
-        # Fetch measurements
-        measurementDict, measurementFiles = self._parseListOfMeasurements(
-            dataAnnot
-        )
-
-        # Initialize replicates dictionary
-        replicates = {}
-
-        # Iterate over measurements and assign replicates
-        for measurementID, measurementFile in measurementFiles.items():
-
-            # Get file content
-            fileInfo = files[measurementFile]
-            fileContent = self.archive.extractEntryToString(fileInfo['file'])
-            csvFile = pd.read_csv(
-                StringIO(fileContent),
-                header=None
-            )
-
-            # Get format data and extract time column
-            measurementFormat = formats[fileInfo['format']]
-            timeValues, timeUnitID = [
-                (
-                    csvFile.iloc[:, int(column['index'])],
-                    column['unit']
-                )
-                for column in measurementFormat
-                if column['type'] == 'time'
-            ][0]
-
-            # Create replicate objects
-            for format in measurementFormat:
-
-                if format['type'] != 'time':
-
-                    # Get time course data
-                    replicateValues = csvFile.iloc[:, int(format['index'])]
-                    replicateReactant = format['species']
-                    replicateID = format['replica']
-                    replicateType = format['type']
-                    replicateUnitID = format['unit']
-
-                    replicate = Replicate(
-                        replica=replicateID,
-                        reactant=replicateReactant,
-                        type_=replicateType,
-                        measurement=measurementID,
-                        data_unit=replicateUnitID,
-                        time_unit=timeUnitID,
-                        data=replicateValues.values.tolist(),
-                        time=timeValues
-                    )
-
-                    measurementDict[measurementID].addReplicates(
-                        replicate
-                    )
-
-        return measurementDict
+        return measurement_object
 
     def _getFiles(self, enzmldoc):
         """Extracts all added files fro the archive.
