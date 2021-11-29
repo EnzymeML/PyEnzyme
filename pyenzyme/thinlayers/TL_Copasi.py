@@ -10,8 +10,11 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pyenzyme.enzymeml.tools import EnzymeMLReader, EnzymeMLWriter
+from typing import Union
+
+from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core import Replicate
+from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
 from pyenzyme.enzymeml.models import MichaelisMenten
 import os
 
@@ -23,25 +26,25 @@ class ThinLayerCopasi(object):
 
     def modelEnzymeML(
         self,
-        reaction_id,
-        reactant,
-        path,
-        outdir=None
+        reaction_id: str,
+        protein_id: str,
+        reactants: list[str],
+        path: str,
+        outdir: str = None
     ):
-        '''
-        ThinLayer interface from an .omex EnzymeML container
-        to COPASI comatible .cps fiel format.
+        """ThinLayer interface from an OMEX EnzymeML container to COPASI compatible CPS file format.
 
         Args:
-            String path: Path to .omex EnzymeML file
-            String outdir: Path to store .cps COPASI file
-            String reaction: Reaction ID to extract data from
-            String reactants: Single or multiple IDs for desired reactant(s)
-        '''
+            reaction_id (str): Measurement ID from which the data is used for modeling.
+            protein_id (str): The ID of the protein that is catalysing the reaction.
+            reactants (list[str]): The IDs of the modeled reactants.
+            path (str): Path to the OMEX EnzymeML file.
+            outdir (str, optional): Path to store the CPS COPASI file. Defaults to None.
+        """
 
-        # Save JSON in variable
+        # Save path in variable
         path = os.path.normpath(path)
-        enzmldoc = EnzymeMLReader().readFromFile(path)
+        enzmldoc = EnzymeMLDocument.fromFile(path)
 
         # store files in the output dir unless not specified (in that case use
         # the directory from the example)
@@ -49,45 +52,45 @@ class ThinLayerCopasi(object):
             outdir = os.path.dirname(path)
 
         # Create directory for modeled data
-        dirpath = os.path.join(
-            outdir,
-            f"Modeled_{reaction_id}_{reactant}"
-        )
-
-        try:
-            os.mkdir(dirpath)
-        except FileExistsError:
-            # Modeled dir already there
-            pass
+        dirpath = os.path.join(outdir, f"Modeled_{reaction_id}")
+        os.makedirs(dirpath, exist_ok=True)
 
         # Estimate parameters
+        # TODO estimate kcat rather than vmax
         km_val, km_unit, vmax_val, vmax_unit = self.importEnzymeML(
             reaction_id,
-            reactant,
+            reactants,
             dirpath,
             enzmldoc
         )
 
+        # TODO generalize to multiple reactants/proteins
+        # ? Specific classmethods maybe to streamline known models?
         menten_model = MichaelisMenten(
-            vmax_val,
-            vmax_unit,
-            km_val,
-            km_unit,
-            reactant,
-            enzmldoc
+            kcat_val=vmax_val,
+            kcat_unit=vmax_unit,
+            km_val=km_val,
+            km_unit=km_unit,
+            substrate_id=reactants[0],
+            protein_id=protein_id,
+            enzmldoc=enzmldoc
         )
 
         # Write model to reaction
-        enzmldoc.getReactionDict()[reaction_id].setModel(menten_model)
+        enzmldoc.reaction_dict[reaction_id].model = menten_model
 
         enzmldoc.toFile(dirpath)
 
-        print(km_val, km_unit, vmax_val, vmax_unit)
-
-    def importEnzymeML(self, reaction_id, reactants, dirpath, enzmldoc):
+    def importEnzymeML(
+        self,
+        reaction_id: str,
+        reactants: Union[list[str], str],
+        dirpath,
+        enzmldoc
+    ) -> tuple[float, str, float, str]:
         '''
         ThinLayer interface from an .omex EnzymeML container
-        to COPASI comatible .cps fiel format.
+        to COPASI comatible .cps file format.
 
         Args:
             String path: Path to .omex EnzymeML file
@@ -96,7 +99,7 @@ class ThinLayerCopasi(object):
             String reactants: Single or multiple IDs for desired reactant(s)
         '''
 
-        if type(reactants) == str:
+        if isinstance(reactants, str):
             reactants = [reactants]
 
         # Get reaction and replicates
@@ -108,7 +111,7 @@ class ThinLayerCopasi(object):
 
         # initialize COPASI data model
         dm = COPASI.CRootContainer.addDatamodel()
-        sbml = EnzymeMLWriter().toXMLString(enzmldoc)
+        sbml = enzmldoc.toXMLString()
         dm.importSBMLFromString(sbml)
 
         # COPASI
@@ -159,7 +162,7 @@ class ThinLayerCopasi(object):
                     '{0} at {1:.2f}'.format(metab.getObjectName(), concVal)
                 )
                 exp.setFirstRow(1)
-                exp.setLastRow(data.shape[0]+1)
+                exp.setLastRow(data.shape[0] + 1)
                 exp.setHeaderRow(1)
                 exp.setFileName(tsvpath)
                 exp.setExperimentType(COPASI.CTaskEnum.Task_timeCourse)
@@ -202,34 +205,43 @@ class ThinLayerCopasi(object):
         COPASI.COutputAssistant.createDefaultOutput(911, task, dm)
 
         # Gather Menten parameters
-        Km_value, vmax_value = self.run_parameter_estimation(dm)
-        Km_unit = enzmldoc.getUnitDict()[concUnit].getName()
+        km_value, vmax_value = self.run_parameter_estimation(dm)
+        km_unit = enzmldoc.getUnitDict()[concUnit].getName()
         timeUnit = enzmldoc.getUnitDict()[timeUnit].getName()
 
-        if "M" in Km_unit:
-            vmax_unit = Km_unit + ' / ' + timeUnit
+        if "M" in km_unit:
+            vmax_unit = km_unit + ' / ' + timeUnit
         else:
-            split_u = Km_unit.split('/')
+            split_u = km_unit.split('/')
             vmax_unit = split_u[0] + ' / ' + f'( {split_u[1]} * {timeUnit} )'
 
-        return Km_value, Km_unit, vmax_value, vmax_unit
+        return (km_value, km_unit, vmax_value, vmax_unit)
 
-    def unifyUnits(self, reactant, reaction, enzmldoc, kind):
+    def unifyUnits(
+        self,
+        reactant: str,
+        reaction: EnzymeReaction,
+        enzmldoc: 'EnzymeMLDocument',
+        kind
+    ):
 
         # get unit of specified reactant
-        unit = enzmldoc.getReactant(reactant).getSubstanceUnits()
-        unit = enzmldoc.getUnitDict()[unit]
-        units = unit.getUnits()
-        scale = [tup[2] for tup in units if tup[0] == kind][0]
+        unit = enzmldoc.getReactant(reactant)._unit_id
+        unit = enzmldoc.unit_dict[unit]
+        units = unit.units
+        scale = next(filter(
+            lambda base_unit: base_unit.kind == kind,
+            units
+        ))
 
         # iterate through elements
-        all_elems = [
-            reaction.getEducts(),
-            reaction.getProducts(),
-            reaction.getModifiers()
+        reaction_elements = [
+            *reaction.educts,
+            *reaction.products,
+            *reaction.modifiers
         ]
 
-        for i, elem in enumerate(all_elems):
+        for index, reaction_element in enumerate(reaction_elements):
             for tup in elem:
 
                 # get exponent and scale to calculate
@@ -248,7 +260,7 @@ class ThinLayerCopasi(object):
                 exponent_r = [tup[1] for tup in units_r if tup[0] == kind][0]
                 scale_r = [tup[2] for tup in units_r if tup[0] == kind][0]
 
-                nu_scale = exponent_r*(scale_r - scale)
+                nu_scale = exponent_r * (scale_r - scale)
 
                 if nu_scale != 0:
 
@@ -259,8 +271,8 @@ class ThinLayerCopasi(object):
                             unit.getId()
                         )
                         enzmldoc.getReactant(tup[0]).setInitConc(
-                            enzmldoc.getReactant(tup[0]).getInitConc()
-                            * (10**nu_scale)
+                            enzmldoc.getReactant(
+                                tup[0]).getInitConc() * (10**nu_scale)
                         )
 
                     elif tup[0][0] == 'p':
@@ -270,8 +282,8 @@ class ThinLayerCopasi(object):
                         )
 
                         enzmldoc.getProtein(tup[0]).setInitConc(
-                            enzmldoc.getProtein(tup[0]).getInitConc()
-                            * (10**nu_scale)
+                            enzmldoc.getProtein(
+                                tup[0]).getInitConc() * (10**nu_scale)
                         )
 
                     # Reset replicate concentrations
@@ -282,7 +294,7 @@ class ThinLayerCopasi(object):
                             type_=repl.getType(),
                             data_unit=unit.getId(),
                             time_unit=repl.getTimeUnit(),
-                            init_conc=repl.getInitConc()*(10**nu_scale),
+                            init_conc=repl.getInitConc() * (10**nu_scale),
                             measurement=repl.getMeasurement()
                         )
 
@@ -292,7 +304,7 @@ class ThinLayerCopasi(object):
                     # Reset initial concentrations
                     nu_inits = list()
                     for initValue, initUnit in tup[4]:
-                        nu_conc = initValue*(10**nu_scale)
+                        nu_conc = initValue * (10**nu_scale)
                         nu_inits.append((nu_conc, initUnit))
                         enzmldoc.addConc((nu_conc, initUnit))
 
