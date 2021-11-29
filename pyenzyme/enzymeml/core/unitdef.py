@@ -68,7 +68,8 @@ class UnitDef(EnzymeMLBase):
         required=True
     )
 
-    id: str = Field(
+    id: Optional[str] = Field(
+        default=None,
         description="Interal Identifier of the SI unit.",
         required=True
     )
@@ -90,7 +91,7 @@ class UnitDef(EnzymeMLBase):
         required=False
     )
 
-    # Validators
+    # ! Validators
     @validator("id")
     def set_meta_id(cls, id: Optional[str], values: dict):
         """Sets the meta ID when an ID is provided"""
@@ -112,7 +113,7 @@ class UnitDef(EnzymeMLBase):
         return None
 
     @validate_arguments
-    def addBaseUnit(self, kind: str, exponent: float, scale: float, multiplier: float) -> None:
+    def addBaseUnit(self, kind: str, exponent: float, scale: int, multiplier: float) -> None:
         """Adds a base unit to the units element and sort the units.
 
         Args:
@@ -133,6 +134,86 @@ class UnitDef(EnzymeMLBase):
             key=lambda unit: unit.kind
         )
 
+    # ! Utilities
+    def calculateTransformValue(self, kind: str, scale: int):
+        """Calculates the value that is needed to re-scale the given unit to the desired scale.
+
+        Args:
+            kind (str): The kind of unit that is used as a reference.
+            scale (int): The desired scale.
+
+        Raises:
+            ValueError: Raised when the given unit kind is not part of the unitdef.
+
+        Returns:
+            float: The value that is needed to re-scale the given unit to the desired scale.
+        """
+
+        for base_unit in self.units:
+            if base_unit.kind == kind:
+
+                # correction factor used for the case of scale=1
+                coorrection_factor = -1 if base_unit.scale == 1 else 0
+
+                return 10 ** (
+                    base_unit.exponent * (
+                        base_unit.scale - scale + coorrection_factor
+                    )
+                )
+
+        raise ValueError(
+            f"Unit kind of {kind} is not part of the unit definition"
+        )
+
+    def _getNewName(self) -> str:
+        """Internal function used to derive a units new name. Will be assigned using enzmldoc._convertTounitDef.
+
+        Returns:
+            str: The new name of the unit definition.
+        """
+
+        # Mapping for abbreviations
+        kind_mapping = {
+            "mole": "mole",
+            "second": "s",
+            "liter": "l",
+            "litre": "l",
+        }
+
+        prefix_mapping = {
+            -15: "f",
+            -12: "p",
+            -9: "n",
+            -6: "u",
+            -3: "m",
+            -2: "c",
+            -1: "d",
+            1: "",
+            3: "k"
+        }
+
+        nominator = list(filter(
+            lambda base_unit: base_unit.exponent > 0,
+            self.units
+        ))
+
+        denominator = list(filter(
+            lambda base_unit: base_unit.exponent < 0,
+            self.units
+        ))
+
+        # Create new unit name
+        def constructName(base_unit: BaseUnit) -> str:
+            return f"{prefix_mapping[base_unit.scale]}{kind_mapping[base_unit.kind]}"
+
+        nominator_string = " ".join([constructName(base_unit)
+                                     for base_unit in nominator])
+        denominator_string = " ".join([constructName(base_unit)
+                                       for base_unit in denominator])
+
+        return " / ".join([nominator_string, denominator_string])
+
+    # ! Getters
     @deprecated_getter("units")
     def getUnits(self):
         return self.units
@@ -153,10 +234,7 @@ class UnitDef(EnzymeMLBase):
     def getOntology(self):
         return self.ontology
 
-    @deprecated_getter("units")
     def getFootprint(self):
-        return self.units
-
-
-if __name__ == "__main__":
-    unitdef = UnitDef(name="lol", id="u0")
+        return [
+            base_unit.dict() for base_unit in self.units
+        ]
