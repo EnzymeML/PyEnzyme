@@ -12,13 +12,12 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 
 import os
 import re
-import io
 import json
+import pandas as pd
 
 from pydantic import Field, validator, PositiveInt, validate_arguments
 from typing import TYPE_CHECKING, Optional, Union
 from dataclasses import dataclass
-from pathlib import Path
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
@@ -37,10 +36,10 @@ from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
 from pyenzyme.enzymeml.databases.dataverse import toDataverseJSON
 from pyenzyme.enzymeml.databases.dataverse import uploadToDataverse
 
-import pyenzyme.enzymeml.tools.enzymemlreader as reader
+import pyenzyme.enzymeml.tools as tools
 
 from pyenzyme.enzymeml.core.ontology import EnzymeMLPart, SBOTerm
-from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError, IdentifierNameError
+from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
     deprecated_getter
@@ -192,9 +191,11 @@ class EnzymeMLDocument(EnzymeMLBase):
             EnzymeMLDocument: The intialized EnzymeML document.
         """
 
-        return reader.EnzymeMLReader().readFromFile(path)
+        from pyenzyme.enzymeml.tools.enzymemlreader import EnzymeMLReader
 
-    def toFile(self, path: Path, verbose: PositiveInt = 1):
+        return EnzymeMLReader().readFromFile(path)
+
+    def toFile(self, path: str, verbose: PositiveInt = 1):
         """Saves an EnzymeML document to an OMEX container at the specified path
 
         Args:
@@ -244,6 +245,45 @@ class EnzymeMLDocument(EnzymeMLBase):
         return json.dumps(toDataverseJSON(self), indent=4)
 
     # ! Utility methods
+    def exportMeasurementData(
+        self,
+        measurement_ids: Union[str, list[str]] = "all",
+        species_ids: Union[str, list[str]] = "all"
+    ) -> dict[str, dict[str, Union[tuple, pd.DataFrame]]]:
+        """Exports either all replicates present in any measurement or the ones specified via 'species_ids' or 'measurement_ids'
+
+        Args:
+            measurement_ids (Union[str, list[str]], optional): The measurements from which to export the data. Defaults to "all".
+            species_ids (Union[str, list[str]], optional): The species from which to export the data. Defaults to "all".
+
+        Returns:
+            dict[str, dict[str, Union[tuple, pd.DataFrame]]]: The data corresponding to the specified options. The dictionary will still distinguish between meassuremnts.
+        """
+
+        if isinstance(measurement_ids, str):
+            measurement_ids = [measurement_ids]
+        if isinstance(species_ids, str):
+            species_ids = [species_ids]
+
+        # Initialize return list
+        replicate_data = {}
+
+        for measurement_id, measurement in self.measurement_dict.items():
+            if measurement_id in measurement_ids or measurement_ids == ["all"]:
+                measurement_data = measurement.exportData(
+                    species_ids=species_ids
+                )
+
+                measurement_data = {
+                    **measurement_data["proteins"],
+                    **measurement_data["reactants"]
+                }
+
+                if measurement_data["data"] is not None:
+                    replicate_data[measurement_id] = measurement_data
+
+        return replicate_data
+
     @ staticmethod
     def _generateID(prefix: str, dictionary: dict) -> str:
         """Generates IDs complying to the [s|p|r|m|u|c]?[digit]+ schema.
@@ -341,7 +381,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         return f"\n{table.draw()}\n"
 
     # ! Add methods
-    @validate_arguments
+    @ validate_arguments
     def addVessel(self, vessel: Vessel, use_parser: bool = True) -> str:
         """Adds a Vessel object to the EnzymeML document.
 
@@ -360,7 +400,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             use_parser=use_parser
         )
 
-    @validate_arguments
+    @ validate_arguments
     def addReactant(self, reactant: Reactant, use_parser: bool = True) -> str:
         """Adds a Reactant object to the EnzymeML document.
 
@@ -379,7 +419,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             use_parser=use_parser,
         )
 
-    @validate_arguments
+    @ validate_arguments
     def addProtein(self, protein: Protein, use_parser: bool = True) -> str:
         """Adds a Protein object to the EnzymeML document.
 
@@ -517,7 +557,7 @@ class EnzymeMLDocument(EnzymeMLBase):
                     enzymeml_part="KineticModel equation"
                 )
 
-    @staticmethod
+    @ staticmethod
     def _convert_kinetic_model_units(parameters: list[KineticParameter], enzmldoc) -> None:
         """Converts given unit strings to unit IDs and adds them to the model.
 
@@ -527,8 +567,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         """
 
         for parameter in parameters:
-            unit_id = enzmldoc._convertToUnitDef(parameter.unit)
-            parameter.unit_id = unit_id
+            parameter._unit_id = enzmldoc._convertToUnitDef(parameter.unit)
 
     def addFile(
         self,
@@ -568,7 +607,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return file_id
 
-    @validate_arguments
+    @ validate_arguments
     def addMeasurement(self, measurement: Measurement) -> str:
         """Adds a measurement to an EnzymeMLDocument and validates consistency with already defined elements of the document.
 
@@ -713,10 +752,13 @@ class EnzymeMLDocument(EnzymeMLBase):
         Returns:
             str: Unique identifier of the UnitDef.
         """
+
         if unit is None:
             raise TypeError("No unit given.")
         elif unit in self.unit_dict.keys():
             return unit
+
+        print(UnitCreator().getUnit(unit, self))
 
         return UnitCreator().getUnit(unit, self)
 
@@ -882,13 +924,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         dictionary: dict,
         element_type: str,
         by_id: bool = True
-    ) -> Union[
-            AbstractSpecies,
-            EnzymeReaction,
-            Measurement,
-            UnitDef,
-            dict
-    ]:
+    ):
         """Helper function to retrieve any kind of species from the EnzymeML document.
 
         Args:
@@ -963,66 +999,66 @@ class EnzymeMLDocument(EnzymeMLBase):
         """
         return list(dictionary.values())
 
-    @deprecated_getter("doi")
+    @ deprecated_getter("doi")
     def getDoi(self) -> Optional[str]:
         return self.doi
 
-    @deprecated_getter("pubmedid")
+    @ deprecated_getter("pubmedid")
     def getPubmedID(self) -> Optional[str]:
         return self.pubmedid
 
-    @deprecated_getter("url")
+    @ deprecated_getter("url")
     def getUrl(self) -> Optional[str]:
         return self.url
 
-    @deprecated_getter("created")
+    @ deprecated_getter("created")
     def get_created(self):
         return self.created
 
-    @deprecated_getter("modified")
+    @ deprecated_getter("modified")
     def getModified(self):
         return self.modified
 
-    @deprecated_getter("creators")
+    @ deprecated_getter("creators")
     def getCreator(self):
         return self.creator_dict
 
-    @deprecated_getter("vessel")
+    @ deprecated_getter("vessel")
     def getVessel(self):
         return self.vessel
 
-    @deprecated_getter("name")
+    @ deprecated_getter("name")
     def getName(self):
         return self.name
 
-    @deprecated_getter("level")
+    @ deprecated_getter("level")
     def getLevel(self):
         return self.level
 
-    @deprecated_getter("version")
+    @ deprecated_getter("version")
     def getVersion(self):
         return self.version
 
-    @deprecated_getter("protein_dict")
+    @ deprecated_getter("protein_dict")
     def getProteinDict(self):
         return self.protein_dict
 
-    @deprecated_getter("reactant_dict")
+    @ deprecated_getter("reactant_dict")
     def getReactantDict(self):
         return self.reactant_dict
 
-    @deprecated_getter("reaction_dict")
+    @ deprecated_getter("reaction_dict")
     def getReactionDict(self):
         return self.reaction_dict
 
-    @deprecated_getter("measurement_dict")
+    @ deprecated_getter("measurement_dict")
     def getMeasurementDict(self):
         return self.measurement_dict
 
-    @deprecated_getter("unit_dict")
+    @ deprecated_getter("unit_dict")
     def getUnitDict(self):
         return self.unit_dict
 
-    @deprecated_getter("file_dict")
+    @ deprecated_getter("file_dict")
     def getFileDict(self):
         return self.file_dict

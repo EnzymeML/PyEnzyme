@@ -13,7 +13,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 import numpy as np
 import pandas as pd
 
-from typing import Optional, Any, TYPE_CHECKING
+from typing import Optional, Any, TYPE_CHECKING, Union
 from dataclasses import dataclass
 from pydantic import PositiveFloat, validate_arguments, Field
 
@@ -82,20 +82,23 @@ class Measurement(EnzymeMLBase):
         required=False
     )
 
-    # Utility methods
-    def exportData(self) -> dict[str, dict[str, Any]]:
+    # ! Utility methods
+    def exportData(self, species_ids: Union[str, list[str]] = "all") -> dict[str, dict[str, Union[tuple, pd.DataFrame]]]:
         """Returns data stored in the measurement object as DataFrames nested in dictionaries. These are sorted hierarchially by reactions where each holds a DataFrame each for proteins and reactants.
 
         Returns:
-            measurements (dict): Follows the hierarchy Reactions > Proteins/Reactants > { initConcs, data }
+            measurements (dict): Follows the hierarchy Reactions > Proteins/Reactants > { initial_concentration, data }
+            species_ids (Union[str, list[str]]): List of species IDs to extract data from. Defaults to 'all'.
         """
 
         # Combine Replicate objects for each reaction
-        proteins = self.__combineReplicates(
+        proteins = self._combineReplicates(
             measurement_species=self.species_dict['proteins'],
+            species_ids=species_ids
         )
-        reactants = self.__combineReplicates(
+        reactants = self._combineReplicates(
             measurement_species=self.species_dict['reactants'],
+            species_ids=species_ids
         )
 
         return {
@@ -103,42 +106,51 @@ class Measurement(EnzymeMLBase):
             "reactants": reactants
         }
 
-    def __combineReplicates(
+    def _combineReplicates(
         self,
-        measurement_species: dict[str, MeasurementData]
-    ) -> dict[str, Any]:
+        measurement_species: dict[str, MeasurementData],
+        species_ids: Union[str, list[str]] = "all"
+    ) -> dict[str, Union[tuple, pd.DataFrame]]:
+        """Combines replicates of a certain species to a dataframe.
 
-        # Initialize columns and headers
-        columns = [self.global_time]
-        header = [f"time/{self.global_time_unit}"]
-        initConcs = {}
+        Args:
+            measurement_species (dict[str, MeasurementData]): The species_dict from the measurement.
+
+        Returns:
+            dict[str, Any]: The associated replicat and initconc data.
+        """
+
+        if isinstance(species_ids, str):
+            species_ids = [species_ids]
+
+        columns = {f"time/{self.global_time_unit}": self.global_time}
+        initial_concentration = {}
 
         # Iterate over measurementData to fill columns
-        for speciesID, data in measurement_species.items():
+        for species_id, data in measurement_species.items():
 
-            # Fetch replicate data
-            for replicate in data.getReplicates():
+            if species_id in species_ids or species_ids == ["all"]:
 
-                columns.append(
-                    replicate.getData(sep=True)[1]
-                )
+                # Fetch replicate data
+                for replicate in data.getReplicates():
 
-                header.append(
-                    f"{replicate.getReplica()}/{speciesID}/{replicate.getDataUnit()}"
-                )
+                    header = f"{replicate.getReplica()}/{species_id}/{replicate.getDataUnit()}"
+                    columns[header] = replicate.data
 
-            # Fetch initial concentration
-            initConcs[speciesID] = (data.getInitConc(), data.getUnit())
+                    # Fetch initial concentration
+                    initial_concentration[species_id] = (
+                        data.init_conc, data._unit_id
+                    )
 
         return {
-            "data": pd.DataFrame(np.array(columns).T, columns=header)
+            "data": pd.DataFrame(columns)
             if len(columns) > 1
             else None,
-            "initConc": initConcs,
+            "initConc": initial_concentration,
         }
 
     @validate_arguments
-    def addReplicates(self, replicates: list[Replicate]) -> None:
+    def addReplicates(self, replicates: Union[list[Replicate], Replicate]) -> None:
         """Adds a replicate to the corresponding measurementData object. This method is meant to be called if the measurement metadata of a reaction/species has already been done and replicate data has to be added afterwards. If not, use addData instead to introduce the species metadata.
 
         Args:
@@ -152,13 +164,13 @@ class Measurement(EnzymeMLBase):
         for replicate in replicates:
 
             # Check for the species type
-            speciesID = replicate.getReactant()
-            speciesType = "reactants" if speciesID[0] == "s" else "proteins"
+            species_id = replicate.reactant_id
+            speciesType = "reactants" if species_id[0] == "s" else "proteins"
             speciesData = self.species_dict[speciesType]
 
             try:
 
-                data = speciesData[speciesID]
+                data = speciesData[species_id]
                 data.addReplicate(replicate)
 
                 if len(self.global_time) == 0:
@@ -169,7 +181,7 @@ class Measurement(EnzymeMLBase):
 
             except KeyError:
                 raise KeyError(
-                    f"{speciesType[0:-1]} {speciesID} is not part of the measurement yet. If a {speciesType[0:-1]} hasnt been yet defined in a measurement object, use the addData method to define metadata first-hand. You can add the replicates in the same function call then."
+                    f"{speciesType[0:-1]} {species_id} is not part of the measurement yet. If a {speciesType[0:-1]} hasnt been yet defined in a measurement object, use the addData method to define metadata first-hand. You can add the replicates in the same function call then."
                 )
 
     @validate_arguments
@@ -190,7 +202,7 @@ class Measurement(EnzymeMLBase):
             replicates (list<Replicate>, optional): List of actual time-coiurse data in Replicate objects. Defaults to None.
         """
 
-        self.__appendReactantData(
+        self._appendReactantData(
             reactant_id=reactant_id,
             protein_id=protein_id,
             init_conc=init_conc,
@@ -198,7 +210,7 @@ class Measurement(EnzymeMLBase):
             replicates=replicates
         )
 
-    def __appendReactantData(
+    def _appendReactantData(
         self,
         reactant_id: Optional[str],
         protein_id: Optional[str],
@@ -238,28 +250,37 @@ class Measurement(EnzymeMLBase):
         for measData in self.species_dict['reactants'].values():
             measData.measurement_id = self.id
 
+    def unifyUnits(self, kind: str, scale: int, enzmldoc) -> None:
+
+        for measurement_data in {**self.getProteins(), **self.getReactants()}.values():
+            measurement_data.unifyUnits(
+                kind=kind, scale=scale, enzmldoc=enzmldoc
+            )
+
+    # ! Getters
+
     @ validate_arguments
-    def getReactant(self, reactantID: str) -> MeasurementData:
-        """Returns a single MeasurementData object for the given reactantID.
+    def getReactant(self, reactant_id: str) -> MeasurementData:
+        """Returns a single MeasurementData object for the given reactant_id.
 
         Args:
-            reactantID (String): Unqiue identifier of the reactant
+            reactant_id (String): Unqiue identifier of the reactant
 
         Returns:
             MeasurementData: Object representing the data and initial concentration
         """
-        return self.__getSpecies(reactantID)
+        return self._getSpecies(reactant_id)
 
-    def getProtein(self, proteinID: str) -> MeasurementData:
-        """Returns a single MeasurementData object for the given proteinID.
+    def getProtein(self, protein_id: str) -> MeasurementData:
+        """Returns a single MeasurementData object for the given protein_id.
 
         Args:
-            reactantID (String): Unqiue identifier of the protein
+            protein_id (String): Unqiue identifier of the protein
 
         Returns:
             MeasurementData: Object representing the data and initial concentration
         """
-        return self.__getSpecies(proteinID)
+        return self._getSpecies(protein_id)
 
     def getReactants(self) -> dict[str, MeasurementData]:
         """Returns a list of all participating reactants in the measurement.
@@ -278,7 +299,7 @@ class Measurement(EnzymeMLBase):
         return self.species_dict["proteins"]
 
     @ validate_arguments
-    def __getSpecies(self, species_id: str) -> MeasurementData:
+    def _getSpecies(self, species_id: str) -> MeasurementData:
         all_species = {
             **self.species_dict["proteins"],
             **self.species_dict["reactants"]

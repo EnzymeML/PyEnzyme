@@ -19,10 +19,12 @@ from pydantic import (
     PrivateAttr
 )
 from dataclasses import dataclass
+from copy import deepcopy
 from typing import Optional, TYPE_CHECKING
 
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.exceptions import IdentifierError
+from pyenzyme.enzymeml.core.unitdef import UnitDef
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
     deprecated_getter
@@ -71,6 +73,8 @@ class MeasurementData(BaseModel):
     # * Private
     _unit_id: Optional[str] = PrivateAttr(default=None)
 
+    # ! Validators
+
     @validator("protein_id")
     def check_id_occurences(cls, protein_id: str, values: dict):
         reactant_id = values.get("reactant_id")
@@ -86,6 +90,64 @@ class MeasurementData(BaseModel):
             )
 
         return protein_id
+
+    # ! Utilities
+    def unifyUnits(self, kind: str, scale: int, enzmldoc) -> None:
+        """Rescales all replicates data_unit to match the desired scale.
+
+        Args:
+            replicate (Replicate): Replicate object containing time course data.
+            kind (str): The kind of unit that will be rescaled.
+            scale (int): The scale to whih the data will be transformed.
+            enzmldoc ([type]): The EnzymeML document to which the new unit will be added.
+        """
+
+        for replicate in self.replicates:
+            unit = self._rescaleReplicateUnits(
+                replicate=replicate,
+                kind=kind,
+                scale=scale,
+                enzmldoc=enzmldoc
+            )
+
+    def _rescaleReplicateUnits(self, replicate: Replicate, kind: str, scale: int, enzmldoc) -> str:
+        """Rescales a replicates data_unit to match the desired scale.
+
+        Args:
+            replicate (Replicate): Replicate object containing time course data.
+            kind (str): The kind of unit that will be rescaled.
+            scale (int): The scale to whih the data will be transformed.
+            enzmldoc ([type]): The EnzymeML document to which the new unit will be added.
+        """
+
+        data_unit_id = replicate._data_unit_id
+        unitdef: UnitDef = enzmldoc.unit_dict[data_unit_id]
+
+        # Calculate the scale to transform the unit
+        transform_value = unitdef.calculateTransformValue(
+            kind=kind, scale=scale
+        )
+
+        # Re-scale and assign the data of the replicate
+        replicate.data = [
+            data_point * transform_value
+            for data_point in replicate.data
+        ]
+
+        # Create a new unit that matches the new scale
+        new_unitdef = unitdef.copy()
+        correction_factor = 1 if scale == 0 else 0
+
+        for base_unit in new_unitdef.units:
+            if base_unit.kind == kind:
+                base_unit.scale = scale + correction_factor
+
+        # Add it to the enzymeml document and replicate
+        new_unit_name = new_unitdef._getNewName()
+        print(new_unit_name)
+        unit_id = enzmldoc._convertToUnitDef(new_unit_name)
+        replicate._data_unit_id = unit_id
+        replicate.data_unit = new_unit_name
 
     @validate_arguments
     def addReplicate(self, replicate: Replicate) -> None:
