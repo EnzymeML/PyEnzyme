@@ -71,7 +71,3 @@ class EnzymeMLPart(str, Enum):
     def entityFromSBOTerm(cls, sbo_term: str) -> str:
         sbo_term = SBOTerm(sbo_term).name
         return getattr(cls, sbo_term).name
-
-
-if __name__ == "__main__":
-    SBOTerm("lol")

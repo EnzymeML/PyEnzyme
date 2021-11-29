@@ -10,7 +10,6 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pyenzyme.enzymeml.tools.enzymemlreader import EnzymeMLReader
 from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
 from pyenzyme.enzymeml.tools.unitparser import UnitParser
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator

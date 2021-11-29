@@ -169,9 +169,9 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     def getEcnumber(self):
         return self.ecnumber
 
-    @deprecated_getter("uniprot_id")
+    @deprecated_getter("uniprotid")
     def getUniprotID(self):
-        return self.uniprot_id
+        return self.uniprotid
 
     @deprecated_getter("organism")
     def getOrganism(self):

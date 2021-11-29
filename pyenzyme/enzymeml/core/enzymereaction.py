@@ -10,9 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-import re
-
-from typing import List, Optional, TYPE_CHECKING, Any
+from typing import List, Optional, TYPE_CHECKING
 from enum import Enum
 from dataclasses import dataclass
 from pydantic import (
@@ -24,7 +22,7 @@ from pydantic import (
 )
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-from pyenzyme.enzymeml.models.kineticmodel import KineticModel, KineticParameter
+from pyenzyme.enzymeml.models.kineticmodel import KineticModel
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.exceptions import (
     ValidationError,

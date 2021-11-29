@@ -1,2 +1,2 @@
-from pyenzyme.enzymeml.databases.dataverse import uploadToDataverse
-from pyenzyme.enzymeml.databases.dataverse import toDataverseJSON
+from .dataverse import uploadToDataverse
+from .dataverse import toDataverseJSON

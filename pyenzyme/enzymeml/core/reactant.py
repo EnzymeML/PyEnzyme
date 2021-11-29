@@ -10,7 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import Field, PositiveFloat, validator
+from pydantic import Field, PositiveFloat, PrivateAttr
 from typing import TYPE_CHECKING, Optional
 from enum import Enum
 from dataclasses import dataclass
@@ -106,9 +106,6 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
         description="Unique identifier of the author.",
         required=False
     )
-
-    # * Private
-    _unit_id: Optional[str] = None
 
     # ! Getters
     @deprecated_getter("inchi")

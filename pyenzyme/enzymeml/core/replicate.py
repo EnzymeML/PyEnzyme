@@ -60,20 +60,26 @@ class Replicate(EnzymeMLBase):
         required=True
     )
 
+    _data_unit_id: Optional[str] = Field(
+        default=None,
+        description="SI unit ID of the data that was measured.",
+        required=True
+    )
+
     time_unit: str = Field(
-        description="Time unit of the measurement.",
+        description="Time unit of the replicate.",
         required=True
     )
 
     _time_unit_id: Optional[str] = Field(
         default=None,
-        description="Time unit of the measurement.",
+        description="Time unit of the replicate.",
         required=True
     )
 
     time: list[float] = Field(
         default=None,
-        description="Time steps of the measurement.",
+        description="Time steps of the replicate.",
         required=True
     )
 

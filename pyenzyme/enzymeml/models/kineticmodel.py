@@ -10,16 +10,15 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from typing import TYPE_CHECKING, Optional, Any
+from typing import TYPE_CHECKING, Optional
 from enum import Enum
-from pydantic import Field, validator
+from pydantic import Field
 from dataclasses import dataclass
 
-from libsbml import parseL3Formula, Reaction, ASTNode
+from libsbml import parseL3Formula, Reaction
 from pydantic.fields import PrivateAttr
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
     deprecated_getter
@@ -55,12 +54,8 @@ class KineticParameter(EnzymeMLBase):
         required=False
     )
 
-    _unit_id: Optional[str] = Field(
-        default=None,
-        description="Internal identifier for the unit of the estimated parameter.",
-        regex=r"u[\d]+",
-        required=False
-    )
+    # * Private attributes
+    _unit_id: Optional[str] = PrivateAttr(default=None)
 
 
 @static_check_init_args
@@ -102,12 +97,10 @@ class KineticModel(EnzymeMLBase):
 
         for kinetic_parameter in self.parameters:
 
-            print(kinetic_parameter)
-
             local_param = kl.createLocalParameter()
             local_param.setId(kinetic_parameter.name)
             local_param.setValue(kinetic_parameter.value)
-            local_param.setUnits(kinetic_parameter.unit_id)
+            local_param.setUnits(kinetic_parameter._unit_id)
 
             if kinetic_parameter.ontology:
                 local_param.setSBOTerm(kinetic_parameter.ontology)
