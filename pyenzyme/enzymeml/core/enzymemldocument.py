@@ -245,6 +245,28 @@ class EnzymeMLDocument(EnzymeMLBase):
         return json.dumps(toDataverseJSON(self), indent=4)
 
     # ! Utility methods
+    def unifyMeasurementUnits(
+        self,
+        kind: str,
+        scale: int,
+        measurement_ids: Union[str, list[str]] = "all"
+    ) -> None:
+        """Rescales and unifies the units of either all measurements or those that are provided to the given kind and scale.
+
+        Args:
+            kind (str): The unit kind from which to rescale. Currently supported: 'mole', 'gram', 'litre'.
+            scale (int): Decade scale to which the values will be rescaled.
+            measurement_ids (Union[str, list[str]], optional): Measurements that will be rescaled. Defaults to "all".
+        """
+
+        # Transform single strings to list
+        if isinstance(measurement_ids, str):
+            measurement_ids = [measurement_ids]
+
+        for measurement_id, measurement in self.measurement_dict.items():
+            if measurement_id in measurement_ids or measurement_ids == ["all"]:
+                measurement.unifyUnits(kind=kind, scale=scale, enzmldoc=self)
+
     def exportMeasurementData(
         self,
         measurement_ids: Union[str, list[str]] = "all",
@@ -308,7 +330,7 @@ class EnzymeMLDocument(EnzymeMLBase):
     def validate(self) -> None:
         # TODO rework validation
         raise NotImplementedError(
-            "Function not implemented yet."
+            "Function not refactored yet."
         )
 
     def __str__(self) -> str:
@@ -735,7 +757,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
             # Use the EnzymeMLPart Enum to derive the correct place
             sbo_term = SBOTerm(species.__dict__["ontology"]).name
-            enzymeml_part = EnzymeMLPart.fromSBOTerm(sbo_term)
+            enzymeml_part = EnzymeMLPart.partFromSBOTerm(sbo_term)
 
             # Raise an error if the species is nowhere present
             raise SpeciesNotFoundError(
@@ -757,8 +779,6 @@ class EnzymeMLDocument(EnzymeMLBase):
             raise TypeError("No unit given.")
         elif unit in self.unit_dict.keys():
             return unit
-
-        print(UnitCreator().getUnit(unit, self))
 
         return UnitCreator().getUnit(unit, self)
 
@@ -792,7 +812,7 @@ class EnzymeMLDocument(EnzymeMLBase):
                 species_id=unit_id, enzymeml_part="Units"
             )
 
-    def getUnitDef(self, id: str, by_id: bool = True):
+    def getUnitDef(self, id: str, by_id: bool = True) -> UnitDef:
         """Returns the unit associated with the given ID.
 
         Args:
@@ -806,14 +826,14 @@ class EnzymeMLDocument(EnzymeMLBase):
             UnitDef: The corresponding unit object.
         """
 
-        self._getSpecies(
+        return self._getSpecies(
             id=id,
             dictionary=self.unit_dict,
             element_type="Units",
             by_id=by_id
         )
 
-    def getReaction(self, id: str, by_id: bool = True):
+    def getReaction(self, id: str, by_id: bool = True) -> EnzymeReaction:
         """Returns the reaction associated with the given ID.
 
         Args:
@@ -834,7 +854,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             by_id=by_id
         )
 
-    def getMeasurement(self, id: str, by_id: bool = True):
+    def getMeasurement(self, id: str, by_id: bool = True) -> Measurement:
         """Returns the measurement associated with the given ID.
 
         Args:
@@ -855,7 +875,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             by_id=by_id
         )
 
-    def getReactant(self, id: str, by_id=True):
+    def getReactant(self, id: str, by_id=True) -> Reactant:
         """Returns the reactant associated with the given ID.
 
         Args:
@@ -876,7 +896,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             by_id=by_id
         )
 
-    def getProtein(self, id: str, by_id: bool = True):
+    def getProtein(self, id: str, by_id: bool = True) -> Protein:
         """Returns the protein associated with the given ID.
 
         Args:
@@ -897,7 +917,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             by_id=by_id
         )
 
-    def getFile(self, id: str, by_id: bool = True):
+    def getFile(self, id: str, by_id: bool = True) -> dict:
         """Returns the file associated with the given ID.
 
         Args:
