@@ -105,9 +105,10 @@ class ThinLayerCopasi(object):
         # Get reaction and replicates
         reaction = enzmldoc.getReaction(reaction_id)
 
-        # Unify units according to selected reactant for
-        # COPASI consistency in calculation
-        self.unifyUnits(reactants[0], reaction, enzmldoc, 'mole')
+        # Set up the kind of unit and scale the measurements will be set to
+        # ? Exponent and multiplier also important
+        kind = "mole"
+        scale = -3
 
         # initialize COPASI data model
         dm = COPASI.CRootContainer.addDatamodel()
