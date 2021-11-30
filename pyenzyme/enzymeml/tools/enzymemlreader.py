@@ -538,7 +538,7 @@ class EnzymeMLReader:
 
         # Fetch measurements
         measurement_dict, measurement_files = self._parseListOfMeasurements(
-            data_annotation
+            data_annotation, enzmldoc=enzmldoc
         )
 
         # Iterate over measurements and assign replicates
@@ -633,7 +633,7 @@ class EnzymeMLReader:
             for format in data_annotation[0]
         }
 
-    def _parseListOfMeasurements(self, data_annotation: ET.Element) -> tuple[dict[str, Measurement], dict]:
+    def _parseListOfMeasurements(self, data_annotation: ET.Element, enzmldoc: 'EnzymeMLDocument') -> tuple[dict[str, Measurement], dict]:
         """Extracts teh list of measurements that are present in the annotation enzymeml:measurements.
 
         Args:
@@ -651,14 +651,14 @@ class EnzymeMLReader:
         }
         measurement_dict = {
             measurement.attrib['id']:
-            self._parseMeasurement(measurement)
+            self._parseMeasurement(measurement, enzmldoc=enzmldoc)
             for measurement in measurements
         }
 
         return (measurement_dict, measurement_files)
 
     @ staticmethod
-    def _parseMeasurement(measurement: ET.Element) -> Measurement:
+    def _parseMeasurement(measurement: ET.Element, enzmldoc: 'EnzymeMLDocument') -> Measurement:
         """Extracts individual initial concentrations of a measurement.
 
         Args:
@@ -677,7 +677,10 @@ class EnzymeMLReader:
 
         for initConc in measurement:
             value = float(initConc.attrib['value'])
-            unit = initConc.attrib['unit']
+
+            # Convert the unit ID to the corresponding SI string
+            unit_id = initConc.attrib['unit']
+            unit = enzmldoc.unit_dict[unit_id].name
 
             reactant_id = None
             protein_id = None

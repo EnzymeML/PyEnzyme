@@ -21,6 +21,7 @@ from pydantic import (
 from dataclasses import dataclass
 from copy import deepcopy
 from typing import Optional, TYPE_CHECKING
+from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.exceptions import IdentifierError
@@ -37,7 +38,7 @@ else:
 
 
 @static_check_init_args
-class MeasurementData(BaseModel):
+class MeasurementData(EnzymeMLBase):
     """Helper class to organize elements"""
 
     init_conc: PositiveFloat = Field(
@@ -92,7 +93,7 @@ class MeasurementData(BaseModel):
         return protein_id
 
     # ! Utilities
-    def unifyUnits(self, kind: str, scale: int, enzmldoc) -> None:
+    def unifyUnits(self, kind: str, scale: int, enzmldoc) -> Optional[str]:
         """Rescales all replicates data_unit to match the desired scale.
 
         Args:
@@ -102,15 +103,20 @@ class MeasurementData(BaseModel):
             enzmldoc ([type]): The EnzymeML document to which the new unit will be added.
         """
 
+        unit_id = None
+
         for replicate in self.replicates:
-            unit = self._rescaleReplicateUnits(
+            unit_id = self._rescaleReplicateUnits(
                 replicate=replicate,
                 kind=kind,
                 scale=scale,
                 enzmldoc=enzmldoc
             )
 
-    def _rescaleReplicateUnits(self, replicate: Replicate, kind: str, scale: int, enzmldoc) -> str:
+        if unit_id:
+            return unit_id
+
+    def _rescaleReplicateUnits(self, replicate: Replicate, kind: str, scale: int, enzmldoc) -> None:
         """Rescales a replicates data_unit to match the desired scale.
 
         Args:
@@ -121,7 +127,7 @@ class MeasurementData(BaseModel):
         """
 
         data_unit_id = replicate._data_unit_id
-        unitdef: UnitDef = enzmldoc.unit_dict[data_unit_id]
+        unitdef: UnitDef = enzmldoc.unit_dict[data_unit_id].copy()
 
         # Calculate the scale to transform the unit
         transform_value = unitdef.calculateTransformValue(
@@ -135,7 +141,7 @@ class MeasurementData(BaseModel):
         ]
 
         # Create a new unit that matches the new scale
-        new_unitdef = unitdef.copy()
+        new_unitdef = UnitDef(**unitdef.dict())
         correction_factor = 1 if scale == 0 else 0
 
         for base_unit in new_unitdef.units:
@@ -144,36 +150,39 @@ class MeasurementData(BaseModel):
 
         # Add it to the enzymeml document and replicate
         new_unit_name = new_unitdef._getNewName()
-        print(new_unit_name)
         unit_id = enzmldoc._convertToUnitDef(new_unit_name)
         replicate._data_unit_id = unit_id
         replicate.data_unit = new_unit_name
 
-    @validate_arguments
+        # Reset unit id and unit string
+        self.__setattr__("unit", new_unit_name)
+        self.__setattr__("_unit_id", unit_id)
+
+    @ validate_arguments
     def addReplicate(self, replicate: Replicate) -> None:
         self.replicates.append(replicate)
 
-    @validate_arguments
+    @ validate_arguments
     def setMeasurementIDs(self, id: str) -> None:
         for replicate in self.replicates:
             replicate.measurement_id = id
 
-    @deprecated_getter("reactant_id")
+    @ deprecated_getter("reactant_id")
     def getReactantID(self) -> Optional[str]:
         return self.reactant_id
 
-    @deprecated_getter("protein_id")
+    @ deprecated_getter("protein_id")
     def getProteinID(self) -> Optional[str]:
         return self.protein_id
 
-    @deprecated_getter("init_conc")
+    @ deprecated_getter("init_conc")
     def getInitConc(self) -> PositiveFloat:
         return self.init_conc
 
-    @deprecated_getter("unit")
+    @ deprecated_getter("unit")
     def getUnit(self) -> str:
         return self.unit
 
-    @deprecated_getter("replicates")
+    @ deprecated_getter("replicates")
     def getReplicates(self) -> list[Replicate]:
         return self.replicates

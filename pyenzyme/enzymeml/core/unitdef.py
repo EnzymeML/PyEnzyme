@@ -235,6 +235,8 @@ class UnitDef(EnzymeMLBase):
         return self.ontology
 
     def getFootprint(self):
-        return [
-            base_unit.dict() for base_unit in self.units
-        ]
+        sorted_units = [base_unit.dict() for base_unit in self.units]
+        return sorted(
+            sorted_units,
+            key=lambda unit: unit["kind"]
+        )

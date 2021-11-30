@@ -11,6 +11,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 import libsbml
+
+from deepdiff import DeepDiff
+
 from pyenzyme.enzymeml.core.unitdef import UnitDef
 from pyenzyme.enzymeml.tools.unitparser import UnitParser
 
@@ -49,21 +52,14 @@ class UnitCreator:
             "dimensionless": self.__Dimensionless
         }
 
-    def getUnit(self, unit_string, enzmldoc):
+    def getUnit(self, unit_string, enzmldoc) -> str:
         '''
         Args:
             String unit_string: Standard short form of unit
         '''
 
-        index = 0
-        while True:
-
-            id_ = "u%i" % index
-
-            if id_ not in enzmldoc.getUnitDict().keys():
-                break
-            else:
-                index += 1
+        # Generate ID
+        id = enzmldoc._generateID(prefix="u", dictionary=enzmldoc.unit_dict)
 
         # Call unit parser to identify units
         parser = UnitParser()
@@ -104,7 +100,7 @@ class UnitCreator:
             name = 'K'
 
         # Initialize UnitDef object
-        unitdef = UnitDef(name=name, id=id_)
+        unitdef = UnitDef(name=name, id=id)
 
         for prefix, baseunit, exponent in units:
             self.__functionDict[baseunit](
@@ -115,7 +111,6 @@ class UnitCreator:
 
         # Check if there is already a similar unit defined
         if self.__checkFootprints(enzmldoc, unitdef.getFootprint()) != "NEW":
-
             return self.__checkFootprints(enzmldoc, unitdef.getFootprint())
 
         enzmldoc.getUnitDict()[unitdef.getId()] = unitdef
@@ -124,15 +119,9 @@ class UnitCreator:
 
     def __checkFootprints(self, enzmldoc, footprint):
 
-        unitdict = enzmldoc.getUnitDict()
-
-        def __compare(f1, f2):
-            return f1 == f2
-
-        for unitdef in unitdict:
-            if __compare(unitdict[unitdef].getFootprint(), footprint):
-
-                return unitdict[unitdef].getId()
+        for unit_id, unitdef in enzmldoc.unit_dict.items():
+            if DeepDiff(unitdef.getFootprint(), footprint) == {}:
+                return unit_id
 
         return "NEW"
 

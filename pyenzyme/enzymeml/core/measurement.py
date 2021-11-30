@@ -193,13 +193,14 @@ class Measurement(EnzymeMLBase):
         protein_id: Optional[str] = None,
         replicates: list[Replicate] = []
     ) -> None:
-        """Adds data via reaction ID to the measurement class.
+        """Adds data to the measurement object.
 
         Args:
-            reactant_id (string): Identifier of the reactant/protein that has been measured.
-            init_concValue (float): Numeric value of the initial concentration
-            init_concUnit (string): UnitID of the initial concentration
-            replicates (list<Replicate>, optional): List of actual time-coiurse data in Replicate objects. Defaults to None.
+            init_conc (PositiveFloat): Corresponding initial concentration of species.
+            unit (str): The SI unit of the measurement.
+            reactant_id (Optional[str], optional): Identifier of the reactant that was measured. Defaults to None.
+            protein_id (Optional[str], optional): Identifier of the protein that was measured. Defaults to None.
+            replicates (list[Replicate], optional): List of replicates that were measured. Defaults to [].
         """
 
         self._appendReactantData(
@@ -251,6 +252,13 @@ class Measurement(EnzymeMLBase):
             measData.measurement_id = self.id
 
     def unifyUnits(self, kind: str, scale: int, enzmldoc) -> None:
+        """Rescales all replicates and measurements to match the scale of a unit kind.
+
+        Args:
+            kind (str): The unit kind from which to rescale. Currently supported: 'mole', 'gram', 'litre'.
+            scale (int): Decade scale to which the values will be rescaled.
+            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to which the new unit will be added.
+        """
 
         for measurement_data in {**self.getProteins(), **self.getReactants()}.values():
             measurement_data.unifyUnits(

@@ -29,7 +29,7 @@ class EnzymeMLBase(BaseModel):
         validate_assignment = True
         validate_all = True
 
-    def json(self, indent: int = 2):
+    def json(self, indent: int = 2, **kwargs):
         return super().json(
             indent=indent,
             exclude_none=True,
@@ -41,5 +41,6 @@ class EnzymeMLBase(BaseModel):
                         "Protein": {"__all__": {"unit_id"}}
                     }
             },
-            by_alias=True
+            by_alias=True,
+            **kwargs
         )
