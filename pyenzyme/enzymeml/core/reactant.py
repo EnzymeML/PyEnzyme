@@ -10,14 +10,15 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import Field, PositiveFloat, PrivateAttr
-from typing import TYPE_CHECKING, Optional
+from pydantic import Field, PositiveFloat, validator
+from typing import TYPE_CHECKING, Optional, Union, Any
 from enum import Enum
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
 from pyenzyme.enzymeml.core.ontology import SBOTerm
+from pyenzyme.enzymeml.core.exceptions import ChEBIIdentifierError
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
     deprecated_getter
@@ -32,7 +33,8 @@ else:
 @static_check_init_args
 class Reactant(EnzymeMLBase, AbstractSpecies):
 
-    name: str = Field(
+    name: Optional[str] = Field(
+        default=None,
         description="Name of the reactant.",
         required=True
     )
@@ -55,7 +57,7 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
     )
 
     constant: bool = Field(
-        default=True,
+        default=False,
         description="Whether the reactants concentration remains constant or not.",
         required=True
     )
@@ -107,47 +109,149 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
         required=False
     )
 
+    chebi_id: Optional[str] = Field(
+        default=None,
+        description="Unique identifier of the CHEBI database. Use this identifier to initialize the object from the CHEBI database.",
+        required=False
+    )
+
+    # ! Validators
+    @validator("chebi_id")
+    def fetch_chebi_parameters(cls, chebi_id, values):
+        """PYDANTIC VALIDATOR: Automatically fills out fields present in the ChEBI database with appropriate values.
+
+        Caution, this function will overwrite any values in smiles, inchi and name that were given to the constructor!!
+
+        Args:
+            chebi_id (Union[str, int]): The ChEBI ID from which the data will be fetched.
+            values ([type]): Already initialiized values from teh constructor.
+        """
+
+        # Guard clauses
+        if chebi_id is None:
+            if values.get("name") is None:
+                raise NameError(
+                    "Please provide a name for the reactant if there is no ChEBI ID to fetch it from."
+                )
+            else:
+                return chebi_id
+
+        # Get chebi parameters
+        parameters = cls._getChEBIParameters(chebi_id=chebi_id)
+
+        # Override already given parameters in the data model
+        for key, item in parameters.items():
+            values[key] = item
+
+        return chebi_id
+
+    # ! Initializers
+    @classmethod
+    def fromChebiID(
+        cls,
+        chebi_id: Union[str, int],
+        init_conc: float,
+        unit: str,
+        vessel_id: str,
+        constant: bool = False
+    ) -> 'Reactant':
+        """Initializes a reactant based
+
+        Raises:
+            ChEBIIdentifierError: [description]
+
+        Returns:
+            [type]: [description]
+        """
+
+        # Get Chebi Parameters
+        parameters = cls._getChEBIParameters(chebi_id=chebi_id)
+
+        return cls(
+            init_conc=init_conc,
+            unit=unit,
+            vessel_id=vessel_id,
+            constant=constant,
+            **parameters
+        )
+
+    @staticmethod
+    def _getChEBIParameters(chebi_id: Union[str, int]) -> dict[str, Any]:
+        import requests
+        import xml.etree.ElementTree as ET
+
+        # Send request to CHEBI database
+        endpoint = f"https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity?chebiId={chebi_id}"
+
+        # Fetch data
+        response = requests.get(endpoint)
+        tree = ET.ElementTree(ET.fromstring(response.text))
+
+        # Set prefix to match tag
+        prefix = r"{https://www.ebi.ac.uk/webservices/chebi}"
+
+        # Check if the CHEBI ID is correct
+        if "faultcode" in response.text:
+            raise ChEBIIdentifierError(chebi_id=chebi_id)
+
+        # Define mapping for the used attributes
+        attribute_mapping = {
+            prefix + "inchi": "inchi",
+            prefix + "smiles": "smiles",
+            prefix + "chebiAsciiName": "name",
+        }
+
+        # Collect parameters
+        parameters = {
+            attribute_mapping[elem.tag]: elem.text
+            for elem in tree.iter()
+            if elem.tag in attribute_mapping
+        }
+
+        return parameters
+
     # ! Getters
-    @deprecated_getter("inchi")
+
+    @ deprecated_getter("inchi")
     def getInchi(self):
         return self.inchi
 
-    @deprecated_getter("smiles")
+    @ deprecated_getter("smiles")
     def getSmiles(self):
         return self.smiles
 
-    @deprecated_getter("init_conc")
+    @ deprecated_getter("init_conc")
     def getInitConc(self):
         return self.init_conc
 
-    @deprecated_getter("name")
+    @ deprecated_getter("name")
     def getName(self):
         return self.name
 
-    @deprecated_getter("id")
+    @ deprecated_getter("id")
     def getId(self):
         return self.id
 
-    @deprecated_getter("meta_id")
+    @ deprecated_getter("meta_id")
     def getMetaid(self):
         return self.meta_id
 
-    @deprecated_getter("ontology")
+    @ deprecated_getter("ontology")
     def getSboterm(self):
         return self.ontology
 
-    @deprecated_getter("vessel_id")
+    @ deprecated_getter("vessel_id")
     def getVessel(self):
         return self.vessel_id
 
-    @deprecated_getter("unit")
+    @ deprecated_getter("unit")
     def getSubstanceUnits(self):
         return self.unit
 
-    @deprecated_getter("boundary")
+    @ deprecated_getter("boundary")
     def getBoundary(self):
         return self.boundary
 
-    @deprecated_getter("constant")
+    @ deprecated_getter("constant")
     def getConstant(self):
         return self.constant

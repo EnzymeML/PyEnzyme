@@ -13,13 +13,13 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 import re
 
 from pydantic import PositiveFloat, validator, Field
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Any
 from enum import Enum
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-from pyenzyme.enzymeml.core.exceptions import ECNumberError
+from pyenzyme.enzymeml.core.exceptions import ECNumberError, UniProtIdentifierError
 from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
@@ -35,12 +35,14 @@ else:
 @static_check_init_args
 class Protein(EnzymeMLBase, AbstractSpecies):
 
-    name: str = Field(
+    name: Optional[str] = Field(
+        default=None,
         description="Name of the protein",
         required=True
     )
 
-    sequence: str = Field(
+    sequence: Optional[str] = Field(
+        default=None,
         description="Amino acid sequence of the protein",
         required=True
     )
@@ -87,12 +89,6 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         required=False
     )
 
-    uniprotid: Optional[str] = Field(
-        default=None,
-        description="Unique identifier referencing a protein entry at UniProt.",
-        required=False
-    )
-
     organism: Optional[str] = Field(
         default=None,
         description="Organism the protein was expressed in.",
@@ -129,6 +125,12 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         required=False
     )
 
+    uniprotid: Optional[str] = Field(
+        default=None,
+        description="Unique identifier referencing a protein entry at UniProt. Use this identifier to initialize the object from the UniProt database.",
+        required=False
+    )
+
     # ! Validators
     @validator("id")
     def set_meta_id(cls, id: Optional[str], values: dict):
@@ -144,7 +146,10 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     def clean_sequence(cls, sequence):
         """Cleans a sequence from whitespaces as well as newlines and transforms uppercase"""
 
-        return re.sub(r"\s+", "", sequence).upper()
+        if sequence:
+            return re.sub(r"\s+", "", sequence).upper()
+        else:
+            return sequence
 
     @validator("ecnumber")
     def validate_ecnumber(cls, ecnumber: Optional[str]):
@@ -161,58 +166,154 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         else:
             raise ECNumberError(ecnumber=ecnumber)
 
-    @deprecated_getter("organism_tax_id")
+    @validator("uniprotid")
+    def fetch_uniprot_parameters(cls, uniprotid, values):
+        """PYDANTIC VALIDATOR: Automatically fills out fields present in the UniProt database with appropriate values.
+
+        Caution, this function will overwrite any values in name, seqence and ecnumber that were given to the constructor!!
+
+        Args:
+            uniprotid (Union[str, int]): The UniProt ID from which the data will be fetched.
+            values (dict): Already initialiized values from teh constructor.
+        """
+
+        # Guard clauses
+        if uniprotid is None:
+            if values.get("name") is None:
+                raise NameError(
+                    "Please provide a name for the protein if there is no UniProt ID to fetch it from."
+                )
+            else:
+                return uniprotid
+
+        # Get chebi parameters
+        parameters = cls._getUniProtParameters(uniprotid=uniprotid)
+
+        # Override already given parameters in the data model
+        for key, item in parameters.items():
+            values[key] = str(item)
+
+        return uniprotid
+
+    # ! Initializers
+    @classmethod
+    def fromUniProtID(
+        cls,
+        uniprotid: str,
+        init_conc: float,
+        unit: str,
+        vessel_id: str,
+        constant: bool = False
+    ) -> 'Protein':
+        """Initializes a protein based on the UniProt database.
+
+        Raises:
+            UniProtIdentifierError: Raised when the UniProt identifier is invalid.
+
+        Returns:
+            Protein: The initialiized Protein object.
+        """
+
+        # Get UniProt Parameters
+        parameters = cls._getUniProtParameters(uniprotid=uniprotid)
+
+        return cls(
+            init_conc=init_conc,
+            unit=unit,
+            vessel_id=vessel_id,
+            constant=constant,
+            **parameters
+        )
+
+    @staticmethod
+    def _getUniProtParameters(uniprotid: str) -> dict[str, Any]:
+        import requests
+        import xml.etree.ElementTree as ET
+
+        # Send request to CHEBI database
+        endpoint = f"https://www.uniprot.org/uniprot/{uniprotid}.xml"
+
+        # Fetch data
+        response = requests.get(endpoint)
+
+        # Check if the UniProt ID is correct
+        if response.status_code == 404:
+            raise UniProtIdentifierError(uniprotid=uniprotid)
+
+        # Create XML Tree
+        tree = ET.ElementTree(ET.fromstring(response.text))
+
+        # Set prefix to match tag
+        prefix = r"{http://uniprot.org/uniprot}"
+
+        # Define mapping for the used attributes
+        attribute_mapping = {
+            prefix + "sequence": "sequence",
+            prefix + "fullName": "name",
+            prefix + "ecNumber": "ecnumber",
+        }
+
+        # Collect parameters
+        parameters = {}
+        for elem in tree.iter():
+            if elem.tag in attribute_mapping and parameters.get(elem.tag) is None:
+                parameters[attribute_mapping[elem.tag]] = elem.text
+
+        return parameters
+
+    # ! Getters
+    @ deprecated_getter("organism_tax_id")
     def getOrganismTaxId(self):
         return self.organism_tax_id
 
-    @deprecated_getter("ecnumber")
+    @ deprecated_getter("ecnumber")
     def getEcnumber(self):
         return self.ecnumber
 
-    @deprecated_getter("uniprotid")
+    @ deprecated_getter("uniprotid")
     def getUniprotID(self):
         return self.uniprotid
 
-    @deprecated_getter("organism")
+    @ deprecated_getter("organism")
     def getOrganism(self):
         return self.organism
 
-    @deprecated_getter("init_conc")
+    @ deprecated_getter("init_conc")
     def getInitConc(self):
         return self.init_conc
 
-    @deprecated_getter("name")
+    @ deprecated_getter("name")
     def getName(self):
         return self.name
 
-    @deprecated_getter("id")
+    @ deprecated_getter("id")
     def getId(self):
         return self.id
 
-    @deprecated_getter("meta_id")
+    @ deprecated_getter("meta_id")
     def getMetaid(self):
         return self.meta_id
 
-    @deprecated_getter("sequence")
+    @ deprecated_getter("sequence")
     def getSequence(self):
         return self.sequence
 
-    @deprecated_getter("ontology")
+    @ deprecated_getter("ontology")
     def getSboterm(self):
         return self.ontology
 
-    @deprecated_getter("vessel_id")
+    @ deprecated_getter("vessel_id")
     def getVessel(self):
         return self.vessel_id
 
-    @deprecated_getter("unit")
+    @ deprecated_getter("unit")
     def getSubstanceUnits(self):
         return self.unit
 
-    @deprecated_getter("boundary")
+    @ deprecated_getter("boundary")
     def getBoundary(self):
         return self.boundary
 
-    @deprecated_getter("constant")
+    @ deprecated_getter("constant")
     def getConstant(self):
         return self.constant
