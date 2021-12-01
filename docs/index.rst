@@ -11,7 +11,6 @@ Welcome to PyEnzyme's documentation!
    :caption: First Steps
 
    _getstarted/01_Overview
-   _getstarted/02_Reading EnzymeML
 
 .. toctree:: 
    :maxdepth: 2
