@@ -1,108 +1,86 @@
+
 <!DOCTYPE html>
-<html >
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-      <title>pyenzyme.enzymeml.core.reactant</title>
-    
-          <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/theme.css " type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
-      
-      <!-- sphinx script_files -->
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/clipboard.min.js"></script>
-        <script src="../../../../_static/copybutton.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
 
-      
-      <!-- bundled in js (rollup iife) -->
-      <!-- <script src="../../../../_static/theme-vendors.js"></script> -->
-      <script src="../../../../_static/theme.js" defer></script>
-    
-  <link rel="index" title="Index" href="../../../../genindex.html" />
-  <link rel="search" title="Search" href="../../../../search.html" /> 
-  </head>
-
-  <body>
-    <div id="app">
-    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
-  <router-link to="../../../../index.html" class="home-link">
-    
-      <span class="site-name">Test</span>
-    
-  </router-link>
-
-  <div class="links">
-    <navlinks class="can-hide">
-
-
-
-    </navlinks>
-  </div>
-</navbar>
-
-      
-      <div class="sidebar-mask" @click="toggleSidebar(false)">
-      </div>
-        <sidebar @toggle-sidebar="toggleSidebar">
-          
-          <navlinks>
-            
-
-
-
-            
-          </navlinks><div id="searchbox" class="searchbox" role="search">
-  <div class="caption"><span class="caption-text">Quick search</span>
-    <div class="searchformwrapper">
-      <form class="search" action="../../../../search.html" method="get">
-        <input type="text" name="q" />
-        <input type="submit" value="Search" />
-        <input type="hidden" name="check_keywords" value="yes" />
-        <input type="hidden" name="area" value="default" />
-      </form>
-    </div>
-  </div>
-</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
-  
-    <div class="sidebar-group">
-      <p class="caption">
-        <span class="caption-text"><a href="../../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
-      </p>
-      <ul class="">
-        
-      </ul>
-    </div>
-  
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>pyenzyme.enzymeml.core.reactant — PyEnzyme 1.2.0 documentation</title>
+<link href="../../../../_static/css/theme.css" rel="stylesheet"/>
+<link href="../../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet"/>
+<link href="../../../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/css/blank.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/autodoc_pydantic.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/copybutton.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js" rel="preload">
+<script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+<script src="../../../../_static/jquery.js"></script>
+<script src="../../../../_static/underscore.js"></script>
+<script src="../../../../_static/doctools.js"></script>
+<script src="../../../../_static/clipboard.min.js"></script>
+<script src="../../../../_static/copybutton.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<link href="../../../../genindex.html" rel="index" title="Index"/>
+<link href="../../../../search.html" rel="search" title="Search"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="None" name="docsearch:language"/>
+</link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-fluid" id="banner"></div>
+<nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+<div id="navbar-start">
+<a class="navbar-brand" href="../../../../index.html">
+<p class="title">PyEnzyme</p>
+</a>
 </div>
-        </sidebar>
-
-      <page>
-          <div class="body-header" role="navigation" aria-label="navigation">
-  
-  <ul class="breadcrumbs">
-    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
-    
-      <li><a href="../../../index.html">Module code</a> &raquo;</li>
-    
-    <li>pyenzyme.enzymeml.core.reactant</li>
-  </ul>
-  
-
-  <ul class="page-nav">
+<button aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar-collapsible" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="col-lg-9 collapse navbar-collapse" id="navbar-collapsible">
+<div class="mr-auto" id="navbar-center">
+<div class="navbar-center-item">
+<ul class="navbar-nav" id="navbar-main-elements">
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../../../../_getstarted/01_Overview.html">
+  Overview
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../../../../_getstarted/02_Reading%20EnzymeML.html">
+  Reading EnzymeML
+ </a>
+</li>
 </ul>
-  
 </div>
-<hr>
-          <div class="content" role="main" v-pre>
-            
-  <h1>Source code for pyenzyme.enzymeml.core.reactant</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
+</div>
+<div id="navbar-end">
+<div class="navbar-end-item">
+<ul aria-label="Icon Links" class="navbar-nav" id="navbar-icon-links">
+</ul>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<div class="container-xl">
+<div class="row">
+<div class="col-12 col-md-3 bd-sidebar"><form action="../../../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form><nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<div class="bd-toc-item active">
+</div>
+</nav>
+</div>
+<div class="d-none d-xl-block col-xl-2 bd-toc">
+</div>
+<main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+<div>
+<h1>Source code for pyenzyme.enzymeml.core.reactant</h1><div class="highlight"><pre>
+<span></span><span class="sd">'''</span>
 <span class="sd">File: reactant.py</span>
 <span class="sd">Project: core</span>
 <span class="sd">Author: Jan Range</span>
@@ -112,7 +90,7 @@
 <span class="sd">Modified By: Jan Range (&lt;jan.range@simtech.uni-stuttgart.de&gt;)</span>
 <span class="sd">-----</span>
 <span class="sd">Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">'''</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">PositiveFloat</span><span class="p">,</span> <span class="n">validator</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
@@ -134,108 +112,108 @@
     <span class="n">static_check_init_args</span> <span class="o">=</span> <span class="n">type_checking</span>
 
 
-<div class="viewcode-block" id="Reactant"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant">[docs]</a><span class="nd">@static_check_init_args</span>
+<div class="viewcode-block" id="Reactant"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant">[docs]</a><span class="nd">@static_check_init_args</span>
 <span class="k">class</span> <span class="nc">Reactant</span><span class="p">(</span><span class="n">EnzymeMLBase</span><span class="p">,</span> <span class="n">AbstractSpecies</span><span class="p">):</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the reactant.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Name of the reactant."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">vessel_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Identifier of the vessel in which the reactant was stored.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Identifier of the vessel in which the reactant was stored."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">init_conc</span><span class="p">:</span> <span class="n">PositiveFloat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Initial concentration of the reactant.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Initial concentration of the reactant."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inclusiveMinimum</span><span class="o">=</span><span class="mf">0.0</span>
     <span class="p">)</span>
 
     <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unit of the reactant intial concentration.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unit of the reactant intial concentration."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">constant</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the reactants concentration remains constant or not.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the reactants concentration remains constant or not."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier of the protein.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unique identifier of the protein."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;s[\d]+&quot;</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">"s[\d]+"</span>
     <span class="p">)</span>
 
     <span class="n">meta_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique meta identifier of the protein.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unique meta identifier of the protein."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">smiles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Simplified Molecular Input Line Entry System (SMILES) encoding of the reactant.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Simplified Molecular Input Line Entry System (SMILES) encoding of the reactant."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">inchi</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;International Chemical Identifier (InChI) encoding of the reactant.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"International Chemical Identifier (InChI) encoding of the reactant."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">boundary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the reactant is under any boundary conditions (SBML Technicality, better leave it to default)&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the reactant is under any boundary conditions (SBML Technicality, better leave it to default)"</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">ontology</span><span class="p">:</span> <span class="n">Enum</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">SBOTerm</span><span class="o">.</span><span class="n">SMALL_MOLECULE</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Ontology describing the characteristic of the reactant.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Ontology describing the characteristic of the reactant."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URI of the protein.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URI of the protein."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">creator_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier of the author.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unique identifier of the author."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">chebi_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier of the CHEBI database. Use this identifier to initialize the object from the CHEBI database.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unique identifier of the CHEBI database. Use this identifier to initialize the object from the CHEBI database."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="c1"># ! Validators</span>
-<div class="viewcode-block" id="Reactant.fetch_chebi_parameters"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.fetch_chebi_parameters">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;chebi_id&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.fetch_chebi_parameters"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.fetch_chebi_parameters">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">"chebi_id"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">fetch_chebi_parameters</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">chebi_id</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;PYDANTIC VALIDATOR: Automatically fills out fields present in the ChEBI database with appropriate values.</span>
+        <span class="sd">"""PYDANTIC VALIDATOR: Automatically fills out fields present in the ChEBI database with appropriate values.</span>
 
 <span class="sd">        Caution, this function will overwrite any values in smiles, inchi and name that were given to the constructor!!</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            chebi_id (Union[str, int]): The ChEBI ID from which the data will be fetched.</span>
 <span class="sd">            values ([type]): Already initialiized values from teh constructor.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Guard clauses</span>
         <span class="k">if</span> <span class="n">chebi_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span>
-                    <span class="s2">&quot;Please provide a name for the reactant if there is no ChEBI ID to fetch it from.&quot;</span>
+                    <span class="s2">"Please provide a name for the reactant if there is no ChEBI ID to fetch it from."</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">chebi_id</span>
@@ -250,7 +228,7 @@
         <span class="k">return</span> <span class="n">chebi_id</span></div>
 
     <span class="c1"># ! Initializers</span>
-<div class="viewcode-block" id="Reactant.fromChebiID"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.fromChebiID">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Reactant.fromChebiID"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.fromChebiID">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromChebiID</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">chebi_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
@@ -258,15 +236,15 @@
         <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">vessel_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">constant</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Reactant&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Initializes a reactant based</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'Reactant'</span><span class="p">:</span>
+        <span class="sd">"""Initializes a reactant based</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ChEBIIdentifierError: [description]</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            [type]: [description]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Get Chebi Parameters</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_getChEBIParameters</span><span class="p">(</span><span class="n">chebi_id</span><span class="o">=</span><span class="n">chebi_id</span><span class="p">)</span>
@@ -285,24 +263,24 @@
         <span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
 
         <span class="c1"># Send request to CHEBI database</span>
-        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity?chebiId=</span><span class="si">{</span><span class="n">chebi_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity?chebiId=</span><span class="si">{</span><span class="n">chebi_id</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="c1"># Fetch data</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
         <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">ElementTree</span><span class="p">(</span><span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
 
         <span class="c1"># Set prefix to match tag</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;{https://www.ebi.ac.uk/webservices/chebi}&quot;</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"{https://www.ebi.ac.uk/webservices/chebi}"</span>
 
         <span class="c1"># Check if the CHEBI ID is correct</span>
-        <span class="k">if</span> <span class="s2">&quot;faultcode&quot;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"faultcode"</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ChEBIIdentifierError</span><span class="p">(</span><span class="n">chebi_id</span><span class="o">=</span><span class="n">chebi_id</span><span class="p">)</span>
 
         <span class="c1"># Define mapping for the used attributes</span>
         <span class="n">attribute_mapping</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;inchi&quot;</span><span class="p">:</span> <span class="s2">&quot;inchi&quot;</span><span class="p">,</span>
-            <span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;smiles&quot;</span><span class="p">:</span> <span class="s2">&quot;smiles&quot;</span><span class="p">,</span>
-            <span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;chebiAsciiName&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+            <span class="n">prefix</span> <span class="o">+</span> <span class="s2">"inchi"</span><span class="p">:</span> <span class="s2">"inchi"</span><span class="p">,</span>
+            <span class="n">prefix</span> <span class="o">+</span> <span class="s2">"smiles"</span><span class="p">:</span> <span class="s2">"smiles"</span><span class="p">,</span>
+            <span class="n">prefix</span> <span class="o">+</span> <span class="s2">"chebiAsciiName"</span><span class="p">:</span> <span class="s2">"name"</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="c1"># Collect parameters</span>
@@ -316,64 +294,70 @@
 
     <span class="c1"># ! Getters</span>
 
-<div class="viewcode-block" id="Reactant.getInchi"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.getInchi">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;inchi&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.getInchi"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.getInchi">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"inchi"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getInchi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inchi</span></div>
 
-<div class="viewcode-block" id="Reactant.getSmiles"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.getSmiles">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;smiles&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.getSmiles"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.getSmiles">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"smiles"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getSmiles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">smiles</span></div>
 
-<div class="viewcode-block" id="Reactant.getInitConc"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.getInitConc">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;init_conc&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.getInitConc"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.getInitConc">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"init_conc"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getInitConc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_conc</span></div>
 
-<div class="viewcode-block" id="Reactant.getName"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.getName">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.getName"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.getName">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
-<div class="viewcode-block" id="Reactant.getId"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.getId">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.getId"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.getId">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getId</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span></div>
 
-<div class="viewcode-block" id="Reactant.getMetaid"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.getMetaid">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;meta_id&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.getMetaid"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.getMetaid">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"meta_id"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getMetaid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_id</span></div>
 
-<div class="viewcode-block" id="Reactant.getSboterm"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.getSboterm">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;ontology&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.getSboterm"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.getSboterm">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"ontology"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getSboterm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ontology</span></div>
 
-<div class="viewcode-block" id="Reactant.getVessel"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.getVessel">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;vessel_id&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.getVessel"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.getVessel">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"vessel_id"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getVessel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vessel_id</span></div>
 
-<div class="viewcode-block" id="Reactant.getSubstanceUnits"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.getSubstanceUnits">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;unit&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.getSubstanceUnits"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.getSubstanceUnits">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"unit"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getSubstanceUnits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span></div>
 
-<div class="viewcode-block" id="Reactant.getBoundary"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.getBoundary">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;boundary&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.getBoundary"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.getBoundary">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"boundary"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getBoundary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary</span></div>
 
-<div class="viewcode-block" id="Reactant.getConstant"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.reactant.Reactant.getConstant">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;constant&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Reactant.getConstant"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.reactant.html#pyenzyme.enzymeml.core.reactant.Reactant.getConstant">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"constant"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getConstant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span></div></div>
 </pre></div>
-
-          </div>
-          <div class="page-nav">
-            <div class="inner"><ul class="page-nav">
-</ul><div class="footer" role="contentinfo">
-      &#169; Copyright 2021, Jan.
-    <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
 </div>
-            </div>
-          </div>
-      </page>
-    </div></div>
-    
-    
-  </body>
+<div class="prev-next-area">
+</div>
+</main>
+</div>
+</div>
+<script src="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<div class="footer-item">
+<p class="copyright">
+    © Copyright 2021, Jan.<br/>
+</p>
+</div>
+<div class="footer-item">
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1.<br/>
+</p>
+</div>
+</div>
+</footer>
+</body>
 </html>

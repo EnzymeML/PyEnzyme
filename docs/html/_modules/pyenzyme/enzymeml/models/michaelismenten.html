@@ -1,108 +1,86 @@
+
 <!DOCTYPE html>
-<html >
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-      <title>pyenzyme.enzymeml.models.michaelismenten</title>
-    
-          <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/theme.css " type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
-      
-      <!-- sphinx script_files -->
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/clipboard.min.js"></script>
-        <script src="../../../../_static/copybutton.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
 
-      
-      <!-- bundled in js (rollup iife) -->
-      <!-- <script src="../../../../_static/theme-vendors.js"></script> -->
-      <script src="../../../../_static/theme.js" defer></script>
-    
-  <link rel="index" title="Index" href="../../../../genindex.html" />
-  <link rel="search" title="Search" href="../../../../search.html" /> 
-  </head>
-
-  <body>
-    <div id="app">
-    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
-  <router-link to="../../../../index.html" class="home-link">
-    
-      <span class="site-name">Test</span>
-    
-  </router-link>
-
-  <div class="links">
-    <navlinks class="can-hide">
-
-
-
-    </navlinks>
-  </div>
-</navbar>
-
-      
-      <div class="sidebar-mask" @click="toggleSidebar(false)">
-      </div>
-        <sidebar @toggle-sidebar="toggleSidebar">
-          
-          <navlinks>
-            
-
-
-
-            
-          </navlinks><div id="searchbox" class="searchbox" role="search">
-  <div class="caption"><span class="caption-text">Quick search</span>
-    <div class="searchformwrapper">
-      <form class="search" action="../../../../search.html" method="get">
-        <input type="text" name="q" />
-        <input type="submit" value="Search" />
-        <input type="hidden" name="check_keywords" value="yes" />
-        <input type="hidden" name="area" value="default" />
-      </form>
-    </div>
-  </div>
-</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
-  
-    <div class="sidebar-group">
-      <p class="caption">
-        <span class="caption-text"><a href="../../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
-      </p>
-      <ul class="">
-        
-      </ul>
-    </div>
-  
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>pyenzyme.enzymeml.models.michaelismenten — PyEnzyme 1.2.0 documentation</title>
+<link href="../../../../_static/css/theme.css" rel="stylesheet"/>
+<link href="../../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet"/>
+<link href="../../../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/css/blank.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/autodoc_pydantic.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/copybutton.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js" rel="preload">
+<script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+<script src="../../../../_static/jquery.js"></script>
+<script src="../../../../_static/underscore.js"></script>
+<script src="../../../../_static/doctools.js"></script>
+<script src="../../../../_static/clipboard.min.js"></script>
+<script src="../../../../_static/copybutton.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<link href="../../../../genindex.html" rel="index" title="Index"/>
+<link href="../../../../search.html" rel="search" title="Search"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="None" name="docsearch:language"/>
+</link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-fluid" id="banner"></div>
+<nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+<div id="navbar-start">
+<a class="navbar-brand" href="../../../../index.html">
+<p class="title">PyEnzyme</p>
+</a>
 </div>
-        </sidebar>
-
-      <page>
-          <div class="body-header" role="navigation" aria-label="navigation">
-  
-  <ul class="breadcrumbs">
-    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
-    
-      <li><a href="../../../index.html">Module code</a> &raquo;</li>
-    
-    <li>pyenzyme.enzymeml.models.michaelismenten</li>
-  </ul>
-  
-
-  <ul class="page-nav">
+<button aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar-collapsible" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="col-lg-9 collapse navbar-collapse" id="navbar-collapsible">
+<div class="mr-auto" id="navbar-center">
+<div class="navbar-center-item">
+<ul class="navbar-nav" id="navbar-main-elements">
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../../../../_getstarted/01_Overview.html">
+  Overview
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../../../../_getstarted/02_Reading%20EnzymeML.html">
+  Reading EnzymeML
+ </a>
+</li>
 </ul>
-  
 </div>
-<hr>
-          <div class="content" role="main" v-pre>
-            
-  <h1>Source code for pyenzyme.enzymeml.models.michaelismenten</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
+</div>
+<div id="navbar-end">
+<div class="navbar-end-item">
+<ul aria-label="Icon Links" class="navbar-nav" id="navbar-icon-links">
+</ul>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<div class="container-xl">
+<div class="row">
+<div class="col-12 col-md-3 bd-sidebar"><form action="../../../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form><nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<div class="bd-toc-item active">
+</div>
+</nav>
+</div>
+<div class="d-none d-xl-block col-xl-2 bd-toc">
+</div>
+<main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+<div>
+<h1>Source code for pyenzyme.enzymeml.models.michaelismenten</h1><div class="highlight"><pre>
+<span></span><span class="sd">'''</span>
 <span class="sd">File: michaelismenten.py</span>
 <span class="sd">Project: models</span>
 <span class="sd">Author: Jan Range</span>
@@ -112,14 +90,14 @@
 <span class="sd">Modified By: Jan Range (&lt;jan.range@simtech.uni-stuttgart.de&gt;)</span>
 <span class="sd">-----</span>
 <span class="sd">Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">'''</span>
 
 <span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.ontology</span> <span class="kn">import</span> <span class="n">SBOTerm</span>
 <span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.models.kineticmodel</span> <span class="kn">import</span> <span class="n">KineticModel</span><span class="p">,</span> <span class="n">KineticParameter</span>
 <span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.exceptions</span> <span class="kn">import</span> <span class="n">SpeciesNotFoundError</span>
 
 
-<div class="viewcode-block" id="MichaelisMenten"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.models.html#pyenzyme.enzymeml.models.michaelismenten.MichaelisMenten">[docs]</a><span class="k">def</span> <span class="nf">MichaelisMenten</span><span class="p">(</span>
+<div class="viewcode-block" id="MichaelisMenten"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.models.michaelismenten.html#pyenzyme.enzymeml.models.michaelismenten.MichaelisMenten">[docs]</a><span class="k">def</span> <span class="nf">MichaelisMenten</span><span class="p">(</span>
     <span class="n">kcat_val</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">kcat_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">km_val</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -128,7 +106,7 @@
     <span class="n">protein_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">enzmldoc</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sets up a rate law following the Henri-Michaelis-Menten law.</span>
+    <span class="sd">"""Sets up a rate law following the Henri-Michaelis-Menten law.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        kcat_val (float): Numeric value of the estimated kcat value.</span>
@@ -145,59 +123,65 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        KineticModel: The resulting kinetic model.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Check if the given IDs are part of the EnzymeML document already</span>
     <span class="k">if</span> <span class="n">substrate_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getSpeciesIDs</span><span class="p">():</span>
         <span class="k">raise</span> <span class="n">SpeciesNotFoundError</span><span class="p">(</span>
             <span class="n">species_id</span><span class="o">=</span><span class="n">substrate_id</span><span class="p">,</span>
-            <span class="n">enzymeml_part</span><span class="o">=</span><span class="s2">&quot;Reactants/Proteins&quot;</span>
+            <span class="n">enzymeml_part</span><span class="o">=</span><span class="s2">"Reactants/Proteins"</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">protein_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getSpeciesIDs</span><span class="p">():</span>
         <span class="k">raise</span> <span class="n">SpeciesNotFoundError</span><span class="p">(</span>
             <span class="n">species_id</span><span class="o">=</span><span class="n">protein_id</span><span class="p">,</span>
-            <span class="n">enzymeml_part</span><span class="o">=</span><span class="s2">&quot;Reactants/Proteins&quot;</span>
+            <span class="n">enzymeml_part</span><span class="o">=</span><span class="s2">"Reactants/Proteins"</span>
         <span class="p">)</span>
 
     <span class="c1"># Create the corresponding equation</span>
-    <span class="n">equation</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(kcat*</span><span class="si">{</span><span class="n">substrate_id</span><span class="si">}</span><span class="s2">*</span><span class="si">{</span><span class="n">protein_id</span><span class="si">}</span><span class="s2">) / (</span><span class="si">{</span><span class="n">substrate_id</span><span class="si">}</span><span class="s2"> + Km)&quot;</span>
+    <span class="n">equation</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"(kcat*</span><span class="si">{</span><span class="n">substrate_id</span><span class="si">}</span><span class="s2">*</span><span class="si">{</span><span class="n">protein_id</span><span class="si">}</span><span class="s2">) / (</span><span class="si">{</span><span class="n">substrate_id</span><span class="si">}</span><span class="s2"> + Km)"</span>
 
     <span class="c1"># Create list of parameters</span>
     <span class="n">km_parameter</span> <span class="o">=</span> <span class="n">KineticParameter</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Km&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"Km"</span><span class="p">,</span>
         <span class="n">value</span><span class="o">=</span><span class="n">km_val</span><span class="p">,</span>
         <span class="n">unit</span><span class="o">=</span><span class="n">km_unit</span><span class="p">,</span>
         <span class="n">ontology</span><span class="o">=</span><span class="n">SBOTerm</span><span class="o">.</span><span class="n">K_M</span>
     <span class="p">)</span>
 
     <span class="n">kcat_parameter</span> <span class="o">=</span> <span class="n">KineticParameter</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;kcat&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"kcat"</span><span class="p">,</span>
         <span class="n">value</span><span class="o">=</span><span class="n">kcat_val</span><span class="p">,</span>
         <span class="n">unit</span><span class="o">=</span><span class="n">kcat_unit</span><span class="p">,</span>
         <span class="n">ontology</span><span class="o">=</span><span class="n">SBOTerm</span><span class="o">.</span><span class="n">K_CAT</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">KineticModel</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Henri-Michaelis-Menten rate law&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"Henri-Michaelis-Menten rate law"</span><span class="p">,</span>
         <span class="n">equation</span><span class="o">=</span><span class="n">equation</span><span class="p">,</span>
         <span class="n">parameters</span><span class="o">=</span><span class="p">[</span><span class="n">km_parameter</span><span class="p">,</span> <span class="n">kcat_parameter</span><span class="p">],</span>
         <span class="n">ontology</span><span class="o">=</span><span class="n">SBOTerm</span><span class="o">.</span><span class="n">MICHAELIS_MENTEN</span>
     <span class="p">)</span></div>
 </pre></div>
-
-          </div>
-          <div class="page-nav">
-            <div class="inner"><ul class="page-nav">
-</ul><div class="footer" role="contentinfo">
-      &#169; Copyright 2021, Jan.
-    <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
 </div>
-            </div>
-          </div>
-      </page>
-    </div></div>
-    
-    
-  </body>
+<div class="prev-next-area">
+</div>
+</main>
+</div>
+</div>
+<script src="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<div class="footer-item">
+<p class="copyright">
+    © Copyright 2021, Jan.<br/>
+</p>
+</div>
+<div class="footer-item">
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1.<br/>
+</p>
+</div>
+</div>
+</footer>
+</body>
 </html>

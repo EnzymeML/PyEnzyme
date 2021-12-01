@@ -17,12 +17,12 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Test'
+project = 'PyEnzyme'
 copyright = '2021, Jan'
 author = 'Jan'
 
 # The full version, including alpha/beta/rc tags
-release = '1.'
+release = '1.2.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -65,7 +65,8 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'press'
+html_permalinks_icon = '<span>#</span>'
+html_theme = 'sphinxawesome_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

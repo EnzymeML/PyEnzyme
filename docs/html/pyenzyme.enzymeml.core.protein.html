@@ -1,243 +1,219 @@
+
 <!DOCTYPE html>
-<html >
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-      <title>pyenzyme.enzymeml.core.protein module</title>
-    
-          <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-          <link rel="stylesheet" href="_static/theme.css " type="text/css" />
-          <link rel="stylesheet" href="_static/autodoc_pydantic.css" type="text/css" />
-          <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-      
-      <!-- sphinx script_files -->
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>pyenzyme.enzymeml.core.protein module — PyEnzyme 1.2.0 documentation</title>
+<link href="_static/css/theme.css" rel="stylesheet" type="text/css"/>
+<link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="_static/css/theme.css" rel="stylesheet" type="text/css"/>
+<link href="_static/autodoc_pydantic.css" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css" rel="stylesheet" type="text/css"/>
+<link href="_static/custom.css" rel="stylesheet" type="text/css"/>
+<link href="_static/fonts.css" rel="stylesheet" type="text/css"/>
 
-      
-      <!-- bundled in js (rollup iife) -->
-      <!-- <script src="_static/theme-vendors.js"></script> -->
-      <script src="_static/theme.js" defer></script>
-    
-  <link rel="index" title="Index" href="genindex.html" />
-  <link rel="search" title="Search" href="search.html" /> 
-  </head>
-
-  <body>
-    <div id="app">
-    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
-  <router-link to="index.html" class="home-link">
-    
-      <span class="site-name">Test</span>
-    
-  </router-link>
-
-  <div class="links">
-    <navlinks class="can-hide">
-
-
-
-    </navlinks>
-  </div>
-</navbar>
-
-      
-      <div class="sidebar-mask" @click="toggleSidebar(false)">
-      </div>
-        <sidebar @toggle-sidebar="toggleSidebar">
+<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js" type="text/javascript"></script>
+<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+<script src="_static/jquery.js"></script>
+<script src="_static/underscore.js"></script>
+<script src="_static/doctools.js"></script>
+<script src="_static/clipboard.min.js"></script>
+<script src="_static/copybutton.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<script src="_static/js/theme.js" type="text/javascript"></script>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+</head>
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="index.html"> PyEnzyme
           
-          <navlinks>
-            
 
-
-
-            
-          </navlinks><div id="searchbox" class="searchbox" role="search">
-  <div class="caption"><span class="caption-text">Quick search</span>
-    <div class="searchformwrapper">
-      <form class="search" action="search.html" method="get">
-        <input type="text" name="q" />
-        <input type="submit" value="Search" />
-        <input type="hidden" name="check_keywords" value="yes" />
-        <input type="hidden" name="area" value="default" />
-      </form>
-    </div>
-  </div>
-</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
-  
-    <div class="sidebar-group">
-      <p class="caption">
-        <span class="caption-text"><a href="index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
-      </p>
-      <ul class="">
-        
-      </ul>
-    </div>
-  
+          
+          </a>
+<div role="search">
+<form action="search.html" class="wy-form" id="rtd-search-form" method="get">
+<input name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
 </div>
-        </sidebar>
-
-      <page>
-          <div class="body-header" role="navigation" aria-label="navigation">
-  
-  <ul class="breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-    
-    <li>pyenzyme.enzymeml.core.protein module</li>
-  </ul>
-  
-
-  <ul class="page-nav">
+</div>
+<div aria-label="main navigation" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption" role="heading"><span class="caption-text">First Steps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_getstarted/01_Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_getstarted/02_Reading%20EnzymeML.html">Reading EnzymeML</a></li>
 </ul>
-  
 </div>
-<hr>
-          <div class="content" role="main" v-pre>
-            
-  <section id="module-pyenzyme.enzymeml.core.protein">
-<span id="pyenzyme-enzymeml-core-protein-module"></span><h1>pyenzyme.enzymeml.core.protein module<a class="headerlink" href="#module-pyenzyme.enzymeml.core.protein" title="Permalink to this headline">¶</a></h1>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="top navigation" class="wy-nav-top">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="index.html">PyEnzyme</a>
+</nav>
+<div class="wy-nav-content">
+<div class="git-ribbon">
+<a href="http://github.com/SwissDataScienceCenter" rel="me">Join us on GitHub</a>
+</div>
+<div class="rst-content">
+<div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a class="icon icon-home" href="index.html"></a> »</li>
+<li>pyenzyme.enzymeml.core.protein module</li>
+<li class="wy-breadcrumbs-aside">
+<a href="_sources/pyenzyme.enzymeml.core.protein.rst.txt" rel="nofollow"> View page source</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div itemprop="articleBody">
+<div class="section" id="module-pyenzyme.enzymeml.core.protein">
+<span id="pyenzyme-enzymeml-core-protein-module"></span><h1>pyenzyme.enzymeml.core.protein module<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#module-pyenzyme.enzymeml.core.protein">¶</a></h1>
 <p>File: protein.py
 Project: core
 Author: Jan Range
 License: BSD-2 clause
 —–
 Last Modified: Tuesday June 22nd 2021 9:53:42 pm
-Modified By: Jan Range (&lt;<a class="reference external" href="mailto:jan&#46;range&#37;&#52;&#48;simtech&#46;uni-stuttgart&#46;de">jan<span>&#46;</span>range<span>&#64;</span>simtech<span>&#46;</span>uni-stuttgart<span>&#46;</span>de</a>&gt;)
+Modified By: Jan Range (&lt;<a class="reference external" href="mailto:jan.range%40simtech.uni-stuttgart.de" rel="nofollow noopener">jan<span>.</span>range<span>@</span>simtech<span>.</span>uni-stuttgart<span>.</span>de</a>&gt;)
 —–
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</p>
 <dl class="py pydantic_model">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.core.protein.</span></span><span class="sig-name descname"><span class="pre">Protein</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pyenzyme.enzymeml.core.enzymemlbase.html#pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase" title="pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase</span></code></a>, <a class="reference internal" href="pyenzyme.enzymeml.core.abstract_classes.html#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies</span></code></a></p>
-<p><details  class="autodoc_pydantic_collapsable_json">
+<em class="property">pydantic model<span class="w"> </span></em><span class="sig-prename descclassname">pyenzyme.enzymeml.core.protein.</span><span class="sig-name descname">Protein</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyenzyme.enzymeml.core.enzymemlbase.html#pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase" title="pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase"><code class="xref py py-class docutils literal notranslate">pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase</code></a>, <a class="reference internal" href="pyenzyme.enzymeml.core.abstract_classes.html#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies"><code class="xref py py-class docutils literal notranslate">pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies</code></a></p>
+<p><details class="autodoc_pydantic_collapsable_json">
 <summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Protein&quot;</span><span class="p">,</span>
-   <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Due to inheritance and type-checking issues, the dataclass has to be mixed in.&quot;</span><span class="p">,</span>
-   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-   <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Name of the protein&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+   <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Protein"</span><span class="p">,</span>
+   <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Due to inheritance and type-checking issues, the dataclass has to be mixed in."</span><span class="p">,</span>
+   <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"object"</span><span class="p">,</span>
+   <span class="nt">"properties"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"name"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Name"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Name of the protein"</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Id&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unique identifier of the protein.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;p[\\d]+&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"id"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Id"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Unique identifier of the protein."</span><span class="p">,</span>
+         <span class="nt">"pattern"</span><span class="p">:</span> <span class="s2">"p[\\d]+"</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;meta_id&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Meta Id&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unique meta identifier of the protein.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"meta_id"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Meta Id"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Unique meta identifier of the protein."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;init_conc&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Init Conc&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Initial concentration of the protein.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;inclusiveMinimum&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-         <span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+      <span class="nt">"init_conc"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Init Conc"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Initial concentration of the protein."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"inclusiveMinimum"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+         <span class="nt">"exclusiveMinimum"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"number"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;constant&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether the proteins concentration remains constant or not.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+      <span class="nt">"constant"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Constant"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Whether the proteins concentration remains constant or not."</span><span class="p">,</span>
+         <span class="nt">"default"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"boolean"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;unit&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Unit&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unit of the proteins intial concentration.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"unit"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Unit"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Unit of the proteins intial concentration."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;ontology&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ontology describing the characteristic of the protein.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;SBO:0000252&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="nt">"ontology"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Ontology describing the characteristic of the protein."</span><span class="p">,</span>
+         <span class="nt">"default"</span><span class="p">:</span> <span class="s2">"SBO:0000252"</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"allOf"</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>
-               <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Enum&quot;</span>
+               <span class="nt">"$ref"</span><span class="p">:</span> <span class="s2">"#/definitions/Enum"</span>
             <span class="p">}</span>
          <span class="p">]</span>
       <span class="p">},</span>
-      <span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Uri&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;URI of the protein.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"uri"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Uri"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"URI of the protein."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;creator_id&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Creator Id&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unique identifier of the author.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"creator_id"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Creator Id"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Unique identifier of the author."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;sequence&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Sequence&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Amino acid sequence of the protein&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"sequence"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Sequence"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Amino acid sequence of the protein"</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;vessel_id&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Vessel Id&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Identifier of the vessel in which the protein was stored.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;v[\\d.]+&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"vessel_id"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Vessel Id"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Identifier of the vessel in which the protein was stored."</span><span class="p">,</span>
+         <span class="nt">"pattern"</span><span class="p">:</span> <span class="s2">"v[\\d.]+"</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;ecnumber&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Ecnumber&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;EC number of the protein.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"ecnumber"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Ecnumber"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"EC number of the protein."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;organism&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Organism&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Organism the protein was expressed in.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"organism"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Organism"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Organism the protein was expressed in."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;organism_tax_id&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Organism Tax Id&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Taxonomy identifier of the expression host.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"organism_tax_id"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Organism Tax Id"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Taxonomy identifier of the expression host."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;boundary&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Boundary&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether the protein is under any boundary conditions (SBML Technicality, better leave it to default)&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+      <span class="nt">"boundary"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Boundary"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Whether the protein is under any boundary conditions (SBML Technicality, better leave it to default)"</span><span class="p">,</span>
+         <span class="nt">"default"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"boolean"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;uniprotid&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Uniprotid&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unique identifier referencing a protein entry at UniProt. Use this identifier to initialize the object from the UniProt database.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"uniprotid"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Uniprotid"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Unique identifier referencing a protein entry at UniProt. Use this identifier to initialize the object from the UniProt database."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">}</span>
    <span class="p">},</span>
-   <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="s2">&quot;init_conc&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;unit&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;vessel_id&quot;</span>
+   <span class="nt">"required"</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">"init_conc"</span><span class="p">,</span>
+      <span class="s2">"unit"</span><span class="p">,</span>
+      <span class="s2">"vessel_id"</span>
    <span class="p">],</span>
-   <span class="nt">&quot;definitions&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;Enum&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Enum&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Generic enumeration.\n\nDerive from this class to define new enumerations.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[]</span>
+   <span class="nt">"definitions"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"Enum"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Enum"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Generic enumeration.\n\nDerive from this class to define new enumerations."</span><span class="p">,</span>
+         <span class="nt">"enum"</span><span class="p">:</span> <span class="p">[]</span>
       <span class="p">}</span>
    <span class="p">}</span>
 <span class="p">}</span>
@@ -252,36 +228,36 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 <dt class="field-even">Fields</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.boundary" title="pyenzyme.enzymeml.core.protein.Protein.boundary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boundary</span> <span class="pre">(bool)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.constant" title="pyenzyme.enzymeml.core.protein.Protein.constant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constant</span> <span class="pre">(bool)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.creator_id" title="pyenzyme.enzymeml.core.protein.Protein.creator_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">creator_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.ecnumber" title="pyenzyme.enzymeml.core.protein.Protein.ecnumber"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ecnumber</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.id" title="pyenzyme.enzymeml.core.protein.Protein.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.init_conc" title="pyenzyme.enzymeml.core.protein.Protein.init_conc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_conc</span> <span class="pre">(pydantic.types.PositiveFloat)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.meta_id" title="pyenzyme.enzymeml.core.protein.Protein.meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.name" title="pyenzyme.enzymeml.core.protein.Protein.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.ontology" title="pyenzyme.enzymeml.core.protein.Protein.ontology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ontology</span> <span class="pre">(enum.Enum)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.organism" title="pyenzyme.enzymeml.core.protein.Protein.organism"><code class="xref py py-obj docutils literal notranslate"><span class="pre">organism</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.organism_tax_id" title="pyenzyme.enzymeml.core.protein.Protein.organism_tax_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">organism_tax_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.sequence" title="pyenzyme.enzymeml.core.protein.Protein.sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.uniprotid" title="pyenzyme.enzymeml.core.protein.Protein.uniprotid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uniprotid</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.unit" title="pyenzyme.enzymeml.core.protein.Protein.unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unit</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.uri" title="pyenzyme.enzymeml.core.protein.Protein.uri"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uri</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.vessel_id" title="pyenzyme.enzymeml.core.protein.Protein.vessel_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vessel_id</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.boundary" title="pyenzyme.enzymeml.core.protein.Protein.boundary"><code class="xref py py-obj docutils literal notranslate">boundary (bool)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.constant" title="pyenzyme.enzymeml.core.protein.Protein.constant"><code class="xref py py-obj docutils literal notranslate">constant (bool)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.creator_id" title="pyenzyme.enzymeml.core.protein.Protein.creator_id"><code class="xref py py-obj docutils literal notranslate">creator_id (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.ecnumber" title="pyenzyme.enzymeml.core.protein.Protein.ecnumber"><code class="xref py py-obj docutils literal notranslate">ecnumber (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.id" title="pyenzyme.enzymeml.core.protein.Protein.id"><code class="xref py py-obj docutils literal notranslate">id (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.init_conc" title="pyenzyme.enzymeml.core.protein.Protein.init_conc"><code class="xref py py-obj docutils literal notranslate">init_conc (pydantic.types.PositiveFloat)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.meta_id" title="pyenzyme.enzymeml.core.protein.Protein.meta_id"><code class="xref py py-obj docutils literal notranslate">meta_id (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.name" title="pyenzyme.enzymeml.core.protein.Protein.name"><code class="xref py py-obj docutils literal notranslate">name (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.ontology" title="pyenzyme.enzymeml.core.protein.Protein.ontology"><code class="xref py py-obj docutils literal notranslate">ontology (enum.Enum)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.organism" title="pyenzyme.enzymeml.core.protein.Protein.organism"><code class="xref py py-obj docutils literal notranslate">organism (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.organism_tax_id" title="pyenzyme.enzymeml.core.protein.Protein.organism_tax_id"><code class="xref py py-obj docutils literal notranslate">organism_tax_id (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.sequence" title="pyenzyme.enzymeml.core.protein.Protein.sequence"><code class="xref py py-obj docutils literal notranslate">sequence (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.uniprotid" title="pyenzyme.enzymeml.core.protein.Protein.uniprotid"><code class="xref py py-obj docutils literal notranslate">uniprotid (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.unit" title="pyenzyme.enzymeml.core.protein.Protein.unit"><code class="xref py py-obj docutils literal notranslate">unit (str)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.uri" title="pyenzyme.enzymeml.core.protein.Protein.uri"><code class="xref py py-obj docutils literal notranslate">uri (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.vessel_id" title="pyenzyme.enzymeml.core.protein.Protein.vessel_id"><code class="xref py py-obj docutils literal notranslate">vessel_id (str)</code></a></p></li>
 </ul>
 </dd>
 <dt class="field-odd">Validators</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.clean_sequence" title="pyenzyme.enzymeml.core.protein.Protein.clean_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_sequence</span></code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.sequence" title="pyenzyme.enzymeml.core.protein.Protein.sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters" title="pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_uniprot_parameters</span></code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.uniprotid" title="pyenzyme.enzymeml.core.protein.Protein.uniprotid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uniprotid</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.set_meta_id" title="pyenzyme.enzymeml.core.protein.Protein.set_meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_meta_id</span></code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.id" title="pyenzyme.enzymeml.core.protein.Protein.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber" title="pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_ecnumber</span></code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.ecnumber" title="pyenzyme.enzymeml.core.protein.Protein.ecnumber"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ecnumber</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.clean_sequence" title="pyenzyme.enzymeml.core.protein.Protein.clean_sequence"><code class="xref py py-obj docutils literal notranslate">clean_sequence</code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.sequence" title="pyenzyme.enzymeml.core.protein.Protein.sequence"><code class="xref py py-obj docutils literal notranslate">sequence</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters" title="pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters"><code class="xref py py-obj docutils literal notranslate">fetch_uniprot_parameters</code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.uniprotid" title="pyenzyme.enzymeml.core.protein.Protein.uniprotid"><code class="xref py py-obj docutils literal notranslate">uniprotid</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.set_meta_id" title="pyenzyme.enzymeml.core.protein.Protein.set_meta_id"><code class="xref py py-obj docutils literal notranslate">set_meta_id</code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.id" title="pyenzyme.enzymeml.core.protein.Protein.id"><code class="xref py py-obj docutils literal notranslate">id</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber" title="pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber"><code class="xref py py-obj docutils literal notranslate">validate_ecnumber</code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.ecnumber" title="pyenzyme.enzymeml.core.protein.Protein.ecnumber"><code class="xref py py-obj docutils literal notranslate">ecnumber</code></a></p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.boundary">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">boundary</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.boundary" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">boundary</span><em class="property"><span class="p">:</span><span class="w"> </span>bool</em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>False</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.boundary">¶</a></dt>
 <dd><p>Whether the protein is under any boundary conditions (SBML Technicality, better leave it to default)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -291,10 +267,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.constant">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">constant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.constant" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">constant</span><em class="property"><span class="p">:</span><span class="w"> </span>bool</em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>True</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.constant">¶</a></dt>
 <dd><p>Whether the proteins concentration remains constant or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -304,10 +279,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.creator_id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">creator_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.creator_id" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">creator_id</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.creator_id">¶</a></dt>
 <dd><p>Unique identifier of the author.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -317,10 +291,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.ecnumber">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ecnumber</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.ecnumber" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">ecnumber</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.ecnumber">¶</a></dt>
 <dd><p>EC number of the protein.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -330,15 +303,14 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 <dt class="field-even">Validated by</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber" title="pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_ecnumber</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber" title="pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber"><code class="xref py py-obj docutils literal notranslate">validate_ecnumber</code></a></p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.id" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">id</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.id">¶</a></dt>
 <dd><p>Unique identifier of the protein.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -349,15 +321,14 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 <dt class="field-even">Validated by</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.set_meta_id" title="pyenzyme.enzymeml.core.protein.Protein.set_meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_meta_id</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.set_meta_id" title="pyenzyme.enzymeml.core.protein.Protein.set_meta_id"><code class="xref py py-obj docutils literal notranslate">set_meta_id</code></a></p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.init_conc">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_conc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveFloat</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.init_conc" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">init_conc</span><em class="property"><span class="p">:</span><span class="w"> </span>pydantic.types.PositiveFloat</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.init_conc">¶</a></dt>
 <dd><p>Initial concentration of the protein.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -369,10 +340,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.meta_id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meta_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.meta_id" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">meta_id</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.meta_id">¶</a></dt>
 <dd><p>Unique meta identifier of the protein.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -382,10 +352,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.name">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.name" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">name</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.name">¶</a></dt>
 <dd><p>Name of the protein</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -395,10 +364,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.ontology">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ontology</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">enum.Enum</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">SBOTerm.PROTEIN</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.ontology" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">ontology</span><em class="property"><span class="p">:</span><span class="w"> </span>enum.Enum</em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>SBOTerm.PROTEIN</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.ontology">¶</a></dt>
 <dd><p>Ontology describing the characteristic of the protein.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -408,10 +376,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.organism">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">organism</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.organism" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">organism</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.organism">¶</a></dt>
 <dd><p>Organism the protein was expressed in.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -421,10 +388,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.organism_tax_id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">organism_tax_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.organism_tax_id" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">organism_tax_id</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.organism_tax_id">¶</a></dt>
 <dd><p>Taxonomy identifier of the expression host.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -434,10 +400,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.sequence">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sequence</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.sequence" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">sequence</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.sequence">¶</a></dt>
 <dd><p>Amino acid sequence of the protein</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -447,15 +412,14 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 <dt class="field-even">Validated by</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.clean_sequence" title="pyenzyme.enzymeml.core.protein.Protein.clean_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_sequence</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.clean_sequence" title="pyenzyme.enzymeml.core.protein.Protein.clean_sequence"><code class="xref py py-obj docutils literal notranslate">clean_sequence</code></a></p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.uniprotid">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uniprotid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.uniprotid" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">uniprotid</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.uniprotid">¶</a></dt>
 <dd><p>Unique identifier referencing a protein entry at UniProt. Use this identifier to initialize the object from the UniProt database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -465,15 +429,14 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 <dt class="field-even">Validated by</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters" title="pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fetch_uniprot_parameters</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters" title="pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters"><code class="xref py py-obj docutils literal notranslate">fetch_uniprot_parameters</code></a></p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.unit">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.unit" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">unit</span><em class="property"><span class="p">:</span><span class="w"> </span>str</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.unit">¶</a></dt>
 <dd><p>Unit of the proteins intial concentration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -483,10 +446,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.uri">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.uri" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">uri</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.uri">¶</a></dt>
 <dd><p>URI of the protein.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -496,10 +458,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.vessel_id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vessel_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.vessel_id" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">vessel_id</span><em class="property"><span class="p">:</span><span class="w"> </span>str</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.vessel_id">¶</a></dt>
 <dd><p>Identifier of the vessel in which the protein was stored.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -510,16 +471,14 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_validator">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.clean_sequence">
-<em class="property"><span class="pre">validator</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clean_sequence</span></span><em class="autodoc_pydantic_validator_arrow property">&#160; <span class="pre">»</span>&#160; </em><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.sequence" title="pyenzyme.enzymeml.core.protein.Protein.sequence"><em class="xref py py-obj"><span class="pre">sequence</span></em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.clean_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.clean_sequence" title="Permalink to this definition">¶</a></dt>
+<em class="property">validator<span class="w"> </span></em><span class="sig-name descname">clean_sequence</span><em class="autodoc_pydantic_validator_arrow property">  »  </em><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.sequence" title="pyenzyme.enzymeml.core.protein.Protein.sequence"><em class="xref py py-obj">sequence</em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.clean_sequence"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.clean_sequence">¶</a></dt>
 <dd><p>Cleans a sequence from whitespaces as well as newlines and transforms uppercase</p>
 </dd></dl>
-
 <dl class="py pydantic_validator">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters">
-<em class="property"><span class="pre">validator</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fetch_uniprot_parameters</span></span><em class="autodoc_pydantic_validator_arrow property">&#160; <span class="pre">»</span>&#160; </em><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.uniprotid" title="pyenzyme.enzymeml.core.protein.Protein.uniprotid"><em class="xref py py-obj"><span class="pre">uniprotid</span></em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.fetch_uniprot_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters" title="Permalink to this definition">¶</a></dt>
+<em class="property">validator<span class="w"> </span></em><span class="sig-name descname">fetch_uniprot_parameters</span><em class="autodoc_pydantic_validator_arrow property">  »  </em><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.uniprotid" title="pyenzyme.enzymeml.core.protein.Protein.uniprotid"><em class="xref py py-obj">uniprotid</em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.fetch_uniprot_parameters"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters">¶</a></dt>
 <dd><p>PYDANTIC VALIDATOR: Automatically fills out fields present in the UniProt database with appropriate values.</p>
 <p>Caution, this function will overwrite any values in name, seqence and ecnumber that were given to the constructor!!</p>
 <dl class="field-list simple">
@@ -531,10 +490,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.fromUniProtID">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fromUniProtID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uniprotid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_conc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein" title="pyenzyme.enzymeml.core.protein.Protein"><span class="pre">pyenzyme.enzymeml.core.protein.Protein</span></a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.fromUniProtID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.fromUniProtID" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod<span class="w"> </span></em><span class="sig-name descname">fromUniProtID</span><span class="sig-paren">(</span><em class="sig-param"><span class="n">uniprotid</span><span class="p">:</span><span class="w"> </span><span class="n">str</span></em>, <em class="sig-param"><span class="n">init_conc</span><span class="p">:</span><span class="w"> </span><span class="n">float</span></em>, <em class="sig-param"><span class="n">unit</span><span class="p">:</span><span class="w"> </span><span class="n">str</span></em>, <em class="sig-param"><span class="n">vessel_id</span><span class="p">:</span><span class="w"> </span><span class="n">str</span></em>, <em class="sig-param"><span class="n">constant</span><span class="p">:</span><span class="w"> </span><span class="n">bool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="default_value">False</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein" title="pyenzyme.enzymeml.core.protein.Protein">pyenzyme.enzymeml.core.protein.Protein</a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.fromUniProtID"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.fromUniProtID">¶</a></dt>
 <dd><p>Initializes a protein based on the UniProt database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -548,149 +506,144 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getBoundary">
-<span class="sig-name descname"><span class="pre">getBoundary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getBoundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getBoundary" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getBoundary</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getBoundary"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getBoundary">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>boundary</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getConstant">
-<span class="sig-name descname"><span class="pre">getConstant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getConstant" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getConstant</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getConstant"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getConstant">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>constant</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getEcnumber">
-<span class="sig-name descname"><span class="pre">getEcnumber</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getEcnumber"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getEcnumber" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getEcnumber</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getEcnumber"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getEcnumber">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>ecnumber</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getId">
-<span class="sig-name descname"><span class="pre">getId</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getId" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getId</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getId"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getId">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>id</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getInitConc">
-<span class="sig-name descname"><span class="pre">getInitConc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getInitConc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getInitConc" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getInitConc</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getInitConc"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getInitConc">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>init_conc</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getMetaid">
-<span class="sig-name descname"><span class="pre">getMetaid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getMetaid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getMetaid" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getMetaid</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getMetaid"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getMetaid">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>meta_id</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getName">
-<span class="sig-name descname"><span class="pre">getName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getName"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getName" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getName</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getName"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getName">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>name</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getOrganism">
-<span class="sig-name descname"><span class="pre">getOrganism</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getOrganism"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getOrganism" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getOrganism</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getOrganism"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getOrganism">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>organism</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getOrganismTaxId">
-<span class="sig-name descname"><span class="pre">getOrganismTaxId</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getOrganismTaxId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getOrganismTaxId" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getOrganismTaxId</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getOrganismTaxId"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getOrganismTaxId">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>organism_tax_id</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getSboterm">
-<span class="sig-name descname"><span class="pre">getSboterm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getSboterm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getSboterm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getSboterm</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getSboterm"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getSboterm">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>ontology</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getSequence">
-<span class="sig-name descname"><span class="pre">getSequence</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getSequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getSequence" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getSequence</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getSequence"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getSequence">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>sequence</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getSubstanceUnits">
-<span class="sig-name descname"><span class="pre">getSubstanceUnits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getSubstanceUnits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getSubstanceUnits" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getSubstanceUnits</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getSubstanceUnits"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getSubstanceUnits">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>unit</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getUniprotID">
-<span class="sig-name descname"><span class="pre">getUniprotID</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getUniprotID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getUniprotID" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getUniprotID</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getUniprotID"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getUniprotID">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>uniprotid</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.getVessel">
-<span class="sig-name descname"><span class="pre">getVessel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getVessel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.getVessel" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getVessel</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.getVessel"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.getVessel">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>vessel_id</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py pydantic_validator">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.set_meta_id">
-<em class="property"><span class="pre">validator</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_meta_id</span></span><em class="autodoc_pydantic_validator_arrow property">&#160; <span class="pre">»</span>&#160; </em><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.id" title="pyenzyme.enzymeml.core.protein.Protein.id"><em class="xref py py-obj"><span class="pre">id</span></em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.set_meta_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.set_meta_id" title="Permalink to this definition">¶</a></dt>
+<em class="property">validator<span class="w"> </span></em><span class="sig-name descname">set_meta_id</span><em class="autodoc_pydantic_validator_arrow property">  »  </em><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.id" title="pyenzyme.enzymeml.core.protein.Protein.id"><em class="xref py py-obj">id</em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.set_meta_id"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.set_meta_id">¶</a></dt>
 <dd><p>Sets the meta ID when an ID is provided</p>
 </dd></dl>
-
 <dl class="py pydantic_validator">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber">
-<em class="property"><span class="pre">validator</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_ecnumber</span></span><em class="autodoc_pydantic_validator_arrow property">&#160; <span class="pre">»</span>&#160; </em><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.ecnumber" title="pyenzyme.enzymeml.core.protein.Protein.ecnumber"><em class="xref py py-obj"><span class="pre">ecnumber</span></em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.validate_ecnumber"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber" title="Permalink to this definition">¶</a></dt>
+<em class="property">validator<span class="w"> </span></em><span class="sig-name descname">validate_ecnumber</span><em class="autodoc_pydantic_validator_arrow property">  »  </em><a class="reference internal" href="#pyenzyme.enzymeml.core.protein.Protein.ecnumber" title="pyenzyme.enzymeml.core.protein.Protein.ecnumber"><em class="xref py py-obj">ecnumber</em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/protein.html#Protein.validate_ecnumber"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber">¶</a></dt>
 <dd><p>Validates whether given EC number complies to the established pattern.</p>
 </dd></dl>
-
 </dd></dl>
-
-</section>
-
-
-          </div>
-          <div class="page-nav">
-            <div class="inner"><ul class="page-nav">
-</ul><div class="footer" role="contentinfo">
-      &#169; Copyright 2021, Jan.
-    <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
 </div>
-            </div>
-          </div>
-      </page>
-    </div></div>
+</div>
+</div>
+<footer>
+<hr/>
+<div role="contentinfo">
+<p>
+        © Copyright 2021, Jan.
+
+    </p>
+</div>
     
     
-  </body>
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+</div>
+</div>
+</section>
+</div>
+<script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+</body>
 </html>

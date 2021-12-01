@@ -1,108 +1,86 @@
+
 <!DOCTYPE html>
-<html >
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-      <title>pyenzyme.enzymeml.core.enzymemldocument</title>
-    
-          <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/theme.css " type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
-      
-      <!-- sphinx script_files -->
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/clipboard.min.js"></script>
-        <script src="../../../../_static/copybutton.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
 
-      
-      <!-- bundled in js (rollup iife) -->
-      <!-- <script src="../../../../_static/theme-vendors.js"></script> -->
-      <script src="../../../../_static/theme.js" defer></script>
-    
-  <link rel="index" title="Index" href="../../../../genindex.html" />
-  <link rel="search" title="Search" href="../../../../search.html" /> 
-  </head>
-
-  <body>
-    <div id="app">
-    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
-  <router-link to="../../../../index.html" class="home-link">
-    
-      <span class="site-name">Test</span>
-    
-  </router-link>
-
-  <div class="links">
-    <navlinks class="can-hide">
-
-
-
-    </navlinks>
-  </div>
-</navbar>
-
-      
-      <div class="sidebar-mask" @click="toggleSidebar(false)">
-      </div>
-        <sidebar @toggle-sidebar="toggleSidebar">
-          
-          <navlinks>
-            
-
-
-
-            
-          </navlinks><div id="searchbox" class="searchbox" role="search">
-  <div class="caption"><span class="caption-text">Quick search</span>
-    <div class="searchformwrapper">
-      <form class="search" action="../../../../search.html" method="get">
-        <input type="text" name="q" />
-        <input type="submit" value="Search" />
-        <input type="hidden" name="check_keywords" value="yes" />
-        <input type="hidden" name="area" value="default" />
-      </form>
-    </div>
-  </div>
-</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
-  
-    <div class="sidebar-group">
-      <p class="caption">
-        <span class="caption-text"><a href="../../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
-      </p>
-      <ul class="">
-        
-      </ul>
-    </div>
-  
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>pyenzyme.enzymeml.core.enzymemldocument — PyEnzyme 1.2.0 documentation</title>
+<link href="../../../../_static/css/theme.css" rel="stylesheet"/>
+<link href="../../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet"/>
+<link href="../../../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/css/blank.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/autodoc_pydantic.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/copybutton.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js" rel="preload">
+<script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+<script src="../../../../_static/jquery.js"></script>
+<script src="../../../../_static/underscore.js"></script>
+<script src="../../../../_static/doctools.js"></script>
+<script src="../../../../_static/clipboard.min.js"></script>
+<script src="../../../../_static/copybutton.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<link href="../../../../genindex.html" rel="index" title="Index"/>
+<link href="../../../../search.html" rel="search" title="Search"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="None" name="docsearch:language"/>
+</link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-fluid" id="banner"></div>
+<nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+<div id="navbar-start">
+<a class="navbar-brand" href="../../../../index.html">
+<p class="title">PyEnzyme</p>
+</a>
 </div>
-        </sidebar>
-
-      <page>
-          <div class="body-header" role="navigation" aria-label="navigation">
-  
-  <ul class="breadcrumbs">
-    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
-    
-      <li><a href="../../../index.html">Module code</a> &raquo;</li>
-    
-    <li>pyenzyme.enzymeml.core.enzymemldocument</li>
-  </ul>
-  
-
-  <ul class="page-nav">
+<button aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar-collapsible" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="col-lg-9 collapse navbar-collapse" id="navbar-collapsible">
+<div class="mr-auto" id="navbar-center">
+<div class="navbar-center-item">
+<ul class="navbar-nav" id="navbar-main-elements">
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../../../../_getstarted/01_Overview.html">
+  Overview
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../../../../_getstarted/02_Reading%20EnzymeML.html">
+  Reading EnzymeML
+ </a>
+</li>
 </ul>
-  
 </div>
-<hr>
-          <div class="content" role="main" v-pre>
-            
-  <h1>Source code for pyenzyme.enzymeml.core.enzymemldocument</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
+</div>
+<div id="navbar-end">
+<div class="navbar-end-item">
+<ul aria-label="Icon Links" class="navbar-nav" id="navbar-icon-links">
+</ul>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<div class="container-xl">
+<div class="row">
+<div class="col-12 col-md-3 bd-sidebar"><form action="../../../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form><nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<div class="bd-toc-item active">
+</div>
+</nav>
+</div>
+<div class="d-none d-xl-block col-xl-2 bd-toc">
+</div>
+<main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+<div>
+<h1>Source code for pyenzyme.enzymeml.core.enzymemldocument</h1><div class="highlight"><pre>
+<span></span><span class="sd">'''</span>
 <span class="sd">File: enzymemldocument.py</span>
 <span class="sd">Project: core</span>
 <span class="sd">Author: Jan Range</span>
@@ -112,7 +90,7 @@
 <span class="sd">Modified By: Jan Range (&lt;jan.range@simtech.uni-stuttgart.de&gt;)</span>
 <span class="sd">-----</span>
 <span class="sd">Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">'''</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -158,17 +136,17 @@
     <span class="n">static_check_init_args</span> <span class="o">=</span> <span class="n">type_checking</span>
 
 
-<div class="viewcode-block" id="EnzymeMLDocument"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument">[docs]</a><span class="nd">@static_check_init_args</span>
+<div class="viewcode-block" id="EnzymeMLDocument"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument">[docs]</a><span class="nd">@static_check_init_args</span>
 <span class="k">class</span> <span class="nc">EnzymeMLDocument</span><span class="p">(</span><span class="n">EnzymeMLBase</span><span class="p">):</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Title of the EnzymeML Document.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Title of the EnzymeML Document."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;SBML evel of the EnzymeML XML.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"SBML evel of the EnzymeML XML."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">inclusiveMinimum</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">exclusiveMaximum</span><span class="o">=</span><span class="mi">3</span>
@@ -176,152 +154,152 @@
 
     <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;SBML version of the EnzymeML XML.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"SBML version of the EnzymeML XML."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">pubmedid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Pubmed ID reference.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Pubmed ID reference."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Arbitrary type of URL that is related to the EnzymeML document.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Arbitrary type of URL that is related to the EnzymeML document."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">doi</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Digital Object Identifier of the referenced publication or the EnzymeML document.&quot;</span><span class="p">,</span>
-        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;/^10.\d{4,9}/[-._;()/:A-Z0-9]+$/i&quot;</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Digital Object Identifier of the referenced publication or the EnzymeML document."</span><span class="p">,</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">"/^10.\d{4,9}/[-._;()/:A-Z0-9]+$/i"</span>
     <span class="p">)</span>
 
     <span class="n">created</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Date the EnzymeML document was created.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Date the EnzymeML document was created."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">modified</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Date the EnzymeML document was modified.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Date the EnzymeML document was modified."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">vessel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Vessel</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The vessel in which the experiment was performed.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The vessel in which the experiment was performed."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">creator_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Creator</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;creators&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">"creators"</span><span class="p">,</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Dictionary mapping from creator IDs to creator describing objects.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Dictionary mapping from creator IDs to creator describing objects."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">vessel_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Vessel</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;vessels&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">"vessels"</span><span class="p">,</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Dictionary mapping from vessel IDs to vessel describing objects.&quot;</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Dictionary mapping from vessel IDs to vessel describing objects."</span>
     <span class="p">)</span>
 
     <span class="n">protein_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Protein</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;proteins&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">"proteins"</span><span class="p">,</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Dictionary mapping from protein IDs to protein describing objects.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Dictionary mapping from protein IDs to protein describing objects."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">reactant_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Reactant</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;reactants&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">"reactants"</span><span class="p">,</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Dictionary mapping from reactant IDs to reactant describing objects.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Dictionary mapping from reactant IDs to reactant describing objects."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">reaction_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">EnzymeReaction</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;reactions&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">"reactions"</span><span class="p">,</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Dictionary mapping from reaction IDs to reaction describing objects.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Dictionary mapping from reaction IDs to reaction describing objects."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">unit_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;units&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">"units"</span><span class="p">,</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Dictionary mapping from unit IDs to unit describing objects.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Dictionary mapping from unit IDs to unit describing objects."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">measurement_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Measurement</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;measurements&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">"measurements"</span><span class="p">,</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Dictionary mapping from measurement IDs to measurement describing objects.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Dictionary mapping from measurement IDs to measurement describing objects."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="n">file_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">files</span><span class="o">=</span><span class="s2">&quot;files&quot;</span><span class="p">,</span>
+        <span class="n">files</span><span class="o">=</span><span class="s2">"files"</span><span class="p">,</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Dictionary mapping from protein IDs to protein describing objects.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Dictionary mapping from protein IDs to protein describing objects."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="c1"># ! Validators</span>
-<div class="viewcode-block" id="EnzymeMLDocument.add_identifier"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.add_identifier">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;pubmedid&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.add_identifier"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.add_identifier">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">"pubmedid"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">add_identifier</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pubmedid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Adds an identifiers.org link in front of the pubmed ID if not given&quot;&quot;&quot;</span>
+        <span class="sd">"""Adds an identifiers.org link in front of the pubmed ID if not given"""</span>
 
         <span class="k">if</span> <span class="n">pubmedid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pubmedid</span>
-        <span class="k">elif</span> <span class="n">pubmedid</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;https://identifiers.org/pubmed:&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">pubmedid</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"https://identifiers.org/pubmed:"</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">pubmedid</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;https://identifiers.org/pubmed:&quot;</span> <span class="o">+</span> <span class="n">pubmedid</span></div>
+            <span class="k">return</span> <span class="s2">"https://identifiers.org/pubmed:"</span> <span class="o">+</span> <span class="n">pubmedid</span></div>
 
     <span class="c1"># ! Imports and exports</span>
-<div class="viewcode-block" id="EnzymeMLDocument.fromFile"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.fromFile">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="EnzymeMLDocument.fromFile"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.fromFile">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">fromFile</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initializes an EnzymeMLDocument from an OMEX container.&quot;</span>
+        <span class="sd">"""Initializes an EnzymeMLDocument from an OMEX container."</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            path (Path): Path to the OMEX container.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            EnzymeMLDocument: The intialized EnzymeML document.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.tools.enzymemlreader</span> <span class="kn">import</span> <span class="n">EnzymeMLReader</span>
 
         <span class="k">return</span> <span class="n">EnzymeMLReader</span><span class="p">()</span><span class="o">.</span><span class="n">readFromFile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.toFile"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.toFile">[docs]</a>    <span class="k">def</span> <span class="nf">toFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Saves an EnzymeML document to an OMEX container at the specified path</span>
+<div class="viewcode-block" id="EnzymeMLDocument.toFile"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.toFile">[docs]</a>    <span class="k">def</span> <span class="nf">toFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="sd">"""Saves an EnzymeML document to an OMEX container at the specified path</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            path (Path): Path where the document should be saved.</span>
 <span class="sd">            verbose (PositiveInt, optional): Level of verbosity, in order to print a message and the resulting path. Defaults to 1.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">EnzymeMLWriter</span><span class="p">()</span><span class="o">.</span><span class="n">toFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.toXMLString"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.toXMLString">[docs]</a>    <span class="k">def</span> <span class="nf">toXMLString</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generates an EnzymeML XML string&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="EnzymeMLDocument.toXMLString"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.toXMLString">[docs]</a>    <span class="k">def</span> <span class="nf">toXMLString</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Generates an EnzymeML XML string"""</span>
 
         <span class="k">return</span> <span class="n">EnzymeMLWriter</span><span class="p">()</span><span class="o">.</span><span class="n">toXMLString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.uploadToDataverse"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.uploadToDataverse">[docs]</a>    <span class="nd">@validate_arguments</span>
+<div class="viewcode-block" id="EnzymeMLDocument.uploadToDataverse"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.uploadToDataverse">[docs]</a>    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">uploadToDataverse</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">API_Token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">dataverse_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Uploads an EnzymeML document to a Dataverse installation of choice.</span>
+        <span class="sd">"""Uploads an EnzymeML document to a Dataverse installation of choice.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            base_url (str): URL to a Dataverse installation</span>
@@ -331,7 +309,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            AttributeError: Raised when neither a filename nor an EnzymeMLDocument object was provided.</span>
 <span class="sd">            ValidationError: Raised when the validation fails.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">uploadToDataverse</span><span class="p">(</span>
             <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span>
             <span class="n">API_Token</span><span class="o">=</span><span class="n">API_Token</span><span class="p">,</span>
@@ -339,52 +317,52 @@
             <span class="n">enzmldoc</span><span class="o">=</span><span class="bp">self</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.toDataverseJSON"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.toDataverseJSON">[docs]</a>    <span class="k">def</span> <span class="nf">toDataverseJSON</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Generates a Dataverse compatible JSON representation of this EnzymeML document.</span>
+<div class="viewcode-block" id="EnzymeMLDocument.toDataverseJSON"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.toDataverseJSON">[docs]</a>    <span class="k">def</span> <span class="nf">toDataverseJSON</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">"""Generates a Dataverse compatible JSON representation of this EnzymeML document.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            String: JSON string representation of this EnzymeML document.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">toDataverseJSON</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
     <span class="c1"># ! Utility methods</span>
-<div class="viewcode-block" id="EnzymeMLDocument.unifyMeasurementUnits"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.unifyMeasurementUnits">[docs]</a>    <span class="k">def</span> <span class="nf">unifyMeasurementUnits</span><span class="p">(</span>
+<div class="viewcode-block" id="EnzymeMLDocument.unifyMeasurementUnits"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.unifyMeasurementUnits">[docs]</a>    <span class="k">def</span> <span class="nf">unifyMeasurementUnits</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">measurement_ids</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
+        <span class="n">measurement_ids</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">"all"</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Rescales and unifies the units of either all measurements or those that are provided to the given kind and scale.</span>
+        <span class="sd">"""Rescales and unifies the units of either all measurements or those that are provided to the given kind and scale.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            kind (str): The unit kind from which to rescale. Currently supported: &#39;mole&#39;, &#39;gram&#39;, &#39;litre&#39;.</span>
+<span class="sd">            kind (str): The unit kind from which to rescale. Currently supported: 'mole', 'gram', 'litre'.</span>
 <span class="sd">            scale (int): Decade scale to which the values will be rescaled.</span>
-<span class="sd">            measurement_ids (Union[str, list[str]], optional): Measurements that will be rescaled. Defaults to &quot;all&quot;.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            measurement_ids (Union[str, list[str]], optional): Measurements that will be rescaled. Defaults to "all".</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Transform single strings to list</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">measurement_ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">measurement_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">measurement_ids</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">measurement_id</span><span class="p">,</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">measurement_id</span> <span class="ow">in</span> <span class="n">measurement_ids</span> <span class="ow">or</span> <span class="n">measurement_ids</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">measurement_id</span> <span class="ow">in</span> <span class="n">measurement_ids</span> <span class="ow">or</span> <span class="n">measurement_ids</span> <span class="o">==</span> <span class="p">[</span><span class="s2">"all"</span><span class="p">]:</span>
                 <span class="n">measurement</span><span class="o">.</span><span class="n">unifyUnits</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.exportMeasurementData"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.exportMeasurementData">[docs]</a>    <span class="k">def</span> <span class="nf">exportMeasurementData</span><span class="p">(</span>
+<div class="viewcode-block" id="EnzymeMLDocument.exportMeasurementData"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.exportMeasurementData">[docs]</a>    <span class="k">def</span> <span class="nf">exportMeasurementData</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">measurement_ids</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
-        <span class="n">species_ids</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
+        <span class="n">measurement_ids</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">"all"</span><span class="p">,</span>
+        <span class="n">species_ids</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">"all"</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]]:</span>
-        <span class="sd">&quot;&quot;&quot;Exports either all replicates present in any measurement or the ones specified via &#39;species_ids&#39; or &#39;measurement_ids&#39;</span>
+        <span class="sd">"""Exports either all replicates present in any measurement or the ones specified via 'species_ids' or 'measurement_ids'</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            measurement_ids (Union[str, list[str]], optional): The measurements from which to export the data. Defaults to &quot;all&quot;.</span>
-<span class="sd">            species_ids (Union[str, list[str]], optional): The species from which to export the data. Defaults to &quot;all&quot;.</span>
+<span class="sd">            measurement_ids (Union[str, list[str]], optional): The measurements from which to export the data. Defaults to "all".</span>
+<span class="sd">            species_ids (Union[str, list[str]], optional): The species from which to export the data. Defaults to "all".</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dict[str, dict[str, Union[tuple, pd.DataFrame]]]: The data corresponding to the specified options. The dictionary will still distinguish between meassuremnts.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">measurement_ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">measurement_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">measurement_ids</span><span class="p">]</span>
@@ -395,24 +373,24 @@
         <span class="n">replicate_data</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">measurement_id</span><span class="p">,</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">measurement_id</span> <span class="ow">in</span> <span class="n">measurement_ids</span> <span class="ow">or</span> <span class="n">measurement_ids</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">measurement_id</span> <span class="ow">in</span> <span class="n">measurement_ids</span> <span class="ow">or</span> <span class="n">measurement_ids</span> <span class="o">==</span> <span class="p">[</span><span class="s2">"all"</span><span class="p">]:</span>
                 <span class="n">measurement_data</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">exportData</span><span class="p">(</span>
                     <span class="n">species_ids</span><span class="o">=</span><span class="n">species_ids</span>
                 <span class="p">)</span>
 
                 <span class="n">measurement_data</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="o">**</span><span class="n">measurement_data</span><span class="p">[</span><span class="s2">&quot;proteins&quot;</span><span class="p">],</span>
-                    <span class="o">**</span><span class="n">measurement_data</span><span class="p">[</span><span class="s2">&quot;reactants&quot;</span><span class="p">]</span>
+                    <span class="o">**</span><span class="n">measurement_data</span><span class="p">[</span><span class="s2">"proteins"</span><span class="p">],</span>
+                    <span class="o">**</span><span class="n">measurement_data</span><span class="p">[</span><span class="s2">"reactants"</span><span class="p">]</span>
                 <span class="p">}</span>
 
-                <span class="k">if</span> <span class="n">measurement_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">measurement_data</span><span class="p">[</span><span class="s2">"data"</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">replicate_data</span><span class="p">[</span><span class="n">measurement_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">measurement_data</span>
 
         <span class="k">return</span> <span class="n">replicate_data</span></div>
 
     <span class="o">@</span> <span class="nb">staticmethod</span>
     <span class="k">def</span> <span class="nf">_generateID</span><span class="p">(</span><span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Generates IDs complying to the [s|p|r|m|u|c]?[digit]+ schema.</span>
+        <span class="sd">"""Generates IDs complying to the [s|p|r|m|u|c]?[digit]+ schema.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            prefix (str): Character denoting the type of species (p: Protein, s: Reactant, u: UnitDef, r: EnzymeReaction, m: Measurement, c: concentration).</span>
@@ -420,7 +398,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Unique internal identifier.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="c1"># fetch all keys and sort them</span>
@@ -431,61 +409,61 @@
 
         <span class="k">return</span> <span class="n">prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-<div class="viewcode-block" id="EnzymeMLDocument.validate"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="EnzymeMLDocument.validate"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># TODO rework validation</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;Function not refactored yet.&quot;</span>
+            <span class="s2">"Function not refactored yet."</span>
         <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">"""</span>
 <span class="sd">        Magic function return pretty string describing the object.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            string: Beautified summarization of object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">fin_string</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 
         <span class="k">def</span> <span class="nf">generate_lines</span><span class="p">(</span><span class="n">dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;Breaks up a dictionary and generates a human readible line.&quot;&quot;&quot;</span>
+            <span class="sd">"""Breaks up a dictionary and generates a human readible line."""</span>
             <span class="k">for</span> <span class="n">element_id</span><span class="p">,</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">fin_string</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">ID: </span><span class="si">{</span><span class="n">element_id</span><span class="si">}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> Name: </span><span class="si">{</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="se">\t</span><span class="s2">ID: </span><span class="si">{</span><span class="n">element_id</span><span class="si">}</span><span class="s2"> </span><span class="se">\t</span><span class="s2"> Name: </span><span class="si">{</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="n">fin_string</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&gt;&gt;&gt; Units&#39;</span><span class="p">]</span>
+        <span class="n">fin_string</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'&gt;&gt;&gt; Units'</span><span class="p">]</span>
         <span class="n">generate_lines</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_dict</span><span class="p">)</span>
 
-        <span class="n">fin_string</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&gt;&gt;&gt; Reactants&#39;</span><span class="p">)</span>
+        <span class="n">fin_string</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&gt;&gt;&gt; Reactants'</span><span class="p">)</span>
         <span class="n">generate_lines</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reactant_dict</span><span class="p">)</span>
 
-        <span class="n">fin_string</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&gt;&gt;&gt; Proteins&#39;</span><span class="p">)</span>
+        <span class="n">fin_string</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&gt;&gt;&gt; Proteins'</span><span class="p">)</span>
         <span class="n">generate_lines</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protein_dict</span><span class="p">)</span>
 
-        <span class="n">fin_string</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&gt;&gt;&gt; Reactions&#39;</span><span class="p">)</span>
+        <span class="n">fin_string</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&gt;&gt;&gt; Reactions'</span><span class="p">)</span>
         <span class="n">generate_lines</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reaction_dict</span><span class="p">)</span>
 
-        <span class="n">fin_string</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&gt;&gt;&gt; Measurements&#39;</span><span class="p">)</span>
+        <span class="n">fin_string</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'&gt;&gt;&gt; Measurements'</span><span class="p">)</span>
         <span class="n">fin_string</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">printMeasurements</span><span class="p">())</span>
 
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fin_string</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fin_string</span><span class="p">)</span>
 
-<div class="viewcode-block" id="EnzymeMLDocument.printMeasurements"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.printMeasurements">[docs]</a>    <span class="k">def</span> <span class="nf">printMeasurements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Prints all measurements as a human readable table&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="EnzymeMLDocument.printMeasurements"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.printMeasurements">[docs]</a>    <span class="k">def</span> <span class="nf">printMeasurements</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">"""Prints all measurements as a human readable table"""</span>
 
         <span class="n">table</span> <span class="o">=</span> <span class="n">Texttable</span><span class="p">()</span>
         <span class="n">table</span><span class="o">.</span><span class="n">set_deco</span><span class="p">(</span><span class="n">Texttable</span><span class="o">.</span><span class="n">HEADER</span><span class="p">)</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">set_cols_align</span><span class="p">([</span><span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">])</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">set_cols_align</span><span class="p">([</span><span class="s2">"l"</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">])</span>
 
         <span class="c1"># Initialize rows</span>
-        <span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Species&quot;</span><span class="p">,</span> <span class="s2">&quot;Conc&quot;</span><span class="p">,</span> <span class="s2">&quot;Unit&quot;</span><span class="p">]]</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">"ID"</span><span class="p">,</span> <span class="s2">"Species"</span><span class="p">,</span> <span class="s2">"Conc"</span><span class="p">,</span> <span class="s2">"Unit"</span><span class="p">]]</span>
 
         <span class="c1"># Generate and append rows</span>
         <span class="k">for</span> <span class="n">measurement_id</span><span class="p">,</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 
             <span class="n">speciesDict</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span>
-            <span class="n">proteins</span> <span class="o">=</span> <span class="n">speciesDict</span><span class="p">[</span><span class="s1">&#39;proteins&#39;</span><span class="p">]</span>
-            <span class="n">reactants</span> <span class="o">=</span> <span class="n">speciesDict</span><span class="p">[</span><span class="s1">&#39;reactants&#39;</span><span class="p">]</span>
+            <span class="n">proteins</span> <span class="o">=</span> <span class="n">speciesDict</span><span class="p">[</span><span class="s1">'proteins'</span><span class="p">]</span>
+            <span class="n">reactants</span> <span class="o">=</span> <span class="n">speciesDict</span><span class="p">[</span><span class="s1">'reactants'</span><span class="p">]</span>
 
             <span class="c1"># succesively add rows with schema</span>
             <span class="c1"># [ measID, speciesID, initConc, unit ]</span>
@@ -501,15 +479,15 @@
                 <span class="p">)</span>
 
         <span class="c1"># Add empty row for better readablity</span>
-        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot; &quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">" "</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
         <span class="n">table</span><span class="o">.</span><span class="n">add_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">table</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">table</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span></div>
 
     <span class="c1"># ! Add methods</span>
-<div class="viewcode-block" id="EnzymeMLDocument.addVessel"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addVessel">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
+<div class="viewcode-block" id="EnzymeMLDocument.addVessel"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addVessel">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
     <span class="k">def</span> <span class="nf">addVessel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vessel</span><span class="p">:</span> <span class="n">Vessel</span><span class="p">,</span> <span class="n">use_parser</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Adds a Vessel object to the EnzymeML document.</span>
+        <span class="sd">"""Adds a Vessel object to the EnzymeML document.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            vessel (Vessel): Vessel object to be added to the document.</span>
@@ -517,18 +495,18 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Unique internal identifier of the reactant.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addSpecies</span><span class="p">(</span>
             <span class="n">species</span><span class="o">=</span><span class="n">vessel</span><span class="p">,</span>
-            <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;v&quot;</span><span class="p">,</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="s2">"v"</span><span class="p">,</span>
             <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vessel_dict</span><span class="p">,</span>
             <span class="n">use_parser</span><span class="o">=</span><span class="n">use_parser</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.addReactant"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addReactant">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
+<div class="viewcode-block" id="EnzymeMLDocument.addReactant"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addReactant">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
     <span class="k">def</span> <span class="nf">addReactant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reactant</span><span class="p">:</span> <span class="n">Reactant</span><span class="p">,</span> <span class="n">use_parser</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Adds a Reactant object to the EnzymeML document.</span>
+        <span class="sd">"""Adds a Reactant object to the EnzymeML document.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            reactant (Reactant): Reactant object to be added to the document.</span>
@@ -536,18 +514,18 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Unique internal identifier of the reactant.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addSpecies</span><span class="p">(</span>
             <span class="n">species</span><span class="o">=</span><span class="n">reactant</span><span class="p">,</span>
-            <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">,</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="s2">"s"</span><span class="p">,</span>
             <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reactant_dict</span><span class="p">,</span>
             <span class="n">use_parser</span><span class="o">=</span><span class="n">use_parser</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.addProtein"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addProtein">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
+<div class="viewcode-block" id="EnzymeMLDocument.addProtein"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addProtein">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
     <span class="k">def</span> <span class="nf">addProtein</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protein</span><span class="p">:</span> <span class="n">Protein</span><span class="p">,</span> <span class="n">use_parser</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Adds a Protein object to the EnzymeML document.</span>
+        <span class="sd">"""Adds a Protein object to the EnzymeML document.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            protein (Protein): Protein object to be added to the document.</span>
@@ -555,11 +533,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Unique internal identifier of the protein.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addSpecies</span><span class="p">(</span>
             <span class="n">species</span><span class="o">=</span><span class="n">protein</span><span class="p">,</span>
-            <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;p&quot;</span><span class="p">,</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="s2">"p"</span><span class="p">,</span>
             <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">protein_dict</span><span class="p">,</span>
             <span class="n">use_parser</span><span class="o">=</span><span class="n">use_parser</span>
         <span class="p">)</span></div>
@@ -571,7 +549,7 @@
         <span class="n">dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">use_parser</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Helper function to add any specific species to the EnzymeML document.</span>
+        <span class="sd">"""Helper function to add any specific species to the EnzymeML document.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            species (AbstractSpecies): Species that is about to be added to the EnzymeML document.</span>
@@ -581,13 +559,13 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The internal identifier of the species.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Generate ID</span>
         <span class="n">species</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generateID</span><span class="p">(</span>
             <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">=</span><span class="n">dictionary</span>
         <span class="p">)</span>
-        <span class="n">species</span><span class="o">.</span><span class="n">meta_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;METAID_</span><span class="si">{</span><span class="n">species</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">species</span><span class="o">.</span><span class="n">meta_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"METAID_</span><span class="si">{</span><span class="n">species</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="c1"># Update unit to UnitDefID</span>
         <span class="k">if</span> <span class="n">species</span><span class="o">.</span><span class="n">unit</span> <span class="ow">and</span> <span class="n">use_parser</span><span class="p">:</span>
@@ -602,9 +580,9 @@
 
         <span class="k">return</span> <span class="n">species</span><span class="o">.</span><span class="n">id</span>
 
-<div class="viewcode-block" id="EnzymeMLDocument.addReaction"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addReaction">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
+<div class="viewcode-block" id="EnzymeMLDocument.addReaction"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addReaction">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
     <span class="k">def</span> <span class="nf">addReaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reaction</span><span class="p">:</span> <span class="n">EnzymeReaction</span><span class="p">,</span> <span class="n">use_parser</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">"""</span>
 <span class="sd">        Adds EnzymeReaction object to EnzymeMLDocument object.</span>
 <span class="sd">        Automatically assigns ID and converts units.</span>
 
@@ -617,17 +595,17 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            string: Internal identifier for the reaction.</span>
 <span class="sd">            Use it for other objects!</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Generate ID</span>
-        <span class="n">reaction</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generateID</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaction_dict</span><span class="p">)</span>
-        <span class="n">reaction</span><span class="o">.</span><span class="n">meta_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;METAID_</span><span class="si">{</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">reaction</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generateID</span><span class="p">(</span><span class="s2">"r"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaction_dict</span><span class="p">)</span>
+        <span class="n">reaction</span><span class="o">.</span><span class="n">meta_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"METAID_</span><span class="si">{</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="k">if</span> <span class="n">use_parser</span><span class="p">:</span>
             <span class="c1"># Reset temperature for SBML compliance to Kelvin</span>
             <span class="n">reaction</span><span class="o">.</span><span class="n">temperature</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">reaction</span><span class="o">.</span><span class="n">temperature</span> <span class="o">+</span> <span class="mf">273.15</span>
-                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^K|kelvin&quot;</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">temperature_unit</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^K|kelvin"</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">temperature_unit</span><span class="p">)</span>
                 <span class="k">else</span> <span class="n">reaction</span><span class="o">.</span><span class="n">temperature</span>
             <span class="p">)</span>
 
@@ -663,16 +641,16 @@
 
     <span class="o">@</span> <span class="nb">staticmethod</span>
     <span class="k">def</span> <span class="nf">_check_kinetic_model_ids</span><span class="p">(</span><span class="n">equation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">species_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Checks if the given species IDs are consistent with the EnzymeML document.</span>
+        <span class="sd">"""Checks if the given species IDs are consistent with the EnzymeML document.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            equation (str): The rate law given in the KineticModel</span>
 <span class="sd">            species_ids (list[str]): All species IDs from the EnzymeML document.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Get all IDs from the KineticModel equation</span>
         <span class="n">kinetic_model_ids</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;[p|s][\d]+&quot;</span><span class="p">,</span>
+            <span class="sa">r</span><span class="s2">"[p|s][\d]+"</span><span class="p">,</span>
             <span class="n">equation</span>
         <span class="p">)</span>
 
@@ -680,28 +658,28 @@
             <span class="k">if</span> <span class="n">species_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">species_ids</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">SpeciesNotFoundError</span><span class="p">(</span>
                     <span class="n">species_id</span><span class="o">=</span><span class="n">species_id</span><span class="p">,</span>
-                    <span class="n">enzymeml_part</span><span class="o">=</span><span class="s2">&quot;KineticModel equation&quot;</span>
+                    <span class="n">enzymeml_part</span><span class="o">=</span><span class="s2">"KineticModel equation"</span>
                 <span class="p">)</span>
 
     <span class="o">@</span> <span class="nb">staticmethod</span>
     <span class="k">def</span> <span class="nf">_convert_kinetic_model_units</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">KineticParameter</span><span class="p">],</span> <span class="n">enzmldoc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Converts given unit strings to unit IDs and adds them to the model.</span>
+        <span class="sd">"""Converts given unit strings to unit IDs and adds them to the model.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            parameters (list[KineticParameter]): List of all kinetic parameters.</span>
 <span class="sd">            enzmldoc ([type]): Used to convert unit strings to unit IDs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
             <span class="n">parameter</span><span class="o">.</span><span class="n">_unit_id</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">_convertToUnitDef</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
 
-<div class="viewcode-block" id="EnzymeMLDocument.addFile"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addFile">[docs]</a>    <span class="k">def</span> <span class="nf">addFile</span><span class="p">(</span>
+<div class="viewcode-block" id="EnzymeMLDocument.addFile"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addFile">[docs]</a>    <span class="k">def</span> <span class="nf">addFile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">fileHandle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Undefined&quot;</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Undefined"</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Adds any arbitrary file to the document. Please note, that if a filepath is given, any fileHandle will be ignored.</span>
+        <span class="sd">"""Adds any arbitrary file to the document. Please note, that if a filepath is given, any fileHandle will be ignored.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filepath (str, optional): Path to the file that is added to the document. Defaults to None.</span>
@@ -709,40 +687,40 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Internal identifier for the file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Generate a unique identifier for the file</span>
-        <span class="n">file_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generateID</span><span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_dict</span><span class="p">)</span>
+        <span class="n">file_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generateID</span><span class="p">(</span><span class="s2">"f"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_dict</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">filepath</span><span class="p">:</span>
             <span class="c1"># Open file handle</span>
-            <span class="n">fileHandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+            <span class="n">fileHandle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">fileHandle</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Please specify either a file path or a file handle&quot;</span>
+                <span class="s2">"Please specify either a file path or a file handle"</span>
             <span class="p">)</span>
 
         <span class="c1"># Finally, add the file and close the handler</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_dict</span><span class="p">[</span><span class="n">file_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fileHandle</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
-            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">fileHandle</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
-            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span>
+            <span class="s2">"name"</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fileHandle</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+            <span class="s2">"content"</span><span class="p">:</span> <span class="n">fileHandle</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
+            <span class="s2">"description"</span><span class="p">:</span> <span class="n">description</span>
         <span class="p">}</span>
 
         <span class="n">fileHandle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">file_id</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.addMeasurement"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addMeasurement">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
+<div class="viewcode-block" id="EnzymeMLDocument.addMeasurement"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.addMeasurement">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
     <span class="k">def</span> <span class="nf">addMeasurement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measurement</span><span class="p">:</span> <span class="n">Measurement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Adds a measurement to an EnzymeMLDocument and validates consistency with already defined elements of the document.</span>
+        <span class="sd">"""Adds a measurement to an EnzymeMLDocument and validates consistency with already defined elements of the document.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            measurement (Measurement): Collection of data and initial concentrations per reaction</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            measurement_id (String): Assigned measurement identifier.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Check consistency</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checkMeasurementConsistency</span><span class="p">(</span><span class="n">measurement</span><span class="p">)</span>
@@ -752,12 +730,12 @@
 
         <span class="c1"># Generate the ID and add it to the dictionary</span>
         <span class="n">measurement</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generateID</span><span class="p">(</span>
-            <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">measurement_dict</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="s2">"m"</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">measurement_dict</span>
         <span class="p">)</span>
 
         <span class="c1"># Update measurement ID to all replicates</span>
-        <span class="n">protein_data</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">&quot;proteins&quot;</span><span class="p">]</span>
-        <span class="n">reactant_data</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">&quot;reactants&quot;</span><span class="p">]</span>
+        <span class="n">protein_data</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">"proteins"</span><span class="p">]</span>
+        <span class="n">reactant_data</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">"reactants"</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateReplicateMeasurementIDs</span><span class="p">(</span><span class="n">protein_data</span><span class="p">,</span> <span class="n">measurement</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateReplicateMeasurementIDs</span><span class="p">(</span><span class="n">reactant_data</span><span class="p">,</span> <span class="n">measurement</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -768,11 +746,11 @@
         <span class="k">return</span> <span class="n">measurement</span><span class="o">.</span><span class="n">id</span></div>
 
     <span class="k">def</span> <span class="nf">_convertMeasurementUnits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measurement</span><span class="p">:</span> <span class="n">Measurement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Converts string SI units to UnitDef objects and IDs</span>
+        <span class="sd">"""Converts string SI units to UnitDef objects and IDs</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            measurement (Measurement): Object defining a measurement</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Update global time of the measurement</span>
         <span class="n">measurement</span><span class="o">.</span><span class="n">global_time_unit_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convertToUnitDef</span><span class="p">(</span>
@@ -780,7 +758,7 @@
         <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">update_dict_units</span><span class="p">(</span><span class="n">measurement_data_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MeasurementData</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;Helper function to update units&quot;&quot;&quot;</span>
+            <span class="sd">"""Helper function to update units"""</span>
             <span class="k">for</span> <span class="n">measurement_data</span> <span class="ow">in</span> <span class="n">measurement_data_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">measurement_data</span><span class="o">.</span><span class="n">_unit_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convertToUnitDef</span><span class="p">(</span>
                     <span class="n">measurement_data</span><span class="o">.</span><span class="n">unit</span>
@@ -794,15 +772,15 @@
                     <span class="n">measurement</span><span class="o">.</span><span class="n">global_time</span> <span class="o">=</span> <span class="n">global_time</span>
 
         <span class="c1"># Perform update</span>
-        <span class="n">update_dict_units</span><span class="p">(</span><span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">&quot;proteins&quot;</span><span class="p">])</span>
-        <span class="n">update_dict_units</span><span class="p">(</span><span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">&quot;reactants&quot;</span><span class="p">])</span>
+        <span class="n">update_dict_units</span><span class="p">(</span><span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">"proteins"</span><span class="p">])</span>
+        <span class="n">update_dict_units</span><span class="p">(</span><span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">"reactants"</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_convertReplicateUnits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measurement_data</span><span class="p">:</span> <span class="n">MeasurementData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Converts replicate unit strings to unit definitions.</span>
+        <span class="sd">"""Converts replicate unit strings to unit definitions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            measurement_data (MeasurementData): Object holding measurement data for a species</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># TODO verify globally global time</span>
         <span class="n">global_time</span> <span class="o">=</span> <span class="kc">None</span>
@@ -822,31 +800,31 @@
         <span class="k">return</span> <span class="n">global_time</span>
 
     <span class="k">def</span> <span class="nf">_updateReplicateMeasurementIDs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measurement_data_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MeasurementData</span><span class="p">],</span> <span class="n">measurement_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Updates the measurement IDs of replicates.&quot;&quot;&quot;</span>
+        <span class="sd">"""Updates the measurement IDs of replicates."""</span>
         <span class="k">for</span> <span class="n">measurement_data</span> <span class="ow">in</span> <span class="n">measurement_data_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">replicates</span> <span class="o">=</span> <span class="n">measurement_data</span><span class="o">.</span><span class="n">replicates</span>
             <span class="k">for</span> <span class="n">replicate</span> <span class="ow">in</span> <span class="n">replicates</span><span class="p">:</span>
                 <span class="n">replicate</span><span class="o">.</span><span class="n">measurement_id</span> <span class="o">=</span> <span class="n">measurement_id</span>
 
     <span class="k">def</span> <span class="nf">_checkMeasurementConsistency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">measurement</span><span class="p">:</span> <span class="n">Measurement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Checks if the used species in the measurement are consistent with the EnzymeML document.</span>
+        <span class="sd">"""Checks if the used species in the measurement are consistent with the EnzymeML document.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            measurement (MeasurementData): Objech holding measurement data for a species.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
-        <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_checkSpecies</span><span class="p">,</span> <span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">&quot;reactants&quot;</span><span class="p">])</span>
-        <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_checkSpecies</span><span class="p">,</span> <span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">&quot;proteins&quot;</span><span class="p">])</span>
+        <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_checkSpecies</span><span class="p">,</span> <span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">"reactants"</span><span class="p">])</span>
+        <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_checkSpecies</span><span class="p">,</span> <span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span><span class="p">[</span><span class="s2">"proteins"</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_checkSpecies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">species_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Checks if a species is defined in the EnzymeML document.</span>
+        <span class="sd">"""Checks if a species is defined in the EnzymeML document.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            species_id (str): Unique identifier of the species.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            SpeciesNotFoundError: Raised when a species is not defined in the EnzymeML document.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">all_species</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">reactant_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">protein_dict</span><span class="p">}</span>
 
@@ -856,11 +834,11 @@
             <span class="n">species</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpecies</span><span class="p">(</span>
                 <span class="nb">id</span><span class="o">=</span><span class="n">species_id</span><span class="p">,</span>
                 <span class="n">dictionary</span><span class="o">=</span><span class="n">all_species</span><span class="p">,</span>
-                <span class="n">element_type</span><span class="o">=</span><span class="s2">&quot;Proteins/Reactants&quot;</span>
+                <span class="n">element_type</span><span class="o">=</span><span class="s2">"Proteins/Reactants"</span>
             <span class="p">)</span>
 
             <span class="c1"># Use the EnzymeMLPart Enum to derive the correct place</span>
-            <span class="n">sbo_term</span> <span class="o">=</span> <span class="n">SBOTerm</span><span class="p">(</span><span class="n">species</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">&quot;ontology&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">sbo_term</span> <span class="o">=</span> <span class="n">SBOTerm</span><span class="p">(</span><span class="n">species</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s2">"ontology"</span><span class="p">])</span><span class="o">.</span><span class="n">name</span>
             <span class="n">enzymeml_part</span> <span class="o">=</span> <span class="n">EnzymeMLPart</span><span class="o">.</span><span class="n">partFromSBOTerm</span><span class="p">(</span><span class="n">sbo_term</span><span class="p">)</span>
 
             <span class="c1"># Raise an error if the species is nowhere present</span>
@@ -870,31 +848,31 @@
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_convertToUnitDef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Reads an SI unit string and converts it into a EnzymeML compatible UnitDef</span>
+        <span class="sd">"""Reads an SI unit string and converts it into a EnzymeML compatible UnitDef</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            unit (str): String representing the SI unit.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Unique identifier of the UnitDef.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No unit given.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"No unit given."</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">unit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">unit</span>
 
         <span class="k">return</span> <span class="n">UnitCreator</span><span class="p">()</span><span class="o">.</span><span class="n">getUnit</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
     <span class="c1"># ! Getter methods</span>
-<div class="viewcode-block" id="EnzymeMLDocument.getSpeciesIDs"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getSpeciesIDs">[docs]</a>    <span class="k">def</span> <span class="nf">getSpeciesIDs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getSpeciesIDs"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getSpeciesIDs">[docs]</a>    <span class="k">def</span> <span class="nf">getSpeciesIDs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">({</span>
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">protein_dict</span><span class="p">,</span>
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">reactant_dict</span>
         <span class="p">}</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getUnitString"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getUnitString">[docs]</a>    <span class="k">def</span> <span class="nf">getUnitString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the unit name corresponding to the given unit ID.</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getUnitString"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getUnitString">[docs]</a>    <span class="k">def</span> <span class="nf">getUnitString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">"""Return the unit name corresponding to the given unit ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            unit_id (str): Unique internal ID of the unit.</span>
@@ -904,20 +882,20 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: String representation of the unit.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">unit_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No unit given.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"No unit given."</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_dict</span><span class="p">[</span><span class="n">unit_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SpeciesNotFoundError</span><span class="p">(</span>
-                <span class="n">species_id</span><span class="o">=</span><span class="n">unit_id</span><span class="p">,</span> <span class="n">enzymeml_part</span><span class="o">=</span><span class="s2">&quot;Units&quot;</span>
+                <span class="n">species_id</span><span class="o">=</span><span class="n">unit_id</span><span class="p">,</span> <span class="n">enzymeml_part</span><span class="o">=</span><span class="s2">"Units"</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getUnitDef"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getUnitDef">[docs]</a>    <span class="k">def</span> <span class="nf">getUnitDef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UnitDef</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the unit associated with the given ID.</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getUnitDef"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getUnitDef">[docs]</a>    <span class="k">def</span> <span class="nf">getUnitDef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UnitDef</span><span class="p">:</span>
+        <span class="sd">"""Returns the unit associated with the given ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id (str): Unique internal ID of the unit.</span>
@@ -928,17 +906,17 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            UnitDef: The corresponding unit object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpecies</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
             <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">unit_dict</span><span class="p">,</span>
-            <span class="n">element_type</span><span class="o">=</span><span class="s2">&quot;Units&quot;</span><span class="p">,</span>
+            <span class="n">element_type</span><span class="o">=</span><span class="s2">"Units"</span><span class="p">,</span>
             <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getReaction"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReaction">[docs]</a>    <span class="k">def</span> <span class="nf">getReaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnzymeReaction</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the reaction associated with the given ID.</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getReaction"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReaction">[docs]</a>    <span class="k">def</span> <span class="nf">getReaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnzymeReaction</span><span class="p">:</span>
+        <span class="sd">"""Returns the reaction associated with the given ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id (str): Unique internal ID of the reaction.</span>
@@ -949,17 +927,17 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            EnzymeReaction: The corresponding reaction object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpecies</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
             <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reaction_dict</span><span class="p">,</span>
-            <span class="n">element_type</span><span class="o">=</span><span class="s2">&quot;EnzymeReaction&quot;</span><span class="p">,</span>
+            <span class="n">element_type</span><span class="o">=</span><span class="s2">"EnzymeReaction"</span><span class="p">,</span>
             <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getMeasurement"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getMeasurement">[docs]</a>    <span class="k">def</span> <span class="nf">getMeasurement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Measurement</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the measurement associated with the given ID.</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getMeasurement"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getMeasurement">[docs]</a>    <span class="k">def</span> <span class="nf">getMeasurement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Measurement</span><span class="p">:</span>
+        <span class="sd">"""Returns the measurement associated with the given ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id (str): Unique internal ID of the measurement.</span>
@@ -970,17 +948,17 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Measurement: The corresponding measurement object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpecies</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
             <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">measurement_dict</span><span class="p">,</span>
-            <span class="n">element_type</span><span class="o">=</span><span class="s2">&quot;Measurement&quot;</span><span class="p">,</span>
+            <span class="n">element_type</span><span class="o">=</span><span class="s2">"Measurement"</span><span class="p">,</span>
             <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getReactant"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReactant">[docs]</a>    <span class="k">def</span> <span class="nf">getReactant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Reactant</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the reactant associated with the given ID.</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getReactant"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReactant">[docs]</a>    <span class="k">def</span> <span class="nf">getReactant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Reactant</span><span class="p">:</span>
+        <span class="sd">"""Returns the reactant associated with the given ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id (str): Unique internal ID of the reactant.</span>
@@ -991,17 +969,17 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Reactant: The corresponding reactant object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpecies</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
             <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reactant_dict</span><span class="p">,</span>
-            <span class="n">element_type</span><span class="o">=</span><span class="s2">&quot;Reactant&quot;</span><span class="p">,</span>
+            <span class="n">element_type</span><span class="o">=</span><span class="s2">"Reactant"</span><span class="p">,</span>
             <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getProtein"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getProtein">[docs]</a>    <span class="k">def</span> <span class="nf">getProtein</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Protein</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the protein associated with the given ID.</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getProtein"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getProtein">[docs]</a>    <span class="k">def</span> <span class="nf">getProtein</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Protein</span><span class="p">:</span>
+        <span class="sd">"""Returns the protein associated with the given ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id (str): Unique internal ID of the protein.</span>
@@ -1012,17 +990,17 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Protein: The corresponding protein object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpecies</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
             <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">protein_dict</span><span class="p">,</span>
-            <span class="n">element_type</span><span class="o">=</span><span class="s2">&quot;Protein&quot;</span><span class="p">,</span>
+            <span class="n">element_type</span><span class="o">=</span><span class="s2">"Protein"</span><span class="p">,</span>
             <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getFile"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getFile">[docs]</a>    <span class="k">def</span> <span class="nf">getFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the file associated with the given ID.</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getFile"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getFile">[docs]</a>    <span class="k">def</span> <span class="nf">getFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">"""Returns the file associated with the given ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id (str): Unique internal ID of the file.</span>
@@ -1033,12 +1011,12 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dict[str, dict]: The corresponding file object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpecies</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
             <span class="n">dictionary</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_dict</span><span class="p">,</span>
-            <span class="n">element_type</span><span class="o">=</span><span class="s2">&quot;File&quot;</span><span class="p">,</span>
+            <span class="n">element_type</span><span class="o">=</span><span class="s2">"File"</span><span class="p">,</span>
             <span class="n">by_id</span><span class="o">=</span><span class="n">by_id</span>
         <span class="p">)</span></div>
 
@@ -1049,7 +1027,7 @@
         <span class="n">element_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">by_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Helper function to retrieve any kind of species from the EnzymeML document.</span>
+        <span class="sd">"""Helper function to retrieve any kind of species from the EnzymeML document.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id (str): Unique internal ID.</span>
@@ -1062,10 +1040,10 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Union[ AbstractSpecies, EnzymeReaction, Measurement ]: The requested object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Fix the searched attribute</span>
-        <span class="n">searched_attribute</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span> <span class="k">if</span> <span class="n">by_id</span> <span class="k">else</span> <span class="s2">&quot;name&quot;</span>
+        <span class="n">searched_attribute</span> <span class="o">=</span> <span class="s2">"id"</span> <span class="k">if</span> <span class="n">by_id</span> <span class="k">else</span> <span class="s2">"name"</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Filter the dict for the desired species</span>
@@ -1079,128 +1057,134 @@
                 <span class="n">species_id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span> <span class="n">enzymeml_part</span><span class="o">=</span><span class="n">element_type</span>
             <span class="p">)</span>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getReactantList"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReactantList">[docs]</a>    <span class="k">def</span> <span class="nf">getReactantList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reactant</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a list of all reactants in the EnzymeML document.&quot;</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getReactantList"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReactantList">[docs]</a>    <span class="k">def</span> <span class="nf">getReactantList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reactant</span><span class="p">]:</span>
+        <span class="sd">"""Returns a list of all reactants in the EnzymeML document."</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list[Reactant]: List of all reactants in the EnzymeML document.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpeciesList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reactant_dict</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getProteinList"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getProteinList">[docs]</a>    <span class="k">def</span> <span class="nf">getProteinList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Protein</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a list of all proteins in the EnzymeML document.&quot;</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getProteinList"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getProteinList">[docs]</a>    <span class="k">def</span> <span class="nf">getProteinList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Protein</span><span class="p">]:</span>
+        <span class="sd">"""Returns a list of all proteins in the EnzymeML document."</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list[Protein]: List of all proteins in the EnzymeML document.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpeciesList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protein_dict</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getReactionList"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReactionList">[docs]</a>    <span class="k">def</span> <span class="nf">getReactionList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">EnzymeReaction</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a list of all reactions in the EnzymeML document.&quot;</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getReactionList"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReactionList">[docs]</a>    <span class="k">def</span> <span class="nf">getReactionList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">EnzymeReaction</span><span class="p">]:</span>
+        <span class="sd">"""Returns a list of all reactions in the EnzymeML document."</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list[EnzymeReaction]: List of all reactions in the EnzymeML document.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpeciesList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reaction_dict</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getFilesList"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getFilesList">[docs]</a>    <span class="k">def</span> <span class="nf">getFilesList</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns a list of all files in the EnzymeML document.&quot;</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getFilesList"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getFilesList">[docs]</a>    <span class="k">def</span> <span class="nf">getFilesList</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Returns a list of all files in the EnzymeML document."</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list[dict]: List of all files in the EnzymeML document.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpeciesList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_dict</span><span class="p">)</span></div>
 
     <span class="o">@</span> <span class="nb">staticmethod</span>
     <span class="k">def</span> <span class="nf">_getSpeciesList</span><span class="p">(</span><span class="n">dictionary</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Helper function to retrieve lists of dicitonary objects</span>
+        <span class="sd">"""Helper function to retrieve lists of dicitonary objects</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            dictionary (dict): Dictionary of corresponding elements</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list: Returns all values in the dictionary</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getDoi"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getDoi">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;doi&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getDoi"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getDoi">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"doi"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getDoi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">doi</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getPubmedID"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getPubmedID">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;pubmedid&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getPubmedID"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getPubmedID">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"pubmedid"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getPubmedID</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pubmedid</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getUrl"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getUrl">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getUrl"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getUrl">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"url"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getUrl</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.get_created"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.get_created">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;created&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.get_created"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.get_created">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"created"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">get_created</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">created</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getModified"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getModified">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;modified&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getModified"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getModified">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"modified"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getModified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getCreator"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getCreator">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;creators&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getCreator"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getCreator">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"creators"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getCreator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">creator_dict</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getVessel"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getVessel">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;vessel&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getVessel"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getVessel">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"vessel"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getVessel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vessel</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getName"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getName">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getName"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getName">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getLevel"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getLevel">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;level&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getLevel"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getLevel">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"level"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getLevel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getVersion"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getVersion">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getVersion"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getVersion">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"version"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getProteinDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getProteinDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;protein_dict&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getProteinDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getProteinDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"protein_dict"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getProteinDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">protein_dict</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getReactantDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReactantDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;reactant_dict&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getReactantDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReactantDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"reactant_dict"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getReactantDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactant_dict</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getReactionDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReactionDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;reaction_dict&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getReactionDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getReactionDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"reaction_dict"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getReactionDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaction_dict</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getMeasurementDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getMeasurementDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;measurement_dict&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getMeasurementDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getMeasurementDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"measurement_dict"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getMeasurementDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_dict</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getUnitDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getUnitDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;unit_dict&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getUnitDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getUnitDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"unit_dict"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getUnitDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_dict</span></div>
 
-<div class="viewcode-block" id="EnzymeMLDocument.getFileDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getFileDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;file_dict&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="EnzymeMLDocument.getFileDict"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument.getFileDict">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">"file_dict"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getFileDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_dict</span></div></div>
 </pre></div>
-
-          </div>
-          <div class="page-nav">
-            <div class="inner"><ul class="page-nav">
-</ul><div class="footer" role="contentinfo">
-      &#169; Copyright 2021, Jan.
-    <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
 </div>
-            </div>
-          </div>
-      </page>
-    </div></div>
-    
-    
-  </body>
+<div class="prev-next-area">
+</div>
+</main>
+</div>
+</div>
+<script src="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<div class="footer-item">
+<p class="copyright">
+    © Copyright 2021, Jan.<br/>
+</p>
+</div>
+<div class="footer-item">
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1.<br/>
+</p>
+</div>
+</div>
+</footer>
+</body>
 </html>

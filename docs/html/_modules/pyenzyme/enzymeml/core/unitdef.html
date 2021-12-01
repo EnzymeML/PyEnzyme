@@ -1,108 +1,86 @@
+
 <!DOCTYPE html>
-<html >
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-      <title>pyenzyme.enzymeml.core.unitdef</title>
-    
-          <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/theme.css " type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
-          <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
-      
-      <!-- sphinx script_files -->
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/clipboard.min.js"></script>
-        <script src="../../../../_static/copybutton.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
 
-      
-      <!-- bundled in js (rollup iife) -->
-      <!-- <script src="../../../../_static/theme-vendors.js"></script> -->
-      <script src="../../../../_static/theme.js" defer></script>
-    
-  <link rel="index" title="Index" href="../../../../genindex.html" />
-  <link rel="search" title="Search" href="../../../../search.html" /> 
-  </head>
-
-  <body>
-    <div id="app">
-    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
-  <router-link to="../../../../index.html" class="home-link">
-    
-      <span class="site-name">Test</span>
-    
-  </router-link>
-
-  <div class="links">
-    <navlinks class="can-hide">
-
-
-
-    </navlinks>
-  </div>
-</navbar>
-
-      
-      <div class="sidebar-mask" @click="toggleSidebar(false)">
-      </div>
-        <sidebar @toggle-sidebar="toggleSidebar">
-          
-          <navlinks>
-            
-
-
-
-            
-          </navlinks><div id="searchbox" class="searchbox" role="search">
-  <div class="caption"><span class="caption-text">Quick search</span>
-    <div class="searchformwrapper">
-      <form class="search" action="../../../../search.html" method="get">
-        <input type="text" name="q" />
-        <input type="submit" value="Search" />
-        <input type="hidden" name="check_keywords" value="yes" />
-        <input type="hidden" name="area" value="default" />
-      </form>
-    </div>
-  </div>
-</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
-  
-    <div class="sidebar-group">
-      <p class="caption">
-        <span class="caption-text"><a href="../../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
-      </p>
-      <ul class="">
-        
-      </ul>
-    </div>
-  
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>pyenzyme.enzymeml.core.unitdef — PyEnzyme 1.2.0 documentation</title>
+<link href="../../../../_static/css/theme.css" rel="stylesheet"/>
+<link href="../../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet"/>
+<link href="../../../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/css/blank.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/autodoc_pydantic.css" rel="stylesheet" type="text/css"/>
+<link href="../../../../_static/copybutton.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js" rel="preload">
+<script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+<script src="../../../../_static/jquery.js"></script>
+<script src="../../../../_static/underscore.js"></script>
+<script src="../../../../_static/doctools.js"></script>
+<script src="../../../../_static/clipboard.min.js"></script>
+<script src="../../../../_static/copybutton.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<link href="../../../../genindex.html" rel="index" title="Index"/>
+<link href="../../../../search.html" rel="search" title="Search"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="None" name="docsearch:language"/>
+</link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-fluid" id="banner"></div>
+<nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+<div id="navbar-start">
+<a class="navbar-brand" href="../../../../index.html">
+<p class="title">PyEnzyme</p>
+</a>
 </div>
-        </sidebar>
-
-      <page>
-          <div class="body-header" role="navigation" aria-label="navigation">
-  
-  <ul class="breadcrumbs">
-    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
-    
-      <li><a href="../../../index.html">Module code</a> &raquo;</li>
-    
-    <li>pyenzyme.enzymeml.core.unitdef</li>
-  </ul>
-  
-
-  <ul class="page-nav">
+<button aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar-collapsible" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="col-lg-9 collapse navbar-collapse" id="navbar-collapsible">
+<div class="mr-auto" id="navbar-center">
+<div class="navbar-center-item">
+<ul class="navbar-nav" id="navbar-main-elements">
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../../../../_getstarted/01_Overview.html">
+  Overview
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../../../../_getstarted/02_Reading%20EnzymeML.html">
+  Reading EnzymeML
+ </a>
+</li>
 </ul>
-  
 </div>
-<hr>
-          <div class="content" role="main" v-pre>
-            
-  <h1>Source code for pyenzyme.enzymeml.core.unitdef</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
+</div>
+<div id="navbar-end">
+<div class="navbar-end-item">
+<ul aria-label="Icon Links" class="navbar-nav" id="navbar-icon-links">
+</ul>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<div class="container-xl">
+<div class="row">
+<div class="col-12 col-md-3 bd-sidebar"><form action="../../../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form><nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<div class="bd-toc-item active">
+</div>
+</nav>
+</div>
+<div class="d-none d-xl-block col-xl-2 bd-toc">
+</div>
+<main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+<div>
+<h1>Source code for pyenzyme.enzymeml.core.unitdef</h1><div class="highlight"><pre>
+<span></span><span class="sd">'''</span>
 <span class="sd">File: unitdef.py</span>
 <span class="sd">Project: core</span>
 <span class="sd">Author: Jan Range</span>
@@ -112,7 +90,7 @@
 <span class="sd">Modified By: Jan Range (&lt;jan.range@simtech.uni-stuttgart.de&gt;)</span>
 <span class="sd">-----</span>
 <span class="sd">Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">'''</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span><span class="p">,</span> <span class="n">validate_arguments</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span>
@@ -132,100 +110,100 @@
     <span class="n">static_check_init_args</span> <span class="o">=</span> <span class="n">type_checking</span>
 
 
-<div class="viewcode-block" id="BaseUnit"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.BaseUnit">[docs]</a><span class="nd">@static_check_init_args</span>
+<div class="viewcode-block" id="BaseUnit"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.BaseUnit">[docs]</a><span class="nd">@static_check_init_args</span>
 <span class="k">class</span> <span class="nc">BaseUnit</span><span class="p">(</span><span class="n">EnzymeMLBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base unit description including kind, exponent, scale and multiplier&quot;&quot;&quot;</span>
+    <span class="sd">"""Base unit description including kind, exponent, scale and multiplier"""</span>
 
     <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unit kind used to write SBML.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unit kind used to write SBML."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">exponent</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unit exponent.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unit exponent."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unit scale.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unit scale."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">multiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unit multiplier.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unit multiplier."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span></div>
 
-    <span class="c1"># @validator(&quot;kind&quot;)</span>
+    <span class="c1"># @validator("kind")</span>
     <span class="c1"># def check_sbml_unit_enum(cls, kind_int: int):</span>
     <span class="c1">#     kind_string: str = libsbml.UnitKind_toString(kind_int)</span>
 
-    <span class="c1">#     if &quot;Invalid UnitKind&quot; in kind_string:</span>
+    <span class="c1">#     if "Invalid UnitKind" in kind_string:</span>
     <span class="c1">#         raise UnitKindError()</span>
 
 
-<div class="viewcode-block" id="UnitDef"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.UnitDef">[docs]</a><span class="nd">@static_check_init_args</span>
+<div class="viewcode-block" id="UnitDef"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.UnitDef">[docs]</a><span class="nd">@static_check_init_args</span>
 <span class="k">class</span> <span class="nc">UnitDef</span><span class="p">(</span><span class="n">EnzymeMLBase</span><span class="p">):</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the SI unit.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Name of the SI unit."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Interal Identifier of the SI unit.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Interal Identifier of the SI unit."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">meta_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Interal meta identifier of the SI unit.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Interal meta identifier of the SI unit."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">units</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseUnit</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of SI baseunits.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List of SI baseunits."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">ontology</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Ontology of the SI unit.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Ontology of the SI unit."</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 
     <span class="c1"># ! Validators</span>
-<div class="viewcode-block" id="UnitDef.set_meta_id"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.UnitDef.set_meta_id">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="UnitDef.set_meta_id"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.UnitDef.set_meta_id">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_meta_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets the meta ID when an ID is provided&quot;&quot;&quot;</span>
+        <span class="sd">"""Sets the meta ID when an ID is provided"""</span>
 
         <span class="k">if</span> <span class="nb">id</span><span class="p">:</span>
             <span class="c1"># Set Meta ID with ID</span>
-            <span class="n">values</span><span class="p">[</span><span class="s2">&quot;meta_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;METAID_</span><span class="si">{</span><span class="nb">id</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">values</span><span class="p">[</span><span class="s2">"meta_id"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"METAID_</span><span class="si">{</span><span class="nb">id</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="k">return</span> <span class="nb">id</span></div>
 
-<div class="viewcode-block" id="UnitDef.check_meta_id"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.UnitDef.check_meta_id">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;meta_id&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="UnitDef.check_meta_id"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.UnitDef.check_meta_id">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">"meta_id"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">check_meta_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">meta_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Checks if the meta ID provided is following the standard&quot;&quot;&quot;</span>
+        <span class="sd">"""Checks if the meta ID provided is following the standard"""</span>
 
-        <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;meta_id&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"meta_id"</span><span class="p">):</span>
             <span class="c1"># When the ID init already set the meta ID</span>
-            <span class="k">return</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;meta_id&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"meta_id"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="UnitDef.addBaseUnit"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.UnitDef.addBaseUnit">[docs]</a>    <span class="nd">@validate_arguments</span>
+<div class="viewcode-block" id="UnitDef.addBaseUnit"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.UnitDef.addBaseUnit">[docs]</a>    <span class="nd">@validate_arguments</span>
     <span class="k">def</span> <span class="nf">addBaseUnit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exponent</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Adds a base unit to the units element and sort the units.</span>
+        <span class="sd">"""Adds a base unit to the units element and sort the units.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            kind (str): SBML unit kind string.</span>
 <span class="sd">            exponent (float): Exponent of the unit.</span>
 <span class="sd">            scale (float): Scale of the unit.</span>
 <span class="sd">            multiplier (float): Muliplier of the unit.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Create baseunit</span>
         <span class="n">baseunit</span> <span class="o">=</span> <span class="n">BaseUnit</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">exponent</span><span class="o">=</span><span class="n">exponent</span><span class="p">,</span>
@@ -239,8 +217,8 @@
         <span class="p">)</span></div>
 
     <span class="c1"># ! Utilities</span>
-<div class="viewcode-block" id="UnitDef.calculateTransformValue"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.UnitDef.calculateTransformValue">[docs]</a>    <span class="k">def</span> <span class="nf">calculateTransformValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculates the value that is needed to re-scale the given unit to the desired scale.</span>
+<div class="viewcode-block" id="UnitDef.calculateTransformValue"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.UnitDef.calculateTransformValue">[docs]</a>    <span class="k">def</span> <span class="nf">calculateTransformValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">"""Calculates the value that is needed to re-scale the given unit to the desired scale.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            kind (str): The kind of unit that is used as a reference.</span>
@@ -251,7 +229,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            float: The value that is needed to re-scale the given unit to the desired scale.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">for</span> <span class="n">base_unit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">base_unit</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">kind</span><span class="p">:</span>
@@ -266,34 +244,34 @@
                 <span class="p">)</span>
 
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unit kind of </span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2"> is not part of the unit definition&quot;</span>
+            <span class="sa">f</span><span class="s2">"Unit kind of </span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2"> is not part of the unit definition"</span>
         <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_getNewName</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Internal function used to derive a units new name. Will be assigned using enzmldoc._convertTounitDef.</span>
+        <span class="sd">"""Internal function used to derive a units new name. Will be assigned using enzmldoc._convertTounitDef.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The new name of the unit definition.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Mapping for abbreviations</span>
         <span class="n">kind_mapping</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;mole&quot;</span><span class="p">:</span> <span class="s2">&quot;mole&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;second&quot;</span><span class="p">:</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;liter&quot;</span><span class="p">:</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;litre&quot;</span><span class="p">:</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span>
+            <span class="s2">"mole"</span><span class="p">:</span> <span class="s2">"mole"</span><span class="p">,</span>
+            <span class="s2">"second"</span><span class="p">:</span> <span class="s2">"s"</span><span class="p">,</span>
+            <span class="s2">"liter"</span><span class="p">:</span> <span class="s2">"l"</span><span class="p">,</span>
+            <span class="s2">"litre"</span><span class="p">:</span> <span class="s2">"l"</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="n">prefix_mapping</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="o">-</span><span class="mi">15</span><span class="p">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span>
-            <span class="o">-</span><span class="mi">12</span><span class="p">:</span> <span class="s2">&quot;p&quot;</span><span class="p">,</span>
-            <span class="o">-</span><span class="mi">9</span><span class="p">:</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span>
-            <span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="s2">&quot;u&quot;</span><span class="p">,</span>
-            <span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span>
-            <span class="o">-</span><span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span>
-            <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span>
-            <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;k&quot;</span>
+            <span class="o">-</span><span class="mi">15</span><span class="p">:</span> <span class="s2">"f"</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">12</span><span class="p">:</span> <span class="s2">"p"</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">9</span><span class="p">:</span> <span class="s2">"n"</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">6</span><span class="p">:</span> <span class="s2">"u"</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="s2">"m"</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">2</span><span class="p">:</span> <span class="s2">"c"</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="s2">"d"</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="mi">3</span><span class="p">:</span> <span class="s2">"k"</span>
         <span class="p">}</span>
 
         <span class="n">nominator</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span>
@@ -308,57 +286,63 @@
 
         <span class="c1"># Create new unit name</span>
         <span class="k">def</span> <span class="nf">constructName</span><span class="p">(</span><span class="n">base_unit</span><span class="p">:</span> <span class="n">BaseUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prefix_mapping</span><span class="p">[</span><span class="n">base_unit</span><span class="o">.</span><span class="n">scale</span><span class="p">]</span><span class="si">}{</span><span class="n">kind_mapping</span><span class="p">[</span><span class="n">base_unit</span><span class="o">.</span><span class="n">kind</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix_mapping</span><span class="p">[</span><span class="n">base_unit</span><span class="o">.</span><span class="n">scale</span><span class="p">]</span><span class="si">}{</span><span class="n">kind_mapping</span><span class="p">[</span><span class="n">base_unit</span><span class="o">.</span><span class="n">kind</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
 
-        <span class="n">nominator_string</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">constructName</span><span class="p">(</span><span class="n">base_unit</span><span class="p">)</span>
+        <span class="n">nominator_string</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">constructName</span><span class="p">(</span><span class="n">base_unit</span><span class="p">)</span>
                                      <span class="k">for</span> <span class="n">base_unit</span> <span class="ow">in</span> <span class="n">nominator</span><span class="p">])</span>
-        <span class="n">denominator_string</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">constructName</span><span class="p">(</span><span class="n">base_unit</span><span class="p">)</span>
+        <span class="n">denominator_string</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">constructName</span><span class="p">(</span><span class="n">base_unit</span><span class="p">)</span>
                                        <span class="k">for</span> <span class="n">base_unit</span> <span class="ow">in</span> <span class="n">denominator</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="s2">&quot; / &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">nominator_string</span><span class="p">,</span> <span class="n">denominator_string</span><span class="p">])</span>
+        <span class="k">return</span> <span class="s2">" / "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">nominator_string</span><span class="p">,</span> <span class="n">denominator_string</span><span class="p">])</span>
 
     <span class="c1"># ! Getters</span>
-<div class="viewcode-block" id="UnitDef.getUnits"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getUnits">[docs]</a>    <span class="nd">@deprecated_getter</span><span class="p">(</span><span class="s2">&quot;units&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="UnitDef.getUnits"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getUnits">[docs]</a>    <span class="nd">@deprecated_getter</span><span class="p">(</span><span class="s2">"units"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getUnits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span></div>
 
-<div class="viewcode-block" id="UnitDef.getName"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getName">[docs]</a>    <span class="nd">@deprecated_getter</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="UnitDef.getName"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getName">[docs]</a>    <span class="nd">@deprecated_getter</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
-<div class="viewcode-block" id="UnitDef.getId"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getId">[docs]</a>    <span class="nd">@deprecated_getter</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="UnitDef.getId"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getId">[docs]</a>    <span class="nd">@deprecated_getter</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getId</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span></div>
 
-<div class="viewcode-block" id="UnitDef.getMetaid"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getMetaid">[docs]</a>    <span class="nd">@deprecated_getter</span><span class="p">(</span><span class="s2">&quot;meta_id&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="UnitDef.getMetaid"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getMetaid">[docs]</a>    <span class="nd">@deprecated_getter</span><span class="p">(</span><span class="s2">"meta_id"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getMetaid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_id</span></div>
 
-<div class="viewcode-block" id="UnitDef.getOntology"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getOntology">[docs]</a>    <span class="nd">@deprecated_getter</span><span class="p">(</span><span class="s2">&quot;ontology&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="UnitDef.getOntology"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getOntology">[docs]</a>    <span class="nd">@deprecated_getter</span><span class="p">(</span><span class="s2">"ontology"</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">getOntology</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ontology</span></div>
 
-<div class="viewcode-block" id="UnitDef.getFootprint"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getFootprint">[docs]</a>    <span class="k">def</span> <span class="nf">getFootprint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="UnitDef.getFootprint"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.unitdef.html#pyenzyme.enzymeml.core.unitdef.UnitDef.getFootprint">[docs]</a>    <span class="k">def</span> <span class="nf">getFootprint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">sorted_units</span> <span class="o">=</span> <span class="p">[</span><span class="n">base_unit</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">base_unit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span>
             <span class="n">sorted_units</span><span class="p">,</span>
-            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">unit</span><span class="p">:</span> <span class="n">unit</span><span class="p">[</span><span class="s2">&quot;kind&quot;</span><span class="p">]</span>
+            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">unit</span><span class="p">:</span> <span class="n">unit</span><span class="p">[</span><span class="s2">"kind"</span><span class="p">]</span>
         <span class="p">)</span></div></div>
 </pre></div>
-
-          </div>
-          <div class="page-nav">
-            <div class="inner"><ul class="page-nav">
-</ul><div class="footer" role="contentinfo">
-      &#169; Copyright 2021, Jan.
-    <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
 </div>
-            </div>
-          </div>
-      </page>
-    </div></div>
-    
-    
-  </body>
+<div class="prev-next-area">
+</div>
+</main>
+</div>
+</div>
+<script src="../../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<div class="footer-item">
+<p class="copyright">
+    © Copyright 2021, Jan.<br/>
+</p>
+</div>
+<div class="footer-item">
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1.<br/>
+</p>
+</div>
+</div>
+</footer>
+</body>
 </html>

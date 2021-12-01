@@ -1,375 +1,351 @@
+
 <!DOCTYPE html>
-<html >
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-      <title>pyenzyme.enzymeml.core.enzymereaction module</title>
-    
-          <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-          <link rel="stylesheet" href="_static/theme.css " type="text/css" />
-          <link rel="stylesheet" href="_static/autodoc_pydantic.css" type="text/css" />
-          <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-      
-      <!-- sphinx script_files -->
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/clipboard.min.js"></script>
-        <script src="_static/copybutton.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>pyenzyme.enzymeml.core.enzymereaction module — PyEnzyme 1.2.0 documentation</title>
+<link href="_static/css/theme.css" rel="stylesheet" type="text/css"/>
+<link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="_static/css/theme.css" rel="stylesheet" type="text/css"/>
+<link href="_static/autodoc_pydantic.css" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css" rel="stylesheet" type="text/css"/>
+<link href="_static/custom.css" rel="stylesheet" type="text/css"/>
+<link href="_static/fonts.css" rel="stylesheet" type="text/css"/>
 
-      
-      <!-- bundled in js (rollup iife) -->
-      <!-- <script src="_static/theme-vendors.js"></script> -->
-      <script src="_static/theme.js" defer></script>
-    
-  <link rel="index" title="Index" href="genindex.html" />
-  <link rel="search" title="Search" href="search.html" /> 
-  </head>
-
-  <body>
-    <div id="app">
-    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
-  <router-link to="index.html" class="home-link">
-    
-      <span class="site-name">Test</span>
-    
-  </router-link>
-
-  <div class="links">
-    <navlinks class="can-hide">
-
-
-
-    </navlinks>
-  </div>
-</navbar>
-
-      
-      <div class="sidebar-mask" @click="toggleSidebar(false)">
-      </div>
-        <sidebar @toggle-sidebar="toggleSidebar">
+<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js" type="text/javascript"></script>
+<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+<script src="_static/jquery.js"></script>
+<script src="_static/underscore.js"></script>
+<script src="_static/doctools.js"></script>
+<script src="_static/clipboard.min.js"></script>
+<script src="_static/copybutton.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<script src="_static/js/theme.js" type="text/javascript"></script>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+</head>
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="index.html"> PyEnzyme
           
-          <navlinks>
-            
 
-
-
-            
-          </navlinks><div id="searchbox" class="searchbox" role="search">
-  <div class="caption"><span class="caption-text">Quick search</span>
-    <div class="searchformwrapper">
-      <form class="search" action="search.html" method="get">
-        <input type="text" name="q" />
-        <input type="submit" value="Search" />
-        <input type="hidden" name="check_keywords" value="yes" />
-        <input type="hidden" name="area" value="default" />
-      </form>
-    </div>
-  </div>
-</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
-  
-    <div class="sidebar-group">
-      <p class="caption">
-        <span class="caption-text"><a href="index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
-      </p>
-      <ul class="">
-        
-      </ul>
-    </div>
-  
+          
+          </a>
+<div role="search">
+<form action="search.html" class="wy-form" id="rtd-search-form" method="get">
+<input name="q" placeholder="Search docs" type="text"/>
+<input name="check_keywords" type="hidden" value="yes"/>
+<input name="area" type="hidden" value="default"/>
+</form>
 </div>
-        </sidebar>
-
-      <page>
-          <div class="body-header" role="navigation" aria-label="navigation">
-  
-  <ul class="breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-    
-    <li>pyenzyme.enzymeml.core.enzymereaction module</li>
-  </ul>
-  
-
-  <ul class="page-nav">
+</div>
+<div aria-label="main navigation" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption" role="heading"><span class="caption-text">First Steps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_getstarted/01_Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_getstarted/02_Reading%20EnzymeML.html">Reading EnzymeML</a></li>
 </ul>
-  
 </div>
-<hr>
-          <div class="content" role="main" v-pre>
-            
-  <section id="module-pyenzyme.enzymeml.core.enzymereaction">
-<span id="pyenzyme-enzymeml-core-enzymereaction-module"></span><h1>pyenzyme.enzymeml.core.enzymereaction module<a class="headerlink" href="#module-pyenzyme.enzymeml.core.enzymereaction" title="Permalink to this headline">¶</a></h1>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="top navigation" class="wy-nav-top">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="index.html">PyEnzyme</a>
+</nav>
+<div class="wy-nav-content">
+<div class="git-ribbon">
+<a href="http://github.com/SwissDataScienceCenter" rel="me">Join us on GitHub</a>
+</div>
+<div class="rst-content">
+<div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a class="icon icon-home" href="index.html"></a> »</li>
+<li>pyenzyme.enzymeml.core.enzymereaction module</li>
+<li class="wy-breadcrumbs-aside">
+<a href="_sources/pyenzyme.enzymeml.core.enzymereaction.rst.txt" rel="nofollow"> View page source</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div itemprop="articleBody">
+<div class="section" id="module-pyenzyme.enzymeml.core.enzymereaction">
+<span id="pyenzyme-enzymeml-core-enzymereaction-module"></span><h1>pyenzyme.enzymeml.core.enzymereaction module<a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#module-pyenzyme.enzymeml.core.enzymereaction">¶</a></h1>
 <p>File: enzymereaction.py
 Project: core
 Author: Jan Range
 License: BSD-2 clause
 —–
 Last Modified: Wednesday June 23rd 2021 9:06:54 pm
-Modified By: Jan Range (&lt;<a class="reference external" href="mailto:jan&#46;range&#37;&#52;&#48;simtech&#46;uni-stuttgart&#46;de">jan<span>&#46;</span>range<span>&#64;</span>simtech<span>&#46;</span>uni-stuttgart<span>&#46;</span>de</a>&gt;)
+Modified By: Jan Range (&lt;<a class="reference external" href="mailto:jan.range%40simtech.uni-stuttgart.de" rel="nofollow noopener">jan<span>.</span>range<span>@</span>simtech<span>.</span>uni-stuttgart<span>.</span>de</a>&gt;)
 —–
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</p>
 <dl class="py pydantic_model">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.core.enzymereaction.</span></span><span class="sig-name descname"><span class="pre">EnzymeReaction</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="pyenzyme.enzymeml.core.enzymemlbase.html#pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase" title="pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase</span></code></a></p>
+<em class="property">pydantic model<span class="w"> </span></em><span class="sig-prename descclassname">pyenzyme.enzymeml.core.enzymereaction.</span><span class="sig-name descname">EnzymeReaction</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyenzyme.enzymeml.core.enzymemlbase.html#pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase" title="pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase"><code class="xref py py-class docutils literal notranslate">pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase</code></a></p>
 <p>Describes an enzyme reaction by combining already defined
 reactants/proteins of an EnzymeML document. In addition,
 this class provides ways to integrate reaction conditions
 as well. It is also possible to add a kinetic law to this
 object by using the KineticModel class.</p>
-<p><details  class="autodoc_pydantic_collapsable_json">
+<p><details class="autodoc_pydantic_collapsable_json">
 <summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;EnzymeReaction&quot;</span><span class="p">,</span>
-   <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Describes an enzyme reaction by combining already defined\nreactants/proteins of an EnzymeML document. In addition,\nthis class provides ways to integrate reaction conditions\nas well. It is also possible to add a kinetic law to this\nobject by using the KineticModel class.&quot;</span><span class="p">,</span>
-   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-   <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Name of the reaction.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+   <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"EnzymeReaction"</span><span class="p">,</span>
+   <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Describes an enzyme reaction by combining already defined\nreactants/proteins of an EnzymeML document. In addition,\nthis class provides ways to integrate reaction conditions\nas well. It is also possible to add a kinetic law to this\nobject by using the KineticModel class."</span><span class="p">,</span>
+   <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"object"</span><span class="p">,</span>
+   <span class="nt">"properties"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"name"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Name"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Name of the reaction."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;temperature&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Temperature&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Numeric value of the temperature of the reaction.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+      <span class="nt">"temperature"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Temperature"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Numeric value of the temperature of the reaction."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"number"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;temperature_unit&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Temperature Unit&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unit of the temperature of the reaction.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;kelvin|Kelvin|k|K|celsius|Celsius|C|c&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"temperature_unit"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Temperature Unit"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Unit of the temperature of the reaction."</span><span class="p">,</span>
+         <span class="nt">"pattern"</span><span class="p">:</span> <span class="s2">"kelvin|Kelvin|k|K|celsius|Celsius|C|c"</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;temperature_unit_id&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Temperature Unit Id&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal identifier of the temperature unit.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;u[\\d]+&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;deafult&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"temperature_unit_id"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Temperature Unit Id"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Internal identifier of the temperature unit."</span><span class="p">,</span>
+         <span class="nt">"pattern"</span><span class="p">:</span> <span class="s2">"u[\\d]+"</span><span class="p">,</span>
+         <span class="nt">"deafult"</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;ph&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Ph&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;PH value of the reaction.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;inclusiveMinimum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-         <span class="nt">&quot;inclusiveMaximum&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+      <span class="nt">"ph"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Ph"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"PH value of the reaction."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"inclusiveMinimum"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="nt">"inclusiveMaximum"</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"number"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;reversible&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Reversible&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether the reaction is reversible or irreversible&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+      <span class="nt">"reversible"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Reversible"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Whether the reaction is reversible or irreversible"</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"boolean"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;ontology&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ontology defining the role of the given species.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;SBO:0000176&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="nt">"ontology"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Ontology defining the role of the given species."</span><span class="p">,</span>
+         <span class="nt">"default"</span><span class="p">:</span> <span class="s2">"SBO:0000176"</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"allOf"</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>
-               <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Enum&quot;</span>
+               <span class="nt">"$ref"</span><span class="p">:</span> <span class="s2">"#/definitions/Enum"</span>
             <span class="p">}</span>
          <span class="p">]</span>
       <span class="p">},</span>
-      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Id&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unique identifier of the reaction.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;r[\\d]+&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"id"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Id"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Unique identifier of the reaction."</span><span class="p">,</span>
+         <span class="nt">"pattern"</span><span class="p">:</span> <span class="s2">"r[\\d]+"</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;meta_id&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Meta Id&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unique meta identifier for the reaction.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"meta_id"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Meta Id"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Unique meta identifier for the reaction."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Uri&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;URI of the reaction.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"uri"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Uri"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"URI of the reaction."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;creator_id&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Creator Id&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unique identifier of the author.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"creator_id"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Creator Id"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Unique identifier of the author."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;model&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Model&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Kinetic model decribing the reaction.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="nt">"model"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Model"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Kinetic model decribing the reaction."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"allOf"</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>
-               <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/KineticModel&quot;</span>
+               <span class="nt">"$ref"</span><span class="p">:</span> <span class="s2">"#/definitions/KineticModel"</span>
             <span class="p">}</span>
          <span class="p">]</span>
       <span class="p">},</span>
-      <span class="nt">&quot;educts&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Educts&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;List of educts containing ReactionElement objects.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/ReactionElement&quot;</span>
+      <span class="nt">"educts"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Educts"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"List of educts containing ReactionElement objects."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"array"</span><span class="p">,</span>
+         <span class="nt">"items"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"$ref"</span><span class="p">:</span> <span class="s2">"#/definitions/ReactionElement"</span>
          <span class="p">}</span>
       <span class="p">},</span>
-      <span class="nt">&quot;products&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Products&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;List of products containing ReactionElement objects.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/ReactionElement&quot;</span>
+      <span class="nt">"products"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Products"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"List of products containing ReactionElement objects."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"array"</span><span class="p">,</span>
+         <span class="nt">"items"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"$ref"</span><span class="p">:</span> <span class="s2">"#/definitions/ReactionElement"</span>
          <span class="p">}</span>
       <span class="p">},</span>
-      <span class="nt">&quot;modifiers&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Modifiers&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;List of modifiers (Proteins, snhibitors, stimulators) containing ReactionElement objects.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/ReactionElement&quot;</span>
+      <span class="nt">"modifiers"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Modifiers"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"List of modifiers (Proteins, snhibitors, stimulators) containing ReactionElement objects."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"array"</span><span class="p">,</span>
+         <span class="nt">"items"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"$ref"</span><span class="p">:</span> <span class="s2">"#/definitions/ReactionElement"</span>
          <span class="p">}</span>
       <span class="p">}</span>
    <span class="p">},</span>
-   <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="s2">&quot;name&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;temperature&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;temperature_unit&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;ph&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;reversible&quot;</span>
+   <span class="nt">"required"</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">"name"</span><span class="p">,</span>
+      <span class="s2">"temperature"</span><span class="p">,</span>
+      <span class="s2">"temperature_unit"</span><span class="p">,</span>
+      <span class="s2">"ph"</span><span class="p">,</span>
+      <span class="s2">"reversible"</span>
    <span class="p">],</span>
-   <span class="nt">&quot;definitions&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;Enum&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Enum&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Generic enumeration.\n\nDerive from this class to define new enumerations.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[]</span>
+   <span class="nt">"definitions"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"Enum"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Enum"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Generic enumeration.\n\nDerive from this class to define new enumerations."</span><span class="p">,</span>
+         <span class="nt">"enum"</span><span class="p">:</span> <span class="p">[]</span>
       <span class="p">},</span>
-      <span class="nt">&quot;KineticParameter&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;KineticParameter&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Name of the estimated parameter.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-               <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"KineticParameter"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"KineticParameter"</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"object"</span><span class="p">,</span>
+         <span class="nt">"properties"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"name"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Name"</span><span class="p">,</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Name of the estimated parameter."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+               <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
             <span class="p">},</span>
-            <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Value&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Numerical value of the estimated parameter.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-               <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+            <span class="nt">"value"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Value"</span><span class="p">,</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Numerical value of the estimated parameter."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+               <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"number"</span>
             <span class="p">},</span>
-            <span class="nt">&quot;unit&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Unit&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unit of the estimated parameter.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-               <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+            <span class="nt">"unit"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Unit"</span><span class="p">,</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Unit of the estimated parameter."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+               <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
             <span class="p">},</span>
-            <span class="nt">&quot;ontology&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Type of the estimated parameter.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-               <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">"ontology"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Type of the estimated parameter."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+               <span class="nt">"allOf"</span><span class="p">:</span> <span class="p">[</span>
                   <span class="p">{</span>
-                     <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Enum&quot;</span>
+                     <span class="nt">"$ref"</span><span class="p">:</span> <span class="s2">"#/definitions/Enum"</span>
                   <span class="p">}</span>
                <span class="p">]</span>
             <span class="p">}</span>
          <span class="p">},</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;unit&quot;</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"name"</span><span class="p">,</span>
+            <span class="s2">"value"</span><span class="p">,</span>
+            <span class="s2">"unit"</span>
          <span class="p">]</span>
       <span class="p">},</span>
-      <span class="nt">&quot;KineticModel&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;KineticModel&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Name of the kinetic law.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-               <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"KineticModel"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"KineticModel"</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"object"</span><span class="p">,</span>
+         <span class="nt">"properties"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"name"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Name"</span><span class="p">,</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Name of the kinetic law."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+               <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
             <span class="p">},</span>
-            <span class="nt">&quot;equation&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Equation&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Equation for the kinetic law.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-               <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+            <span class="nt">"equation"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Equation"</span><span class="p">,</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Equation for the kinetic law."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+               <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
             <span class="p">},</span>
-            <span class="nt">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Parameters&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;List of estimated parameters.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-               <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-                  <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/KineticParameter&quot;</span>
+            <span class="nt">"parameters"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Parameters"</span><span class="p">,</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"List of estimated parameters."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+               <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"array"</span><span class="p">,</span>
+               <span class="nt">"items"</span><span class="p">:</span> <span class="p">{</span>
+                  <span class="nt">"$ref"</span><span class="p">:</span> <span class="s2">"#/definitions/KineticParameter"</span>
                <span class="p">}</span>
             <span class="p">},</span>
-            <span class="nt">&quot;ontology&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Type of the estimated parameter.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-               <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">"ontology"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Type of the estimated parameter."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+               <span class="nt">"allOf"</span><span class="p">:</span> <span class="p">[</span>
                   <span class="p">{</span>
-                     <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Enum&quot;</span>
+                     <span class="nt">"$ref"</span><span class="p">:</span> <span class="s2">"#/definitions/Enum"</span>
                   <span class="p">}</span>
                <span class="p">]</span>
             <span class="p">}</span>
          <span class="p">},</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;equation&quot;</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"name"</span><span class="p">,</span>
+            <span class="s2">"equation"</span>
          <span class="p">]</span>
       <span class="p">},</span>
-      <span class="nt">&quot;ReactionElement&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;ReactionElement&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Describes an element of a chemical reaction.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="nt">&quot;species_id&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Species Id&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal identifier to either a protein or reactant defined in the EnzymeMLDocument.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-               <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="nt">"ReactionElement"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"ReactionElement"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Describes an element of a chemical reaction."</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"object"</span><span class="p">,</span>
+         <span class="nt">"properties"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">"species_id"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Species Id"</span><span class="p">,</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Internal identifier to either a protein or reactant defined in the EnzymeMLDocument."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+               <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
             <span class="p">},</span>
-            <span class="nt">&quot;stoichiometry&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Stoichiometry&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Positive float number representing the associated stoichiometry.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-               <span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-               <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+            <span class="nt">"stoichiometry"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Stoichiometry"</span><span class="p">,</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Positive float number representing the associated stoichiometry."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+               <span class="nt">"exclusiveMinimum"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+               <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"number"</span>
             <span class="p">},</span>
-            <span class="nt">&quot;constant&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether or not the concentration of this species remains constant.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-               <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+            <span class="nt">"constant"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Constant"</span><span class="p">,</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Whether or not the concentration of this species remains constant."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+               <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"boolean"</span>
             <span class="p">},</span>
-            <span class="nt">&quot;ontology&quot;</span><span class="p">:</span> <span class="p">{</span>
-               <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ontology defining the role of the given species.&quot;</span><span class="p">,</span>
-               <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-               <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="nt">"ontology"</span><span class="p">:</span> <span class="p">{</span>
+               <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Ontology defining the role of the given species."</span><span class="p">,</span>
+               <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+               <span class="nt">"allOf"</span><span class="p">:</span> <span class="p">[</span>
                   <span class="p">{</span>
-                     <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Enum&quot;</span>
+                     <span class="nt">"$ref"</span><span class="p">:</span> <span class="s2">"#/definitions/Enum"</span>
                   <span class="p">}</span>
                <span class="p">]</span>
             <span class="p">}</span>
          <span class="p">},</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s2">&quot;species_id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;stoichiometry&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;constant&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;ontology&quot;</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">"species_id"</span><span class="p">,</span>
+            <span class="s2">"stoichiometry"</span><span class="p">,</span>
+            <span class="s2">"constant"</span><span class="p">,</span>
+            <span class="s2">"ontology"</span>
          <span class="p">]</span>
       <span class="p">}</span>
    <span class="p">}</span>
@@ -385,32 +361,32 @@ object by using the KineticModel class.</p>
 </dd>
 <dt class="field-even">Fields</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.creator_id" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.creator_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">creator_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.educts" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.educts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">educts</span> <span class="pre">(List[pyenzyme.enzymeml.core.enzymereaction.ReactionElement])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.id" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.meta_id" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.model" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model</span> <span class="pre">(Optional[pyenzyme.enzymeml.models.kineticmodel.KineticModel])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.modifiers" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.modifiers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">modifiers</span> <span class="pre">(List[pyenzyme.enzymeml.core.enzymereaction.ReactionElement])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.name" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ontology" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ontology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ontology</span> <span class="pre">(Optional[enum.Enum])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ph" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ph</span> <span class="pre">(float)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.products" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.products"><code class="xref py py-obj docutils literal notranslate"><span class="pre">products</span> <span class="pre">(List[pyenzyme.enzymeml.core.enzymereaction.ReactionElement])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.reversible" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.reversible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reversible</span> <span class="pre">(bool)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">temperature</span> <span class="pre">(float)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">temperature_unit</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit_id" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">temperature_unit_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.uri" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.uri"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uri</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.creator_id" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.creator_id"><code class="xref py py-obj docutils literal notranslate">creator_id (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.educts" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.educts"><code class="xref py py-obj docutils literal notranslate">educts (List[pyenzyme.enzymeml.core.enzymereaction.ReactionElement])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.id" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.id"><code class="xref py py-obj docutils literal notranslate">id (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.meta_id" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.meta_id"><code class="xref py py-obj docutils literal notranslate">meta_id (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.model" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.model"><code class="xref py py-obj docutils literal notranslate">model (Optional[pyenzyme.enzymeml.models.kineticmodel.KineticModel])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.modifiers" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.modifiers"><code class="xref py py-obj docutils literal notranslate">modifiers (List[pyenzyme.enzymeml.core.enzymereaction.ReactionElement])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.name" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.name"><code class="xref py py-obj docutils literal notranslate">name (str)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ontology" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ontology"><code class="xref py py-obj docutils literal notranslate">ontology (Optional[enum.Enum])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ph" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ph"><code class="xref py py-obj docutils literal notranslate">ph (float)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.products" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.products"><code class="xref py py-obj docutils literal notranslate">products (List[pyenzyme.enzymeml.core.enzymereaction.ReactionElement])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.reversible" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.reversible"><code class="xref py py-obj docutils literal notranslate">reversible (bool)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature"><code class="xref py py-obj docutils literal notranslate">temperature (float)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit"><code class="xref py py-obj docutils literal notranslate">temperature_unit (str)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit_id" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit_id"><code class="xref py py-obj docutils literal notranslate">temperature_unit_id (Optional[str])</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.uri" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.uri"><code class="xref py py-obj docutils literal notranslate">uri (Optional[str])</code></a></p></li>
 </ul>
 </dd>
 <dt class="field-odd">Validators</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.check_temperature_unit" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.check_temperature_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_temperature_unit</span></code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">temperature_unit</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.check_temperature_unit" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.check_temperature_unit"><code class="xref py py-obj docutils literal notranslate">check_temperature_unit</code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit"><code class="xref py py-obj docutils literal notranslate">temperature_unit</code></a></p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.creator_id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">creator_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.creator_id" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">creator_id</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.creator_id">¶</a></dt>
 <dd><p>Unique identifier of the author.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -420,10 +396,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.educts">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">educts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement"><span class="pre">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.educts" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">educts</span><em class="property"><span class="p">:</span><span class="w"> </span>List<span class="p">[</span><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</a><span class="p">]</span></em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.educts">¶</a></dt>
 <dd><p>List of educts containing ReactionElement objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -433,10 +408,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.id" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">id</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.id">¶</a></dt>
 <dd><p>Unique identifier of the reaction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -447,10 +421,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.meta_id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meta_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.meta_id" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">meta_id</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.meta_id">¶</a></dt>
 <dd><p>Unique meta identifier for the reaction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -460,10 +433,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.model">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyenzyme.enzymeml.models.kineticmodel.html#pyenzyme.enzymeml.models.kineticmodel.KineticModel" title="pyenzyme.enzymeml.models.kineticmodel.KineticModel"><span class="pre">pyenzyme.enzymeml.models.kineticmodel.KineticModel</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.model" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">model</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span><a class="reference internal" href="pyenzyme.enzymeml.models.kineticmodel.html#pyenzyme.enzymeml.models.kineticmodel.KineticModel" title="pyenzyme.enzymeml.models.kineticmodel.KineticModel">pyenzyme.enzymeml.models.kineticmodel.KineticModel</a><span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.model">¶</a></dt>
 <dd><p>Kinetic model decribing the reaction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -473,10 +445,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.modifiers">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">modifiers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement"><span class="pre">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.modifiers" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">modifiers</span><em class="property"><span class="p">:</span><span class="w"> </span>List<span class="p">[</span><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</a><span class="p">]</span></em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.modifiers">¶</a></dt>
 <dd><p>List of modifiers (Proteins, snhibitors, stimulators) containing ReactionElement objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -486,10 +457,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.name">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.name" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">name</span><em class="property"><span class="p">:</span><span class="w"> </span>str</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.name">¶</a></dt>
 <dd><p>Name of the reaction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -499,10 +469,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ontology">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ontology</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">enum.Enum</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">SBOTerm.BIOCHEMICAL_REACTION</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ontology" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">ontology</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>enum.Enum<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>SBOTerm.BIOCHEMICAL_REACTION</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ontology">¶</a></dt>
 <dd><p>Ontology defining the role of the given species.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -512,10 +481,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ph">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ph</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ph" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">ph</span><em class="property"><span class="p">:</span><span class="w"> </span>float</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.ph">¶</a></dt>
 <dd><p>PH value of the reaction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -527,10 +495,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.products">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">products</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement"><span class="pre">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.products" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">products</span><em class="property"><span class="p">:</span><span class="w"> </span>List<span class="p">[</span><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</a><span class="p">]</span></em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.products">¶</a></dt>
 <dd><p>List of products containing ReactionElement objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -540,10 +507,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.reversible">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reversible</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.reversible" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">reversible</span><em class="property"><span class="p">:</span><span class="w"> </span>bool</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.reversible">¶</a></dt>
 <dd><p>Whether the reaction is reversible or irreversible</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -553,10 +519,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">temperature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">temperature</span><em class="property"><span class="p">:</span><span class="w"> </span>float</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature">¶</a></dt>
 <dd><p>Numeric value of the temperature of the reaction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -566,10 +531,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">temperature_unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">temperature_unit</span><em class="property"><span class="p">:</span><span class="w"> </span>str</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit">¶</a></dt>
 <dd><p>Unit of the temperature of the reaction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -580,15 +544,14 @@ object by using the KineticModel class.</p>
 </dd>
 <dt class="field-even">Validated by</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.check_temperature_unit" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.check_temperature_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_temperature_unit</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.check_temperature_unit" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.check_temperature_unit"><code class="xref py py-obj docutils literal notranslate">check_temperature_unit</code></a></p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit_id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">temperature_unit_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit_id" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">temperature_unit_id</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit_id">¶</a></dt>
 <dd><p>Internal identifier of the temperature unit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -600,10 +563,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.uri">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.uri" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">uri</span><em class="property"><span class="p">:</span><span class="w"> </span>Optional<span class="p">[</span>str<span class="p">]</span></em><em class="property"><span class="w"> </span><span class="p">=</span><span class="w"> </span>None</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.uri">¶</a></dt>
 <dd><p>URI of the reaction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -613,10 +575,9 @@ object by using the KineticModel class.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.addEduct">
-<span class="sig-name descname"><span class="pre">addEduct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stoichiometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.types.PositiveFloat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ontology</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">enum.Enum</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SBOTerm.SUBSTRATE</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.addEduct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.addEduct" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">addEduct</span><span class="sig-paren">(</span><em class="sig-param"><span class="n">species_id</span><span class="p">:</span><span class="w"> </span><span class="n">str</span></em>, <em class="sig-param"><span class="n">stoichiometry</span><span class="p">:</span><span class="w"> </span><span class="n">pydantic.types.PositiveFloat</span></em>, <em class="sig-param"><span class="n">constant</span><span class="p">:</span><span class="w"> </span><span class="n">bool</span></em>, <em class="sig-param"><span class="n">enzmldoc</span></em>, <em class="sig-param"><span class="n">ontology</span><span class="p">:</span><span class="w"> </span><span class="n">enum.Enum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="default_value">SBOTerm.SUBSTRATE</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint">None</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.addEduct"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.addEduct">¶</a></dt>
 <dd><p>Adds element to EnzymeReaction object. Replicates as well
 as initial concentrations are optional.</p>
 <dl class="field-list simple">
@@ -633,10 +594,9 @@ as initial concentrations are optional.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.addModifier">
-<span class="sig-name descname"><span class="pre">addModifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stoichiometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.types.PositiveFloat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ontology</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">enum.Enum</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SBOTerm.CATALYST</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.addModifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.addModifier" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">addModifier</span><span class="sig-paren">(</span><em class="sig-param"><span class="n">species_id</span><span class="p">:</span><span class="w"> </span><span class="n">str</span></em>, <em class="sig-param"><span class="n">stoichiometry</span><span class="p">:</span><span class="w"> </span><span class="n">pydantic.types.PositiveFloat</span></em>, <em class="sig-param"><span class="n">constant</span><span class="p">:</span><span class="w"> </span><span class="n">bool</span></em>, <em class="sig-param"><span class="n">enzmldoc</span></em>, <em class="sig-param"><span class="n">ontology</span><span class="p">:</span><span class="w"> </span><span class="n">enum.Enum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="default_value">SBOTerm.CATALYST</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint">None</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.addModifier"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.addModifier">¶</a></dt>
 <dd><p>Adds element to EnzymeReaction object. Replicates as well
 as initial concentrations are optional.</p>
 <dl class="field-list simple">
@@ -653,10 +613,9 @@ as initial concentrations are optional.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.addProduct">
-<span class="sig-name descname"><span class="pre">addProduct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stoichiometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.types.PositiveFloat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ontology</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">enum.Enum</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SBOTerm.PRODUCT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.addProduct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.addProduct" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">addProduct</span><span class="sig-paren">(</span><em class="sig-param"><span class="n">species_id</span><span class="p">:</span><span class="w"> </span><span class="n">str</span></em>, <em class="sig-param"><span class="n">stoichiometry</span><span class="p">:</span><span class="w"> </span><span class="n">pydantic.types.PositiveFloat</span></em>, <em class="sig-param"><span class="n">constant</span><span class="p">:</span><span class="w"> </span><span class="n">bool</span></em>, <em class="sig-param"><span class="n">enzmldoc</span></em>, <em class="sig-param"><span class="n">ontology</span><span class="p">:</span><span class="w"> </span><span class="n">enum.Enum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="default_value">SBOTerm.PRODUCT</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint">None</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.addProduct"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.addProduct">¶</a></dt>
 <dd><p>Adds element to EnzymeReaction object. Replicates as well
 as initial concentrations are optional.</p>
 <dl class="field-list simple">
@@ -673,15 +632,13 @@ as initial concentrations are optional.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_validator">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.check_temperature_unit">
-<em class="property"><span class="pre">validator</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_temperature_unit</span></span><em class="autodoc_pydantic_validator_arrow property">&#160; <span class="pre">»</span>&#160; </em><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit"><em class="xref py py-obj"><span class="pre">temperature_unit</span></em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.check_temperature_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.check_temperature_unit" title="Permalink to this definition">¶</a></dt>
+<em class="property">validator<span class="w"> </span></em><span class="sig-name descname">check_temperature_unit</span><em class="autodoc_pydantic_validator_arrow property">  »  </em><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.temperature_unit"><em class="xref py py-obj">temperature_unit</em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.check_temperature_unit"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.check_temperature_unit">¶</a></dt>
 <dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getEduct">
-<span class="sig-name descname"><span class="pre">getEduct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement"><span class="pre">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</span></a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getEduct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getEduct" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getEduct</span><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="n">str</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getEduct"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getEduct">¶</a></dt>
 <dd><p>Returns a ReactionElement including information about the following properties:</p>
 <blockquote>
 <div><ul class="simple">
@@ -705,42 +662,37 @@ as initial concentrations are optional.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getEducts">
-<span class="sig-name descname"><span class="pre">getEducts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getEducts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getEducts" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getEducts</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getEducts"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getEducts">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>educts</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getId">
-<span class="sig-name descname"><span class="pre">getId</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getId" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getId</span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint">Optional<span class="p">[</span>str<span class="p">]</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getId"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getId">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>id</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getMetaid">
-<span class="sig-name descname"><span class="pre">getMetaid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getMetaid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getMetaid" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getMetaid</span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint">Optional<span class="p">[</span>str<span class="p">]</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getMetaid"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getMetaid">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>meta_id</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getModel">
-<span class="sig-name descname"><span class="pre">getModel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyenzyme.enzymeml.models.kineticmodel.html#pyenzyme.enzymeml.models.kineticmodel.KineticModel" title="pyenzyme.enzymeml.models.kineticmodel.KineticModel"><span class="pre">pyenzyme.enzymeml.models.kineticmodel.KineticModel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getModel" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getModel</span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint">Optional<span class="p">[</span><a class="reference internal" href="pyenzyme.enzymeml.models.kineticmodel.html#pyenzyme.enzymeml.models.kineticmodel.KineticModel" title="pyenzyme.enzymeml.models.kineticmodel.KineticModel">pyenzyme.enzymeml.models.kineticmodel.KineticModel</a><span class="p">]</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getModel"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getModel">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>model</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getModifier">
-<span class="sig-name descname"><span class="pre">getModifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement"><span class="pre">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</span></a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getModifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getModifier" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getModifier</span><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="n">str</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getModifier"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getModifier">¶</a></dt>
 <dd><p>Returns a ReactionElement including information about the following properties:</p>
 <blockquote>
 <div><ul class="simple">
@@ -764,34 +716,30 @@ as initial concentrations are optional.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getModifiers">
-<span class="sig-name descname"><span class="pre">getModifiers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getModifiers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getModifiers" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getModifiers</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getModifiers"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getModifiers">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>modifier</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getName">
-<span class="sig-name descname"><span class="pre">getName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getName"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getName" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getName</span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint">str</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getName"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getName">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>name instead</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getPh">
-<span class="sig-name descname"><span class="pre">getPh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pydantic.types.PositiveFloat</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getPh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getPh" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getPh</span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint">pydantic.types.PositiveFloat</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getPh"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getPh">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>ph</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getProduct">
-<span class="sig-name descname"><span class="pre">getProduct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement"><span class="pre">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</span></a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getProduct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getProduct" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getProduct</span><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="p">:</span><span class="w"> </span><span class="n">str</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getProduct"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getProduct">¶</a></dt>
 <dd><p>Returns a ReactionElement including information about the following properties:</p>
 <blockquote>
 <div><ul class="simple">
@@ -815,92 +763,86 @@ as initial concentrations are optional.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getProducts">
-<span class="sig-name descname"><span class="pre">getProducts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getProducts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getProducts" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getProducts</span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getProducts"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getProducts">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>products</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getReversible">
-<span class="sig-name descname"><span class="pre">getReversible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getReversible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getReversible" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getReversible</span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint">bool</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getReversible"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getReversible">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>reveserible</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getTemperature">
-<span class="sig-name descname"><span class="pre">getTemperature</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getTemperature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getTemperature" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getTemperature</span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint">float</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getTemperature"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getTemperature">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>temperature</cite> instead.</p>
 </div>
 </dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getTempunit">
-<span class="sig-name descname"><span class="pre">getTempunit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getTempunit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getTempunit" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname">getTempunit</span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint">str</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#EnzymeReaction.getTempunit"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction.getTempunit">¶</a></dt>
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>temperature_unit</cite> instead.</p>
 </div>
 </dd></dl>
-
 </dd></dl>
-
 <dl class="py pydantic_model">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.ReactionElement">
-<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.core.enzymereaction.</span></span><span class="sig-name descname"><span class="pre">ReactionElement</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#ReactionElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<em class="property">pydantic model<span class="w"> </span></em><span class="sig-prename descclassname">pyenzyme.enzymeml.core.enzymereaction.</span><span class="sig-name descname">ReactionElement</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/enzymereaction.html#ReactionElement"><span class="viewcode-link">[source]</span></a><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate">pydantic.main.BaseModel</code></p>
 <p>Describes an element of a chemical reaction.</p>
-<p><details  class="autodoc_pydantic_collapsable_json">
+<p><details class="autodoc_pydantic_collapsable_json">
 <summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-   <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;ReactionElement&quot;</span><span class="p">,</span>
-   <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Describes an element of a chemical reaction.&quot;</span><span class="p">,</span>
-   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-   <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;species_id&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Species Id&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Internal identifier to either a protein or reactant defined in the EnzymeMLDocument.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+   <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"ReactionElement"</span><span class="p">,</span>
+   <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Describes an element of a chemical reaction."</span><span class="p">,</span>
+   <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"object"</span><span class="p">,</span>
+   <span class="nt">"properties"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"species_id"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Species Id"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Internal identifier to either a protein or reactant defined in the EnzymeMLDocument."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"string"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;stoichiometry&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Stoichiometry&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Positive float number representing the associated stoichiometry.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+      <span class="nt">"stoichiometry"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Stoichiometry"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Positive float number representing the associated stoichiometry."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"exclusiveMinimum"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"number"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;constant&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether or not the concentration of this species remains constant.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+      <span class="nt">"constant"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Constant"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Whether or not the concentration of this species remains constant."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"type"</span><span class="p">:</span> <span class="s2">"boolean"</span>
       <span class="p">},</span>
-      <span class="nt">&quot;ontology&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Ontology defining the role of the given species.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
-         <span class="nt">&quot;allOf&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="nt">"ontology"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Ontology defining the role of the given species."</span><span class="p">,</span>
+         <span class="nt">"required"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">"allOf"</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>
-               <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Enum&quot;</span>
+               <span class="nt">"$ref"</span><span class="p">:</span> <span class="s2">"#/definitions/Enum"</span>
             <span class="p">}</span>
          <span class="p">]</span>
       <span class="p">}</span>
    <span class="p">},</span>
-   <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
-      <span class="s2">&quot;species_id&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;stoichiometry&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;constant&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;ontology&quot;</span>
+   <span class="nt">"required"</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">"species_id"</span><span class="p">,</span>
+      <span class="s2">"stoichiometry"</span><span class="p">,</span>
+      <span class="s2">"constant"</span><span class="p">,</span>
+      <span class="s2">"ontology"</span>
    <span class="p">],</span>
-   <span class="nt">&quot;definitions&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;Enum&quot;</span><span class="p">:</span> <span class="p">{</span>
-         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Enum&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Generic enumeration.\n\nDerive from this class to define new enumerations.&quot;</span><span class="p">,</span>
-         <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[]</span>
+   <span class="nt">"definitions"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"Enum"</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">"title"</span><span class="p">:</span> <span class="s2">"Enum"</span><span class="p">,</span>
+         <span class="nt">"description"</span><span class="p">:</span> <span class="s2">"Generic enumeration.\n\nDerive from this class to define new enumerations."</span><span class="p">,</span>
+         <span class="nt">"enum"</span><span class="p">:</span> <span class="p">[]</span>
       <span class="p">}</span>
    <span class="p">}</span>
 <span class="p">}</span>
@@ -909,16 +851,16 @@ as initial concentrations are optional.</p>
 </details></p><dl class="field-list simple">
 <dt class="field-odd">Fields</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.constant" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.constant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constant</span> <span class="pre">(bool)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.ontology" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.ontology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ontology</span> <span class="pre">(enum.Enum)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.species_id" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.species_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">species_id</span> <span class="pre">(str)</span></code></a></p></li>
-<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.stoichiometry" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.stoichiometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stoichiometry</span> <span class="pre">(pydantic.types.PositiveFloat)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.constant" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.constant"><code class="xref py py-obj docutils literal notranslate">constant (bool)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.ontology" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.ontology"><code class="xref py py-obj docutils literal notranslate">ontology (enum.Enum)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.species_id" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.species_id"><code class="xref py py-obj docutils literal notranslate">species_id (str)</code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.stoichiometry" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.stoichiometry"><code class="xref py py-obj docutils literal notranslate">stoichiometry (pydantic.types.PositiveFloat)</code></a></p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.constant">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">constant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.constant" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">constant</span><em class="property"><span class="p">:</span><span class="w"> </span>bool</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.constant">¶</a></dt>
 <dd><p>Whether or not the concentration of this species remains constant.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -928,10 +870,9 @@ as initial concentrations are optional.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.ontology">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ontology</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">enum.Enum</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.ontology" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">ontology</span><em class="property"><span class="p">:</span><span class="w"> </span>enum.Enum</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.ontology">¶</a></dt>
 <dd><p>Ontology defining the role of the given species.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -941,10 +882,9 @@ as initial concentrations are optional.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.species_id">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">species_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.species_id" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">species_id</span><em class="property"><span class="p">:</span><span class="w"> </span>str</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.species_id">¶</a></dt>
 <dd><p>Internal identifier to either a protein or reactant defined in the EnzymeMLDocument.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -954,10 +894,9 @@ as initial concentrations are optional.</p>
 </dd>
 </dl>
 </dd></dl>
-
 <dl class="py pydantic_field">
 <dt class="sig sig-object py" id="pyenzyme.enzymeml.core.enzymereaction.ReactionElement.stoichiometry">
-<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stoichiometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveFloat</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.stoichiometry" title="Permalink to this definition">¶</a></dt>
+<em class="property">field<span class="w"> </span></em><span class="sig-name descname">stoichiometry</span><em class="property"><span class="p">:</span><span class="w"> </span>pydantic.types.PositiveFloat</em><em class="property"> [Required]</em><a aria-label="Click to copy this link" class="headerlink tooltipped tooltipped-ne" data-action="click-&gt;clipboard#copyHeaderLink" data-controller="clipboard" href="#pyenzyme.enzymeml.core.enzymereaction.ReactionElement.stoichiometry">¶</a></dt>
 <dd><p>Positive float number representing the associated stoichiometry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Constraints</dt>
@@ -968,25 +907,36 @@ as initial concentrations are optional.</p>
 </dd>
 </dl>
 </dd></dl>
-
 </dd></dl>
-
-</section>
-
-
-          </div>
-          <div class="page-nav">
-            <div class="inner"><ul class="page-nav">
-</ul><div class="footer" role="contentinfo">
-      &#169; Copyright 2021, Jan.
-    <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
 </div>
-            </div>
-          </div>
-      </page>
-    </div></div>
+</div>
+</div>
+<footer>
+<hr/>
+<div role="contentinfo">
+<p>
+        © Copyright 2021, Jan.
+
+    </p>
+</div>
     
     
-  </body>
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+</div>
+</div>
+</section>
+</div>
+<script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+</body>
 </html>

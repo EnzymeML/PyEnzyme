@@ -1,108 +1,86 @@
+
 <!DOCTYPE html>
-<html >
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-      <title>pyenzyme.restful.create</title>
-    
-          <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-          <link rel="stylesheet" href="../../../_static/theme.css " type="text/css" />
-          <link rel="stylesheet" href="../../../_static/autodoc_pydantic.css" type="text/css" />
-          <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
-      
-      <!-- sphinx script_files -->
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/clipboard.min.js"></script>
-        <script src="../../../_static/copybutton.js"></script>
-        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
 
-      
-      <!-- bundled in js (rollup iife) -->
-      <!-- <script src="../../../_static/theme-vendors.js"></script> -->
-      <script src="../../../_static/theme.js" defer></script>
-    
-  <link rel="index" title="Index" href="../../../genindex.html" />
-  <link rel="search" title="Search" href="../../../search.html" /> 
-  </head>
-
-  <body>
-    <div id="app">
-    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
-  <router-link to="../../../index.html" class="home-link">
-    
-      <span class="site-name">Test</span>
-    
-  </router-link>
-
-  <div class="links">
-    <navlinks class="can-hide">
-
-
-
-    </navlinks>
-  </div>
-</navbar>
-
-      
-      <div class="sidebar-mask" @click="toggleSidebar(false)">
-      </div>
-        <sidebar @toggle-sidebar="toggleSidebar">
-          
-          <navlinks>
-            
-
-
-
-            
-          </navlinks><div id="searchbox" class="searchbox" role="search">
-  <div class="caption"><span class="caption-text">Quick search</span>
-    <div class="searchformwrapper">
-      <form class="search" action="../../../search.html" method="get">
-        <input type="text" name="q" />
-        <input type="submit" value="Search" />
-        <input type="hidden" name="check_keywords" value="yes" />
-        <input type="hidden" name="area" value="default" />
-      </form>
-    </div>
-  </div>
-</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
-  
-    <div class="sidebar-group">
-      <p class="caption">
-        <span class="caption-text"><a href="../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
-      </p>
-      <ul class="">
-        
-      </ul>
-    </div>
-  
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>pyenzyme.restful.create — PyEnzyme 1.2.0 documentation</title>
+<link href="../../../_static/css/theme.css" rel="stylesheet"/>
+<link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet"/>
+<link href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../../../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../../../_static/css/blank.css" rel="stylesheet" type="text/css"/>
+<link href="../../../_static/autodoc_pydantic.css" rel="stylesheet" type="text/css"/>
+<link href="../../../_static/copybutton.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="../../../_static/js/index.be7d3bbb2ef33a8344ce.js" rel="preload">
+<script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+<script src="../../../_static/jquery.js"></script>
+<script src="../../../_static/underscore.js"></script>
+<script src="../../../_static/doctools.js"></script>
+<script src="../../../_static/clipboard.min.js"></script>
+<script src="../../../_static/copybutton.js"></script>
+<script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+<link href="../../../genindex.html" rel="index" title="Index"/>
+<link href="../../../search.html" rel="search" title="Search"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="None" name="docsearch:language"/>
+</link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-fluid" id="banner"></div>
+<nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+<div id="navbar-start">
+<a class="navbar-brand" href="../../../index.html">
+<p class="title">PyEnzyme</p>
+</a>
 </div>
-        </sidebar>
-
-      <page>
-          <div class="body-header" role="navigation" aria-label="navigation">
-  
-  <ul class="breadcrumbs">
-    <li><a href="../../../index.html">Docs</a> &raquo;</li>
-    
-      <li><a href="../../index.html">Module code</a> &raquo;</li>
-    
-    <li>pyenzyme.restful.create</li>
-  </ul>
-  
-
-  <ul class="page-nav">
+<button aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar-collapsible" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="col-lg-9 collapse navbar-collapse" id="navbar-collapsible">
+<div class="mr-auto" id="navbar-center">
+<div class="navbar-center-item">
+<ul class="navbar-nav" id="navbar-main-elements">
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../../../_getstarted/01_Overview.html">
+  Overview
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../../../_getstarted/02_Reading%20EnzymeML.html">
+  Reading EnzymeML
+ </a>
+</li>
 </ul>
-  
 </div>
-<hr>
-          <div class="content" role="main" v-pre>
-            
-  <h1>Source code for pyenzyme.restful.create</h1><div class="highlight"><pre>
-<span></span><span class="sd">&#39;&#39;&#39;</span>
+</div>
+<div id="navbar-end">
+<div class="navbar-end-item">
+<ul aria-label="Icon Links" class="navbar-nav" id="navbar-icon-links">
+</ul>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<div class="container-xl">
+<div class="row">
+<div class="col-12 col-md-3 bd-sidebar"><form action="../../../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form><nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<div class="bd-toc-item active">
+</div>
+</nav>
+</div>
+<div class="d-none d-xl-block col-xl-2 bd-toc">
+</div>
+<main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+<div>
+<h1>Source code for pyenzyme.restful.create</h1><div class="highlight"><pre>
+<span></span><span class="sd">'''</span>
 <span class="sd">File: create.py</span>
 <span class="sd">Project: restful</span>
 <span class="sd">Author: Jan Range</span>
@@ -112,7 +90,7 @@
 <span class="sd">Modified By: Jan Range (&lt;jan.range@simtech.uni-stuttgart.de&gt;)</span>
 <span class="sd">-----</span>
 <span class="sd">Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</span>
-<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">'''</span>
 
 <span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span><span class="p">,</span> <span class="n">send_file</span>
 <span class="kn">from</span> <span class="nn">flask_apispec</span> <span class="kn">import</span> <span class="n">doc</span><span class="p">,</span> <span class="n">marshal_with</span><span class="p">,</span> <span class="n">MethodResource</span>
@@ -126,18 +104,18 @@
 <span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.models</span> <span class="kn">import</span> <span class="n">KineticModel</span>
 <span class="kn">from</span> <span class="nn">pyenzyme.restful.create_schema</span> <span class="kn">import</span> <span class="n">EnzymeMLSchema</span>
 
-<span class="n">desc</span> <span class="o">=</span> <span class="s1">&#39;This endpoint is used to create an EnzymeML Document from a JSON representation. </span><span class="se">\</span>
-<span class="s1">        The endpoint will return your data as an EnzymeML OMEX file.&#39;</span>
+<span class="n">desc</span> <span class="o">=</span> <span class="s1">'This endpoint is used to create an EnzymeML Document from a JSON representation. </span><span class="se">\</span>
+<span class="s1">        The endpoint will return your data as an EnzymeML OMEX file.'</span>
 
 
-<div class="viewcode-block" id="Create"><a class="viewcode-back" href="../../../pyenzyme.restful.html#pyenzyme.restful.create.Create">[docs]</a><span class="k">class</span> <span class="nc">Create</span><span class="p">(</span><span class="n">MethodResource</span><span class="p">):</span>
+<div class="viewcode-block" id="Create"><a class="viewcode-back" href="../../../pyenzyme.restful.create.html#pyenzyme.restful.create.Create">[docs]</a><span class="k">class</span> <span class="nc">Create</span><span class="p">(</span><span class="n">MethodResource</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Create.post"><a class="viewcode-back" href="../../../pyenzyme.restful.html#pyenzyme.restful.create.Create.post">[docs]</a>    <span class="nd">@doc</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Create EnzymeML&#39;</span><span class="p">],</span> <span class="n">description</span><span class="o">=</span><span class="n">desc</span><span class="p">)</span>
+<div class="viewcode-block" id="Create.post"><a class="viewcode-back" href="../../../pyenzyme.restful.create.html#pyenzyme.restful.create.Create.post">[docs]</a>    <span class="nd">@doc</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">'Create EnzymeML'</span><span class="p">],</span> <span class="n">description</span><span class="o">=</span><span class="n">desc</span><span class="p">)</span>
     <span class="nd">@marshal_with</span><span class="p">(</span><span class="n">EnzymeMLSchema</span><span class="p">(),</span> <span class="n">code</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">"""</span>
 <span class="sd">        Reads JSON formatted data and converts to an EnzymeML container.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">json_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -151,27 +129,27 @@
         <span class="n">enzmldoc</span> <span class="o">=</span> <span class="n">EnzymeMLDocument</span><span class="p">(</span><span class="o">**</span><span class="n">param_doc</span><span class="p">)</span>
 
         <span class="c1"># create Creator</span>
-        <span class="n">creators</span> <span class="o">=</span> <span class="p">[</span><span class="n">Creator</span><span class="p">(</span><span class="o">**</span><span class="n">creator</span><span class="p">)</span> <span class="k">for</span> <span class="n">creator</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;creator&#39;</span><span class="p">]]</span>
+        <span class="n">creators</span> <span class="o">=</span> <span class="p">[</span><span class="n">Creator</span><span class="p">(</span><span class="o">**</span><span class="n">creator</span><span class="p">)</span> <span class="k">for</span> <span class="n">creator</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">'creator'</span><span class="p">]]</span>
         <span class="n">enzmldoc</span><span class="o">.</span><span class="n">setCreator</span><span class="p">(</span><span class="n">creators</span><span class="p">)</span>
 
         <span class="c1"># create vessel</span>
-        <span class="n">vessel</span> <span class="o">=</span> <span class="n">Vessel</span><span class="p">(</span><span class="o">**</span><span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;vessel&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">vessel</span> <span class="o">=</span> <span class="n">Vessel</span><span class="p">(</span><span class="o">**</span><span class="n">json_data</span><span class="p">[</span><span class="s2">"vessel"</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">enzmldoc</span><span class="o">.</span><span class="n">setVessel</span><span class="p">(</span><span class="n">vessel</span><span class="p">)</span>
 
         <span class="c1"># parse proteins</span>
-        <span class="k">for</span> <span class="n">protein</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;protein&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">protein</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">'protein'</span><span class="p">]:</span>
             <span class="n">enzmldoc</span><span class="o">.</span><span class="n">addProtein</span><span class="p">(</span>
                 <span class="n">Protein</span><span class="p">(</span><span class="o">**</span><span class="n">protein</span><span class="p">)</span>
             <span class="p">)</span>
 
         <span class="c1"># parse reactants</span>
-        <span class="k">for</span> <span class="n">reactant</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;reactant&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">reactant</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">'reactant'</span><span class="p">]:</span>
             <span class="n">enzmldoc</span><span class="o">.</span><span class="n">addReactant</span><span class="p">(</span>
                 <span class="n">Reactant</span><span class="p">(</span><span class="o">**</span><span class="n">reactant</span><span class="p">)</span>
             <span class="p">)</span>
 
         <span class="c1"># parse reactions</span>
-        <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">&#39;reaction&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s1">'reaction'</span><span class="p">]:</span>
             <span class="c1"># initialize reaction meta data</span>
             <span class="n">param_reac</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="n">key</span><span class="p">:</span> <span class="n">item</span>
@@ -182,7 +160,7 @@
             <span class="n">reac</span> <span class="o">=</span> <span class="n">EnzymeReaction</span><span class="p">(</span><span class="o">**</span><span class="n">param_reac</span><span class="p">)</span>
 
             <span class="c1"># add educts by name</span>
-            <span class="k">for</span> <span class="n">educt</span> <span class="ow">in</span> <span class="n">reaction</span><span class="p">[</span><span class="s1">&#39;educts&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">educt</span> <span class="ow">in</span> <span class="n">reaction</span><span class="p">[</span><span class="s1">'educts'</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parseReacElements</span><span class="p">(</span>
                     <span class="n">reac</span><span class="o">.</span><span class="n">addEduct</span><span class="p">,</span>
                     <span class="n">educt</span><span class="p">,</span>
@@ -191,7 +169,7 @@
                 <span class="p">)</span>
 
             <span class="c1"># add products by name</span>
-            <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">reaction</span><span class="p">[</span><span class="s1">&#39;products&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">reaction</span><span class="p">[</span><span class="s1">'products'</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parseReacElements</span><span class="p">(</span>
                     <span class="n">reac</span><span class="o">.</span><span class="n">addProduct</span><span class="p">,</span>
                     <span class="n">product</span><span class="p">,</span>
@@ -200,7 +178,7 @@
                 <span class="p">)</span>
 
             <span class="c1"># add modifiers by name</span>
-            <span class="k">for</span> <span class="n">modifier</span> <span class="ow">in</span> <span class="n">reaction</span><span class="p">[</span><span class="s1">&#39;modifiers&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">modifier</span> <span class="ow">in</span> <span class="n">reaction</span><span class="p">[</span><span class="s1">'modifiers'</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">parseReacElements</span><span class="p">(</span>
                     <span class="n">reac</span><span class="o">.</span><span class="n">addModifier</span><span class="p">,</span>
                     <span class="n">modifier</span><span class="p">,</span>
@@ -208,24 +186,24 @@
                     <span class="n">enzmldoc</span>
                 <span class="p">)</span>
 
-            <span class="k">if</span> <span class="s1">&#39;kineticmodel&#39;</span> <span class="ow">in</span> <span class="n">reaction</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s1">'kineticmodel'</span> <span class="ow">in</span> <span class="n">reaction</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
 
                 <span class="c1"># kinetic models</span>
-                <span class="n">model</span> <span class="o">=</span> <span class="n">reaction</span><span class="p">[</span><span class="s1">&#39;kineticmodel&#39;</span><span class="p">]</span>
-                <span class="n">equation</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;equation&#39;</span><span class="p">]</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">reaction</span><span class="p">[</span><span class="s1">'kineticmodel'</span><span class="p">]</span>
+                <span class="n">equation</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">'equation'</span><span class="p">]</span>
                 <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
 
-                <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">model</span><span class="p">[</span><span class="s1">'parameters'</span><span class="p">]:</span>
 
-                    <span class="n">name</span> <span class="o">=</span> <span class="n">parameter</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">parameter</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
                     <span class="n">reactant</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getReactant</span><span class="p">(</span>
-                        <span class="n">parameter</span><span class="p">[</span><span class="s1">&#39;reactant&#39;</span><span class="p">],</span>
+                        <span class="n">parameter</span><span class="p">[</span><span class="s1">'reactant'</span><span class="p">],</span>
                         <span class="n">by_id</span><span class="o">=</span><span class="kc">False</span>
                     <span class="p">)</span><span class="o">.</span><span class="n">getId</span><span class="p">()</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="n">parameter</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
-                    <span class="n">unit</span> <span class="o">=</span> <span class="n">parameter</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">parameter</span><span class="p">[</span><span class="s1">'value'</span><span class="p">]</span>
+                    <span class="n">unit</span> <span class="o">=</span> <span class="n">parameter</span><span class="p">[</span><span class="s1">'unit'</span><span class="p">]</span>
 
-                    <span class="n">parameters</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">reactant</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+                    <span class="n">parameters</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">reactant</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
 
                 <span class="n">km</span> <span class="o">=</span> <span class="n">KineticModel</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
                 <span class="n">reac</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="n">km</span><span class="p">)</span>
@@ -235,7 +213,7 @@
         <span class="c1"># Send File</span>
         <span class="n">dirpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span>
-            <span class="s2">&quot;create_temp&quot;</span>
+            <span class="s2">"create_temp"</span>
         <span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">dirpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
@@ -247,23 +225,23 @@
 
         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="n">dirpath</span><span class="p">,</span>
-            <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;.omex&#39;</span>
+            <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="o">+</span> <span class="s1">'.omex'</span>
         <span class="p">)</span>
 
-        <span class="n">f</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;.omex&#39;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="o">+</span> <span class="s1">'.omex'</span>
 
         <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">send_file</span><span class="p">(</span>
             <span class="n">f</span><span class="p">,</span>
-            <span class="n">mimetype</span><span class="o">=</span><span class="s1">&#39;omex&#39;</span><span class="p">,</span>
+            <span class="n">mimetype</span><span class="o">=</span><span class="s1">'omex'</span><span class="p">,</span>
             <span class="n">as_attachment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">attachment_filename</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.omex&#39;</span> <span class="o">%</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span>
+            <span class="n">attachment_filename</span><span class="o">=</span><span class="s1">'</span><span class="si">%s</span><span class="s1">.omex'</span> <span class="o">%</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Create.parseReacElements"><a class="viewcode-back" href="../../../pyenzyme.restful.html#pyenzyme.restful.create.Create.parseReacElements">[docs]</a>    <span class="k">def</span> <span class="nf">parseReacElements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">reac</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Create.parseReacElements"><a class="viewcode-back" href="../../../pyenzyme.restful.create.html#pyenzyme.restful.create.Create.parseReacElements">[docs]</a>    <span class="k">def</span> <span class="nf">parseReacElements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">reac</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">):</span>
+        <span class="sd">"""</span>
 <span class="sd">        Parses Reaction elements based on given function func. Internal usage!</span>
 
 <span class="sd">        Args:</span>
@@ -274,12 +252,12 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            KeyError: Raises error if given reactants/proteins are not given</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Check if it is a reactant</span>
             <span class="n">species_id</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getReactant</span><span class="p">(</span>
-                <span class="n">body</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">],</span>
+                <span class="n">body</span><span class="p">[</span><span class="s1">'species'</span><span class="p">],</span>
                 <span class="n">by_id</span><span class="o">=</span><span class="kc">False</span>
             <span class="p">)</span><span class="o">.</span><span class="n">getId</span><span class="p">()</span>
 
@@ -287,42 +265,48 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># Check if it is a protein</span>
                 <span class="n">species_id</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getProtein</span><span class="p">(</span>
-                    <span class="n">body</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">],</span>
+                    <span class="n">body</span><span class="p">[</span><span class="s1">'species'</span><span class="p">],</span>
                     <span class="n">by_id</span><span class="o">=</span><span class="kc">False</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">getId</span><span class="p">()</span>
 
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Reactant/Protein </span><span class="si">{</span><span class="n">body</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> not found in body! </span><span class="se">\</span>
-<span class="s2">                    Make sure entries are consistent&quot;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">"Reactant/Protein </span><span class="si">{</span><span class="n">body</span><span class="p">[</span><span class="s1">'species'</span><span class="p">]</span><span class="si">}</span><span class="s2"> not found in body! </span><span class="se">\</span>
+<span class="s2">                    Make sure entries are consistent"</span><span class="p">)</span>
 
         <span class="n">func</span><span class="p">(</span>
             <span class="n">species_id</span><span class="p">,</span>
-            <span class="n">body</span><span class="p">[</span><span class="s1">&#39;stoich&#39;</span><span class="p">],</span>
-            <span class="n">body</span><span class="p">[</span><span class="s1">&#39;constant&#39;</span><span class="p">],</span>
+            <span class="n">body</span><span class="p">[</span><span class="s1">'stoich'</span><span class="p">],</span>
+            <span class="n">body</span><span class="p">[</span><span class="s1">'constant'</span><span class="p">],</span>
             <span class="n">enzmldoc</span>
         <span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">repl</span> <span class="ow">in</span> <span class="n">body</span><span class="p">[</span><span class="s1">&#39;replicates&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">repl</span> <span class="ow">in</span> <span class="n">body</span><span class="p">[</span><span class="s1">'replicates'</span><span class="p">]:</span>
 
             <span class="n">replicate</span> <span class="o">=</span> <span class="n">Replicate</span><span class="p">(</span><span class="o">**</span><span class="n">repl</span><span class="p">)</span>
             <span class="n">replicate</span><span class="o">.</span><span class="n">setReactant</span><span class="p">(</span><span class="n">species_id</span><span class="p">)</span>
             <span class="n">reac</span><span class="o">.</span><span class="n">addReplicate</span><span class="p">(</span><span class="n">replicate</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span></div></div>
 </pre></div>
-
-          </div>
-          <div class="page-nav">
-            <div class="inner"><ul class="page-nav">
-</ul><div class="footer" role="contentinfo">
-      &#169; Copyright 2021, Jan.
-    <br>
-    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
 </div>
-            </div>
-          </div>
-      </page>
-    </div></div>
-    
-    
-  </body>
+<div class="prev-next-area">
+</div>
+</main>
+</div>
+</div>
+<script src="../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<div class="footer-item">
+<p class="copyright">
+    © Copyright 2021, Jan.<br/>
+</p>
+</div>
+<div class="footer-item">
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1.<br/>
+</p>
+</div>
+</div>
+</footer>
+</body>
 </html>

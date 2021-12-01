@@ -11,3 +11,11 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 from pyenzyme.enzymeml.core import EnzymeMLDocument
+from pyenzyme.enzymeml.core import Vessel
+from pyenzyme.enzymeml.core import Protein
+from pyenzyme.enzymeml.core import Reactant
+from pyenzyme.enzymeml.core import EnzymeReaction
+from pyenzyme.enzymeml.core import Measurement
+from pyenzyme.enzymeml.core import Replicate
+from pyenzyme.enzymeml.models import KineticModel
+from pyenzyme.enzymeml.models import MichaelisMenten
