@@ -40,7 +40,8 @@ setup(
         'pydataverse',
         'pydantic',
         'deprecation',
-        'deepdiff'
+        'deepdiff',
+        'StrEnum'
     ],
     extras_require={
         'test': [
