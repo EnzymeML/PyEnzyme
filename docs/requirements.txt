@@ -1,1 +1,2 @@
 autodoc_pydantic
+ipython
