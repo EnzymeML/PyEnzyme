@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+      <title>pyenzyme.restful.create module</title>
+    
+          <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="_static/theme-vendors.js"></script> -->
+      <script src="_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="genindex.html" />
+  <link rel="search" title="Search" href="search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+    
+    <li>pyenzyme.restful.create module</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <section id="module-pyenzyme.restful.create">
+<span id="pyenzyme-restful-create-module"></span><h1>pyenzyme.restful.create module<a class="headerlink" href="#module-pyenzyme.restful.create" title="Permalink to this headline">¶</a></h1>
+<p>File: create.py
+Project: restful
+Author: Jan Range
+License: BSD-2 clause
+—–
+Last Modified: Wednesday June 23rd 2021 7:44:37 pm
+Modified By: Jan Range (&lt;<a class="reference external" href="mailto:jan&#46;range&#37;&#52;&#48;simtech&#46;uni-stuttgart&#46;de">jan<span>&#46;</span>range<span>&#64;</span>simtech<span>&#46;</span>uni-stuttgart<span>&#46;</span>de</a>&gt;)
+—–
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyenzyme.restful.create.Create">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.restful.create.</span></span><span class="sig-name descname"><span class="pre">Create</span></span><a class="reference internal" href="_modules/pyenzyme/restful/create.html#Create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.restful.create.Create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_apispec.views.MethodResource</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.restful.create.Create.methods">
+<span class="sig-name descname"><span class="pre">methods</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'POST'}</span></em><a class="headerlink" href="#pyenzyme.restful.create.Create.methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of methods this view can handle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.restful.create.Create.parseReacElements">
+<span class="sig-name descname"><span class="pre">parseReacElements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reac</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/restful/create.html#Create.parseReacElements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.restful.create.Create.parseReacElements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses Reaction elements based on given function func. Internal usage!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>addXXX Function</em>) – EnzymeReaction function to add Educt/Product/Modifier</p></li>
+<li><p><strong>body</strong> (<em>Dictionaly</em>) – JSON body describing list of educts/products/modifiers</p></li>
+<li><p><strong>reac</strong> (<a class="reference internal" href="pyenzyme.enzymeml.core.enzymereaction.html#pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction" title="pyenzyme.enzymeml.core.enzymereaction.EnzymeReaction"><em>EnzymeReaction</em></a>) – Object used to add respective Entities as well as Replicates</p></li>
+<li><p><strong>enzmldoc</strong> (<a class="reference internal" href="pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument" title="pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument"><em>EnzymeMLDocument</em></a>) – Used for consistency and name parsing</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>KeyError</strong> – Raises error if given reactants/proteins are not given</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.restful.create.Create.post">
+<span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/restful/create.html#Create.post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.restful.create.Create.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads JSON formatted data and converts to an EnzymeML container.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

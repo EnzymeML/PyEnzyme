@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>pyenzyme.enzymeml.core.exceptions</title>
+    
+          <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../../../_static/theme-vendors.js"></script> -->
+      <script src="../../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../../index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../../index.html">Module code</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.core.exceptions</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for pyenzyme.enzymeml.core.exceptions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">File: functionalities.py</span>
+<span class="sd">Project: core</span>
+<span class="sd">Author: Jan Range</span>
+<span class="sd">License: BSD-2 clause</span>
+<span class="sd">-----</span>
+<span class="sd">Last Modified: Tuesday June 15th 2021 6:43:34 pm</span>
+<span class="sd">Modified By: Jan Range (&lt;jan.range@simtech.uni-stuttgart.de&gt;)</span>
+<span class="sd">-----</span>
+<span class="sd">Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+
+<div class="viewcode-block" id="ValidationError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.ValidationError">[docs]</a><span class="k">class</span> <span class="nc">ValidationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when a Dataverse validation has failed&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="DataverseError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.DataverseError">[docs]</a><span class="k">class</span> <span class="nc">DataverseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when a Dataverse validation has failed&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="SpeciesNotFoundError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.SpeciesNotFoundError">[docs]</a><span class="k">class</span> <span class="nc">SpeciesNotFoundError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when a species hasnt been found in a specific element&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">species_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">enzymeml_part</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Species ID has not been found in &quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">species_id</span> <span class="o">=</span> <span class="n">species_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enzymeml_part</span> <span class="o">=</span> <span class="n">enzymeml_part</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">species_id</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">enzymeml_part</span><span class="si">}</span><span class="s1"> -&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span></div>
+
+
+<div class="viewcode-block" id="MissingSpeciesError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.MissingSpeciesError">[docs]</a><span class="k">class</span> <span class="nc">MissingSpeciesError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when a species has not yet been assigned to a measurement&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="IdentifierError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.IdentifierError">[docs]</a><span class="k">class</span> <span class="nc">IdentifierError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when either no ID has been assigned to a measurementData&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="IdentifierNameError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.IdentifierNameError">[docs]</a><span class="k">class</span> <span class="nc">IdentifierNameError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when an ID does not match the expected format&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Identifier &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39; does not match the expected format of &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">[digits]&#39;.&quot;</span></div>
+
+
+<div class="viewcode-block" id="ECNumberError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.ECNumberError">[docs]</a><span class="k">class</span> <span class="nc">ECNumberError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when an EC number does not match the pattern convenrtion&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ecnumber</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ecnumber</span> <span class="o">=</span> <span class="n">ecnumber</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;EC number </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ecnumber</span><span class="si">}</span><span class="s2"> does not match the pattern. Please specifify as X.X.X.X&quot;</span></div>
+
+
+<div class="viewcode-block" id="DataError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.DataError">[docs]</a><span class="k">class</span> <span class="nc">DataError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when incomplete data has been assigned to a replicate&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="UnitKindError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.UnitKindError">[docs]</a><span class="k">class</span> <span class="nc">UnitKindError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when an to SBML unknown unit kind has been given&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;The unit kind integer that has been given is not supported. Please check &#39;libsbml&#39; for the supported ones.&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MissingUnitError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.MissingUnitError">[docs]</a><span class="k">class</span> <span class="nc">MissingUnitError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when a unit is missing &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ChEBIIdentifierError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.ChEBIIdentifierError">[docs]</a><span class="k">class</span> <span class="nc">ChEBIIdentifierError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when the CHEBI ID is incorrect.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chebi_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chebi_id</span> <span class="o">=</span> <span class="n">chebi_id</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;ChEBI ID </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chebi_id</span><span class="si">}</span><span class="s2"> is invalid. Please provide a valid ChEBI ID.&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UniProtIdentifierError"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.exceptions.UniProtIdentifierError">[docs]</a><span class="k">class</span> <span class="nc">UniProtIdentifierError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when the UniProt ID is incorrect.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uniprotid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uniprotid</span> <span class="o">=</span> <span class="n">uniprotid</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;UniProt ID </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">uniprotid</span><span class="si">}</span><span class="s2"> is invalid. Please provide a valid UniProt ID.&quot;</span>
+        <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

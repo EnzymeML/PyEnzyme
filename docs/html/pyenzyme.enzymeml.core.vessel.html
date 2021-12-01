@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+      <title>pyenzyme.enzymeml.core.vessel module</title>
+    
+          <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="_static/theme-vendors.js"></script> -->
+      <script src="_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="genindex.html" />
+  <link rel="search" title="Search" href="search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.core.vessel module</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <section id="module-pyenzyme.enzymeml.core.vessel">
+<span id="pyenzyme-enzymeml-core-vessel-module"></span><h1>pyenzyme.enzymeml.core.vessel module<a class="headerlink" href="#module-pyenzyme.enzymeml.core.vessel" title="Permalink to this headline">¶</a></h1>
+<p>File: vessel.py
+Project: core
+Author: Jan Range
+License: BSD-2 clause
+—–
+Last Modified: Tuesday June 15th 2021 8:26:08 pm
+Modified By: Jan Range (&lt;<a class="reference external" href="mailto:jan&#46;range&#37;&#52;&#48;simtech&#46;uni-stuttgart&#46;de">jan<span>&#46;</span>range<span>&#64;</span>simtech<span>&#46;</span>uni-stuttgart<span>&#46;</span>de</a>&gt;)
+—–
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</p>
+<dl class="py pydantic_model">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.core.vessel.</span></span><span class="sig-name descname"><span class="pre">Vessel</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/vessel.html#Vessel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyenzyme.enzymeml.core.enzymemlbase.html#pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase" title="pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyenzyme.enzymeml.core.enzymemlbase.EnzymeMLBase</span></code></a></p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+   <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Vessel&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Name of the used vessel.&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;volume&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Volume&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Volumetric value of the vessel.&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;unit&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Unit&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Volumetric unit of the vessel.&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;constant&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether the volume of the vessel is constant or not.&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Id&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unique identifier of the vessel.&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;v[\\d]+&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;meta_id&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Meta Id&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unique meta identifier of the vessel.&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Uri&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;URI of the vessel.&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;creator_id&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Creator Id&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Unique identifier of the author.&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">}</span>
+   <span class="p">},</span>
+   <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;volume&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;unit&quot;</span>
+   <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</details></p><dl class="field-list simple">
+<dt class="field-odd">Config</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>validate_all</strong>: <em>bool = True</em></p></li>
+<li><p><strong>validate_assignment</strong>: <em>bool = True</em></p></li>
+</ul>
+</dd>
+<dt class="field-even">Fields</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.constant" title="pyenzyme.enzymeml.core.vessel.Vessel.constant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constant</span> <span class="pre">(bool)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.creator_id" title="pyenzyme.enzymeml.core.vessel.Vessel.creator_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">creator_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.id" title="pyenzyme.enzymeml.core.vessel.Vessel.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.meta_id" title="pyenzyme.enzymeml.core.vessel.Vessel.meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.name" title="pyenzyme.enzymeml.core.vessel.Vessel.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.unit" title="pyenzyme.enzymeml.core.vessel.Vessel.unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unit</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.uri" title="pyenzyme.enzymeml.core.vessel.Vessel.uri"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uri</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.volume" title="pyenzyme.enzymeml.core.vessel.Vessel.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span> <span class="pre">(pydantic.types.PositiveFloat)</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-odd">Validators</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.check_meta_id" title="pyenzyme.enzymeml.core.vessel.Vessel.check_meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_meta_id</span></code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.meta_id" title="pyenzyme.enzymeml.core.vessel.Vessel.meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta_id</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.set_meta_id" title="pyenzyme.enzymeml.core.vessel.Vessel.set_meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_meta_id</span></code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.id" title="pyenzyme.enzymeml.core.vessel.Vessel.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.constant">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">constant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.constant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether the volume of the vessel is constant or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Constraints</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>required</strong> = True</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.creator_id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">creator_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.creator_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unique identifier of the author.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Constraints</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>required</strong> = False</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unique identifier of the vessel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Constraints</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pattern</strong> = v[d]+</p></li>
+<li><p><strong>required</strong> = True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Validated by</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.set_meta_id" title="pyenzyme.enzymeml.core.vessel.Vessel.set_meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_meta_id</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.meta_id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meta_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.meta_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unique meta identifier of the vessel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Constraints</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>required</strong> = True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Validated by</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.check_meta_id" title="pyenzyme.enzymeml.core.vessel.Vessel.check_meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_meta_id</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.name">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the used vessel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Constraints</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>required</strong> = True</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.unit">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Volumetric unit of the vessel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Constraints</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>required</strong> = True</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.uri">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>URI of the vessel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Constraints</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>required</strong> = False</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.volume">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">volume</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveFloat</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Volumetric value of the vessel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Constraints</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>required</strong> = True</p></li>
+<li><p><strong>exclusiveMinimum</strong> = 0</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py pydantic_validator">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.check_meta_id">
+<em class="property"><span class="pre">validator</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_meta_id</span></span><em class="autodoc_pydantic_validator_arrow property">&#160; <span class="pre">»</span>&#160; </em><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.meta_id" title="pyenzyme.enzymeml.core.vessel.Vessel.meta_id"><em class="xref py py-obj"><span class="pre">meta_id</span></em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/vessel.html#Vessel.check_meta_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.check_meta_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the meta ID provided is following the standard</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.getConstant">
+<span class="sig-name descname"><span class="pre">getConstant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/vessel.html#Vessel.getConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.getConstant" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>constant</cite> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.getId">
+<span class="sig-name descname"><span class="pre">getId</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/vessel.html#Vessel.getId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.getId" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>id</cite> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.getMetaid">
+<span class="sig-name descname"><span class="pre">getMetaid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/vessel.html#Vessel.getMetaid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.getMetaid" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>meta_id</cite> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.getName">
+<span class="sig-name descname"><span class="pre">getName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/vessel.html#Vessel.getName"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.getName" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>name</cite> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.getSize">
+<span class="sig-name descname"><span class="pre">getSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/vessel.html#Vessel.getSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.getSize" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>volume</cite> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.getUnit">
+<span class="sig-name descname"><span class="pre">getUnit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/vessel.html#Vessel.getUnit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.getUnit" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version Use: </span>the attribute <cite>unit</cite> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py pydantic_validator">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.set_meta_id">
+<em class="property"><span class="pre">validator</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_meta_id</span></span><em class="autodoc_pydantic_validator_arrow property">&#160; <span class="pre">»</span>&#160; </em><a class="reference internal" href="#pyenzyme.enzymeml.core.vessel.Vessel.id" title="pyenzyme.enzymeml.core.vessel.Vessel.id"><em class="xref py py-obj"><span class="pre">id</span></em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/vessel.html#Vessel.set_meta_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.set_meta_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the meta ID when an ID is provided</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.vessel.Vessel.set_unit_id">
+<span class="sig-name descname"><span class="pre">set_unit_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/vessel.html#Vessel.set_unit_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.vessel.Vessel.set_unit_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+      <title>pyenzyme.enzymeml.tools.enzymemlwriter module</title>
+    
+          <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="_static/theme-vendors.js"></script> -->
+      <script src="_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="genindex.html" />
+  <link rel="search" title="Search" href="search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.tools.enzymemlwriter module</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <section id="module-pyenzyme.enzymeml.tools.enzymemlwriter">
+<span id="pyenzyme-enzymeml-tools-enzymemlwriter-module"></span><h1>pyenzyme.enzymeml.tools.enzymemlwriter module<a class="headerlink" href="#module-pyenzyme.enzymeml.tools.enzymemlwriter" title="Permalink to this headline">¶</a></h1>
+<p>File: enzymemlwriter.py
+Project: tools
+Author: Jan Range
+License: BSD-2 clause
+—–
+Last Modified: Wednesday June 23rd 2021 9:09:19 pm
+Modified By: Jan Range (&lt;<a class="reference external" href="mailto:jan&#46;range&#37;&#52;&#48;simtech&#46;uni-stuttgart&#46;de">jan<span>&#46;</span>range<span>&#64;</span>simtech<span>&#46;</span>uni-stuttgart<span>&#46;</span>de</a>&gt;)
+—–
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.tools.enzymemlwriter.</span></span><span class="sig-name descname"><span class="pre">EnzymeMLWriter</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.addFileToArchive">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">addFileToArchive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">archive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetPath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.addFileToArchive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.addFileToArchive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendAttribute">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">appendAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attributeName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.appendAttribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendAttribute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendInitConcData">
+<span class="sig-name descname"><span class="pre">appendInitConcData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measurement_annot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">libsbml.XMLNode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement_data_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="pyenzyme.enzymeml.core.measurementData.html#pyenzyme.enzymeml.core.measurementData.MeasurementData" title="pyenzyme.enzymeml.core.measurementData.MeasurementData"><span class="pre">pyenzyme.enzymeml.core.measurementData.MeasurementData</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">species_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.appendInitConcData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendInitConcData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds individual intial concentration data to the enzymeml:measurement annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>measurement_annot</strong> (<em>XMLNode</em>) – The SBML XMLNode for the measurement annotation.</p></li>
+<li><p><strong>measurement_data_dict</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="pyenzyme.enzymeml.core.measurementData.html#pyenzyme.enzymeml.core.measurementData.MeasurementData" title="pyenzyme.enzymeml.core.measurementData.MeasurementData"><em>MeasurementData</em></a><em>]</em>) – The EnzymeMLDocument measurement data.</p></li>
+<li><p><strong>species_type</strong> (<em>str</em>) – The type of species in the measurement_data_dict.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendMultiAttributes">
+<span class="sig-name descname"><span class="pre">appendMultiAttributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attributeName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectMapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotationNode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.appendMultiAttributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendMultiAttributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendOptionalAttribute">
+<span class="sig-name descname"><span class="pre">appendOptionalAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attributeName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objectName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotationNode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.appendOptionalAttribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendOptionalAttribute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendReplicateData">
+<span class="sig-name descname"><span class="pre">appendReplicateData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">species</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="pyenzyme.enzymeml.core.measurementData.html#pyenzyme.enzymeml.core.measurementData.MeasurementData" title="pyenzyme.enzymeml.core.measurementData.MeasurementData"><span class="pre">pyenzyme.enzymeml.core.measurementData.MeasurementData</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_annot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">libsbml.XMLNode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.appendReplicateData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendReplicateData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts all time course data from the replicate objects and adds them to the the enzymeml:format annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>species</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="pyenzyme.enzymeml.core.measurementData.html#pyenzyme.enzymeml.core.measurementData.MeasurementData" title="pyenzyme.enzymeml.core.measurementData.MeasurementData"><em>MeasurementData</em></a><em>]</em>) – Reactant/Protein measurement data.</p></li>
+<li><p><strong>format_annot</strong> (<em>XMLNode</em>) – The SBML XMLNode representing the format annotation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The time course data from the replicate objects.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[list[float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.convertEnzymeMLToSBML">
+<span class="sig-name descname"><span class="pre">convertEnzymeMLToSBML</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">libsbml.Model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.convertEnzymeMLToSBML"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.convertEnzymeMLToSBML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manages the conversion of EnzymeML to SBML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>libsbml.Model</em>) – The blank SBML model, where the EnzymeML document is converted to.</p></li>
+<li><p><strong>enzmldoc</strong> (<a class="reference internal" href="pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument" title="pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument"><em>EnzymeMLDocument</em></a>) – The EnzymeML document to be converted.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.setupXMLNode">
+<span class="sig-name descname"><span class="pre">setupXMLNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.setupXMLNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.setupXMLNode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.toFile">
+<span class="sig-name descname"><span class="pre">toFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.toFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.toFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes EnzymeMLDocument object to an .omex container</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enzmldoc</strong> (<a class="reference internal" href="pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument" title="pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument"><em>EnzymeMLDocument</em></a>) – Previously created instance of an
+EnzymeML document</p></li>
+<li><p><strong>path</strong> (<em>String</em>) – EnzymeML file is written to this destination</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.toSBML">
+<span class="sig-name descname"><span class="pre">toSBML</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.toSBML"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.toSBML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns libSBML model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enzmldoc</strong> (<a class="reference internal" href="pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument" title="pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument"><em>EnzymeMLDocument</em></a>) – Previously created instance of an
+EnzymeML document</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.toXMLString">
+<span class="sig-name descname"><span class="pre">toXMLString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.toXMLString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.toXMLString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts EnzymeMLDocument to XML string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enzmldoc</strong> (<a class="reference internal" href="pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument" title="pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument"><em>EnzymeMLDocument</em></a>) – Previously created instance of an
+EnzymeML document</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.writeElements">
+<span class="sig-name descname"><span class="pre">writeElements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reaction_elements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyenzyme.enzymeml.core.enzymereaction.html#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement"><span class="pre">pyenzyme.enzymeml.core.enzymereaction.ReactionElement</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createFunction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.writeElements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.writeElements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes SpeciesReference elements to the SBML document.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reaction_elements</strong> (<em>list</em><em>[</em><a class="reference internal" href="pyenzyme.enzymeml.core.enzymereaction.html#pyenzyme.enzymeml.core.enzymereaction.ReactionElement" title="pyenzyme.enzymeml.core.enzymereaction.ReactionElement"><em>ReactionElement</em></a><em>]</em>) – List of reaction elements containing information on stoichiometry, species_id and ontology.</p></li>
+<li><p><strong>createFunction</strong> (<em>Callable</em>) – Function that creates either an educt, product or modifier list to the SBML document.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.writeMeasurementData">
+<span class="sig-name descname"><span class="pre">writeMeasurementData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyenzyme.enzymeml.core.measurement.html#pyenzyme.enzymeml.core.measurement.Measurement" title="pyenzyme.enzymeml.core.measurement.Measurement"><span class="pre">pyenzyme.enzymeml.core.measurement.Measurement</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">measurement_annot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">libsbml.XMLNode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_annot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">libsbml.XMLNode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.writeMeasurementData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.writeMeasurementData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes measurement metadata as columns to the SBML document annotation enzymeml:column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>measurement</strong> (<a class="reference internal" href="pyenzyme.enzymeml.core.measurement.html#pyenzyme.enzymeml.core.measurement.Measurement" title="pyenzyme.enzymeml.core.measurement.Measurement"><em>Measurement</em></a>) – EnzymeML measurement that is written to SBML.</p></li>
+<li><p><strong>measurement_annot</strong> (<em>XMLNode</em>) – The SBML XMLNode the measurement metadata is written to.</p></li>
+<li><p><strong>format_annot</strong> (<em>XMLNode</em>) – The SBML XMLNode the column information is written to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The time course data from the replicate objects.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[list[float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.writeReplicateData">
+<span class="sig-name descname"><span class="pre">writeReplicateData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replicate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyenzyme.enzymeml.core.replicate.html#pyenzyme.enzymeml.core.replicate.Replicate" title="pyenzyme.enzymeml.core.replicate.Replicate"><span class="pre">pyenzyme.enzymeml.core.replicate.Replicate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_annot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">libsbml.XMLNode</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlwriter.html#EnzymeMLWriter.writeReplicateData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.writeReplicateData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes column information to the enzymeml:format annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>replicate</strong> (<a class="reference internal" href="pyenzyme.enzymeml.core.replicate.html#pyenzyme.enzymeml.core.replicate.Replicate" title="pyenzyme.enzymeml.core.replicate.Replicate"><em>Replicate</em></a>) – Replicate holding the time course data.</p></li>
+<li><p><strong>format_annot</strong> (<em>XMLNode</em>) – The enzymeml:format annotation node.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

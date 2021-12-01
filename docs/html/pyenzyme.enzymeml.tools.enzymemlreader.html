@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+      <title>pyenzyme.enzymeml.tools.enzymemlreader module</title>
+    
+          <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="_static/theme-vendors.js"></script> -->
+      <script src="_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="genindex.html" />
+  <link rel="search" title="Search" href="search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.tools.enzymemlreader module</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <section id="module-pyenzyme.enzymeml.tools.enzymemlreader">
+<span id="pyenzyme-enzymeml-tools-enzymemlreader-module"></span><h1>pyenzyme.enzymeml.tools.enzymemlreader module<a class="headerlink" href="#module-pyenzyme.enzymeml.tools.enzymemlreader" title="Permalink to this headline">¶</a></h1>
+<p>File: enzymemlreader.py
+Project: tools
+Author: Jan Range
+License: BSD-2 clause
+—–
+Last Modified: Wednesday June 23rd 2021 7:18:49 pm
+Modified By: Jan Range (&lt;<a class="reference external" href="mailto:jan&#46;range&#37;&#52;&#48;simtech&#46;uni-stuttgart&#46;de">jan<span>&#46;</span>range<span>&#64;</span>simtech<span>&#46;</span>uni-stuttgart<span>&#46;</span>de</a>&gt;)
+—–
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlreader.EnzymeMLReader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.tools.enzymemlreader.</span></span><span class="sig-name descname"><span class="pre">EnzymeMLReader</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlreader.html#EnzymeMLReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlreader.EnzymeMLReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlreader.EnzymeMLReader.readFromFile">
+<span class="sig-name descname"><span class="pre">readFromFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument" title="pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument"><span class="pre">pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument</span></a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlreader.html#EnzymeMLReader.readFromFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlreader.EnzymeMLReader.readFromFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads EnzymeML document to an object layer EnzymeMLDocument class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path to .omex container or
+folder destination for plain .xml</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlreader.ProteinFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.tools.enzymemlreader.</span></span><span class="sig-name descname"><span class="pre">ProteinFactory</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlreader.html#ProteinFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlreader.ProteinFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyenzyme.enzymeml.core.abstract_classes.html#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory</span></code></a></p>
+<p>Returns an un-initialized reactant species object</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlreader.ProteinFactory.enzymeml_part">
+<span class="sig-name descname"><span class="pre">enzymeml_part</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'protein_dict'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlreader.ProteinFactory.enzymeml_part" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlreader.ProteinFactory.get_species">
+<span class="sig-name descname"><span class="pre">get_species</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pyenzyme.enzymeml.core.abstract_classes.html#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies"><span class="pre">pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies</span></a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlreader.html#ProteinFactory.get_species"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlreader.ProteinFactory.get_species" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new species object</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlreader.ReactantFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.tools.enzymemlreader.</span></span><span class="sig-name descname"><span class="pre">ReactantFactory</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlreader.html#ReactantFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlreader.ReactantFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyenzyme.enzymeml.core.abstract_classes.html#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory</span></code></a></p>
+<p>Returns an un-initialized reactant species object</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlreader.ReactantFactory.enzymeml_part">
+<span class="sig-name descname"><span class="pre">enzymeml_part</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'reactant_dict'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlreader.ReactantFactory.enzymeml_part" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlreader.ReactantFactory.get_species">
+<span class="sig-name descname"><span class="pre">get_species</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pyenzyme.enzymeml.core.abstract_classes.html#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies"><span class="pre">pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies</span></a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlreader.html#ReactantFactory.get_species"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlreader.ReactantFactory.get_species" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new species object</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.tools.enzymemlreader.species_factory_mapping">
+<span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.tools.enzymemlreader.</span></span><span class="sig-name descname"><span class="pre">species_factory_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sbo_term</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pyenzyme.enzymeml.core.abstract_classes.html#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory"><span class="pre">pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory</span></a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/tools/enzymemlreader.html#species_factory_mapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.tools.enzymemlreader.species_factory_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps from SBOTerms to the appropriate species using a factory</p>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

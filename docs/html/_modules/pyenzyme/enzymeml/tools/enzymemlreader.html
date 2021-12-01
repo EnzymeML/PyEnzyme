@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>pyenzyme.enzymeml.tools.enzymemlreader</title>
+    
+          <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../../../_static/theme-vendors.js"></script> -->
+      <script src="../../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../../index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../../index.html">Module code</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.tools.enzymemlreader</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for pyenzyme.enzymeml.tools.enzymemlreader</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">File: enzymemlreader.py</span>
+<span class="sd">Project: tools</span>
+<span class="sd">Author: Jan Range</span>
+<span class="sd">License: BSD-2 clause</span>
+<span class="sd">-----</span>
+<span class="sd">Last Modified: Wednesday June 23rd 2021 7:18:49 pm</span>
+<span class="sd">Modified By: Jan Range (&lt;jan.range@simtech.uni-stuttgart.de&gt;)</span>
+<span class="sd">-----</span>
+<span class="sd">Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">libsbml</span>
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.creator</span> <span class="kn">import</span> <span class="n">Creator</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.enzymemldocument</span> <span class="kn">import</span> <span class="n">EnzymeMLDocument</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.protein</span> <span class="kn">import</span> <span class="n">Protein</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.reactant</span> <span class="kn">import</span> <span class="n">Reactant</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.replicate</span> <span class="kn">import</span> <span class="n">Replicate</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.unitdef</span> <span class="kn">import</span> <span class="n">UnitDef</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.vessel</span> <span class="kn">import</span> <span class="n">Vessel</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.measurement</span> <span class="kn">import</span> <span class="n">Measurement</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.enzymereaction</span> <span class="kn">import</span> <span class="n">EnzymeReaction</span><span class="p">,</span> <span class="n">ReactionElement</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.models.kineticmodel</span> <span class="kn">import</span> <span class="n">KineticModel</span><span class="p">,</span> <span class="n">KineticParameter</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.ontology</span> <span class="kn">import</span> <span class="n">DataTypes</span><span class="p">,</span> <span class="n">EnzymeMLPart</span><span class="p">,</span> <span class="n">SBOTerm</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.abstract_classes</span> <span class="kn">import</span> <span class="n">AbstractSpeciesFactory</span><span class="p">,</span> <span class="n">AbstractSpecies</span>
+
+<span class="kn">from</span> <span class="nn">libsbml</span> <span class="kn">import</span> <span class="n">SBMLReader</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">libcombine</span> <span class="kn">import</span> <span class="n">CombineArchive</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span><span class="p">,</span> <span class="n">BytesIO</span>
+
+<span class="c1"># ! Factories</span>
+
+
+<div class="viewcode-block" id="ReactantFactory"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlreader.ReactantFactory">[docs]</a><span class="k">class</span> <span class="nc">ReactantFactory</span><span class="p">(</span><span class="n">AbstractSpeciesFactory</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns an un-initialized reactant species object&quot;&quot;&quot;</span>
+
+    <span class="n">enzymeml_part</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;reactant_dict&quot;</span>
+
+<div class="viewcode-block" id="ReactantFactory.get_species"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlreader.ReactantFactory.get_species">[docs]</a>    <span class="k">def</span> <span class="nf">get_species</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AbstractSpecies</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Reactant</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ProteinFactory"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlreader.ProteinFactory">[docs]</a><span class="k">class</span> <span class="nc">ProteinFactory</span><span class="p">(</span><span class="n">AbstractSpeciesFactory</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns an un-initialized reactant species object&quot;&quot;&quot;</span>
+
+    <span class="n">enzymeml_part</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;protein_dict&quot;</span>
+
+<div class="viewcode-block" id="ProteinFactory.get_species"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlreader.ProteinFactory.get_species">[docs]</a>    <span class="k">def</span> <span class="nf">get_species</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AbstractSpecies</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Protein</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="species_factory_mapping"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlreader.species_factory_mapping">[docs]</a><span class="k">def</span> <span class="nf">species_factory_mapping</span><span class="p">(</span><span class="n">sbo_term</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AbstractSpeciesFactory</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Maps from SBOTerms to the appropriate species using a factory&quot;&quot;&quot;</span>
+
+    <span class="c1"># Get the enum entity for the mapping</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">EnzymeMLPart</span><span class="o">.</span><span class="n">entityFromSBOTerm</span><span class="p">(</span><span class="n">sbo_term</span><span class="p">)</span>
+
+    <span class="n">factory_mapping</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;PROTEIN&quot;</span><span class="p">:</span> <span class="n">ProteinFactory</span><span class="p">(),</span>
+        <span class="s2">&quot;SMALL_MOLECULE&quot;</span><span class="p">:</span> <span class="n">ReactantFactory</span><span class="p">(),</span>
+        <span class="s2">&quot;ION&quot;</span><span class="p">:</span> <span class="n">ReactantFactory</span><span class="p">(),</span>
+        <span class="s2">&quot;RADICAL&quot;</span><span class="p">:</span> <span class="n">ReactantFactory</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">factory_mapping</span><span class="p">[</span><span class="n">entity</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="EnzymeMLReader"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlreader.EnzymeMLReader">[docs]</a><span class="k">class</span> <span class="nc">EnzymeMLReader</span><span class="p">:</span>
+
+<div class="viewcode-block" id="EnzymeMLReader.readFromFile"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlreader.EnzymeMLReader.readFromFile">[docs]</a>    <span class="k">def</span> <span class="nf">readFromFile</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnzymeMLDocument</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Reads EnzymeML document to an object layer EnzymeMLDocument class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): Path to .omex container or</span>
+<span class="sd">                         folder destination for plain .xml</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Read omex archive</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="n">CombineArchive</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="o">.</span><span class="n">initializeFromArchive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="n">sbmlfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="o">.</span><span class="n">getEntry</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="o">.</span><span class="n">extractEntryToString</span><span class="p">(</span><span class="n">sbmlfile</span><span class="o">.</span><span class="n">getLocation</span><span class="p">())</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="o">.</span><span class="n">getMetadataForLocation</span><span class="p">(</span><span class="n">sbmlfile</span><span class="o">.</span><span class="n">getLocation</span><span class="p">())</span>
+
+        <span class="c1"># Read experiment file (sbml)</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">SBMLReader</span><span class="p">()</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">readSBMLFromString</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">document</span><span class="o">.</span><span class="n">getErrorLog</span><span class="p">()</span><span class="o">.</span><span class="n">printErrors</span><span class="p">()</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">getModel</span><span class="p">()</span>
+
+        <span class="c1"># Initialize EnzymeMLDocument object</span>
+        <span class="n">enzmldoc</span> <span class="o">=</span> <span class="n">EnzymeMLDocument</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">getLevel</span><span class="p">(),</span>
+            <span class="n">version</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">getVersion</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Fetch references</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_getRefs</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
+
+        <span class="c1"># Fetch Creators</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_getCreators</span><span class="p">(</span><span class="n">omex_desc</span><span class="o">=</span><span class="n">desc</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="o">=</span><span class="n">enzmldoc</span><span class="p">)</span>
+
+        <span class="c1"># try:</span>
+        <span class="c1">#     # TODO extract VCard</span>
+        <span class="c1">#     model_hist = model.getModelHistory()</span>
+        <span class="c1">#     enzmldoc.setCreated(</span>
+        <span class="c1">#         model_hist.getCreatedDate().getDateAsString()</span>
+        <span class="c1">#     )</span>
+
+        <span class="c1">#     enzmldoc.setModified(</span>
+        <span class="c1">#         model_hist.getModifiedDate().getDateAsString()</span>
+        <span class="c1">#     )</span>
+
+        <span class="c1"># Fetch units</span>
+        <span class="n">unitDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getUnits</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">enzmldoc</span><span class="o">.</span><span class="n">unit_dict</span> <span class="o">=</span> <span class="n">unitDict</span>
+
+        <span class="c1"># Fetch Vessel</span>
+        <span class="n">vessel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getVessel</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
+        <span class="n">enzmldoc</span><span class="o">.</span><span class="n">vessel_dict</span> <span class="o">=</span> <span class="n">vessel</span>
+
+        <span class="c1"># Fetch Species</span>
+        <span class="n">protein_dict</span><span class="p">,</span> <span class="n">reactant_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSpecies</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
+        <span class="n">enzmldoc</span><span class="o">.</span><span class="n">reactant_dict</span> <span class="o">=</span> <span class="n">reactant_dict</span>
+        <span class="n">enzmldoc</span><span class="o">.</span><span class="n">protein_dict</span> <span class="o">=</span> <span class="n">protein_dict</span>
+
+        <span class="c1"># fetch reaction</span>
+        <span class="n">reaction_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getReactions</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
+        <span class="n">enzmldoc</span><span class="o">.</span><span class="n">reaction_dict</span> <span class="o">=</span> <span class="n">reaction_dict</span>
+
+        <span class="c1"># fetch Measurements</span>
+        <span class="n">measurement_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getData</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
+        <span class="n">enzmldoc</span><span class="o">.</span><span class="n">measurement_dict</span> <span class="o">=</span> <span class="n">measurement_dict</span>
+
+        <span class="c1"># fetch added files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_getFiles</span><span class="p">(</span><span class="n">enzmldoc</span><span class="p">)</span>
+
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+
+        <span class="k">return</span> <span class="n">enzmldoc</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_sboterm_to_enum</span><span class="p">(</span><span class="n">sbo_term</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Enum</span><span class="p">]:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SBOTerm</span><span class="p">(</span>
+                <span class="n">libsbml</span><span class="o">.</span><span class="n">SBO_intToString</span><span class="p">(</span><span class="n">sbo_term</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_getRefs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">getAnnotationString</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">getAnnotationString</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;doi&quot;</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                <span class="n">enzmldoc</span><span class="o">.</span><span class="n">doi</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">elif</span> <span class="s1">&#39;pubmedID&#39;</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                <span class="n">enzmldoc</span><span class="o">.</span><span class="n">pubmed_id</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">elif</span> <span class="s1">&#39;url&#39;</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                <span class="n">enzmldoc</span><span class="o">.</span><span class="n">setUrl</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_getCreators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">omex_desc</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Fetches all creators from an Combine archive&#39;s metadata.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            omex_desc (OMEX obj): Combine metadata description.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[Creator]: Fetched list of creator objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get the number of creators to iterate</span>
+        <span class="n">numCreators</span> <span class="o">=</span> <span class="n">omex_desc</span><span class="o">.</span><span class="n">getNumCreators</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numCreators</span><span class="p">):</span>
+            <span class="c1"># Fetch creator information</span>
+            <span class="n">creator</span> <span class="o">=</span> <span class="n">omex_desc</span><span class="o">.</span><span class="n">getCreator</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="n">enzmldoc</span><span class="o">.</span><span class="n">addCreator</span><span class="p">(</span>
+                <span class="n">Creator</span><span class="p">(</span>
+                    <span class="n">family_name</span><span class="o">=</span><span class="n">creator</span><span class="o">.</span><span class="n">getFamilyName</span><span class="p">(),</span>
+                    <span class="n">given_name</span><span class="o">=</span><span class="n">creator</span><span class="o">.</span><span class="n">getGivenName</span><span class="p">(),</span>
+                    <span class="n">mail</span><span class="o">=</span><span class="n">creator</span><span class="o">.</span><span class="n">getEmail</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_getUnits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitDef</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetches all the units present in the SBML model.^</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (libsbml.Model): The SBML model from which the units are fetched.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [type]: [description]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">unitDict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">unitdef_list</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">getListOfUnitDefinitions</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">unitdef_list</span><span class="p">:</span>
+
+            <span class="c1"># Get infos from the SBML model</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">name</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">meta_id</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">meta_id</span>
+            <span class="n">ontology</span> <span class="o">=</span> <span class="s2">&quot;NONE&quot;</span>  <span class="c1"># TODO get unit ontology</span>
+
+            <span class="c1"># Create unit definition</span>
+            <span class="n">unitdef</span> <span class="o">=</span> <span class="n">UnitDef</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
+                <span class="n">ontology</span><span class="o">=</span><span class="n">ontology</span><span class="p">,</span>
+                <span class="n">meta_id</span><span class="o">=</span><span class="n">meta_id</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">baseunit</span> <span class="ow">in</span> <span class="n">unit</span><span class="o">.</span><span class="n">getListOfUnits</span><span class="p">():</span>
+                <span class="c1"># Construct unit definition with base units</span>
+                <span class="n">unitdef</span><span class="o">.</span><span class="n">addBaseUnit</span><span class="p">(</span>
+                    <span class="n">kind</span><span class="o">=</span><span class="n">baseunit</span><span class="o">.</span><span class="n">toXMLNode</span><span class="p">()</span><span class="o">.</span><span class="n">getAttrValue</span><span class="p">(</span><span class="s1">&#39;kind&#39;</span><span class="p">),</span>
+                    <span class="n">exponent</span><span class="o">=</span><span class="n">baseunit</span><span class="o">.</span><span class="n">getExponentAsDouble</span><span class="p">(),</span>
+                    <span class="n">scale</span><span class="o">=</span><span class="n">baseunit</span><span class="o">.</span><span class="n">getScale</span><span class="p">(),</span>
+                    <span class="n">multiplier</span><span class="o">=</span><span class="n">baseunit</span><span class="o">.</span><span class="n">getMultiplier</span><span class="p">()</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Finally add the unit definition</span>
+            <span class="n">unitDict</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">unitdef</span>
+
+        <span class="k">return</span> <span class="n">unitDict</span>
+
+    <span class="k">def</span> <span class="nf">_getVessel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">:</span> <span class="s1">&#39;EnzymeMLDocument&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Vessel</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetches all the vessels/compartments present in the SBML model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (libsbml.Model): The SBML model from which the vessels are fetched.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str, Vessel]: Corresponding vessel dictionary that has been converted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">vessel_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">compartments</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">getListOfCompartments</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">compartment</span> <span class="ow">in</span> <span class="n">compartments</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">compartment</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="n">compartment</span><span class="o">.</span><span class="n">getId</span><span class="p">()</span>
+            <span class="n">volume</span> <span class="o">=</span> <span class="n">compartment</span><span class="o">.</span><span class="n">getSize</span><span class="p">()</span>
+            <span class="n">unit_id</span> <span class="o">=</span> <span class="n">compartment</span><span class="o">.</span><span class="n">getUnits</span><span class="p">()</span>
+
+            <span class="n">vessel</span> <span class="o">=</span> <span class="n">Vessel</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
+                <span class="n">volume</span><span class="o">=</span><span class="n">volume</span><span class="p">,</span>
+                <span class="n">unit</span><span class="o">=</span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">getUnitString</span><span class="p">(</span><span class="n">unit_id</span><span class="p">),</span>
+                <span class="n">_unit_id</span><span class="o">=</span><span class="n">unit_id</span>
+            <span class="p">)</span>
+
+            <span class="n">vessel_dict</span><span class="p">[</span><span class="n">vessel</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">vessel</span>
+
+        <span class="k">return</span> <span class="n">vessel_dict</span>
+
+    <span class="k">def</span> <span class="nf">_getSpecies</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span>
+        <span class="n">enzmldoc</span><span class="p">:</span> <span class="s1">&#39;EnzymeMLDocument&#39;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Protein</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Reactant</span><span class="p">]]:</span>
+
+        <span class="c1"># initialize dictionaries and get species</span>
+        <span class="n">protein_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">reactant_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">species_list</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">getListOfSpecies</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">species</span> <span class="ow">in</span> <span class="n">species_list</span><span class="p">:</span>
+
+            <span class="c1"># Parse annotations and construct a kwargs dictionary</span>
+            <span class="n">param_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseSpeciesAnnotation</span><span class="p">(</span>
+                <span class="n">species</span><span class="o">.</span><span class="n">getAnnotationString</span><span class="p">())</span>
+            <span class="n">param_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">species</span><span class="o">.</span><span class="n">getId</span><span class="p">(),</span>
+                    <span class="s2">&quot;meta_id&quot;</span><span class="p">:</span> <span class="n">species</span><span class="o">.</span><span class="n">getMetaId</span><span class="p">(),</span>
+                    <span class="s2">&quot;vessel_id&quot;</span><span class="p">:</span> <span class="n">species</span><span class="o">.</span><span class="n">getCompartment</span><span class="p">(),</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">species</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span>
+                    <span class="s2">&quot;init_conc&quot;</span><span class="p">:</span> <span class="n">species</span><span class="o">.</span><span class="n">getInitialConcentration</span><span class="p">(),</span>
+                    <span class="s2">&quot;_unit_id&quot;</span><span class="p">:</span> <span class="n">species</span><span class="o">.</span><span class="n">getSubstanceUnits</span><span class="p">(),</span>
+                    <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getUnitString</span><span class="p">(</span><span class="n">species</span><span class="o">.</span><span class="n">getSubstanceUnits</span><span class="p">()),</span>
+                    <span class="s2">&quot;constant&quot;</span><span class="p">:</span> <span class="n">species</span><span class="o">.</span><span class="n">getConstant</span><span class="p">(),</span>
+                    <span class="s2">&quot;ontology&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sboterm_to_enum</span><span class="p">(</span><span class="n">species</span><span class="o">.</span><span class="n">getSBOTerm</span><span class="p">())</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Get scpecies factory from ontology</span>
+            <span class="n">species_factory</span> <span class="o">=</span> <span class="n">species_factory_mapping</span><span class="p">(</span><span class="n">param_dict</span><span class="p">[</span><span class="s2">&quot;ontology&quot;</span><span class="p">])</span>
+            <span class="n">species</span> <span class="o">=</span> <span class="n">species_factory</span><span class="o">.</span><span class="n">get_species</span><span class="p">(</span><span class="o">**</span><span class="n">param_dict</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">species_factory</span><span class="o">.</span><span class="n">enzymeml_part</span> <span class="o">==</span> <span class="s1">&#39;protein_dict&#39;</span><span class="p">:</span>
+                <span class="n">protein_dict</span><span class="p">[</span><span class="n">species</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">species</span>
+            <span class="k">elif</span> <span class="n">species_factory</span><span class="o">.</span><span class="n">enzymeml_part</span> <span class="o">==</span> <span class="s1">&#39;reactant_dict&#39;</span><span class="p">:</span>
+                <span class="n">reactant_dict</span><span class="p">[</span><span class="n">species</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">species</span>
+
+        <span class="k">return</span> <span class="n">protein_dict</span><span class="p">,</span> <span class="n">reactant_dict</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_parseSpeciesAnnotation</span><span class="p">(</span><span class="n">annotationString</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">annotationString</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">camel_to_snake</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;(.)([A-Z][a-z]+)&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\1_\2&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;([a-z0-9])([A-Z])&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\1_\2&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="n">speciesAnnot</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span>
+            <span class="n">annotationString</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Initialize annotation dictionary</span>
+        <span class="n">param_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">enzymeMLAnnot</span> <span class="ow">in</span> <span class="n">speciesAnnot</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">enzymeMLAnnot</span><span class="o">.</span><span class="n">tag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;}&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">camel_to_snake</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+            <span class="n">attribute</span> <span class="o">=</span> <span class="n">enzymeMLAnnot</span><span class="o">.</span><span class="n">text</span>
+
+            <span class="n">param_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribute</span>
+
+        <span class="k">return</span> <span class="n">param_dict</span>
+
+    <span class="k">def</span> <span class="nf">_getReactions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">:</span> <span class="s1">&#39;EnzymeMLDocument&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">EnzymeReaction</span><span class="p">]:</span>
+
+        <span class="c1"># Get SBML list of reactions</span>
+        <span class="n">reactionsList</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">getListOfReactions</span><span class="p">()</span>
+
+        <span class="c1"># Initialize reaction dictionary</span>
+        <span class="n">reaction_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># parse annotations and filter replicates</span>
+        <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">reactionsList</span><span class="p">:</span>
+
+            <span class="c1"># Fetch conditions</span>
+            <span class="n">reactionAnnot</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">getAnnotationString</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">conditions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseConditions</span><span class="p">(</span><span class="n">reactionAnnot</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
+
+            <span class="c1"># Fetch Elements in SpeciesReference</span>
+            <span class="n">educts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getElements</span><span class="p">(</span>
+                <span class="n">reaction</span><span class="o">.</span><span class="n">getListOfReactants</span><span class="p">(),</span>
+            <span class="p">)</span>
+
+            <span class="n">products</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getElements</span><span class="p">(</span>
+                <span class="n">reaction</span><span class="o">.</span><span class="n">getListOfProducts</span><span class="p">(),</span>
+            <span class="p">)</span>
+
+            <span class="n">modifiers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getElements</span><span class="p">(</span>
+                <span class="n">reaction</span><span class="o">.</span><span class="n">getListOfModifiers</span><span class="p">(),</span>
+                <span class="n">modifiers</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Create object</span>
+            <span class="n">enzyme_reaction</span> <span class="o">=</span> <span class="n">EnzymeReaction</span><span class="p">(</span>
+                <span class="nb">id</span><span class="o">=</span><span class="n">reaction</span><span class="o">.</span><span class="n">getId</span><span class="p">(),</span>
+                <span class="n">meta_id</span><span class="o">=</span><span class="s1">&#39;META_&#39;</span> <span class="o">+</span> <span class="n">reaction</span><span class="o">.</span><span class="n">getId</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">reaction</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span>
+                <span class="n">reversible</span><span class="o">=</span><span class="n">reaction</span><span class="o">.</span><span class="n">getReversible</span><span class="p">(),</span>
+                <span class="n">educts</span><span class="o">=</span><span class="n">educts</span><span class="p">,</span>
+                <span class="n">products</span><span class="o">=</span><span class="n">products</span><span class="p">,</span>
+                <span class="n">modifiers</span><span class="o">=</span><span class="n">modifiers</span><span class="p">,</span>
+                <span class="n">ontology</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sboterm_to_enum</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">getSBOTerm</span><span class="p">()),</span>
+                <span class="o">**</span> <span class="n">conditions</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Check for kinetic model</span>
+            <span class="k">if</span> <span class="n">reaction</span><span class="o">.</span><span class="n">getKineticLaw</span><span class="p">():</span>
+                <span class="c1"># Check if model exists</span>
+                <span class="n">kinetic_law</span> <span class="o">=</span> <span class="n">reaction</span><span class="o">.</span><span class="n">getKineticLaw</span><span class="p">()</span>
+                <span class="n">kinetic_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getKineticModel</span><span class="p">(</span><span class="n">kinetic_law</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
+                <span class="n">enzyme_reaction</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">kinetic_model</span>
+
+            <span class="c1"># Add reaction to reaction_dict</span>
+            <span class="n">reaction_dict</span><span class="p">[</span><span class="n">enzyme_reaction</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">enzyme_reaction</span>
+
+        <span class="k">return</span> <span class="n">reaction_dict</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_parseConditions</span><span class="p">(</span>
+        <span class="n">reactionAnnot</span><span class="p">:</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span>
+        <span class="n">enzmldoc</span><span class="p">:</span> <span class="s1">&#39;EnzymeMLDocument&#39;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Exracts the conditions present in the SBML reaction annotations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            reactionAnnot (ET.Element): The reaction annotation element.</span>
+<span class="sd">            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument against which the data will be validated.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str, Union[str, float]]: Mapping for the conditions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get the conditions element</span>
+        <span class="n">conditions</span> <span class="o">=</span> <span class="n">reactionAnnot</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">condition_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">condition</span> <span class="ow">in</span> <span class="n">conditions</span><span class="p">:</span>
+            <span class="c1"># Sort all the conditions</span>
+            <span class="k">if</span> <span class="s1">&#39;temperature&#39;</span> <span class="ow">in</span> <span class="n">condition</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+
+                <span class="c1"># Get temperature conditions</span>
+                <span class="n">condition_dict</span><span class="p">[</span><span class="s1">&#39;temperature&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+                    <span class="n">condition</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Parse unit ID to Unit string</span>
+                <span class="n">condition_dict</span><span class="p">[</span><span class="s1">&#39;_temperature_unit_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">condition</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+                <span class="n">condition_dict</span><span class="p">[</span><span class="s1">&#39;temperature_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getUnitString</span><span class="p">(</span>
+                    <span class="n">condition_dict</span><span class="p">[</span><span class="s1">&#39;_temperature_unit_id&#39;</span><span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="s1">&#39;ph&#39;</span> <span class="ow">in</span> <span class="n">condition</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+
+                <span class="c1"># Get the pH value</span>
+                <span class="n">condition_dict</span><span class="p">[</span><span class="s1">&#39;ph&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">condition</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">condition_dict</span>
+
+    <span class="k">def</span> <span class="nf">_getElements</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">species_refs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">libsbml</span><span class="o">.</span><span class="n">SpeciesReference</span><span class="p">],</span>
+        <span class="n">modifiers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ReactionElement</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Extracts the speciesReference objects from the associated list and converts them to ReactionElements</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            species_refs (list[libsbml.SpeciesReference]): The species refrences for the reaction &lt;-&gt; Chemical reaction elements.</span>
+<span class="sd">            modifiers (bool, optional): Used to override missing stoichiometry and constant for modifiers. Defaults to False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[ReactionElement]: The list of reaction elements.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">reaction_elements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">species_ref</span> <span class="ow">in</span> <span class="n">species_refs</span><span class="p">:</span>
+
+            <span class="n">species_id</span> <span class="o">=</span> <span class="n">species_ref</span><span class="o">.</span><span class="n">getSpecies</span><span class="p">()</span>
+            <span class="n">stoichiometry</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">modifiers</span> <span class="k">else</span> <span class="n">species_ref</span><span class="o">.</span><span class="n">getStoichiometry</span><span class="p">()</span>
+            <span class="n">constant</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">modifiers</span> <span class="k">else</span> <span class="n">species_ref</span><span class="o">.</span><span class="n">getConstant</span><span class="p">()</span>
+            <span class="n">ontology</span> <span class="o">=</span> <span class="n">SBOTerm</span><span class="p">(</span>
+                <span class="n">libsbml</span><span class="o">.</span><span class="n">SBO_intToString</span><span class="p">(</span><span class="n">species_ref</span><span class="o">.</span><span class="n">getSBOTerm</span><span class="p">())</span>
+            <span class="p">)</span>
+
+            <span class="n">reaction_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">ReactionElement</span><span class="p">(</span>
+                    <span class="n">species_id</span><span class="o">=</span><span class="n">species_id</span><span class="p">,</span>
+                    <span class="n">stoichiometry</span><span class="o">=</span><span class="n">stoichiometry</span><span class="p">,</span>
+                    <span class="n">constant</span><span class="o">=</span><span class="n">constant</span><span class="p">,</span>
+                    <span class="n">ontology</span><span class="o">=</span><span class="n">ontology</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">reaction_elements</span>
+
+    <span class="k">def</span> <span class="nf">_getKineticModel</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">kineticLaw</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">KineticLaw</span><span class="p">,</span>
+        <span class="n">enzmldoc</span><span class="p">:</span> <span class="s1">&#39;EnzymeMLDocument&#39;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KineticModel</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Extracts a kinetic rate law from the SBML data model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            kineticLaw (libsbml.KineticLaw): The kinetic law to be extracted.</span>
+<span class="sd">            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to which the kinetic law will be added.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            KineticModel: Teh resulting kinetic model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Extract metadata</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">kineticLaw</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span>
+        <span class="n">equation</span> <span class="o">=</span> <span class="n">kineticLaw</span><span class="o">.</span><span class="n">getFormula</span><span class="p">()</span>
+        <span class="n">ontology</span> <span class="o">=</span> <span class="n">SBOTerm</span><span class="p">(</span>
+            <span class="n">libsbml</span><span class="o">.</span><span class="n">SBO_intToString</span><span class="p">(</span><span class="n">kineticLaw</span><span class="o">.</span><span class="n">getSBOTerm</span><span class="p">())</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Get parameters</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">KineticParameter</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">localParam</span><span class="o">.</span><span class="n">getId</span><span class="p">(),</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">localParam</span><span class="o">.</span><span class="n">getValue</span><span class="p">(),</span>
+                <span class="n">_unit_id</span><span class="o">=</span><span class="n">localParam</span><span class="o">.</span><span class="n">getUnits</span><span class="p">(),</span>
+                <span class="n">unit</span><span class="o">=</span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">getUnitString</span><span class="p">(</span><span class="n">localParam</span><span class="o">.</span><span class="n">getUnits</span><span class="p">()),</span>
+                <span class="n">ontology</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sboterm_to_enum</span><span class="p">(</span><span class="n">localParam</span><span class="o">.</span><span class="n">getSBOTerm</span><span class="p">())</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">localParam</span> <span class="ow">in</span> <span class="n">kineticLaw</span><span class="o">.</span><span class="n">getListOfLocalParameters</span><span class="p">()</span>
+        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">KineticModel</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">equation</span><span class="o">=</span><span class="n">equation</span><span class="p">,</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+            <span class="n">ontology</span><span class="o">=</span><span class="n">ontology</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_getData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">:</span> <span class="s1">&#39;EnzymeMLDocument&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Measurement</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Retrieves all available measurements found in the EnzymeML document.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (libsbml.Model): The SBML model from which the measurements are feteched,</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str, Measurement]: Mapping from measurement ID to the associated object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Parse EnzymeML:format annotation</span>
+        <span class="n">reactions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">getListOfReactions</span><span class="p">()</span>
+        <span class="n">data_annotation</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">reactions</span><span class="o">.</span><span class="n">getAnnotationString</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Fetch list of files</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseListOfFiles</span><span class="p">(</span><span class="n">data_annotation</span><span class="p">)</span>
+
+        <span class="c1"># Fetch formats</span>
+        <span class="n">formats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseListOfFormats</span><span class="p">(</span><span class="n">data_annotation</span><span class="p">)</span>
+
+        <span class="c1"># Fetch measurements</span>
+        <span class="n">measurement_dict</span><span class="p">,</span> <span class="n">measurement_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseListOfMeasurements</span><span class="p">(</span>
+            <span class="n">data_annotation</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="o">=</span><span class="n">enzmldoc</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Iterate over measurements and assign replicates</span>
+        <span class="k">for</span> <span class="n">measurement_id</span><span class="p">,</span> <span class="n">measurement_file</span> <span class="ow">in</span> <span class="n">measurement_files</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="c1"># Get file content</span>
+            <span class="n">fileInfo</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="n">measurement_file</span><span class="p">]</span>
+            <span class="n">file_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="o">.</span><span class="n">extractEntryToString</span><span class="p">(</span><span class="n">fileInfo</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">])</span>
+            <span class="n">csvFile</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+                <span class="n">StringIO</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Get format data and extract time column</span>
+            <span class="n">measurement_format</span> <span class="o">=</span> <span class="n">formats</span><span class="p">[</span><span class="n">fileInfo</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">]]</span>
+            <span class="n">time</span><span class="p">,</span> <span class="n">time_unit_id</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span>
+                    <span class="n">csvFile</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="nb">int</span><span class="p">(</span><span class="n">column</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">])]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                    <span class="n">column</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">measurement_format</span>
+                <span class="k">if</span> <span class="n">column</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;time&#39;</span>
+            <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># Create replicate objects</span>
+            <span class="k">for</span> <span class="nb">format</span> <span class="ow">in</span> <span class="n">measurement_format</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="nb">format</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;time&#39;</span><span class="p">:</span>
+
+                    <span class="c1"># Get time course data</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">csvFile</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">format</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">])]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                    <span class="n">reactant_id</span> <span class="o">=</span> <span class="nb">format</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">]</span>
+                    <span class="n">replicateID</span> <span class="o">=</span> <span class="nb">format</span><span class="p">[</span><span class="s1">&#39;replica&#39;</span><span class="p">]</span>
+                    <span class="n">data_type</span> <span class="o">=</span> <span class="n">DataTypes</span><span class="p">(</span><span class="nb">format</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span>
+                    <span class="n">data_unit_id</span> <span class="o">=</span> <span class="nb">format</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+
+                    <span class="n">replicate</span> <span class="o">=</span> <span class="n">Replicate</span><span class="p">(</span>
+                        <span class="n">replicate_id</span><span class="o">=</span><span class="n">replicateID</span><span class="p">,</span>
+                        <span class="n">reactant_id</span><span class="o">=</span><span class="n">reactant_id</span><span class="p">,</span>
+                        <span class="n">data_type</span><span class="o">=</span><span class="n">data_type</span><span class="p">,</span>
+                        <span class="n">measurement_id</span><span class="o">=</span><span class="n">measurement_id</span><span class="p">,</span>
+                        <span class="n">data_unit</span><span class="o">=</span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">unit_dict</span><span class="p">[</span><span class="n">data_unit_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">time_unit</span><span class="o">=</span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">unit_dict</span><span class="p">[</span><span class="n">time_unit_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">_data_unit_id</span><span class="o">=</span><span class="n">data_unit_id</span><span class="p">,</span>
+                        <span class="n">_time_unit_id</span><span class="o">=</span><span class="n">time_unit_id</span><span class="p">,</span>
+                        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                        <span class="n">time</span><span class="o">=</span><span class="n">time</span>
+                    <span class="p">)</span>
+
+                    <span class="n">measurement_dict</span><span class="p">[</span><span class="n">measurement_id</span><span class="p">]</span><span class="o">.</span><span class="n">addReplicates</span><span class="p">(</span>
+                        <span class="n">replicate</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">measurement_dict</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_parseListOfFiles</span><span class="p">(</span><span class="n">data_annotation</span><span class="p">:</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Extracts the list of files that are present in the annotation enzymeml:files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_annotation (ET.Element): ElementTree object containing the enzymeml:files annotation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str, dict[str, str]]: Dictionary of all files present in the annotation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]:</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">file</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="n">file</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">file</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+
+            <span class="p">}</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">data_annotation</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">}</span>
+
+    <span class="o">@</span> <span class="nb">staticmethod</span>
+    <span class="k">def</span> <span class="nf">_parseListOfFormats</span><span class="p">(</span><span class="n">data_annotation</span><span class="p">:</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Extracts the list of formats that areb present in the annotation enzymeml:formats.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_annotation (ET.Element): ElementTree object containing the enzymeml:files annotation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str, list[dict]]: Dictionary of all the formats present in the annotation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="nb">format</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]:</span> <span class="p">[</span>
+                <span class="n">column</span><span class="o">.</span><span class="n">attrib</span>
+                <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">format</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="nb">format</span> <span class="ow">in</span> <span class="n">data_annotation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_parseListOfMeasurements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_annotation</span><span class="p">:</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">:</span> <span class="s1">&#39;EnzymeMLDocument&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Measurement</span><span class="p">],</span> <span class="nb">dict</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Extracts teh list of measurements that are present in the annotation enzymeml:measurements.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_annotation (ET.Element): ElementTree object containing the enzymeml:measurements annotation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[dict[str, dict], dict[str, Measurement]]: Two dictionaries returning the measurement objects and files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">measurements</span> <span class="o">=</span> <span class="n">data_annotation</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">measurement_files</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">measurement</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]:</span>
+            <span class="n">measurement</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="n">measurements</span>
+        <span class="p">}</span>
+        <span class="n">measurement_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">measurement</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parseMeasurement</span><span class="p">(</span><span class="n">measurement</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="o">=</span><span class="n">enzmldoc</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">measurement</span> <span class="ow">in</span> <span class="n">measurements</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">measurement_dict</span><span class="p">,</span> <span class="n">measurement_files</span><span class="p">)</span>
+
+    <span class="o">@</span> <span class="nb">staticmethod</span>
+    <span class="k">def</span> <span class="nf">_parseMeasurement</span><span class="p">(</span><span class="n">measurement</span><span class="p">:</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">:</span> <span class="s1">&#39;EnzymeMLDocument&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Measurement</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Extracts individual initial concentrations of a measurement.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            measurement (ET.Element): Measurement XML information</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Measurement: Initialized measurement object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># initialize Measurement object</span>
+        <span class="n">measurement_object</span> <span class="o">=</span> <span class="n">Measurement</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">measurement</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">measurement_object</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">initConc</span> <span class="ow">in</span> <span class="n">measurement</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">initConc</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+
+            <span class="c1"># Convert the unit ID to the corresponding SI string</span>
+            <span class="n">unit_id</span> <span class="o">=</span> <span class="n">initConc</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">unit_dict</span><span class="p">[</span><span class="n">unit_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+
+            <span class="n">reactant_id</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">protein_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="s1">&#39;reactant&#39;</span> <span class="ow">in</span> <span class="n">initConc</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">reactant_id</span> <span class="o">=</span> <span class="n">initConc</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;reactant&#39;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="s1">&#39;protein&#39;</span> <span class="ow">in</span> <span class="n">initConc</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">protein_id</span> <span class="o">=</span> <span class="n">initConc</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;protein&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="s2">&quot;Neither reactant or protein ID defined.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">measurement_object</span><span class="o">.</span><span class="n">addData</span><span class="p">(</span>
+                <span class="n">init_conc</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+                <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
+                <span class="n">reactant_id</span><span class="o">=</span><span class="n">reactant_id</span><span class="p">,</span>
+                <span class="n">protein_id</span><span class="o">=</span><span class="n">protein_id</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">measurement_object</span>
+
+    <span class="k">def</span> <span class="nf">_getFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts all added files fro the archive.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            archive (CombineArchive): The OMEX archive to extract files from.</span>
+<span class="sd">            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to add files to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Iterate over enries and extract files</span>
+        <span class="k">for</span> <span class="n">fileLocation</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="o">.</span><span class="n">getAllLocations</span><span class="p">():</span>
+            <span class="n">fileLocation</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">fileLocation</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;./files/&quot;</span> <span class="ow">in</span> <span class="n">fileLocation</span><span class="p">:</span>
+
+                <span class="c1"># Convert raw file to fileHandle</span>
+                <span class="n">fileHandle</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">archive</span><span class="o">.</span><span class="n">extractEntryToString</span><span class="p">(</span><span class="n">fileLocation</span><span class="p">))</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Set name of file to the one that is given within the EnzymeMLDocument</span>
+                <span class="n">fileHandle</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fileLocation</span><span class="p">)</span>
+
+                <span class="c1"># Add the file to the EnzymeMLDocument</span>
+                <span class="n">enzmldoc</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span><span class="n">fileHandle</span><span class="o">=</span><span class="n">fileHandle</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+      <title>pyenzyme.enzymeml.databases.dataverse module</title>
+    
+          <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="_static/theme-vendors.js"></script> -->
+      <script src="_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="genindex.html" />
+  <link rel="search" title="Search" href="search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.databases.dataverse module</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <section id="module-pyenzyme.enzymeml.databases.dataverse">
+<span id="pyenzyme-enzymeml-databases-dataverse-module"></span><h1>pyenzyme.enzymeml.databases.dataverse module<a class="headerlink" href="#module-pyenzyme.enzymeml.databases.dataverse" title="Permalink to this headline">¶</a></h1>
+<p>File: dataverse.py
+Project: core
+Author: Jan Range
+License: BSD-2 clause
+—–
+Last Modified: Thursday September 16th 2021 6:43:34 pm
+Modified By: Jan Range (&lt;<a class="reference external" href="mailto:jan&#46;range&#37;&#52;&#48;simtech&#46;uni-stuttgart&#46;de">jan<span>&#46;</span>range<span>&#64;</span>simtech<span>&#46;</span>uni-stuttgart<span>&#46;</span>de</a>&gt;)
+—–
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.databases.dataverse.DataverseFieldBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.databases.dataverse.</span></span><span class="sig-name descname"><span class="pre">DataverseFieldBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typeName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typeClass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/databases/dataverse.html#DataverseFieldBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.databases.dataverse.DataverseFieldBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class serves as the basis for dataverse fields.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.databases.dataverse.DataverseFieldBase.toJSON">
+<span class="sig-name descname"><span class="pre">toJSON</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/databases/dataverse.html#DataverseFieldBase.toJSON"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.databases.dataverse.DataverseFieldBase.toJSON" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.databases.dataverse.ParameterSet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.databases.dataverse.</span></span><span class="sig-name descname"><span class="pre">ParameterSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/databases/dataverse.html#ParameterSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.databases.dataverse.ParameterSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class serves as a helper to separate parameters from kineticLaws and to maintain modularity.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.databases.dataverse.ParameterSet.toJSON">
+<span class="sig-name descname"><span class="pre">toJSON</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/databases/dataverse.html#ParameterSet.toJSON"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.databases.dataverse.ParameterSet.toJSON" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.databases.dataverse.generateCompoundField">
+<span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.databases.dataverse.</span></span><span class="sig-name descname"><span class="pre">generateCompoundField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objects</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">className</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiple</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/databases/dataverse.html#generateCompoundField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.databases.dataverse.generateCompoundField" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.databases.dataverse.toDataverseJSON">
+<span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.databases.dataverse.</span></span><span class="sig-name descname"><span class="pre">toDataverseJSON</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/databases/dataverse.html#toDataverseJSON"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.databases.dataverse.toDataverseJSON" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a Dataverse compatible JSON string to upload an EnzymeMLDocument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dataverse compatible JSON string</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.databases.dataverse.uploadToDataverse">
+<span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.databases.dataverse.</span></span><span class="sig-name descname"><span class="pre">uploadToDataverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">baseURL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">API_Token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataverseName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enzmldoc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/databases/dataverse.html#uploadToDataverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.databases.dataverse.uploadToDataverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uploads an EnzymeML document to Dataverse. Can be done using either a path to upload an existing OMEX archive or directly from an EnzymeMLDocument object. Please note, that when this method is used with an object, the OMEX archive will be written to your current working directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>baseURL</strong> (<em>String</em>) – URL to a Dataverse installation</p></li>
+<li><p><strong>API_Token</strong> (<em>String</em>) – API Token given from your Dataverse installation for authentication.</p></li>
+<li><p><strong>dataverseName</strong> (<em>String</em>) – Name of the dataverse to upload the EnzymeML document. You can find the name in the link of your dataverse (e.g. <a class="reference external" href="https://dataverse.installation/dataverse">https://dataverse.installation/dataverse</a>/{dataverseName})</p></li>
+<li><p><strong>filename</strong> (<em>String</em><em>, </em><em>optional</em>) – Specifies the path to an already existing OMEX archive. Please note, if given, any EnzymeMLDocument in the ‘enzmldoc’ argument are overriden. Defaults to None.</p></li>
+<li><p><strong>enzmldoc</strong> (<a class="reference internal" href="pyenzyme.enzymeml.core.enzymemldocument.html#pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument" title="pyenzyme.enzymeml.core.enzymemldocument.EnzymeMLDocument"><em>EnzymeMLDocument</em></a><em>, </em><em>optional</em>) – EnzymeML document object describing an experiment. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>AttributeError</strong> – Raised when neither a filename nor an EnzymeMLDocument object was provided.</p></li>
+<li><p><a class="reference internal" href="pyenzyme.enzymeml.core.exceptions.html#pyenzyme.enzymeml.core.exceptions.ValidationError" title="pyenzyme.enzymeml.core.exceptions.ValidationError"><strong>ValidationError</strong></a> – Raised when the validation fails.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

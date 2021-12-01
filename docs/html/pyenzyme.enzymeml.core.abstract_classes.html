@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+      <title>pyenzyme.enzymeml.core.abstract_classes module</title>
+    
+          <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="_static/theme-vendors.js"></script> -->
+      <script src="_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="genindex.html" />
+  <link rel="search" title="Search" href="search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.core.abstract_classes module</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <section id="module-pyenzyme.enzymeml.core.abstract_classes">
+<span id="pyenzyme-enzymeml-core-abstract-classes-module"></span><h1>pyenzyme.enzymeml.core.abstract_classes module<a class="headerlink" href="#module-pyenzyme.enzymeml.core.abstract_classes" title="Permalink to this headline">¶</a></h1>
+<dl class="py pydantic_model">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.core.abstract_classes.</span></span><span class="sig-name descname"><span class="pre">AbstractSpecies</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/abstract_classes.html#AbstractSpecies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code>, <a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass</span></code></a></p>
+<p>Due to inheritance and type-checking issues, the dataclass has to be mixed in.</p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+   <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;AbstractSpecies&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Due to inheritance and type-checking issues, the dataclass has to be mixed in.&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Id&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;meta_id&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Meta Id&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;init_conc&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Init Conc&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;constant&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;unit&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Unit&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;ontology&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Enum&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Uri&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;creator_id&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Creator Id&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">}</span>
+   <span class="p">},</span>
+   <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;meta_id&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;init_conc&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;unit&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;ontology&quot;</span>
+   <span class="p">],</span>
+   <span class="nt">&quot;definitions&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;Enum&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Enum&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Generic enumeration.\n\nDerive from this class to define new enumerations.&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[]</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</details></p><dl class="field-list simple">
+<dt class="field-odd">Fields</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.constant" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.constant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constant</span> <span class="pre">(bool)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.creator_id" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.creator_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">creator_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.id" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.init_conc" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.init_conc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_conc</span> <span class="pre">(pydantic.types.PositiveFloat)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.meta_id" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta_id</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.name" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.ontology" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.ontology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ontology</span> <span class="pre">(enum.Enum)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.unit" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unit</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.uri" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.uri"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uri</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Validators</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.set_meta_id" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.set_meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_meta_id</span></code></a> » <a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.id" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.constant">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">constant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.constant" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.creator_id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">creator_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.creator_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.id" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Validated by</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.set_meta_id" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.set_meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_meta_id</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.init_conc">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_conc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveFloat</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.init_conc" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Constraints</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exclusiveMinimum</strong> = 0</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.meta_id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meta_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.meta_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.name">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.ontology">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ontology</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">enum.Enum</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.ontology" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.unit">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.uri">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_validator">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.set_meta_id">
+<em class="property"><span class="pre">validator</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_meta_id</span></span><em class="autodoc_pydantic_validator_arrow property">&#160; <span class="pre">»</span>&#160; </em><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.id" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.id"><em class="xref py py-obj"><span class="pre">id</span></em></a><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/abstract_classes.html#AbstractSpecies.set_meta_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.set_meta_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the meta ID when an ID is provided</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.set_unit_id">
+<span class="sig-name descname"><span class="pre">set_unit_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/abstract_classes.html#AbstractSpecies.set_unit_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies.set_unit_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py pydantic_model">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass">
+<em class="property"><span class="pre">pydantic</span> <span class="pre">model</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.core.abstract_classes.</span></span><span class="sig-name descname"><span class="pre">AbstractSpeciesDataclass</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/abstract_classes.html#AbstractSpeciesDataclass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Abstract dataclass to describe an EnzymeML/SBML species.</p>
+<p><details  class="autodoc_pydantic_collapsable_json">
+<summary>Show JSON schema</summary><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+   <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;AbstractSpeciesDataclass&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Abstract dataclass to describe an EnzymeML/SBML species.&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Id&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;meta_id&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Meta Id&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;init_conc&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Init Conc&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;exclusiveMinimum&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;constant&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;boolean&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;unit&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Unit&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;ontology&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/Enum&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;uri&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Uri&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;creator_id&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Creator Id&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">}</span>
+   <span class="p">},</span>
+   <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;meta_id&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;init_conc&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;unit&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;ontology&quot;</span>
+   <span class="p">],</span>
+   <span class="nt">&quot;definitions&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;Enum&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Enum&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Generic enumeration.\n\nDerive from this class to define new enumerations.&quot;</span><span class="p">,</span>
+         <span class="nt">&quot;enum&quot;</span><span class="p">:</span> <span class="p">[]</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</details></p><dl class="field-list simple">
+<dt class="field-odd">Fields</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.constant" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.constant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constant</span> <span class="pre">(bool)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.creator_id" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.creator_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">creator_id</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.id" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.init_conc" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.init_conc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_conc</span> <span class="pre">(pydantic.types.PositiveFloat)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.meta_id" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.meta_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meta_id</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.name" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.ontology" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.ontology"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ontology</span> <span class="pre">(enum.Enum)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.unit" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unit</span> <span class="pre">(str)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.uri" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.uri"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uri</span> <span class="pre">(Optional[str])</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.constant">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">constant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.constant" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.creator_id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">creator_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.creator_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.init_conc">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_conc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pydantic.types.PositiveFloat</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.init_conc" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Constraints</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exclusiveMinimum</strong> = 0</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.meta_id">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">meta_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.meta_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.name">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.ontology">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ontology</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">enum.Enum</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.ontology" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.unit">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py pydantic_field">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.uri">
+<em class="property"><span class="pre">field</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">[Required]</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesDataclass.uri" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.core.abstract_classes.</span></span><span class="sig-name descname"><span class="pre">AbstractSpeciesFactory</span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/abstract_classes.html#AbstractSpeciesFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Factory that returns a specific species instance.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory.enzymeml_part">
+<span class="sig-name descname"><span class="pre">enzymeml_part</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory.enzymeml_part" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory.get_species">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_species</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies" title="pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies"><span class="pre">pyenzyme.enzymeml.core.abstract_classes.AbstractSpecies</span></a></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/abstract_classes.html#AbstractSpeciesFactory.get_species"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.abstract_classes.AbstractSpeciesFactory.get_species" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new species object</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

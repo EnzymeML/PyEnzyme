@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>pyenzyme.enzymeml.core.ontology</title>
+    
+          <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../../../_static/theme-vendors.js"></script> -->
+      <script src="../../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../../index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../../index.html">Module code</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.core.ontology</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for pyenzyme.enzymeml.core.ontology</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
+
+<div class="viewcode-block" id="SBOTerm"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.ontology.SBOTerm">[docs]</a><span class="k">class</span> <span class="nc">SBOTerm</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;String enumeration used to assign ontologies derived from SBOTerms.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Chemical reactions</span>
+    <span class="n">BIOCHEMICAL_REACTION</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000176&quot;</span>
+    <span class="n">ACID_BASE_REACTION</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000208&quot;</span>
+    <span class="n">CONFORMATIONAL_TRANSITION</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000181&quot;</span>
+    <span class="n">CONVERSION</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000182&quot;</span>
+    <span class="n">DEGRADATION</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000179&quot;</span>
+    <span class="n">DISSOCIATION</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000180&quot;</span>
+    <span class="n">IONISATION</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000209&quot;</span>
+    <span class="n">ISOMERISATION</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000377&quot;</span>
+    <span class="n">NON_COVALENT_BINDING</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000177&quot;</span>
+    <span class="n">REDOX_REACTION</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000200&quot;</span>
+    <span class="n">SPONTANEOUS_REACTION</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000672&quot;</span>
+
+    <span class="c1"># Chemical entities</span>
+    <span class="n">PROTEIN</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000252&quot;</span>
+    <span class="n">GENE</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000251&quot;</span>
+    <span class="n">SMALL_MOLECULE</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000247&quot;</span>
+    <span class="n">ION</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000327&quot;</span>
+    <span class="n">RADICAL</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000328&quot;</span>
+
+    <span class="c1"># Chemical relations</span>
+    <span class="n">INTERACTOR</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000336&quot;</span>
+    <span class="n">SUBSTRATE</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000015&quot;</span>
+    <span class="n">PRODUCT</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000011&quot;</span>
+    <span class="n">CATALYST</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000013&quot;</span>
+    <span class="n">INHIBITOR</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000020&quot;</span>
+    <span class="n">ESSENTIAL_ACTIVATOR</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000461&quot;</span>
+    <span class="n">NON_ESSENTIAL_ACTIVATOR</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000462&quot;</span>
+    <span class="n">POTENTIATOR</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000021&quot;</span>
+
+    <span class="c1"># Kinetic models</span>
+    <span class="n">MICHAELIS_MENTEN</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000028&quot;</span>
+
+    <span class="c1"># Kinetic parameters</span>
+    <span class="n">K_CAT</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000025&quot;</span>
+    <span class="n">K_M</span> <span class="o">=</span> <span class="s2">&quot;SBO:0000027&quot;</span></div>
+
+
+<div class="viewcode-block" id="DataTypes"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.ontology.DataTypes">[docs]</a><span class="k">class</span> <span class="nc">DataTypes</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;String enumeration used to assign replicate type ontologies&quot;&quot;&quot;</span>
+
+    <span class="n">CONCENTRATION</span> <span class="o">=</span> <span class="s2">&quot;conc&quot;</span>
+    <span class="n">ABSORPTION</span> <span class="o">=</span> <span class="s2">&quot;abs&quot;</span>
+    <span class="n">FEED</span> <span class="o">=</span> <span class="s2">&quot;feed&quot;</span>
+    <span class="n">BIOMASS</span> <span class="o">=</span> <span class="s2">&quot;biomass&quot;</span></div>
+
+
+<div class="viewcode-block" id="EnzymeMLPart"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.ontology.EnzymeMLPart">[docs]</a><span class="k">class</span> <span class="nc">EnzymeMLPart</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mapping to identify where entities are stored in the EnzymeML model.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Chemical entities</span>
+    <span class="n">PROTEIN</span> <span class="o">=</span> <span class="s2">&quot;protein_dict&quot;</span>
+    <span class="n">SMALL_MOLECULE</span> <span class="o">=</span> <span class="s2">&quot;reactant_dict&quot;</span>
+    <span class="n">ION</span> <span class="o">=</span> <span class="s2">&quot;reactant_dict&quot;</span>
+    <span class="n">RADICAL</span> <span class="o">=</span> <span class="s2">&quot;reactant_dict&quot;</span>
+
+    <span class="n">BLANK</span> <span class="o">=</span> <span class="s2">&quot;blank&quot;</span>
+
+<div class="viewcode-block" id="EnzymeMLPart.partFromSBOTerm"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.ontology.EnzymeMLPart.partFromSBOTerm">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">partFromSBOTerm</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">sbo_term</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">sbo_term</span> <span class="o">=</span> <span class="n">SBOTerm</span><span class="p">(</span><span class="n">sbo_term</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">sbo_term</span><span class="p">)</span><span class="o">.</span><span class="n">value</span></div>
+
+<div class="viewcode-block" id="EnzymeMLPart.entityFromSBOTerm"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.ontology.EnzymeMLPart.entityFromSBOTerm">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">entityFromSBOTerm</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">sbo_term</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">sbo_term</span> <span class="o">=</span> <span class="n">SBOTerm</span><span class="p">(</span><span class="n">sbo_term</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">sbo_term</span><span class="p">)</span><span class="o">.</span><span class="n">name</span></div></div>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>pyenzyme.enzymeml.tools.unitcreator</title>
+    
+          <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../../../_static/theme-vendors.js"></script> -->
+      <script src="../../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../../index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../../index.html">Module code</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.tools.unitcreator</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for pyenzyme.enzymeml.tools.unitcreator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">File: unitcreator.py</span>
+<span class="sd">Project: tools</span>
+<span class="sd">Author: Jan Range</span>
+<span class="sd">License: BSD-2 clause</span>
+<span class="sd">-----</span>
+<span class="sd">Last Modified: Tuesday June 22nd 2021 10:12:25 pm</span>
+<span class="sd">Modified By: Jan Range (&lt;jan.range@simtech.uni-stuttgart.de&gt;)</span>
+<span class="sd">-----</span>
+<span class="sd">Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">libsbml</span>
+
+<span class="kn">from</span> <span class="nn">deepdiff</span> <span class="kn">import</span> <span class="n">DeepDiff</span>
+
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.unitdef</span> <span class="kn">import</span> <span class="n">UnitDef</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.tools.unitparser</span> <span class="kn">import</span> <span class="n">UnitParser</span>
+
+
+<div class="viewcode-block" id="UnitCreator"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.unitcreator.UnitCreator">[docs]</a><span class="k">class</span> <span class="nc">UnitCreator</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__functionDict</span> <span class="o">=</span> <span class="p">{</span>
+
+            <span class="s2">&quot;M&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Molar</span><span class="p">,</span>
+            <span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Mole</span><span class="p">,</span>
+            <span class="s2">&quot;mole&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Mole</span><span class="p">,</span>
+            <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Volume</span><span class="p">,</span>
+            <span class="s2">&quot;liter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Volume</span><span class="p">,</span>
+            <span class="s2">&quot;litre&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Volume</span><span class="p">,</span>
+            <span class="s2">&quot;g&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Amount</span><span class="p">,</span>
+            <span class="s2">&quot;gram&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Amount</span><span class="p">,</span>
+            <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Seconds</span><span class="p">,</span>
+            <span class="s2">&quot;sec&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Seconds</span><span class="p">,</span>
+            <span class="s2">&quot;second&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Seconds</span><span class="p">,</span>
+            <span class="s2">&quot;seconds&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Seconds</span><span class="p">,</span>
+            <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Minutes</span><span class="p">,</span>
+            <span class="s2">&quot;minute&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Minutes</span><span class="p">,</span>
+            <span class="s2">&quot;minutes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Minutes</span><span class="p">,</span>
+            <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Hours</span><span class="p">,</span>
+            <span class="s2">&quot;hour&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Hours</span><span class="p">,</span>
+            <span class="s2">&quot;hours&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Hours</span><span class="p">,</span>
+            <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Celsius</span><span class="p">,</span>
+            <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Celsius</span><span class="p">,</span>
+            <span class="s2">&quot;celsius&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Celsius</span><span class="p">,</span>
+            <span class="s2">&quot;Celsius&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Celsius</span><span class="p">,</span>
+            <span class="s2">&quot;K&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Kelvin</span><span class="p">,</span>
+            <span class="s2">&quot;kelvin&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Kelvin</span><span class="p">,</span>
+            <span class="s2">&quot;Kelvin&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Kelvin</span><span class="p">,</span>
+            <span class="s2">&quot;dimensionless&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Dimensionless</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="UnitCreator.getUnit"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.unitcreator.UnitCreator.getUnit">[docs]</a>    <span class="k">def</span> <span class="nf">getUnit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_string</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            String unit_string: Standard short form of unit</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># Generate ID</span>
+        <span class="nb">id</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">_generateID</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">=</span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">unit_dict</span><span class="p">)</span>
+
+        <span class="c1"># Call unit parser to identify units</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">UnitParser</span><span class="p">()</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">unit_string</span><span class="p">))</span>
+
+        <span class="c1"># Initialize UnitDef</span>
+        <span class="n">nominator</span><span class="p">,</span> <span class="n">denominator</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">baseunit</span><span class="p">,</span> <span class="n">exponent</span> <span class="ow">in</span> <span class="n">units</span><span class="p">:</span>
+
+            <span class="n">pre_unit</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">prefix</span><span class="p">,</span> <span class="n">baseunit</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">exponent</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">nominator</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">pre_unit</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;**</span><span class="si">{</span><span class="n">exponent</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">exponent</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">nominator</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pre_unit</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">exponent</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">denominator</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">pre_unit</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;**</span><span class="si">{</span><span class="n">exponent</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">exponent</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">denominator</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pre_unit</span><span class="p">)</span>
+
+        <span class="c1"># Reformat unit string to a convenient format</span>
+        <span class="k">if</span> <span class="n">denominator</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot; / &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+                <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nominator</span><span class="p">),</span>
+                <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">denominator</span><span class="p">)</span>
+            <span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">denominator</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nominator</span><span class="p">)</span>
+
+        <span class="c1"># Convert Celsius to Kelvin - No SBML kind for C!</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;K&#39;</span>
+
+        <span class="c1"># Initialize UnitDef object</span>
+        <span class="n">unitdef</span> <span class="o">=</span> <span class="n">UnitDef</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">baseunit</span><span class="p">,</span> <span class="n">exponent</span> <span class="ow">in</span> <span class="n">units</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__functionDict</span><span class="p">[</span><span class="n">baseunit</span><span class="p">](</span>
+                <span class="n">unitdef</span><span class="p">,</span>
+                <span class="n">prefix</span><span class="p">,</span>
+                <span class="n">exponent</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Check if there is already a similar unit defined</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__checkFootprints</span><span class="p">(</span><span class="n">enzmldoc</span><span class="p">,</span> <span class="n">unitdef</span><span class="o">.</span><span class="n">getFootprint</span><span class="p">())</span> <span class="o">!=</span> <span class="s2">&quot;NEW&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__checkFootprints</span><span class="p">(</span><span class="n">enzmldoc</span><span class="p">,</span> <span class="n">unitdef</span><span class="o">.</span><span class="n">getFootprint</span><span class="p">())</span>
+
+        <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getUnitDict</span><span class="p">()[</span><span class="n">unitdef</span><span class="o">.</span><span class="n">getId</span><span class="p">()]</span> <span class="o">=</span> <span class="n">unitdef</span>
+
+        <span class="k">return</span> <span class="n">unitdef</span><span class="o">.</span><span class="n">getId</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">__checkFootprints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">,</span> <span class="n">footprint</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">unit_id</span><span class="p">,</span> <span class="n">unitdef</span> <span class="ow">in</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">unit_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">DeepDiff</span><span class="p">(</span><span class="n">unitdef</span><span class="o">.</span><span class="n">getFootprint</span><span class="p">(),</span> <span class="n">footprint</span><span class="p">)</span> <span class="o">==</span> <span class="p">{}:</span>
+                <span class="k">return</span> <span class="n">unit_id</span>
+
+        <span class="k">return</span> <span class="s2">&quot;NEW&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__Mole</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unitdef</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">exponent</span><span class="p">):</span>
+
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">UnitKind_toString</span><span class="p">(</span><span class="n">libsbml</span><span class="o">.</span><span class="n">UNIT_KIND_MOLE</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getPrefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">unitdef</span><span class="o">.</span><span class="n">addBaseUnit</span><span class="p">(</span>
+            <span class="n">kind</span><span class="p">,</span>
+            <span class="n">exponent</span><span class="p">,</span>
+            <span class="n">scale</span><span class="p">,</span>
+            <span class="n">multiplier</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__Molar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unitdef</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">exponent</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__Mole</span><span class="p">(</span><span class="n">unitdef</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">exponent</span><span class="p">)</span>
+
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">UnitKind_toString</span><span class="p">(</span><span class="n">libsbml</span><span class="o">.</span><span class="n">UNIT_KIND_LITRE</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">unitdef</span><span class="o">.</span><span class="n">addBaseUnit</span><span class="p">(</span>
+            <span class="n">kind</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">scale</span><span class="p">,</span>
+            <span class="n">multiplier</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__Volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unitdef</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">exponent</span><span class="p">):</span>
+
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">UnitKind_toString</span><span class="p">(</span>
+            <span class="n">libsbml</span><span class="o">.</span><span class="n">UNIT_KIND_LITRE</span>
+        <span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getPrefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">unitdef</span><span class="o">.</span><span class="n">addBaseUnit</span><span class="p">(</span>
+            <span class="n">kind</span><span class="p">,</span>
+            <span class="n">exponent</span><span class="p">,</span>
+            <span class="n">scale</span><span class="p">,</span>
+            <span class="n">multiplier</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__Amount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unitdef</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">exponent</span><span class="p">):</span>
+
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">UnitKind_toString</span><span class="p">(</span><span class="n">libsbml</span><span class="o">.</span><span class="n">UNIT_KIND_GRAM</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getPrefix</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">unitdef</span><span class="o">.</span><span class="n">addBaseUnit</span><span class="p">(</span>
+            <span class="n">kind</span><span class="p">,</span>
+            <span class="n">exponent</span><span class="p">,</span>
+            <span class="n">scale</span><span class="p">,</span>
+            <span class="n">multiplier</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__Seconds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unitdef</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">exponent</span><span class="p">):</span>
+
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">UnitKind_toString</span><span class="p">(</span><span class="n">libsbml</span><span class="o">.</span><span class="n">UNIT_KIND_SECOND</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">unitdef</span><span class="o">.</span><span class="n">addBaseUnit</span><span class="p">(</span>
+            <span class="n">kind</span><span class="p">,</span>
+            <span class="n">exponent</span><span class="p">,</span>
+            <span class="n">scale</span><span class="p">,</span>
+            <span class="n">multiplier</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__Minutes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unitdef</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exponent</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">UnitKind_toString</span><span class="p">(</span><span class="n">libsbml</span><span class="o">.</span><span class="n">UNIT_KIND_SECOND</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">60</span>
+
+        <span class="n">unitdef</span><span class="o">.</span><span class="n">addBaseUnit</span><span class="p">(</span>
+            <span class="n">kind</span><span class="p">,</span>
+            <span class="n">exponent</span><span class="p">,</span>
+            <span class="n">scale</span><span class="p">,</span>
+            <span class="n">multiplier</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__Hours</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unitdef</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exponent</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">UnitKind_toString</span><span class="p">(</span><span class="n">libsbml</span><span class="o">.</span><span class="n">UNIT_KIND_SECOND</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span>
+
+        <span class="n">unitdef</span><span class="o">.</span><span class="n">addBaseUnit</span><span class="p">(</span>
+            <span class="n">kind</span><span class="p">,</span>
+            <span class="n">exponent</span><span class="p">,</span>
+            <span class="n">scale</span><span class="p">,</span>
+            <span class="n">multiplier</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__Celsius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unitdef</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exponent</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">UnitKind_toString</span><span class="p">(</span><span class="n">libsbml</span><span class="o">.</span><span class="n">UNIT_KIND_KELVIN</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">unitdef</span><span class="o">.</span><span class="n">addBaseUnit</span><span class="p">(</span>
+            <span class="n">kind</span><span class="p">,</span>
+            <span class="n">exponent</span><span class="p">,</span>
+            <span class="n">scale</span><span class="p">,</span>
+            <span class="n">multiplier</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__Kelvin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unitdef</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exponent</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">UnitKind_toString</span><span class="p">(</span><span class="n">libsbml</span><span class="o">.</span><span class="n">UNIT_KIND_KELVIN</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">unitdef</span><span class="o">.</span><span class="n">addBaseUnit</span><span class="p">(</span>
+            <span class="n">kind</span><span class="p">,</span>
+            <span class="n">exponent</span><span class="p">,</span>
+            <span class="n">scale</span><span class="p">,</span>
+            <span class="n">multiplier</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__Dimensionless</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unitdef</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exponent</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">kind</span> <span class="o">=</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">UnitKind_toString</span><span class="p">(</span><span class="n">libsbml</span><span class="o">.</span><span class="n">UNIT_KIND_DIMENSIONLESS</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">exponent</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">unitdef</span><span class="o">.</span><span class="n">addBaseUnit</span><span class="p">(</span>
+            <span class="n">kind</span><span class="p">,</span>
+            <span class="n">exponent</span><span class="p">,</span>
+            <span class="n">scale</span><span class="p">,</span>
+            <span class="n">multiplier</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getPrefix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">prefix</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">15</span>
+        <span class="k">elif</span> <span class="n">prefix</span> <span class="o">==</span> <span class="s2">&quot;p&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">12</span>
+        <span class="k">elif</span> <span class="n">prefix</span> <span class="o">==</span> <span class="s2">&quot;n&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">9</span>
+        <span class="k">elif</span> <span class="n">prefix</span> <span class="o">==</span> <span class="s2">&quot;u&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">6</span>
+        <span class="k">elif</span> <span class="n">prefix</span> <span class="o">==</span> <span class="s2">&quot;m&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">3</span>
+        <span class="k">elif</span> <span class="n">prefix</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">prefix</span> <span class="o">==</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">prefix</span> <span class="o">==</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">3</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Prefix </span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2"> is unknown. Please define unit manually&quot;</span>
+            <span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

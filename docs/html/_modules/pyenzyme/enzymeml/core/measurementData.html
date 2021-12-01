@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>pyenzyme.enzymeml.core.measurementData</title>
+    
+          <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../../../_static/theme-vendors.js"></script> -->
+      <script src="../../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../../index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../../index.html">Module code</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.core.measurementData</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for pyenzyme.enzymeml.core.measurementData</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">File: measurementData.py</span>
+<span class="sd">Project: core</span>
+<span class="sd">Author: Jan Range</span>
+<span class="sd">License: BSD-2 clause</span>
+<span class="sd">-----</span>
+<span class="sd">Last Modified: Thursday July 15th 2021 1:19:51 am</span>
+<span class="sd">Modified By: Jan Range (&lt;jan.range@simtech.uni-stuttgart.de&gt;)</span>
+<span class="sd">-----</span>
+<span class="sd">Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PositiveFloat</span><span class="p">,</span>
+    <span class="n">validate_arguments</span><span class="p">,</span>
+    <span class="n">BaseModel</span><span class="p">,</span>
+    <span class="n">validator</span><span class="p">,</span>
+    <span class="n">Field</span><span class="p">,</span>
+    <span class="n">PrivateAttr</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.enzymemlbase</span> <span class="kn">import</span> <span class="n">EnzymeMLBase</span>
+
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.replicate</span> <span class="kn">import</span> <span class="n">Replicate</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.exceptions</span> <span class="kn">import</span> <span class="n">IdentifierError</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.unitdef</span> <span class="kn">import</span> <span class="n">UnitDef</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">type_checking</span><span class="p">,</span>
+    <span class="n">deprecated_getter</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">static_check_init_args</span> <span class="o">=</span> <span class="n">dataclass</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">static_check_init_args</span> <span class="o">=</span> <span class="n">type_checking</span>
+
+
+<div class="viewcode-block" id="MeasurementData"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.measurementData.MeasurementData">[docs]</a><span class="nd">@static_check_init_args</span>
+<span class="k">class</span> <span class="nc">MeasurementData</span><span class="p">(</span><span class="n">EnzymeMLBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper class to organize elements&quot;&quot;&quot;</span>
+
+    <span class="n">init_conc</span><span class="p">:</span> <span class="n">PositiveFloat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Initial concentration of the measurement data.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The unit of the measurement data.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">measurement_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique measurement identifier this dataset belongs to.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">reactant_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The identifier for the described reactant.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="n">protein_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The identifier for the described protein.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="n">replicates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Replicate</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A list of replicate objects holding raw data of the measurement.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="c1"># * Private</span>
+    <span class="n">_unit_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># ! Validators</span>
+
+<div class="viewcode-block" id="MeasurementData.check_id_occurences"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.measurementData.MeasurementData.check_id_occurences">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;protein_id&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_id_occurences</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">protein_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">reactant_id</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reactant_id&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reactant_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">protein_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IdentifierError</span><span class="p">(</span>
+                <span class="s2">&quot;Neither a reactant nor protein identifier has been provided. Please specify either one or the other.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">reactant_id</span> <span class="ow">and</span> <span class="n">protein_id</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IdentifierError</span><span class="p">(</span>
+                <span class="s2">&quot;Both a reactant and protein identifier have been provided. Please specify either one or the other&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">protein_id</span></div>
+
+    <span class="c1"># ! Utilities</span>
+<div class="viewcode-block" id="MeasurementData.unifyUnits"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.measurementData.MeasurementData.unifyUnits">[docs]</a>    <span class="k">def</span> <span class="nf">unifyUnits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Rescales all replicates data_unit to match the desired scale.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            replicate (Replicate): Replicate object containing time course data.</span>
+<span class="sd">            kind (str): The kind of unit that will be rescaled.</span>
+<span class="sd">            scale (int): The scale to whih the data will be transformed.</span>
+<span class="sd">            enzmldoc ([type]): The EnzymeML document to which the new unit will be added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">unit_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">replicate</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicates</span><span class="p">:</span>
+            <span class="n">unit_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rescaleReplicateUnits</span><span class="p">(</span>
+                <span class="n">replicate</span><span class="o">=</span><span class="n">replicate</span><span class="p">,</span>
+                <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span>
+                <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
+                <span class="n">enzmldoc</span><span class="o">=</span><span class="n">enzmldoc</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">unit_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">unit_id</span></div>
+
+    <span class="k">def</span> <span class="nf">_rescaleReplicateUnits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replicate</span><span class="p">:</span> <span class="n">Replicate</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Rescales a replicates data_unit to match the desired scale.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            replicate (Replicate): Replicate object containing time course data.</span>
+<span class="sd">            kind (str): The kind of unit that will be rescaled.</span>
+<span class="sd">            scale (int): The scale to whih the data will be transformed.</span>
+<span class="sd">            enzmldoc ([type]): The EnzymeML document to which the new unit will be added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data_unit_id</span> <span class="o">=</span> <span class="n">replicate</span><span class="o">.</span><span class="n">_data_unit_id</span>
+        <span class="n">unitdef</span><span class="p">:</span> <span class="n">UnitDef</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">unit_dict</span><span class="p">[</span><span class="n">data_unit_id</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Calculate the scale to transform the unit</span>
+        <span class="n">transform_value</span> <span class="o">=</span> <span class="n">unitdef</span><span class="o">.</span><span class="n">calculateTransformValue</span><span class="p">(</span>
+            <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Re-scale and assign the data of the replicate</span>
+        <span class="n">replicate</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">data_point</span> <span class="o">*</span> <span class="n">transform_value</span>
+            <span class="k">for</span> <span class="n">data_point</span> <span class="ow">in</span> <span class="n">replicate</span><span class="o">.</span><span class="n">data</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Create a new unit that matches the new scale</span>
+        <span class="n">new_unitdef</span> <span class="o">=</span> <span class="n">UnitDef</span><span class="p">(</span><span class="o">**</span><span class="n">unitdef</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+        <span class="n">correction_factor</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">scale</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">base_unit</span> <span class="ow">in</span> <span class="n">new_unitdef</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">base_unit</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">kind</span><span class="p">:</span>
+                <span class="n">base_unit</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">correction_factor</span>
+
+        <span class="c1"># Add it to the enzymeml document and replicate</span>
+        <span class="n">new_unit_name</span> <span class="o">=</span> <span class="n">new_unitdef</span><span class="o">.</span><span class="n">_getNewName</span><span class="p">()</span>
+        <span class="n">unit_id</span> <span class="o">=</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">_convertToUnitDef</span><span class="p">(</span><span class="n">new_unit_name</span><span class="p">)</span>
+        <span class="n">replicate</span><span class="o">.</span><span class="n">_data_unit_id</span> <span class="o">=</span> <span class="n">unit_id</span>
+        <span class="n">replicate</span><span class="o">.</span><span class="n">data_unit</span> <span class="o">=</span> <span class="n">new_unit_name</span>
+
+        <span class="c1"># Reset unit id and unit string</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="n">new_unit_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s2">&quot;_unit_id&quot;</span><span class="p">,</span> <span class="n">unit_id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MeasurementData.addReplicate"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.measurementData.MeasurementData.addReplicate">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
+    <span class="k">def</span> <span class="nf">addReplicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replicate</span><span class="p">:</span> <span class="n">Replicate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">replicates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">replicate</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MeasurementData.setMeasurementIDs"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.measurementData.MeasurementData.setMeasurementIDs">[docs]</a>    <span class="o">@</span> <span class="n">validate_arguments</span>
+    <span class="k">def</span> <span class="nf">setMeasurementIDs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">replicate</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicates</span><span class="p">:</span>
+            <span class="n">replicate</span><span class="o">.</span><span class="n">measurement_id</span> <span class="o">=</span> <span class="nb">id</span></div>
+
+<div class="viewcode-block" id="MeasurementData.getReactantID"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.measurementData.MeasurementData.getReactantID">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;reactant_id&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getReactantID</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactant_id</span></div>
+
+<div class="viewcode-block" id="MeasurementData.getProteinID"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.measurementData.MeasurementData.getProteinID">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;protein_id&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getProteinID</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">protein_id</span></div>
+
+<div class="viewcode-block" id="MeasurementData.getInitConc"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.measurementData.MeasurementData.getInitConc">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;init_conc&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getInitConc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PositiveFloat</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_conc</span></div>
+
+<div class="viewcode-block" id="MeasurementData.getUnit"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.measurementData.MeasurementData.getUnit">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;unit&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getUnit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span></div>
+
+<div class="viewcode-block" id="MeasurementData.getReplicates"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.measurementData.MeasurementData.getReplicates">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;replicates&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getReplicates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Replicate</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicates</span></div></div>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

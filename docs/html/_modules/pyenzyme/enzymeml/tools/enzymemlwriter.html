@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>pyenzyme.enzymeml.tools.enzymemlwriter</title>
+    
+          <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../../../_static/theme-vendors.js"></script> -->
+      <script src="../../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../../index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../../index.html">Module code</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.tools.enzymemlwriter</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for pyenzyme.enzymeml.tools.enzymemlwriter</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">File: enzymemlwriter.py</span>
+<span class="sd">Project: tools</span>
+<span class="sd">Author: Jan Range</span>
+<span class="sd">License: BSD-2 clause</span>
+<span class="sd">-----</span>
+<span class="sd">Last Modified: Wednesday June 23rd 2021 9:09:19 pm</span>
+<span class="sd">Modified By: Jan Range (&lt;jan.range@simtech.uni-stuttgart.de&gt;)</span>
+<span class="sd">-----</span>
+<span class="sd">Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">from</span> <span class="nn">libsbml</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SBMLDocument</span><span class="p">,</span>
+    <span class="n">XMLNode</span><span class="p">,</span>
+    <span class="n">XMLTriple</span><span class="p">,</span>
+    <span class="n">XMLAttributes</span><span class="p">,</span>
+    <span class="n">XMLNamespaces</span><span class="p">,</span>
+    <span class="n">SBMLWriter</span>
+<span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">libsbml</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">libcombine</span> <span class="kn">import</span> <span class="n">CombineArchive</span><span class="p">,</span> <span class="n">OmexDescription</span><span class="p">,</span> <span class="n">KnownFormats</span><span class="p">,</span> <span class="n">VCard</span>
+
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.unitdef</span> <span class="kn">import</span> <span class="n">UnitDef</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.vessel</span> <span class="kn">import</span> <span class="n">Vessel</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.protein</span> <span class="kn">import</span> <span class="n">Protein</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.reactant</span> <span class="kn">import</span> <span class="n">Reactant</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.replicate</span> <span class="kn">import</span> <span class="n">Replicate</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.measurement</span> <span class="kn">import</span> <span class="n">Measurement</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.measurementData</span> <span class="kn">import</span> <span class="n">MeasurementData</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.enzymereaction</span> <span class="kn">import</span> <span class="n">EnzymeReaction</span><span class="p">,</span> <span class="n">ReactionElement</span>
+
+
+<div class="viewcode-block" id="EnzymeMLWriter"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter">[docs]</a><span class="k">class</span> <span class="nc">EnzymeMLWriter</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">namespace</span> <span class="o">=</span> <span class="s2">&quot;http://sbml.org/enzymeml/version2&quot;</span>
+
+<div class="viewcode-block" id="EnzymeMLWriter.toFile"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.toFile">[docs]</a>    <span class="k">def</span> <span class="nf">toFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Writes EnzymeMLDocument object to an .omex container</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            EnzymeMLDocument enzmldoc: Previously created instance of an</span>
+<span class="sd">                                       EnzymeML document</span>
+<span class="sd">            String path: EnzymeML file is written to this destination</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileExistsError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">SBMLDocument</span><span class="p">()</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">setLevelAndVersion</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">createModel</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">setId</span><span class="p">(</span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># Convert the SBML model to EnzymeML</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convertEnzymeMLToSBML</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
+
+        <span class="c1"># Add data</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addData</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">measurement_dict</span><span class="p">)</span>
+
+        <span class="c1"># Write to EnzymeML</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">SBMLWriter</span><span class="p">()</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writeSBMLToFile</span><span class="p">(</span>
+            <span class="n">doc</span><span class="p">,</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                <span class="s1">&#39;experiment.xml&#39;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Write to OMEX</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_createArchive</span><span class="p">(</span><span class="n">enzmldoc</span><span class="p">,</span> <span class="n">paths</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">),</span>
+            <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;experiment.xml&#39;</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="EnzymeMLWriter.toXMLString"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.toXMLString">[docs]</a>    <span class="k">def</span> <span class="nf">toXMLString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Converts EnzymeMLDocument to XML string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            EnzymeMLDocument enzmldoc: Previously created instance of an</span>
+<span class="sd">                                       EnzymeML document</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">SBMLDocument</span><span class="p">()</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">setLevelAndVersion</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">createModel</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">setId</span><span class="p">(</span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Convert the SBML model to EnzymeML</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convertEnzymeMLToSBML</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
+
+        <span class="c1"># Add data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_addData</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">measurement_dict</span><span class="p">)</span>
+
+        <span class="c1"># Write to EnzymeML</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">SBMLWriter</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">writer</span><span class="o">.</span><span class="n">writeToString</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EnzymeMLWriter.toSBML"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.toSBML">[docs]</a>    <span class="k">def</span> <span class="nf">toSBML</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns libSBML model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            EnzymeMLDocument enzmldoc: Previously created instance of an</span>
+<span class="sd">                                       EnzymeML document</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">SBMLDocument</span><span class="p">()</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">setLevelAndVersion</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">createModel</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">setId</span><span class="p">(</span><span class="n">enzmldoc</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
+
+        <span class="c1"># Convert the SBML model to EnzymeML</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convertEnzymeMLToSBML</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">doc</span></div>
+
+<div class="viewcode-block" id="EnzymeMLWriter.convertEnzymeMLToSBML"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.convertEnzymeMLToSBML">[docs]</a>    <span class="k">def</span> <span class="nf">convertEnzymeMLToSBML</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Manages the conversion of EnzymeML to SBML.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (libsbml.Model): The blank SBML model, where the EnzymeML document is converted to.</span>
+<span class="sd">            enzmldoc (EnzymeMLDocument): The EnzymeML document to be converted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_addRefs</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_addUnits</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">unit_dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_addVessel</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">vessel_dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_addProteins</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">protein_dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_addReactants</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">reactant_dict</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_addReactions</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">reaction_dict</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_createArchive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">,</span> <span class="n">listofPaths</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">archive</span> <span class="o">=</span> <span class="n">CombineArchive</span><span class="p">()</span>
+
+        <span class="c1"># add experiment file to archive</span>
+        <span class="n">archive</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">/experiment.xml&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;./experiment.xml&quot;</span><span class="p">,</span>
+            <span class="n">KnownFormats</span><span class="o">.</span><span class="n">lookupFormat</span><span class="p">(</span><span class="s2">&quot;sbml&quot;</span><span class="p">),</span>
+            <span class="kc">True</span>
+        <span class="p">)</span>
+
+        <span class="c1"># add metadata to the experiment file</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="s2">&quot;./experiment.xml&quot;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="n">OmexDescription</span><span class="p">()</span>
+        <span class="n">description</span><span class="o">.</span><span class="n">setAbout</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+        <span class="n">description</span><span class="o">.</span><span class="n">setDescription</span><span class="p">(</span><span class="s2">&quot;EnzymeML model&quot;</span><span class="p">)</span>
+        <span class="n">description</span><span class="o">.</span><span class="n">setCreated</span><span class="p">(</span><span class="n">OmexDescription</span><span class="o">.</span><span class="n">getCurrentDateAndTime</span><span class="p">())</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">creat</span> <span class="ow">in</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getCreator</span><span class="p">():</span>
+                <span class="n">creator</span> <span class="o">=</span> <span class="n">VCard</span><span class="p">()</span>
+                <span class="n">creator</span><span class="o">.</span><span class="n">setFamilyName</span><span class="p">(</span><span class="n">creat</span><span class="o">.</span><span class="n">getFname</span><span class="p">())</span>
+                <span class="n">creator</span><span class="o">.</span><span class="n">setGivenName</span><span class="p">(</span><span class="n">creat</span><span class="o">.</span><span class="n">getGname</span><span class="p">())</span>
+                <span class="n">creator</span><span class="o">.</span><span class="n">setEmail</span><span class="p">(</span><span class="n">creat</span><span class="o">.</span><span class="n">getMail</span><span class="p">())</span>
+                <span class="n">description</span><span class="o">.</span><span class="n">addCreator</span><span class="p">(</span><span class="n">creator</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">archive</span><span class="o">.</span><span class="n">addMetadata</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span>
+        <span class="n">archive</span><span class="o">.</span><span class="n">addMetadata</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span>
+
+        <span class="c1"># Add CSV files to archive</span>
+        <span class="k">for</span> <span class="n">csvPath</span><span class="p">,</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">listofPaths</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">addFileToArchive</span><span class="p">(</span>
+                <span class="n">archive</span><span class="o">=</span><span class="n">archive</span><span class="p">,</span>
+                <span class="n">file_path</span><span class="o">=</span><span class="n">csvPath</span><span class="p">,</span>
+                <span class="n">targetPath</span><span class="o">=</span><span class="n">file_path</span><span class="p">,</span>
+                <span class="nb">format</span><span class="o">=</span><span class="n">KnownFormats</span><span class="o">.</span><span class="n">lookupFormat</span><span class="p">(</span><span class="s2">&quot;csv&quot;</span><span class="p">),</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Time course data&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Add files from fileDict</span>
+        <span class="n">tmpFolder</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getFileDict</span><span class="p">()</span> <span class="o">!=</span> <span class="p">{}:</span>
+            <span class="c1"># create temporary directory for files</span>
+            <span class="n">tmpFolder</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">fileDict</span> <span class="ow">in</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getFileDict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+
+                <span class="n">fileContent</span> <span class="o">=</span> <span class="n">fileDict</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>
+                <span class="n">file_name</span> <span class="o">=</span> <span class="n">fileDict</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+                <span class="n">fileDescription</span> <span class="o">=</span> <span class="n">fileDict</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+                <span class="n">tmpPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpFolder</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+
+                <span class="c1"># Write file locally and add it to the document</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmpPath</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fileHandle</span><span class="p">:</span>
+                    <span class="n">fileHandle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fileContent</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">addFileToArchive</span><span class="p">(</span>
+                    <span class="n">archive</span><span class="o">=</span><span class="n">archive</span><span class="p">,</span>
+                    <span class="n">file_path</span><span class="o">=</span><span class="n">tmpPath</span><span class="p">,</span>
+                    <span class="n">targetPath</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;./files/</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="nb">format</span><span class="o">=</span><span class="n">KnownFormats</span><span class="o">.</span><span class="n">guessFormat</span><span class="p">(</span><span class="n">file_name</span><span class="p">),</span>
+                    <span class="n">description</span><span class="o">=</span><span class="n">fileDescription</span>
+                <span class="p">)</span>
+
+        <span class="n">out_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.omex&quot;</span> <span class="o">%</span> <span class="n">enzmldoc</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="n">out_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">out_file</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">out_path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">archive</span><span class="o">.</span><span class="n">writeToFile</span><span class="p">(</span><span class="n">out_path</span><span class="p">)</span>
+
+        <span class="c1"># Remove temporary directory</span>
+        <span class="k">if</span> <span class="n">tmpFolder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">tmpFolder</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Archive created:&#39;</span><span class="p">,</span> <span class="n">out_file</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EnzymeMLWriter.addFileToArchive"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.addFileToArchive">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">addFileToArchive</span><span class="p">(</span>
+        <span class="n">archive</span><span class="p">,</span>
+        <span class="n">file_path</span><span class="p">,</span>
+        <span class="n">targetPath</span><span class="p">,</span>
+        <span class="nb">format</span><span class="p">,</span>
+        <span class="n">description</span>
+    <span class="p">):</span>
+
+        <span class="c1"># Add file to archive</span>
+        <span class="n">archive</span><span class="o">.</span><span class="n">addFile</span><span class="p">(</span>
+            <span class="n">file_path</span><span class="p">,</span>
+            <span class="n">targetPath</span><span class="p">,</span>
+            <span class="nb">format</span><span class="p">,</span>
+            <span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add metadata to the file</span>
+        <span class="n">omexDesc</span> <span class="o">=</span> <span class="n">OmexDescription</span><span class="p">()</span>
+        <span class="n">omexDesc</span><span class="o">.</span><span class="n">setAbout</span><span class="p">(</span><span class="n">targetPath</span><span class="p">)</span>
+        <span class="n">omexDesc</span><span class="o">.</span><span class="n">setDescription</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+        <span class="n">omexDesc</span><span class="o">.</span><span class="n">setCreated</span><span class="p">(</span><span class="n">OmexDescription</span><span class="o">.</span><span class="n">getCurrentDateAndTime</span><span class="p">())</span>
+        <span class="n">archive</span><span class="o">.</span><span class="n">addMetadata</span><span class="p">(</span><span class="n">targetPath</span><span class="p">,</span> <span class="n">omexDesc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EnzymeMLWriter.setupXMLNode"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.setupXMLNode">[docs]</a>    <span class="k">def</span> <span class="nf">setupXMLNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># Helper function</span>
+        <span class="c1"># Creates an XML node</span>
+        <span class="c1"># for annotations</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">XMLNode</span><span class="p">(</span>
+            <span class="n">XMLTriple</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+            <span class="n">XMLAttributes</span><span class="p">(),</span>
+            <span class="n">XMLNamespaces</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">namespace</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">addNamespace</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">namespace</span><span class="p">,</span>
+                <span class="s2">&quot;enzymeml&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">node</span></div>
+
+<div class="viewcode-block" id="EnzymeMLWriter.appendAttribute"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendAttribute">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">appendAttribute</span><span class="p">(</span><span class="n">attributeName</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="c1"># Helper function</span>
+        <span class="c1"># creates XML node</span>
+        <span class="c1"># &lt;x&gt;XYZ&lt;/x&gt;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">XMLNode</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">attributeNode</span> <span class="o">=</span> <span class="n">XMLNode</span><span class="p">(</span>
+            <span class="n">XMLTriple</span><span class="p">(</span><span class="n">attributeName</span><span class="p">),</span>
+            <span class="n">XMLAttributes</span><span class="p">(),</span>
+            <span class="n">XMLNamespaces</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="n">attributeNode</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">attributeNode</span></div>
+
+<div class="viewcode-block" id="EnzymeMLWriter.appendMultiAttributes"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendMultiAttributes">[docs]</a>    <span class="k">def</span> <span class="nf">appendMultiAttributes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">attributeName</span><span class="p">,</span>
+        <span class="nb">object</span><span class="p">,</span>
+        <span class="n">objectMapping</span><span class="p">,</span>
+        <span class="n">annotationNode</span>
+    <span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span>
+            <span class="n">attributeName</span><span class="p">,</span>
+            <span class="n">namespace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">objectMapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># &quot;value&quot; --&gt; 10.00</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span>
+                    <span class="n">key</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">annotationNode</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EnzymeMLWriter.appendOptionalAttribute"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendOptionalAttribute">[docs]</a>    <span class="k">def</span> <span class="nf">appendOptionalAttribute</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">attributeName</span><span class="p">,</span>
+        <span class="nb">object</span><span class="p">,</span>
+        <span class="n">objectName</span><span class="p">,</span>
+        <span class="n">annotationNode</span>
+    <span class="p">):</span>
+        <span class="c1"># Helper function</span>
+        <span class="c1"># Adds elements to annotation node</span>
+        <span class="k">if</span> <span class="nb">object</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">objectName</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">appendAttribute</span><span class="p">(</span>
+                <span class="n">attributeName</span><span class="p">,</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">objectName</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">annotationNode</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_addRefs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">enzmldoc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts EnzymeMLDocument refrences to SBML.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (libsbml.Model): The SBML model the reference is added to.</span>
+<span class="sd">            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument instance that contains the information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Create reference node</span>
+        <span class="n">referenceAnnotation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span>
+            <span class="s2">&quot;enzymeml:references&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Optional attributes</span>
+        <span class="n">referenceAttributes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;enzymeml:doi&#39;</span><span class="p">:</span> <span class="s1">&#39;doi&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;enzymeml:pubmedID&#39;</span><span class="p">:</span> <span class="s1">&#39;pubmedid&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;enzymeml:url&#39;</span><span class="p">:</span> <span class="s1">&#39;url&#39;</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">attributeName</span><span class="p">,</span> <span class="n">objectName</span> <span class="ow">in</span> <span class="n">referenceAttributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">appendOptionalAttribute</span><span class="p">(</span>
+                <span class="n">attributeName</span><span class="o">=</span><span class="n">attributeName</span><span class="p">,</span>
+                <span class="nb">object</span><span class="o">=</span><span class="n">enzmldoc</span><span class="p">,</span>
+                <span class="n">objectName</span><span class="o">=</span><span class="n">objectName</span><span class="p">,</span>
+                <span class="n">annotationNode</span><span class="o">=</span><span class="n">referenceAnnotation</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">referenceAnnotation</span><span class="o">.</span><span class="n">getNumChildren</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">appendAnnotation</span><span class="p">(</span><span class="n">referenceAnnotation</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_addUnits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">unit_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UnitDef</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Converts EnzymeMLDocument units to SBML.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (libsbml.Model): The SBML model the units are added to.</span>
+<span class="sd">            unit_dict (dict[str, UnitDef]): The EnzymeMLDocument units to be added to the SBML model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">unit_id</span><span class="p">,</span> <span class="n">unit_def</span> <span class="ow">in</span> <span class="n">unit_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">unit</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">createUnitDefinition</span><span class="p">()</span>
+            <span class="n">unit</span><span class="o">.</span><span class="n">setId</span><span class="p">(</span><span class="n">unit_id</span><span class="p">)</span>
+            <span class="n">unit</span><span class="o">.</span><span class="n">setMetaId</span><span class="p">(</span><span class="n">unit_def</span><span class="o">.</span><span class="n">getMetaid</span><span class="p">())</span>
+            <span class="n">unit</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="n">unit_def</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
+
+            <span class="c1"># TODO Add ontology</span>
+            <span class="c1"># if unit_def.getOntology() != &quot;NONE&quot;:</span>
+            <span class="c1">#     cvterm = CVTerm()</span>
+            <span class="c1">#     cvterm.addResource(unit_def.getOntology())</span>
+            <span class="c1">#     cvterm.setQualifierType(BIOLOGICAL_QUALIFIER)</span>
+            <span class="c1">#     cvterm.setBiologicalQualifierType(BQB_IS)</span>
+            <span class="c1">#     unit.addCVTerm(cvterm)</span>
+
+            <span class="k">for</span> <span class="n">base_unit</span> <span class="ow">in</span> <span class="n">unit_def</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
+
+                <span class="n">kind</span> <span class="o">=</span> <span class="n">base_unit</span><span class="o">.</span><span class="n">kind</span>
+                <span class="n">exponent</span> <span class="o">=</span> <span class="n">base_unit</span><span class="o">.</span><span class="n">exponent</span>
+                <span class="n">scale</span> <span class="o">=</span> <span class="n">base_unit</span><span class="o">.</span><span class="n">scale</span>
+                <span class="n">multiplier</span> <span class="o">=</span> <span class="n">base_unit</span><span class="o">.</span><span class="n">multiplier</span>
+
+                <span class="n">baseUnitDef</span> <span class="o">=</span> <span class="n">unit</span><span class="o">.</span><span class="n">createUnit</span><span class="p">()</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">baseUnitDef</span><span class="o">.</span><span class="n">setKind</span><span class="p">(</span>
+                        <span class="n">libsbml</span><span class="o">.</span><span class="n">UnitKind_forName</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="n">baseUnitDef</span><span class="o">.</span><span class="n">setKind</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
+
+                <span class="n">baseUnitDef</span><span class="o">.</span><span class="n">setExponent</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
+                <span class="n">baseUnitDef</span><span class="o">.</span><span class="n">setScale</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+                <span class="n">baseUnitDef</span><span class="o">.</span><span class="n">setMultiplier</span><span class="p">(</span><span class="n">multiplier</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_addVessel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">vessel_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Vessel</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Converts EnzymeMLDocument vessel to SBML.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (libsbml.Model): The SBML model the vessel is added to.</span>
+<span class="sd">            vessel (Vessel): The EnzymeMLDocument vessel to be added to the SBML model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">vessel_id</span><span class="p">,</span> <span class="n">vessel</span> <span class="ow">in</span> <span class="n">vessel_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">compartment</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">createCompartment</span><span class="p">()</span>
+            <span class="n">compartment</span><span class="o">.</span><span class="n">setId</span><span class="p">(</span><span class="n">vessel_id</span><span class="p">)</span>
+            <span class="n">compartment</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="n">vessel</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">compartment</span><span class="o">.</span><span class="n">setUnits</span><span class="p">(</span><span class="n">vessel</span><span class="o">.</span><span class="n">_unit_id</span><span class="p">)</span>
+            <span class="n">compartment</span><span class="o">.</span><span class="n">setSize</span><span class="p">(</span><span class="n">vessel</span><span class="o">.</span><span class="n">volume</span><span class="p">)</span>
+            <span class="n">compartment</span><span class="o">.</span><span class="n">setConstant</span><span class="p">(</span><span class="n">vessel</span><span class="o">.</span><span class="n">constant</span><span class="p">)</span>
+            <span class="n">compartment</span><span class="o">.</span><span class="n">setSpatialDimensions</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_addProteins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">protein_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Protein</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Converts EnzymeMLDocument proteins to SBML.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (libsbml.Model): The SBML model the proteins are added to.</span>
+<span class="sd">            protein_dict (dict[str, Protein]): The EnzymeMLDocument proteins to be added to the SBML model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">protein_id</span><span class="p">,</span> <span class="n">protein</span> <span class="ow">in</span> <span class="n">protein_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">species</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">createSpecies</span><span class="p">()</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setId</span><span class="p">(</span><span class="n">protein_id</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="n">protein</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setMetaId</span><span class="p">(</span><span class="n">protein</span><span class="o">.</span><span class="n">meta_id</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setSBOTerm</span><span class="p">(</span><span class="n">protein</span><span class="o">.</span><span class="n">ontology</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setCompartment</span><span class="p">(</span><span class="n">protein</span><span class="o">.</span><span class="n">vessel_id</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setBoundaryCondition</span><span class="p">(</span><span class="n">protein</span><span class="o">.</span><span class="n">boundary</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setInitialConcentration</span><span class="p">(</span><span class="n">protein</span><span class="o">.</span><span class="n">init_conc</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setSubstanceUnits</span><span class="p">(</span><span class="n">protein</span><span class="o">.</span><span class="n">_unit_id</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setConstant</span><span class="p">(</span><span class="n">protein</span><span class="o">.</span><span class="n">constant</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setHasOnlySubstanceUnits</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="c1"># EnzymeML annotation</span>
+            <span class="n">proteinAnnotation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span><span class="s1">&#39;enzymeml:protein&#39;</span><span class="p">)</span>
+
+            <span class="c1"># EnzymeML attributes</span>
+            <span class="n">proteinAttributes</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;enzymeml:sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;sequence&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;enzymeml:ECnumber&#39;</span><span class="p">:</span> <span class="s1">&#39;ecnumber&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;enzymeml:uniprotID&#39;</span><span class="p">:</span> <span class="s1">&#39;uniprotid&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;enzymeml:organism&#39;</span><span class="p">:</span> <span class="s1">&#39;organism&#39;</span>
+            <span class="p">}</span>
+
+            <span class="k">for</span> <span class="n">attributeName</span><span class="p">,</span> <span class="n">objectName</span> <span class="ow">in</span> <span class="n">proteinAttributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">appendOptionalAttribute</span><span class="p">(</span>
+                    <span class="n">attributeName</span><span class="o">=</span><span class="n">attributeName</span><span class="p">,</span>
+                    <span class="nb">object</span><span class="o">=</span><span class="n">protein</span><span class="p">,</span>
+                    <span class="n">objectName</span><span class="o">=</span><span class="n">objectName</span><span class="p">,</span>
+                    <span class="n">annotationNode</span><span class="o">=</span><span class="n">proteinAnnotation</span>
+                <span class="p">)</span>
+
+            <span class="n">species</span><span class="o">.</span><span class="n">appendAnnotation</span><span class="p">(</span><span class="n">proteinAnnotation</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_addReactants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">reactant_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Reactant</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Converts EnzymeMLDocument reactants to SBML.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (libsbml.Model): The SBML model the reactants are added to.</span>
+<span class="sd">            reactant_dict (dict[str, Reactant]): The EnzymeMLDocument reactants to be added to the SBML model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">reactant_id</span><span class="p">,</span> <span class="n">reactant</span> <span class="ow">in</span> <span class="n">reactant_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">species</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">createSpecies</span><span class="p">()</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setId</span><span class="p">(</span><span class="n">reactant_id</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="n">reactant</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setMetaId</span><span class="p">(</span><span class="n">reactant</span><span class="o">.</span><span class="n">meta_id</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setSBOTerm</span><span class="p">(</span><span class="n">reactant</span><span class="o">.</span><span class="n">ontology</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setCompartment</span><span class="p">(</span><span class="n">reactant</span><span class="o">.</span><span class="n">vessel_id</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setBoundaryCondition</span><span class="p">(</span><span class="n">reactant</span><span class="o">.</span><span class="n">boundary</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setConstant</span><span class="p">(</span><span class="n">reactant</span><span class="o">.</span><span class="n">constant</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setHasOnlySubstanceUnits</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setInitialConcentration</span><span class="p">(</span><span class="n">reactant</span><span class="o">.</span><span class="n">init_conc</span><span class="p">)</span>
+            <span class="n">species</span><span class="o">.</span><span class="n">setSubstanceUnits</span><span class="p">(</span><span class="n">reactant</span><span class="o">.</span><span class="n">_unit_id</span><span class="p">)</span>
+
+            <span class="c1"># Controls if annotation will be added</span>
+            <span class="n">reactantAnnotation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span><span class="s1">&#39;enzymeml:reactant&#39;</span><span class="p">)</span>
+
+            <span class="c1"># EnzymeML attributes</span>
+            <span class="n">reactantAttributes</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;enzymeml:inchi&#39;</span><span class="p">:</span> <span class="s1">&#39;inchi&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;enzymeml:smiles&#39;</span><span class="p">:</span> <span class="s1">&#39;smiles&#39;</span>
+            <span class="p">}</span>
+
+            <span class="k">for</span> <span class="n">attributeName</span><span class="p">,</span> <span class="n">objectName</span> <span class="ow">in</span> <span class="n">reactantAttributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">appendOptionalAttribute</span><span class="p">(</span>
+                    <span class="n">attributeName</span><span class="o">=</span><span class="n">attributeName</span><span class="p">,</span>
+                    <span class="nb">object</span><span class="o">=</span><span class="n">reactant</span><span class="p">,</span>
+                    <span class="n">objectName</span><span class="o">=</span><span class="n">objectName</span><span class="p">,</span>
+                    <span class="n">annotationNode</span><span class="o">=</span><span class="n">reactantAnnotation</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">reactantAnnotation</span><span class="o">.</span><span class="n">getNumChildren</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">species</span><span class="o">.</span><span class="n">appendAnnotation</span><span class="p">(</span><span class="n">reactantAnnotation</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_addReactions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span> <span class="n">reaction_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">EnzymeReaction</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Converts EnzymeMLDocument reactions to SBML.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (libsbml.Model): The SBML model the reactions are added to.</span>
+<span class="sd">            reaction_dict (dict[str, EnzymeReaction]): The EnzymeMLDocument reactions to be added to the SBML model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">reaction_id</span><span class="p">,</span> <span class="n">enzyme_reaction</span> <span class="ow">in</span> <span class="n">reaction_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="n">reaction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">createReaction</span><span class="p">()</span>
+            <span class="n">reaction</span><span class="o">.</span><span class="n">setId</span><span class="p">(</span><span class="n">reaction_id</span><span class="p">)</span>
+            <span class="n">reaction</span><span class="o">.</span><span class="n">setMetaId</span><span class="p">(</span><span class="n">enzyme_reaction</span><span class="o">.</span><span class="n">meta_id</span><span class="p">)</span>
+            <span class="n">reaction</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="n">enzyme_reaction</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">reaction</span><span class="o">.</span><span class="n">setReversible</span><span class="p">(</span><span class="n">enzyme_reaction</span><span class="o">.</span><span class="n">reversible</span><span class="p">)</span>
+            <span class="n">reaction</span><span class="o">.</span><span class="n">setSBOTerm</span><span class="p">(</span><span class="n">enzyme_reaction</span><span class="o">.</span><span class="n">ontology</span><span class="p">)</span>
+
+            <span class="c1"># Add kinetic model</span>
+            <span class="k">if</span> <span class="n">enzyme_reaction</span><span class="o">.</span><span class="n">model</span><span class="p">:</span>
+                <span class="n">enzyme_reaction</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">addToReaction</span><span class="p">(</span><span class="n">reaction</span><span class="p">)</span>
+
+            <span class="c1"># Enzymeml attributes</span>
+            <span class="n">reactionAnnotation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span><span class="s1">&#39;enzymeml:reaction&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Track conditions</span>
+            <span class="n">conditionsAnnotation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span>
+                <span class="s1">&#39;enzymeml:conditions&#39;</span><span class="p">,</span>
+                <span class="n">namespace</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+
+            <span class="n">conditionsMapping</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;enzymeml:temperature&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;temperature&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="s1">&#39;temperature_unit_id&#39;</span>
+                <span class="p">},</span>
+                <span class="s1">&#39;enzymeml:ph&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;ph&#39;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+            <span class="k">for</span> <span class="n">attributeName</span><span class="p">,</span> <span class="n">objectMapping</span> <span class="ow">in</span> <span class="n">conditionsMapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">appendMultiAttributes</span><span class="p">(</span>
+                    <span class="n">attributeName</span><span class="o">=</span><span class="n">attributeName</span><span class="p">,</span>
+                    <span class="nb">object</span><span class="o">=</span><span class="n">enzyme_reaction</span><span class="p">,</span>
+                    <span class="n">objectMapping</span><span class="o">=</span><span class="n">objectMapping</span><span class="p">,</span>
+                    <span class="n">annotationNode</span><span class="o">=</span><span class="n">conditionsAnnotation</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Write educts</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">writeElements</span><span class="p">(</span>
+                <span class="n">reaction_elements</span><span class="o">=</span><span class="n">enzyme_reaction</span><span class="o">.</span><span class="n">educts</span><span class="p">,</span>
+                <span class="n">createFunction</span><span class="o">=</span><span class="n">reaction</span><span class="o">.</span><span class="n">createReactant</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Write products</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">writeElements</span><span class="p">(</span>
+                <span class="n">reaction_elements</span><span class="o">=</span><span class="n">enzyme_reaction</span><span class="o">.</span><span class="n">products</span><span class="p">,</span>
+                <span class="n">createFunction</span><span class="o">=</span><span class="n">reaction</span><span class="o">.</span><span class="n">createProduct</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Write modifiers</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">writeElements</span><span class="p">(</span>
+                <span class="n">reaction_elements</span><span class="o">=</span><span class="n">enzyme_reaction</span><span class="o">.</span><span class="n">modifiers</span><span class="p">,</span>
+                <span class="n">createFunction</span><span class="o">=</span><span class="n">reaction</span><span class="o">.</span><span class="n">createModifier</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Finally, add EnzymeML annotations if given</span>
+            <span class="k">if</span> <span class="n">conditionsAnnotation</span><span class="o">.</span><span class="n">getNumChildren</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">reactionAnnotation</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">conditionsAnnotation</span><span class="p">)</span>
+
+            <span class="n">reaction</span><span class="o">.</span><span class="n">appendAnnotation</span><span class="p">(</span><span class="n">reactionAnnotation</span><span class="p">)</span>
+
+<div class="viewcode-block" id="EnzymeMLWriter.writeElements"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.writeElements">[docs]</a>    <span class="k">def</span> <span class="nf">writeElements</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">reaction_elements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ReactionElement</span><span class="p">],</span>
+        <span class="n">createFunction</span><span class="p">:</span> <span class="n">Callable</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Writes SpeciesReference elements to the SBML document.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            reaction_elements (list[ReactionElement]): List of reaction elements containing information on stoichiometry, species_id and ontology.</span>
+<span class="sd">            createFunction (Callable): Function that creates either an educt, product or modifier list to the SBML document.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">reaction_element</span> <span class="ow">in</span> <span class="n">reaction_elements</span><span class="p">:</span>
+
+            <span class="n">speciesRef</span> <span class="o">=</span> <span class="n">createFunction</span><span class="p">()</span>
+            <span class="n">speciesRef</span><span class="o">.</span><span class="n">setSpecies</span><span class="p">(</span><span class="n">reaction_element</span><span class="o">.</span><span class="n">species_id</span><span class="p">)</span>
+            <span class="n">speciesRef</span><span class="o">.</span><span class="n">setSBOTerm</span><span class="p">(</span><span class="n">reaction_element</span><span class="o">.</span><span class="n">ontology</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Catch modifiers --&gt; No stoich/constant in SBML</span>
+                <span class="n">speciesRef</span><span class="o">.</span><span class="n">setConstant</span><span class="p">(</span><span class="n">reaction_element</span><span class="o">.</span><span class="n">constant</span><span class="p">)</span>
+                <span class="n">speciesRef</span><span class="o">.</span><span class="n">setStoichiometry</span><span class="p">(</span><span class="n">reaction_element</span><span class="o">.</span><span class="n">stoichiometry</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EnzymeMLWriter.writeReplicateData"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.writeReplicateData">[docs]</a>    <span class="k">def</span> <span class="nf">writeReplicateData</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">replicate</span><span class="p">:</span> <span class="n">Replicate</span><span class="p">,</span>
+        <span class="n">format_annot</span><span class="p">:</span> <span class="n">XMLNode</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Writes column information to the enzymeml:format annotation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            replicate (Replicate): Replicate holding the time course data.</span>
+<span class="sd">            format_annot (XMLNode): The enzymeml:format annotation node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span>
+            <span class="s1">&#39;enzymeml:column&#39;</span><span class="p">,</span>
+            <span class="n">namespace</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add attributes</span>
+        <span class="n">column</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;replica&#39;</span><span class="p">,</span> <span class="n">replicate</span><span class="o">.</span><span class="n">replicate_id</span><span class="p">)</span>
+        <span class="n">column</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="n">replicate</span><span class="o">.</span><span class="n">reactant_id</span><span class="p">)</span>
+        <span class="n">column</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">replicate</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span>
+        <span class="n">column</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;unit&#39;</span><span class="p">,</span> <span class="n">replicate</span><span class="o">.</span><span class="n">_data_unit_id</span><span class="p">)</span>
+        <span class="n">column</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
+        <span class="n">column</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;isCalculated&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">replicate</span><span class="o">.</span><span class="n">is_calculated</span><span class="p">))</span>
+
+        <span class="c1"># Add colum to format annotation</span>
+        <span class="n">format_annot</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">column</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_addData</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">libsbml</span><span class="o">.</span><span class="n">Model</span><span class="p">,</span>
+        <span class="n">measurement_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Measurement</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Adds measurement data to the SBML document and writes time course data to DataFrames/CSV.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model (libsbml.Model): The SBML model to which the measurements are added.</span>
+<span class="sd">            measurement_dict (dict[str, Measurement]): The EnzymeMLDocument measurement data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict[str, str]: Mapping from actual CSV paths to the ones added to the OMEX</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Initialize data lists</span>
+        <span class="n">data_annotation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span><span class="s1">&#39;enzymeml:data&#39;</span><span class="p">)</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span>
+            <span class="s1">&#39;enzymeml:files&#39;</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">formats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span>
+            <span class="s1">&#39;enzymeml:formats&#39;</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">measurements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span>
+            <span class="s1">&#39;enzymeml:listOfMasurements&#39;</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">measurement_id</span><span class="p">,</span> <span class="n">measurement</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">measurement_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+
+            <span class="c1"># setup format/Measurement ID/node and file ID</span>
+            <span class="n">format_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;format</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">file_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;file</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span>
+
+            <span class="n">format_annot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span>
+                <span class="s1">&#39;enzymeml:format&#39;</span><span class="p">,</span>
+                <span class="n">namespace</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+
+            <span class="n">format_annot</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">format_id</span><span class="p">)</span>
+
+            <span class="n">measurement_annot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span>
+                <span class="s1">&#39;enzymeml:measurement&#39;</span><span class="p">,</span>
+                <span class="n">namespace</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Get time and add to format node</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">global_time</span>
+            <span class="n">time_unit</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">global_time_unit_id</span>
+
+            <span class="n">time_column</span> <span class="o">=</span> <span class="n">XMLNode</span><span class="p">(</span>
+                <span class="n">XMLTriple</span><span class="p">(</span><span class="s1">&#39;enzymeml:column&#39;</span><span class="p">),</span>
+                <span class="n">XMLAttributes</span><span class="p">()</span>
+            <span class="p">)</span>
+
+            <span class="n">time_column</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="n">time_column</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;unit&#39;</span><span class="p">,</span> <span class="n">time_unit</span><span class="p">)</span>
+            <span class="n">time_column</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+
+            <span class="n">format_annot</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">time_column</span><span class="p">)</span>
+
+            <span class="c1"># write initConc annotation and prepare raw data</span>
+            <span class="n">data_columns</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;time/</span><span class="si">{</span><span class="n">time_unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">time</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">writeMeasurementData</span><span class="p">(</span>
+                <span class="n">measurement</span><span class="o">=</span><span class="n">measurement</span><span class="p">,</span>
+                <span class="n">measurement_annot</span><span class="o">=</span><span class="n">measurement_annot</span><span class="p">,</span>
+                <span class="n">format_annot</span><span class="o">=</span><span class="n">format_annot</span><span class="p">,</span>
+                <span class="n">data_columns</span><span class="o">=</span><span class="n">data_columns</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Create DataFrame to save measurement</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">measurement_id</span><span class="si">}</span><span class="s1">.csv&#39;</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;./data/</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_columns</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+                <span class="n">df_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+                    <span class="n">df_path</span><span class="p">,</span>
+                    <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">header</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+
+                <span class="n">paths</span><span class="p">[</span><span class="n">df_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_path</span>
+
+            <span class="c1"># Add data to data annotation</span>
+            <span class="n">file_annot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span>
+                <span class="s1">&#39;enzymeml:file&#39;</span><span class="p">,</span>
+                <span class="n">namespace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="n">file_annot</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
+            <span class="n">file_annot</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">,</span> <span class="n">format_id</span><span class="p">)</span>
+            <span class="n">file_annot</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
+
+            <span class="n">measurement_annot</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
+            <span class="n">measurement_annot</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">measurement_id</span><span class="p">)</span>
+            <span class="n">measurement_annot</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">measurement</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
+
+            <span class="n">formats</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">format_annot</span><span class="p">)</span>
+            <span class="n">files</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">file_annot</span><span class="p">)</span>
+            <span class="n">measurements</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">measurement_annot</span><span class="p">)</span>
+
+        <span class="c1"># add annotation to listOfReactions</span>
+        <span class="n">data_annotation</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">formats</span><span class="p">)</span>
+        <span class="n">data_annotation</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+        <span class="n">data_annotation</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">measurements</span><span class="p">)</span>
+
+        <span class="n">model</span><span class="o">.</span><span class="n">getListOfReactions</span><span class="p">()</span><span class="o">.</span><span class="n">appendAnnotation</span><span class="p">(</span><span class="n">data_annotation</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">paths</span>
+
+<div class="viewcode-block" id="EnzymeMLWriter.writeMeasurementData"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.writeMeasurementData">[docs]</a>    <span class="k">def</span> <span class="nf">writeMeasurementData</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">measurement</span><span class="p">:</span> <span class="n">Measurement</span><span class="p">,</span>
+        <span class="n">measurement_annot</span><span class="p">:</span> <span class="n">XMLNode</span><span class="p">,</span>
+        <span class="n">format_annot</span><span class="p">:</span> <span class="n">XMLNode</span><span class="p">,</span>
+        <span class="n">data_columns</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Writes measurement metadata as columns to the SBML document annotation enzymeml:column.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            measurement (Measurement): EnzymeML measurement that is written to SBML.</span>
+<span class="sd">            measurement_annot (XMLNode): The SBML XMLNode the measurement metadata is written to.</span>
+<span class="sd">            format_annot (XMLNode): The SBML XMLNode the column information is written to.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[list[float]]: The time course data from the replicate objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">species_dict</span> <span class="o">=</span> <span class="n">measurement</span><span class="o">.</span><span class="n">species_dict</span>
+
+        <span class="c1"># Init Conc</span>
+        <span class="c1"># Extract measurementData objects</span>
+        <span class="n">proteins</span> <span class="o">=</span> <span class="n">species_dict</span><span class="p">[</span><span class="s1">&#39;proteins&#39;</span><span class="p">]</span>
+        <span class="n">reactants</span> <span class="o">=</span> <span class="n">species_dict</span><span class="p">[</span><span class="s1">&#39;reactants&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Append initConc data to measurement</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">appendInitConcData</span><span class="p">(</span>
+            <span class="n">measurement_annot</span><span class="o">=</span><span class="n">measurement_annot</span><span class="p">,</span>
+            <span class="n">measurement_data_dict</span><span class="o">=</span><span class="n">proteins</span><span class="p">,</span> <span class="n">species_type</span><span class="o">=</span><span class="s2">&quot;protein&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">appendInitConcData</span><span class="p">(</span>
+            <span class="n">measurement_annot</span><span class="o">=</span><span class="n">measurement_annot</span><span class="p">,</span>
+            <span class="n">measurement_data_dict</span><span class="o">=</span><span class="n">reactants</span><span class="p">,</span> <span class="n">species_type</span><span class="o">=</span><span class="s2">&quot;reactant&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Replicates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">appendReplicateData</span><span class="p">(</span>
+            <span class="p">{</span><span class="o">**</span><span class="n">proteins</span><span class="p">,</span> <span class="o">**</span><span class="n">reactants</span><span class="p">},</span>
+            <span class="n">format_annot</span><span class="o">=</span><span class="n">format_annot</span><span class="p">,</span>
+            <span class="n">data_columns</span><span class="o">=</span><span class="n">data_columns</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="EnzymeMLWriter.appendInitConcData"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendInitConcData">[docs]</a>    <span class="k">def</span> <span class="nf">appendInitConcData</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">measurement_annot</span><span class="p">:</span> <span class="n">XMLNode</span><span class="p">,</span>
+        <span class="n">measurement_data_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MeasurementData</span><span class="p">],</span>
+        <span class="n">species_type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds individual intial concentration data to the enzymeml:measurement annotation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            measurement_annot (XMLNode): The SBML XMLNode for the measurement annotation.</span>
+<span class="sd">            measurement_data_dict (dict[str, MeasurementData]): The EnzymeMLDocument measurement data.</span>
+<span class="sd">            species_type (str): The type of species in the measurement_data_dict.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">species_id</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">measurement_data_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="c1"># Create the initConc annotation</span>
+            <span class="n">initConcAnnot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setupXMLNode</span><span class="p">(</span>
+                <span class="s1">&#39;enzymeml:initConc&#39;</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+
+            <span class="n">initConcAnnot</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">species_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">species_id</span><span class="p">)</span>
+            <span class="n">initConcAnnot</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">init_conc</span><span class="p">))</span>
+            <span class="n">initConcAnnot</span><span class="o">.</span><span class="n">addAttr</span><span class="p">(</span><span class="s1">&#39;unit&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">_unit_id</span><span class="p">)</span>
+
+            <span class="n">measurement_annot</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">initConcAnnot</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EnzymeMLWriter.appendReplicateData"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.tools.html#pyenzyme.enzymeml.tools.enzymemlwriter.EnzymeMLWriter.appendReplicateData">[docs]</a>    <span class="k">def</span> <span class="nf">appendReplicateData</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">species</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MeasurementData</span><span class="p">],</span>
+        <span class="n">format_annot</span><span class="p">:</span> <span class="n">XMLNode</span><span class="p">,</span>
+        <span class="n">data_columns</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Extracts all time course data from the replicate objects and adds them to the the enzymeml:format annotation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            species (dict[str, MeasurementData]): Reactant/Protein measurement data.</span>
+<span class="sd">            format_annot (XMLNode): The SBML XMLNode representing the format annotation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[list[float]]: The time course data from the replicate objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Collect all replicates</span>
+        <span class="n">replicates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">replicate</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">species</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">replicate</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">getReplicates</span><span class="p">()</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">replicate</span> <span class="ow">in</span> <span class="n">replicates</span><span class="p">:</span>
+
+            <span class="c1"># Write data to format_annot</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">writeReplicateData</span><span class="p">(</span>
+                <span class="n">replicate</span><span class="o">=</span><span class="n">replicate</span><span class="p">,</span> <span class="n">format_annot</span><span class="o">=</span><span class="n">format_annot</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Extract series data</span>
+            <span class="n">header_info</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+                <span class="n">replicate</span><span class="o">.</span><span class="n">replicate_id</span><span class="p">,</span>
+                <span class="n">replicate</span><span class="o">.</span><span class="n">reactant_id</span><span class="p">,</span>
+                <span class="n">replicate</span><span class="o">.</span><span class="n">data_type</span><span class="o">.</span><span class="n">value</span>
+            <span class="p">])</span>
+
+            <span class="n">data_columns</span><span class="p">[</span><span class="n">header_info</span><span class="p">]</span> <span class="o">=</span> <span class="n">replicate</span><span class="o">.</span><span class="n">data</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">data_columns</span></div></div>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+      <title>pyenzyme.enzymeml.core.ontology module</title>
+    
+          <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="_static/theme-vendors.js"></script> -->
+      <script src="_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="genindex.html" />
+  <link rel="search" title="Search" href="search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.core.ontology module</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <section id="module-pyenzyme.enzymeml.core.ontology">
+<span id="pyenzyme-enzymeml-core-ontology-module"></span><h1>pyenzyme.enzymeml.core.ontology module<a class="headerlink" href="#module-pyenzyme.enzymeml.core.ontology" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.DataTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.core.ontology.</span></span><span class="sig-name descname"><span class="pre">DataTypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/ontology.html#DataTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.DataTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>String enumeration used to assign replicate type ontologies</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.DataTypes.ABSORPTION">
+<span class="sig-name descname"><span class="pre">ABSORPTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'abs'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.DataTypes.ABSORPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.DataTypes.BIOMASS">
+<span class="sig-name descname"><span class="pre">BIOMASS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'biomass'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.DataTypes.BIOMASS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.DataTypes.CONCENTRATION">
+<span class="sig-name descname"><span class="pre">CONCENTRATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'conc'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.DataTypes.CONCENTRATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.DataTypes.FEED">
+<span class="sig-name descname"><span class="pre">FEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'feed'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.DataTypes.FEED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.EnzymeMLPart">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.core.ontology.</span></span><span class="sig-name descname"><span class="pre">EnzymeMLPart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/ontology.html#EnzymeMLPart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.EnzymeMLPart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Mapping to identify where entities are stored in the EnzymeML model.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.EnzymeMLPart.BLANK">
+<span class="sig-name descname"><span class="pre">BLANK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'blank'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.EnzymeMLPart.BLANK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.EnzymeMLPart.ION">
+<span class="sig-name descname"><span class="pre">ION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'reactant_dict'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.EnzymeMLPart.ION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.EnzymeMLPart.PROTEIN">
+<span class="sig-name descname"><span class="pre">PROTEIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'protein_dict'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.EnzymeMLPart.PROTEIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.EnzymeMLPart.RADICAL">
+<span class="sig-name descname"><span class="pre">RADICAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'reactant_dict'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.EnzymeMLPart.RADICAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.EnzymeMLPart.SMALL_MOLECULE">
+<span class="sig-name descname"><span class="pre">SMALL_MOLECULE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'reactant_dict'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.EnzymeMLPart.SMALL_MOLECULE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.EnzymeMLPart.entityFromSBOTerm">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">entityFromSBOTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sbo_term</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/ontology.html#EnzymeMLPart.entityFromSBOTerm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.EnzymeMLPart.entityFromSBOTerm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.EnzymeMLPart.partFromSBOTerm">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">partFromSBOTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sbo_term</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/ontology.html#EnzymeMLPart.partFromSBOTerm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.EnzymeMLPart.partFromSBOTerm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyenzyme.enzymeml.core.ontology.</span></span><span class="sig-name descname"><span class="pre">SBOTerm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyenzyme/enzymeml/core/ontology.html#SBOTerm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>String enumeration used to assign ontologies derived from SBOTerms.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.ACID_BASE_REACTION">
+<span class="sig-name descname"><span class="pre">ACID_BASE_REACTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000208'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.ACID_BASE_REACTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.BIOCHEMICAL_REACTION">
+<span class="sig-name descname"><span class="pre">BIOCHEMICAL_REACTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000176'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.BIOCHEMICAL_REACTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.CATALYST">
+<span class="sig-name descname"><span class="pre">CATALYST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000013'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.CATALYST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.CONFORMATIONAL_TRANSITION">
+<span class="sig-name descname"><span class="pre">CONFORMATIONAL_TRANSITION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000181'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.CONFORMATIONAL_TRANSITION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.CONVERSION">
+<span class="sig-name descname"><span class="pre">CONVERSION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000182'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.CONVERSION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.DEGRADATION">
+<span class="sig-name descname"><span class="pre">DEGRADATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000179'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.DEGRADATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.DISSOCIATION">
+<span class="sig-name descname"><span class="pre">DISSOCIATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000180'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.DISSOCIATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.ESSENTIAL_ACTIVATOR">
+<span class="sig-name descname"><span class="pre">ESSENTIAL_ACTIVATOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000461'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.ESSENTIAL_ACTIVATOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.GENE">
+<span class="sig-name descname"><span class="pre">GENE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000251'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.GENE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.INHIBITOR">
+<span class="sig-name descname"><span class="pre">INHIBITOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000020'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.INHIBITOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.INTERACTOR">
+<span class="sig-name descname"><span class="pre">INTERACTOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000336'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.INTERACTOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.ION">
+<span class="sig-name descname"><span class="pre">ION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000327'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.ION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.IONISATION">
+<span class="sig-name descname"><span class="pre">IONISATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000209'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.IONISATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.ISOMERISATION">
+<span class="sig-name descname"><span class="pre">ISOMERISATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000377'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.ISOMERISATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.K_CAT">
+<span class="sig-name descname"><span class="pre">K_CAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000025'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.K_CAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.K_M">
+<span class="sig-name descname"><span class="pre">K_M</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000027'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.K_M" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.MICHAELIS_MENTEN">
+<span class="sig-name descname"><span class="pre">MICHAELIS_MENTEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000028'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.MICHAELIS_MENTEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.NON_COVALENT_BINDING">
+<span class="sig-name descname"><span class="pre">NON_COVALENT_BINDING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000177'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.NON_COVALENT_BINDING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.NON_ESSENTIAL_ACTIVATOR">
+<span class="sig-name descname"><span class="pre">NON_ESSENTIAL_ACTIVATOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000462'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.NON_ESSENTIAL_ACTIVATOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.POTENTIATOR">
+<span class="sig-name descname"><span class="pre">POTENTIATOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000021'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.POTENTIATOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.PRODUCT">
+<span class="sig-name descname"><span class="pre">PRODUCT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000011'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.PRODUCT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.PROTEIN">
+<span class="sig-name descname"><span class="pre">PROTEIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000252'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.PROTEIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.RADICAL">
+<span class="sig-name descname"><span class="pre">RADICAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000328'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.RADICAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.REDOX_REACTION">
+<span class="sig-name descname"><span class="pre">REDOX_REACTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000200'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.REDOX_REACTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.SMALL_MOLECULE">
+<span class="sig-name descname"><span class="pre">SMALL_MOLECULE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000247'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.SMALL_MOLECULE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.SPONTANEOUS_REACTION">
+<span class="sig-name descname"><span class="pre">SPONTANEOUS_REACTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000672'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.SPONTANEOUS_REACTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyenzyme.enzymeml.core.ontology.SBOTerm.SUBSTRATE">
+<span class="sig-name descname"><span class="pre">SUBSTRATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SBO:0000015'</span></em><a class="headerlink" href="#pyenzyme.enzymeml.core.ontology.SBOTerm.SUBSTRATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

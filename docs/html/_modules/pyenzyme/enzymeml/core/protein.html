@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>pyenzyme.enzymeml.core.protein</title>
+    
+          <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/theme.css " type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/autodoc_pydantic.css" type="text/css" />
+          <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../../../_static/theme-vendors.js"></script> -->
+      <script src="../../../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../../../genindex.html" />
+  <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../../../index.html" class="home-link">
+    
+      <span class="site-name">Test</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../../../index.html#welcome-to-pyenzyme-s-documentation">Contents:</a></span>
+      </p>
+      <ul class="">
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../../../index.html">Module code</a> &raquo;</li>
+    
+    <li>pyenzyme.enzymeml.core.protein</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for pyenzyme.enzymeml.core.protein</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">File: protein.py</span>
+<span class="sd">Project: core</span>
+<span class="sd">Author: Jan Range</span>
+<span class="sd">License: BSD-2 clause</span>
+<span class="sd">-----</span>
+<span class="sd">Last Modified: Tuesday June 22nd 2021 9:53:42 pm</span>
+<span class="sd">Modified By: Jan Range (&lt;jan.range@simtech.uni-stuttgart.de&gt;)</span>
+<span class="sd">-----</span>
+<span class="sd">Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">PositiveFloat</span><span class="p">,</span> <span class="n">validator</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.ontology</span> <span class="kn">import</span> <span class="n">SBOTerm</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.enzymemlbase</span> <span class="kn">import</span> <span class="n">EnzymeMLBase</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.exceptions</span> <span class="kn">import</span> <span class="n">ECNumberError</span><span class="p">,</span> <span class="n">UniProtIdentifierError</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.abstract_classes</span> <span class="kn">import</span> <span class="n">AbstractSpecies</span>
+<span class="kn">from</span> <span class="nn">pyenzyme.enzymeml.core.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">type_checking</span><span class="p">,</span>
+    <span class="n">deprecated_getter</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">static_check_init_args</span> <span class="o">=</span> <span class="n">dataclass</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">static_check_init_args</span> <span class="o">=</span> <span class="n">type_checking</span>
+
+
+<div class="viewcode-block" id="Protein"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein">[docs]</a><span class="nd">@static_check_init_args</span>
+<span class="k">class</span> <span class="nc">Protein</span><span class="p">(</span><span class="n">EnzymeMLBase</span><span class="p">,</span> <span class="n">AbstractSpecies</span><span class="p">):</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the protein&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">sequence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Amino acid sequence of the protein&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">vessel_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Identifier of the vessel in which the protein was stored.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;v[\d.]+&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">init_conc</span><span class="p">:</span> <span class="n">PositiveFloat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Initial concentration of the protein.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">inclusiveMinimum</span><span class="o">=</span><span class="mf">0.0</span>
+    <span class="p">)</span>
+
+    <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unit of the proteins intial concentration.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">constant</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the proteins concentration remains constant or not.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier of the protein.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;p[\d]+&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">meta_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique meta identifier of the protein.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="n">ecnumber</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;EC number of the protein.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="n">organism</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Organism the protein was expressed in.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="n">organism_tax_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Taxonomy identifier of the expression host.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="n">boundary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the protein is under any boundary conditions (SBML Technicality, better leave it to default)&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">ontology</span><span class="p">:</span> <span class="n">Enum</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">SBOTerm</span><span class="o">.</span><span class="n">PROTEIN</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Ontology describing the characteristic of the protein.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URI of the protein.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="n">creator_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier of the author.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="n">uniprotid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier referencing a protein entry at UniProt. Use this identifier to initialize the object from the UniProt database.&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ! Validators</span>
+<div class="viewcode-block" id="Protein.set_meta_id"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.set_meta_id">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">set_meta_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the meta ID when an ID is provided&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">id</span><span class="p">:</span>
+            <span class="c1"># Set Meta ID with ID</span>
+            <span class="n">values</span><span class="p">[</span><span class="s2">&quot;meta_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;METAID_</span><span class="si">{</span><span class="nb">id</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="nb">id</span></div>
+
+<div class="viewcode-block" id="Protein.clean_sequence"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.clean_sequence">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;sequence&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">clean_sequence</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cleans a sequence from whitespaces as well as newlines and transforms uppercase&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">sequence</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">sequence</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">sequence</span></div>
+
+<div class="viewcode-block" id="Protein.validate_ecnumber"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.validate_ecnumber">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;ecnumber&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_ecnumber</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ecnumber</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Validates whether given EC number complies to the established pattern.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">ecnumber</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ecnumber</span>
+
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(\d+.)(\d+.)(\d+.)(\d+)&quot;</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">ecnumber</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ECNumberError</span><span class="p">(</span><span class="n">ecnumber</span><span class="o">=</span><span class="n">ecnumber</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Protein.fetch_uniprot_parameters"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.fetch_uniprot_parameters">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;uniprotid&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">fetch_uniprot_parameters</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">uniprotid</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;PYDANTIC VALIDATOR: Automatically fills out fields present in the UniProt database with appropriate values.</span>
+
+<span class="sd">        Caution, this function will overwrite any values in name, seqence and ecnumber that were given to the constructor!!</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            uniprotid (Union[str, int]): The UniProt ID from which the data will be fetched.</span>
+<span class="sd">            values (dict): Already initialiized values from teh constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Guard clauses</span>
+        <span class="k">if</span> <span class="n">uniprotid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span>
+                    <span class="s2">&quot;Please provide a name for the protein if there is no UniProt ID to fetch it from.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">uniprotid</span>
+
+        <span class="c1"># Get chebi parameters</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_getUniProtParameters</span><span class="p">(</span><span class="n">uniprotid</span><span class="o">=</span><span class="n">uniprotid</span><span class="p">)</span>
+
+        <span class="c1"># Override already given parameters in the data model</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">uniprotid</span></div>
+
+    <span class="c1"># ! Initializers</span>
+<div class="viewcode-block" id="Protein.fromUniProtID"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.fromUniProtID">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fromUniProtID</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">uniprotid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">init_conc</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">vessel_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">constant</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Protein&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initializes a protein based on the UniProt database.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            UniProtIdentifierError: Raised when the UniProt identifier is invalid.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Protein: The initialiized Protein object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get UniProt Parameters</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_getUniProtParameters</span><span class="p">(</span><span class="n">uniprotid</span><span class="o">=</span><span class="n">uniprotid</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">init_conc</span><span class="o">=</span><span class="n">init_conc</span><span class="p">,</span>
+            <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
+            <span class="n">vessel_id</span><span class="o">=</span><span class="n">vessel_id</span><span class="p">,</span>
+            <span class="n">constant</span><span class="o">=</span><span class="n">constant</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">parameters</span>
+        <span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_getUniProtParameters</span><span class="p">(</span><span class="n">uniprotid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="kn">import</span> <span class="nn">requests</span>
+        <span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
+
+        <span class="c1"># Send request to CHEBI database</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://www.uniprot.org/uniprot/</span><span class="si">{</span><span class="n">uniprotid</span><span class="si">}</span><span class="s2">.xml&quot;</span>
+
+        <span class="c1"># Fetch data</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
+
+        <span class="c1"># Check if the UniProt ID is correct</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UniProtIdentifierError</span><span class="p">(</span><span class="n">uniprotid</span><span class="o">=</span><span class="n">uniprotid</span><span class="p">)</span>
+
+        <span class="c1"># Create XML Tree</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">ElementTree</span><span class="p">(</span><span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+
+        <span class="c1"># Set prefix to match tag</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;{http://uniprot.org/uniprot}&quot;</span>
+
+        <span class="c1"># Define mapping for the used attributes</span>
+        <span class="n">attribute_mapping</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;sequence&quot;</span><span class="p">:</span> <span class="s2">&quot;sequence&quot;</span><span class="p">,</span>
+            <span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;fullName&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+            <span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;ecNumber&quot;</span><span class="p">:</span> <span class="s2">&quot;ecnumber&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Collect parameters</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">tag</span> <span class="ow">in</span> <span class="n">attribute_mapping</span> <span class="ow">and</span> <span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">parameters</span><span class="p">[</span><span class="n">attribute_mapping</span><span class="p">[</span><span class="n">elem</span><span class="o">.</span><span class="n">tag</span><span class="p">]]</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">text</span>
+
+        <span class="k">return</span> <span class="n">parameters</span>
+
+    <span class="c1"># ! Getters</span>
+<div class="viewcode-block" id="Protein.getOrganismTaxId"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getOrganismTaxId">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;organism_tax_id&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getOrganismTaxId</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">organism_tax_id</span></div>
+
+<div class="viewcode-block" id="Protein.getEcnumber"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getEcnumber">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;ecnumber&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getEcnumber</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ecnumber</span></div>
+
+<div class="viewcode-block" id="Protein.getUniprotID"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getUniprotID">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;uniprotid&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getUniprotID</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">uniprotid</span></div>
+
+<div class="viewcode-block" id="Protein.getOrganism"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getOrganism">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;organism&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getOrganism</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">organism</span></div>
+
+<div class="viewcode-block" id="Protein.getInitConc"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getInitConc">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;init_conc&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getInitConc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_conc</span></div>
+
+<div class="viewcode-block" id="Protein.getName"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getName">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+<div class="viewcode-block" id="Protein.getId"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getId">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getId</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span></div>
+
+<div class="viewcode-block" id="Protein.getMetaid"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getMetaid">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;meta_id&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getMetaid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_id</span></div>
+
+<div class="viewcode-block" id="Protein.getSequence"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getSequence">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;sequence&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getSequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span></div>
+
+<div class="viewcode-block" id="Protein.getSboterm"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getSboterm">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;ontology&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getSboterm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ontology</span></div>
+
+<div class="viewcode-block" id="Protein.getVessel"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getVessel">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;vessel_id&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getVessel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vessel_id</span></div>
+
+<div class="viewcode-block" id="Protein.getSubstanceUnits"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getSubstanceUnits">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;unit&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getSubstanceUnits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span></div>
+
+<div class="viewcode-block" id="Protein.getBoundary"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getBoundary">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;boundary&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getBoundary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary</span></div>
+
+<div class="viewcode-block" id="Protein.getConstant"><a class="viewcode-back" href="../../../../pyenzyme.enzymeml.core.html#pyenzyme.enzymeml.core.protein.Protein.getConstant">[docs]</a>    <span class="o">@</span> <span class="n">deprecated_getter</span><span class="p">(</span><span class="s2">&quot;constant&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">getConstant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span></div></div>
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2021, Jan.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>
