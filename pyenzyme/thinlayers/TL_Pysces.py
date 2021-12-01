@@ -44,21 +44,31 @@ class ThinLayerPysces():
         return pysces.model(sbmlfilename, dir='./pysces')
 
     def _getExperimentalData(self):
+
         measurements = []
         inits = []
-        for m in self.enzmldoc.getMeasurementDict().values():
-            mdata = m.exportData()
-            repdata = mdata['reactants']['data']
-            renamedict = {i: i.split('/')[-2] for i in repdata.columns}
-            repdata.rename(renamedict, axis=1, inplace=True)
-            initsdict = {}
-            for k, v in mdata['reactants']['initConc'].items():
-                initsdict[k] = v[0]
-            for k, v in mdata['proteins']['initConc'].items():
-                initsdict[k] = v[0]
-            initsdict['time'] = repdata.time
-            inits.append(initsdict)
-            measurements.append(repdata.drop('time', axis=1))
+
+        for m in self.enzmldoc.measurement_dict.values():
+
+            # ? It is now possible to ensure, that the units are the same: m.unifyUnits(kind="mole", scale=-3)
+            measurement_data = m.exportData()
+            replicate_df = measurement_data['reactants']['data']
+            rename_dict = {i: i.split('/')[-2] for i in replicate_df.columns}
+            replicate_df.rename(rename_dict, axis=1, inplace=True)
+
+            inits_dict = {}
+
+            for reactant_id, (init_value, _) in measurement_data['reactants']['initConc'].items():
+                inits_dict[reactant_id] = init_value
+
+            for protein_id, (init_value, _) in measurement_data['proteins']['initConc'].items():
+                inits_dict[protein_id] = init_value
+
+            inits_dict['time'] = replicate_df.time
+            inits.append(inits_dict)
+
+            measurements.append(replicate_df.drop('time', axis=1))
+
         expdata = pd.concat(measurements)
         expdata.reset_index(inplace=True)
         expdata.drop('index', axis=1, inplace=True)
@@ -90,17 +100,18 @@ class ThinLayerPysces():
     def _residual(self, params):
         exp_data, inits = self._getExperimentalData()
         # get columns of experimental data, corresponding to measured reactants
-        cols = list(exp_data.columns) 
+        cols = list(exp_data.columns)
         model_data = self._simulateExpData(params)
         # create dataframe containing only modelled data for reactants that have also been measured
-        new_model_data = model_data.drop(model_data.columns.difference(cols), axis=1)
+        new_model_data = model_data.drop(
+            model_data.columns.difference(cols), axis=1)
         return np.array(exp_data - new_model_data)
 
     def _getParamsFromEnzymeML(self):
         params = {}
-        for rID, r in self.enzmldoc.getReactionDict().items():
-            for pname, pval in r.getModel().getParameters().items():
-                params[f"{rID}_{pname}"] = pval[0]
+        for rID, r in self.enzmldoc.reaction_dict.items():
+            for kinetic_parameter in r.model.parameters:
+                params[f"{rID}_{kinetic_parameter.id}"] = kinetic_parameter.value
         return params
 
     def _makeLmfitParameters(self):
