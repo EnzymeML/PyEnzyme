@@ -18,7 +18,6 @@ Welcome to PyEnzyme's documentation!
    :caption: API Reference
 
    core
-   models
 
 
 
