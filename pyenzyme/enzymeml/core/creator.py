@@ -10,10 +10,9 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 from typing import TYPE_CHECKING
 from dataclasses import dataclass
-from deprecation import deprecated
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.utils import (

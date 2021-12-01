@@ -19,7 +19,6 @@ from pydantic import (
     PrivateAttr
 )
 from dataclasses import dataclass
-from copy import deepcopy
 from typing import Optional, TYPE_CHECKING
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 

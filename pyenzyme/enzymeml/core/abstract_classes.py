@@ -1,3 +1,15 @@
+'''
+File: creator.py
+Project: core
+Author: Jan Range
+License: BSD-2 clause
+-----
+Last Modified: Tuesday June 15th 2021 6:28:16 pm
+Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
+-----
+Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
+'''
+
 from pydantic import BaseModel, PositiveFloat, PrivateAttr, validator
 from typing import Optional
 from enum import Enum

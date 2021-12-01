@@ -13,7 +13,6 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 from typing import TYPE_CHECKING
 from pydantic import BaseModel
 from dataclasses import dataclass
-from typing import Optional
 
 from pyenzyme.enzymeml.core.utils import type_checking
 

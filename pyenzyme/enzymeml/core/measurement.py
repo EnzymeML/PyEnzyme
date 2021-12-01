@@ -10,10 +10,9 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-import numpy as np
 import pandas as pd
 
-from typing import Optional, Any, TYPE_CHECKING, Union
+from typing import Optional, TYPE_CHECKING, Union
 from dataclasses import dataclass
 from pydantic import PositiveFloat, validate_arguments, Field
 

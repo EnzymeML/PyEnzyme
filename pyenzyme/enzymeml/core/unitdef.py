@@ -15,7 +15,6 @@ from typing import TYPE_CHECKING, Optional
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-from pyenzyme.enzymeml.core.exceptions import UnitKindError
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
     deprecated_getter

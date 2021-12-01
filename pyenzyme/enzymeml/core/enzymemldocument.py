@@ -36,8 +36,6 @@ from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
 from pyenzyme.enzymeml.databases.dataverse import toDataverseJSON
 from pyenzyme.enzymeml.databases.dataverse import uploadToDataverse
 
-import pyenzyme.enzymeml.tools as tools
-
 from pyenzyme.enzymeml.core.ontology import EnzymeMLPart, SBOTerm
 from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
 from pyenzyme.enzymeml.core.utils import (
