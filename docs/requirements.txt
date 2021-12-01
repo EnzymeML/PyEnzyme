@@ -2,3 +2,4 @@ autodoc_pydantic
 ipython
 sphinx-copybutton
 nbsphinx
+sphinxawesome-theme
