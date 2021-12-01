@@ -1,2 +1,4 @@
 autodoc_pydantic
 ipython
+sphinx-copybutton
+nbsphinx
