@@ -11,6 +11,7 @@ Welcome to PyEnzyme's documentation!
    :caption: First Steps
 
    _getstarted/01_Overview
+   _getstarted/overview.rst
 
 .. toctree:: 
    :maxdepth: 2
