@@ -83,7 +83,7 @@ class Measurement(EnzymeMLBase):
     )
 
     # ! Utility methods
-    def exportData(self, species_ids: Union[str, list[str]] = "all") -> dict[str, dict[str, Union[tuple, pd.DataFrame]]]:
+    def exportData(self, species_ids: Union[str, list[str]] = "all") -> dict[str, dict[str, Union[dict[str, tuple[float, str]], pd.DataFrame]]]:
         """Returns data stored in the measurement object as DataFrames nested in dictionaries. These are sorted hierarchially by reactions where each holds a DataFrame each for proteins and reactants.
 
         Returns:
@@ -110,7 +110,7 @@ class Measurement(EnzymeMLBase):
         self,
         measurement_species: dict[str, MeasurementData],
         species_ids: Union[str, list[str]] = "all"
-    ) -> dict[str, Union[tuple, pd.DataFrame]]:
+    ) -> dict[str, Union[dict[str, tuple[float, str]], pd.DataFrame]]:
         """Combines replicates of a certain species to a dataframe.
 
         Args:
@@ -145,7 +145,7 @@ class Measurement(EnzymeMLBase):
         return {
             "data": pd.DataFrame(columns)
             if len(columns) > 1
-            else None,
+            else pd.DataFrame(),
             "initConc": initial_concentration,
         }
 
