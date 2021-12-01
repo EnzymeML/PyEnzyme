@@ -56,65 +56,57 @@ else:
 class EnzymeMLDocument(EnzymeMLBase):
 
     name: str = Field(
+        ...,
         description="Title of the EnzymeML Document.",
-        required=True
     )
 
     level: int = Field(
-        default=3,
+        3,
         description="SBML evel of the EnzymeML XML.",
-        required=True,
         inclusiveMinimum=1,
         exclusiveMaximum=3
     )
 
     version: str = Field(
-        default=2,
+        2,
         description="SBML version of the EnzymeML XML.",
-        required=True
     )
 
     pubmedid: Optional[str] = Field(
-        default=None,
+        None,
         description="Pubmed ID reference.",
-        required=False
     )
 
     url: Optional[str] = Field(
-        default=None,
+        None,
         description="Arbitrary type of URL that is related to the EnzymeML document.",
-        required=False,
     )
 
     doi: Optional[str] = Field(
-        default=None,
+        None,
         description="Digital Object Identifier of the referenced publication or the EnzymeML document.",
         regex=r"/^10.\d{4,9}/[-._;()/:A-Z0-9]+$/i"
     )
 
     created: Optional[str] = Field(
-        default=None,
+        None,
         description="Date the EnzymeML document was created.",
-        required=False
     )
 
     modified: Optional[str] = Field(
-        default=None,
+        None,
         description="Date the EnzymeML document was modified.",
-        required=False
     )
 
     vessel: Optional[Vessel] = Field(
-        default=None,
+        None,
         description="The vessel in which the experiment was performed.",
-        required=True
     )
 
     creator_dict: dict[str, Creator] = Field(
         alias="creators",
         default_factory=dict,
         description="Dictionary mapping from creator IDs to creator describing objects.",
-        required=True
     )
 
     vessel_dict: dict[str, Vessel] = Field(
@@ -127,42 +119,36 @@ class EnzymeMLDocument(EnzymeMLBase):
         alias="proteins",
         default_factory=dict,
         description="Dictionary mapping from protein IDs to protein describing objects.",
-        required=False
     )
 
     reactant_dict: dict[str, Reactant] = Field(
         alias="reactants",
         default_factory=dict,
         description="Dictionary mapping from reactant IDs to reactant describing objects.",
-        required=False
     )
 
     reaction_dict: dict[str, EnzymeReaction] = Field(
         alias="reactions",
         default_factory=dict,
         description="Dictionary mapping from reaction IDs to reaction describing objects.",
-        required=False
     )
 
     unit_dict: dict[str, UnitDef] = Field(
         alias="units",
         default_factory=dict,
         description="Dictionary mapping from unit IDs to unit describing objects.",
-        required=False
     )
 
     measurement_dict: dict[str, Measurement] = Field(
         alias="measurements",
         default_factory=dict,
         description="Dictionary mapping from measurement IDs to measurement describing objects.",
-        required=False
     )
 
     file_dict: dict[str, dict] = Field(
-        files="files",
+        alias="files",
         default_factory=dict,
         description="Dictionary mapping from protein IDs to protein describing objects.",
-        required=False
     )
 
     # ! Validators
@@ -325,7 +311,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return prefix + str(0)
 
-    def validate(self) -> None:
+    def validateEnzymeML(self) -> None:
         # TODO rework validation
         raise NotImplementedError(
             "Function not refactored yet."
@@ -669,7 +655,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         """
 
         # Update global time of the measurement
-        measurement.global_time_unit_id = self._convertToUnitDef(
+        measurement._global_time_unit_id = self._convertToUnitDef(
             measurement.global_time_unit
         )
 

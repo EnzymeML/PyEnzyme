@@ -34,52 +34,50 @@ else:
 class KineticParameter(EnzymeMLBase):
 
     name: str = Field(
+        ...,
         description="Name of the estimated parameter.",
-        required=True
     )
 
     value: float = Field(
+        ...,
         description="Numerical value of the estimated parameter.",
-        required=True
     )
 
     unit: str = Field(
+        ...,
         description="Unit of the estimated parameter.",
-        required=True
     )
 
     ontology: Optional[Enum] = Field(
-        default=None,
+        None,
         description="Type of the estimated parameter.",
-        required=False
     )
 
     # * Private attributes
-    _unit_id: Optional[str] = PrivateAttr(default=None)
+    _unit_id: Optional[str] = PrivateAttr(None)
 
 
 @static_check_init_args
 class KineticModel(EnzymeMLBase):
 
     name: str = Field(
+        ...,
         description="Name of the kinetic law.",
-        required=True
     )
 
     equation: str = Field(
+        ...,
         description="Equation for the kinetic law.",
-        required=True
     )
 
     parameters: list[KineticParameter] = Field(
         default_factory=list,
         description="List of estimated parameters.",
-        required=True
     )
 
     ontology: Optional[Enum] = Field(
+        ...,
         description="Type of the estimated parameter.",
-        required=False
     )
 
     # ! Utilities

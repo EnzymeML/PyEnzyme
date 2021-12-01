@@ -36,99 +36,86 @@ else:
 class Protein(EnzymeMLBase, AbstractSpecies):
 
     name: Optional[str] = Field(
-        default=None,
+        None,
         description="Name of the protein",
-        required=True
     )
 
     sequence: Optional[str] = Field(
-        default=None,
+        None,
         description="Amino acid sequence of the protein",
-        required=True
     )
 
     vessel_id: str = Field(
+        ...,
         description="Identifier of the vessel in which the protein was stored.",
-        required=True,
         regex=r"v[\d.]+"
     )
 
     init_conc: PositiveFloat = Field(
+        ...,
         description="Initial concentration of the protein.",
-        required=True,
         inclusiveMinimum=0.0
     )
 
     unit: str = Field(
+        ...,
         description="Unit of the proteins intial concentration.",
-        required=True
     )
 
     constant: bool = Field(
-        default=True,
+        True,
         description="Whether the proteins concentration remains constant or not.",
-        required=True
     )
 
     id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique identifier of the protein.",
-        required=False,
         regex=r"p[\d]+"
     )
 
     meta_id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique meta identifier of the protein.",
-        required=False
     )
 
     ecnumber: Optional[str] = Field(
-        default=None,
+        None,
         description="EC number of the protein.",
-        required=False
     )
 
     organism: Optional[str] = Field(
-        default=None,
+        None,
         description="Organism the protein was expressed in.",
-        required=False
     )
 
     organism_tax_id: Optional[str] = Field(
-        default=None,
+        None,
         description="Taxonomy identifier of the expression host.",
-        required=False
     )
 
     boundary: bool = Field(
-        default=False,
+        False,
         description="Whether the protein is under any boundary conditions (SBML Technicality, better leave it to default)",
-        required=True
     )
 
     ontology: Enum = Field(
-        default=SBOTerm.PROTEIN,
+        SBOTerm.PROTEIN,
         description="Ontology describing the characteristic of the protein.",
-        required=True
     )
 
     uri: Optional[str] = Field(
-        default=None,
+        None,
         description="URI of the protein.",
-        required=False
     )
 
     creator_id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique identifier of the author.",
-        required=False
     )
 
     uniprotid: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique identifier referencing a protein entry at UniProt. Use this identifier to initialize the object from the UniProt database.",
-        required=False
     )
 
     # ! Validators

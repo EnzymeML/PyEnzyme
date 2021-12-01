@@ -10,7 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import Field, PositiveFloat, validator, PrivateAttr
+from pydantic import Field, PositiveFloat, validator, PrivateAttr, BaseModel
 from typing import TYPE_CHECKING, Optional
 from dataclasses import dataclass
 
@@ -30,52 +30,48 @@ else:
 class Vessel(EnzymeMLBase):
 
     name: str = Field(
+        ...,
         description="Name of the used vessel.",
-        required=True
     )
 
     volume: PositiveFloat = Field(
+        ...,
         description="Volumetric value of the vessel.",
-        required=True
     )
 
     unit: str = Field(
+        ...,
         description="Volumetric unit of the vessel.",
-        required=True
     )
 
     constant: bool = Field(
-        default=True,
+        True,
         description="Whether the volume of the vessel is constant or not.",
-        required=True
     )
 
     id: Optional[str] = Field(
+        None,
         description="Unique identifier of the vessel.",
-        required=True,
         regex=r"v[\d]+"
     )
 
     meta_id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique meta identifier of the vessel.",
-        required=True
     )
 
     uri: Optional[str] = Field(
-        default=None,
+        None,
         description="URI of the vessel.",
-        required=False
     )
 
     creator_id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique identifier of the author.",
-        required=False
     )
 
     # * Private
-    _unit_id: Optional[str] = PrivateAttr(default=None)
+    _unit_id: Optional[str] = PrivateAttr(None)
 
     # ! Validators
     @validator("id")

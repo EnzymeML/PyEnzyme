@@ -32,23 +32,23 @@ class BaseUnit(EnzymeMLBase):
     """Base unit description including kind, exponent, scale and multiplier"""
 
     kind: str = Field(
+        ...,
         description="Unit kind used to write SBML.",
-        required=True
     )
 
     exponent: float = Field(
+        ...,
         description="Unit exponent.",
-        required=True
     )
 
     scale: int = Field(
+        ...,
         description="Unit scale.",
-        required=True
     )
 
     multiplier: float = Field(
+        ...,
         description="Unit multiplier.",
-        required=True
     )
 
     # @validator("kind")
@@ -64,30 +64,26 @@ class UnitDef(EnzymeMLBase):
 
     name: str = Field(
         description="Name of the SI unit.",
-        required=True
     )
 
     id: Optional[str] = Field(
-        default=None,
+        None,
         description="Interal Identifier of the SI unit.",
-        required=True
     )
 
     meta_id: Optional[str] = Field(
+        None,
         description="Interal meta identifier of the SI unit.",
-        required=True
     )
 
     units: list[BaseUnit] = Field(
         default_factory=list,
         description="List of SI baseunits.",
-        required=True
     )
 
     ontology: Optional[str] = Field(
-        default=None,
+        None,
         description="Ontology of the SI unit.",
-        required=False
     )
 
     # ! Validators

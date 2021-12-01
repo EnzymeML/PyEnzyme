@@ -14,7 +14,7 @@ import pandas as pd
 
 from typing import Optional, TYPE_CHECKING, Union
 from dataclasses import dataclass
-from pydantic import PositiveFloat, validate_arguments, Field
+from pydantic import PositiveFloat, validate_arguments, Field, PrivateAttr
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
@@ -35,51 +35,42 @@ else:
 class Measurement(EnzymeMLBase):
 
     name: str = Field(
+        ...,
         description="Name of the measurement",
-        required=True
     )
 
     species_dict: dict[str, dict[str, MeasurementData]] = Field(
-        default={"proteins": {}, "reactants": {}},
+        {"proteins": {}, "reactants": {}},
         description="Species of the measurement.",
-        required=True
     )
 
     global_time: list[float] = Field(
         default_factory=list,
         description="Global time of the measurement all replicates agree on.",
-        required=True
     )
 
     global_time_unit: Optional[str] = Field(
-        default=None,
+        None,
         description="Unit of the global time.",
-        required=True,
-    )
-
-    global_time_unit_id: Optional[str] = Field(
-        default=None,
-        description="Unique internal identifier of the global time unit.",
-        required=False,
     )
 
     id: Optional[str] = Field(
+        None,
         description="Unique identifier of the measurement.",
-        required=True,
         regex=r"m[\d]+"
     )
 
     uri: Optional[str] = Field(
-        default=None,
+        None,
         description="URI of the reaction.",
-        required=False
     )
 
     creator_id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique identifier of the author.",
-        required=False
     )
+
+    _global_time_unit_id: str = PrivateAttr(None)
 
     # ! Utility methods
     def exportData(self, species_ids: Union[str, list[str]] = "all") -> dict[str, dict[str, Union[dict[str, tuple[float, str]], pd.DataFrame]]]:

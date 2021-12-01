@@ -30,18 +30,18 @@ else:
 class Creator(EnzymeMLBase):
 
     given_name: str = Field(
+        ...,
         description='Given name of the author or contributor.',
-        required=True
     )
 
     family_name: str = Field(
+        ...,
         description='Family name of the author or contributor.',
-        required=True
     )
 
     mail: str = Field(
+        ...,
         description='Email address of the author or contributor.',
-        required=True
     )
 
     @deprecated_getter("family_name")

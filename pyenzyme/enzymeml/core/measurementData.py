@@ -41,33 +41,33 @@ class MeasurementData(EnzymeMLBase):
     """Helper class to organize elements"""
 
     init_conc: PositiveFloat = Field(
+        ...,
         description="Initial concentration of the measurement data.",
-        required=True
     )
 
     unit: str = Field(
+        ...,
         description="The unit of the measurement data.",
-        required=True
     )
 
     measurement_id: Optional[str] = Field(
+        None,
         description="Unique measurement identifier this dataset belongs to.",
     )
 
     reactant_id: Optional[str] = Field(
+        None,
         description="The identifier for the described reactant.",
-        required=False
     )
 
     protein_id: Optional[str] = Field(
+        None,
         description="The identifier for the described protein.",
-        required=False
     )
 
     replicates: list[Replicate] = Field(
         default_factory=list,
         description="A list of replicate objects holding raw data of the measurement.",
-        required=False
     )
 
     # * Private

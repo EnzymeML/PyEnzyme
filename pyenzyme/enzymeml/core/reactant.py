@@ -34,85 +34,75 @@ else:
 class Reactant(EnzymeMLBase, AbstractSpecies):
 
     name: Optional[str] = Field(
-        default=None,
+        None,
         description="Name of the reactant.",
-        required=True
     )
 
     vessel_id: str = Field(
+        ...,
         description="Identifier of the vessel in which the reactant was stored.",
-        required=True
     )
 
     init_conc: PositiveFloat = Field(
-        default=0.0,
+        0.0,
         description="Initial concentration of the reactant.",
-        required=True,
         inclusiveMinimum=0.0
     )
 
     unit: str = Field(
+        ...,
         description="Unit of the reactant intial concentration.",
-        required=True
     )
 
     constant: bool = Field(
-        default=False,
+        False,
         description="Whether the reactants concentration remains constant or not.",
-        required=True
     )
 
     id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique identifier of the protein.",
-        required=False,
         regex=r"s[\d]+"
     )
 
     meta_id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique meta identifier of the protein.",
-        required=False
     )
 
     smiles: Optional[str] = Field(
+        None,
         description="Simplified Molecular Input Line Entry System (SMILES) encoding of the reactant.",
-        required=False
     )
 
     inchi: Optional[str] = Field(
+        None,
         description="International Chemical Identifier (InChI) encoding of the reactant.",
-        required=False
     )
 
     boundary: bool = Field(
-        default=False,
+        False,
         description="Whether the reactant is under any boundary conditions (SBML Technicality, better leave it to default)",
-        required=True
     )
 
     ontology: Enum = Field(
-        default=SBOTerm.SMALL_MOLECULE,
+        SBOTerm.SMALL_MOLECULE,
         description="Ontology describing the characteristic of the reactant.",
-        required=True
     )
 
     uri: Optional[str] = Field(
-        default=None,
+        None,
         description="URI of the protein.",
-        required=False
     )
 
     creator_id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique identifier of the author.",
-        required=False
     )
 
     chebi_id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique identifier of the CHEBI database. Use this identifier to initialize the object from the CHEBI database.",
-        required=False
     )
 
     # ! Validators

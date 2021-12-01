@@ -45,23 +45,23 @@ class ReactionElement(BaseModel):
     """Describes an element of a chemical reaction."""
 
     species_id: str = Field(
+        ...,
         description="Internal identifier to either a protein or reactant defined in the EnzymeMLDocument.",
-        required=True
     )
 
     stoichiometry: PositiveFloat = Field(
+        ...,
         description="Positive float number representing the associated stoichiometry.",
-        required=True
     )
 
     constant: bool = Field(
+        ...,
         description="Whether or not the concentration of this species remains constant.",
-        required=True
     )
 
     ontology: Enum = Field(
+        ...,
         description="Ontology defining the role of the given species.",
-        required=True
     )
 
 
@@ -76,93 +76,83 @@ class EnzymeReaction(EnzymeMLBase):
     """
 
     name: str = Field(
+        ...,
         description="Name of the reaction.",
-        required=True
     )
 
     temperature: float = Field(
+        ...,
         description="Numeric value of the temperature of the reaction.",
-        required=True
     )
 
     temperature_unit: str = Field(
+        ...,
         description="Unit of the temperature of the reaction.",
-        required=True,
         regex=r"kelvin|Kelvin|k|K|celsius|Celsius|C|c"
     )
 
     temperature_unit_id: Optional[str] = Field(
-        deafult=None,
+        None,
         description="Internal identifier of the temperature unit.",
-        required=False,
         regex=r"u[\d]+"
     )
 
     ph: float = Field(
+        ...,
         description="PH value of the reaction.",
-        required=True,
         inclusiveMinimum=0,
         inclusiveMaximum=14
     )
 
     reversible: bool = Field(
+        ...,
         description="Whether the reaction is reversible or irreversible",
-        required=True
     )
 
     ontology: Optional[Enum] = Field(
-        default=SBOTerm.BIOCHEMICAL_REACTION,
+        SBOTerm.BIOCHEMICAL_REACTION,
         description="Ontology defining the role of the given species.",
-        required=True
     )
 
     id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique identifier of the reaction.",
-        required=False,
         regex=r"r[\d]+"
     )
 
     meta_id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique meta identifier for the reaction.",
-        required=False
     )
 
     uri: Optional[str] = Field(
-        default=None,
+        None,
         description="URI of the reaction.",
-        required=False
     )
 
     creator_id: Optional[str] = Field(
-        default=None,
+        None,
         description="Unique identifier of the author.",
-        required=False
     )
 
     model: Optional[KineticModel] = Field(
-        default=None,
+        None,
         description="Kinetic model decribing the reaction.",
-        required=False
     )
 
     educts: List[ReactionElement] = Field(
         default_factory=list,
         description="List of educts containing ReactionElement objects.",
-        required=True
     )
 
     products: List[ReactionElement] = Field(
         default_factory=list,
         description="List of products containing ReactionElement objects.",
-        required=True
     )
 
     modifiers: List[ReactionElement] = Field(
         default_factory=list,
         description="List of modifiers (Proteins, snhibitors, stimulators) containing ReactionElement objects.",
-        required=False
     )
 
     # ! Validators
