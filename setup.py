@@ -39,7 +39,7 @@ setup(
         'texttable',
         'pydataverse',
         'pydantic',
-        'deprecated',
+        'deprecation',
         'deepdiff'
     ],
     extras_require={
