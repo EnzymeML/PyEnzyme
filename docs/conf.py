@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'PyEnzyme'
-copyright = '2021, Jan'
-author = 'Jan'
+copyright = '2021, Jan Range'
+author = 'Jan Range'
 
 # The full version, including alpha/beta/rc tags
 release = '1.2.0'
