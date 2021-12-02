@@ -1,7 +1,7 @@
-from strenum import StrEnum
+from enum import Enum
 
 
-class SBOTerm(StrEnum):
+class SBOTerm(str, Enum):
     """String enumeration used to assign ontologies derived from SBOTerms."""
 
     # Chemical reactions
@@ -42,7 +42,7 @@ class SBOTerm(StrEnum):
     K_M = "SBO:0000027"
 
 
-class DataTypes(StrEnum):
+class DataTypes(str, Enum):
     """String enumeration used to assign replicate type ontologies"""
 
     CONCENTRATION = "conc"
@@ -51,7 +51,7 @@ class DataTypes(StrEnum):
     BIOMASS = "biomass"
 
 
-class EnzymeMLPart(StrEnum):
+class EnzymeMLPart(str, Enum):
     """Mapping to identify where entities are stored in the EnzymeML model."""
 
     # Chemical entities

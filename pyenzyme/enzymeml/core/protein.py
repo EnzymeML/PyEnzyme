@@ -98,7 +98,7 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         description="Whether the protein is under any boundary conditions (SBML Technicality, better leave it to default)",
     )
 
-    ontology: Enum = Field(
+    ontology: SBOTerm = Field(
         SBOTerm.PROTEIN,
         description="Ontology describing the characteristic of the protein.",
     )

@@ -11,14 +11,14 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 from typing import List, Optional, TYPE_CHECKING
-from enum import Enum
 from dataclasses import dataclass
 from pydantic import (
     BaseModel,
     PositiveFloat,
     validator,
     validate_arguments,
-    Field
+    Field,
+    PrivateAttr
 )
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -59,7 +59,7 @@ class ReactionElement(BaseModel):
         description="Whether or not the concentration of this species remains constant.",
     )
 
-    ontology: Enum = Field(
+    ontology: SBOTerm = Field(
         ...,
         description="Ontology defining the role of the given species.",
     )
@@ -91,12 +91,6 @@ class EnzymeReaction(EnzymeMLBase):
         regex=r"kelvin|Kelvin|k|K|celsius|Celsius|C|c"
     )
 
-    temperature_unit_id: Optional[str] = Field(
-        None,
-        description="Internal identifier of the temperature unit.",
-        regex=r"u[\d]+"
-    )
-
     ph: float = Field(
         ...,
         description="PH value of the reaction.",
@@ -109,7 +103,7 @@ class EnzymeReaction(EnzymeMLBase):
         description="Whether the reaction is reversible or irreversible",
     )
 
-    ontology: Optional[Enum] = Field(
+    ontology: Optional[SBOTerm] = Field(
         SBOTerm.BIOCHEMICAL_REACTION,
         description="Ontology defining the role of the given species.",
     )
@@ -154,6 +148,9 @@ class EnzymeReaction(EnzymeMLBase):
         default_factory=list,
         description="List of modifiers (Proteins, snhibitors, stimulators) containing ReactionElement objects.",
     )
+
+    # * Private attributes
+    _temperature_unit_id: str = PrivateAttr(None)
 
     # ! Validators
     @validator("temperature_unit")
@@ -259,7 +256,7 @@ class EnzymeReaction(EnzymeMLBase):
         stoichiometry: PositiveFloat,
         constant: bool,
         enzmldoc,
-        ontology: Enum = SBOTerm.SUBSTRATE
+        ontology: SBOTerm = SBOTerm.SUBSTRATE
     ) -> None:
         """
         Adds element to EnzymeReaction object. Replicates as well
@@ -291,7 +288,7 @@ class EnzymeReaction(EnzymeMLBase):
         stoichiometry: PositiveFloat,
         constant: bool,
         enzmldoc,
-        ontology: Enum = SBOTerm.PRODUCT
+        ontology: SBOTerm = SBOTerm.PRODUCT
     ) -> None:
         """
         Adds element to EnzymeReaction object. Replicates as well
@@ -323,7 +320,7 @@ class EnzymeReaction(EnzymeMLBase):
         stoichiometry: PositiveFloat,
         constant: bool,
         enzmldoc,
-        ontology: Enum = SBOTerm.CATALYST
+        ontology: SBOTerm = SBOTerm.CATALYST
     ) -> None:
         """
         Adds element to EnzymeReaction object. Replicates as well
@@ -354,7 +351,7 @@ class EnzymeReaction(EnzymeMLBase):
         stoichiometry: PositiveFloat,
         constant: bool,
         element_list: list[ReactionElement],
-        ontology: Enum,
+        ontology: SBOTerm,
         enzmldoc
     ) -> None:
 

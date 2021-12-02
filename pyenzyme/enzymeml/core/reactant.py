@@ -85,7 +85,7 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
         description="Whether the reactant is under any boundary conditions (SBML Technicality, better leave it to default)",
     )
 
-    ontology: Enum = Field(
+    ontology: SBOTerm = Field(
         SBOTerm.SMALL_MOLECULE,
         description="Ontology describing the characteristic of the reactant.",
     )

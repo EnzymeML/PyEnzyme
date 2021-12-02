@@ -49,7 +49,7 @@ class Replicate(EnzymeMLBase):
         regex=r"m[\d]+"
     )
 
-    data_type: Enum = Field(
+    data_type: DataTypes = Field(
         DataTypes.CONCENTRATION,
         description="Type of data that was measured (e.g. concentration)",
     )
@@ -59,17 +59,7 @@ class Replicate(EnzymeMLBase):
         description="SI unit of the data that was measured.",
     )
 
-    _data_unit_id: Optional[str] = Field(
-        None,
-        description="SI unit ID of the data that was measured.",
-    )
-
     time_unit: str = Field(
-        description="Time unit of the replicate.",
-    )
-
-    _time_unit_id: Optional[str] = Field(
-        None,
         description="Time unit of the replicate.",
     )
 

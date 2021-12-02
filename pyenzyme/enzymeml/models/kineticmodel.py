@@ -19,6 +19,7 @@ from libsbml import parseL3Formula, Reaction
 from pydantic.fields import PrivateAttr
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
+from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
     deprecated_getter
@@ -48,7 +49,7 @@ class KineticParameter(EnzymeMLBase):
         description="Unit of the estimated parameter.",
     )
 
-    ontology: Optional[Enum] = Field(
+    ontology: Optional[SBOTerm] = Field(
         None,
         description="Type of the estimated parameter.",
     )
@@ -75,7 +76,7 @@ class KineticModel(EnzymeMLBase):
         description="List of estimated parameters.",
     )
 
-    ontology: Optional[Enum] = Field(
+    ontology: Optional[SBOTerm] = Field(
         ...,
         description="Type of the estimated parameter.",
     )

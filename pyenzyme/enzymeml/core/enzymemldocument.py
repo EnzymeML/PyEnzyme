@@ -387,6 +387,25 @@ class EnzymeMLDocument(EnzymeMLBase):
         return f"\n{table.draw()}\n"
 
     # ! Add methods
+    @validate_arguments
+    def addCreator(self, creator: Creator) -> str:
+        """Adds a creator object to the EnzymeML document.
+
+        Args:
+            creator (Creator): Creator object to be added to the document.
+
+        Returns:
+            str: Unique internal identifier of the creator.
+        """
+
+        # Generate ID
+        creator_id = self._generateID(prefix="a", dictionary=self.creator_dict)
+
+        # Add to the document
+        self.creator_dict[creator_id] = creator
+
+        return creator_id
+
     @ validate_arguments
     def addVessel(self, vessel: Vessel, use_parser: bool = True) -> str:
         """Adds a Vessel object to the EnzymeML document.
@@ -512,12 +531,12 @@ class EnzymeMLDocument(EnzymeMLBase):
             )
 
             # Generate internal ID for the unit
-            reaction.temperature_unit_id = self._convertToUnitDef(
+            reaction._temperature_unit_id = self._convertToUnitDef(
                 reaction.temperature_unit
             )
         else:
             # Set the temperature unit to the actual string
-            reaction.temperature_unit_id = reaction.temperature_unit
+            reaction._temperature_unit_id = reaction.temperature_unit
             reaction.temperature_unit = self.getUnitString(
                 reaction.temperature_unit
             )

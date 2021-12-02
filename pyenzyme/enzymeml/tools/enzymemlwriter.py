@@ -432,10 +432,10 @@ class EnzymeMLWriter:
             compartment = model.createCompartment()
             compartment.setId(vessel_id)
             compartment.setName(vessel.name)
-            compartment.setUnits(vessel._unit_id)
             compartment.setSize(vessel.volume)
             compartment.setConstant(vessel.constant)
             compartment.setSpatialDimensions(3)
+            compartment.setUnits(vessel._unit_id)
 
     def _addProteins(self, model: libsbml.Model, protein_dict: dict[str, Protein]) -> None:
         """Converts EnzymeMLDocument proteins to SBML.
@@ -695,7 +695,7 @@ class EnzymeMLWriter:
 
             # Get time and add to format node
             time = measurement.global_time
-            time_unit = measurement.global_time_unit_id
+            time_unit = measurement._global_time_unit_id
 
             time_column = XMLNode(
                 XMLTriple('enzymeml:column'),
