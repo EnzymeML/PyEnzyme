@@ -555,7 +555,7 @@ class EnzymeMLWriter:
             conditionsMapping = {
                 'enzymeml:temperature': {
                     'value': 'temperature',
-                    'unit': 'temperature_unit_id'
+                    'unit': '_temperature_unit_id'
                 },
                 'enzymeml:ph': {
                     'value': 'ph'

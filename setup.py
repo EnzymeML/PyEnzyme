@@ -31,7 +31,6 @@ setup(
         'numpy',
         'pandas',
         'python-libcombine',
-        'python-copasi',
         'openpyxl',
         'marshmallow',
         'scipy',
@@ -40,7 +39,9 @@ setup(
         'pydataverse',
         'pydantic',
         'deprecation',
-        'deepdiff'
+        'deepdiff',
+        'python-multipart',
+        'uvicorn'
     ],
     extras_require={
         'test': [
