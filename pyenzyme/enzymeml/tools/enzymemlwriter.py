@@ -454,10 +454,12 @@ class EnzymeMLWriter:
             species.setSBOTerm(protein.ontology)
             species.setCompartment(protein.vessel_id)
             species.setBoundaryCondition(protein.boundary)
-            species.setInitialConcentration(protein.init_conc)
-            species.setSubstanceUnits(protein._unit_id)
             species.setConstant(protein.constant)
             species.setHasOnlySubstanceUnits(False)
+
+            if protein.init_conc:
+                species.setSubstanceUnits(protein._unit_id)
+                species.setInitialConcentration(protein.init_conc)
 
             # EnzymeML annotation
             proteinAnnotation = self.setupXMLNode('enzymeml:protein')
@@ -499,8 +501,10 @@ class EnzymeMLWriter:
             species.setBoundaryCondition(reactant.boundary)
             species.setConstant(reactant.constant)
             species.setHasOnlySubstanceUnits(False)
-            species.setInitialConcentration(reactant.init_conc)
-            species.setSubstanceUnits(reactant._unit_id)
+
+            if reactant.init_conc:
+                species.setSubstanceUnits(reactant._unit_id)
+                species.setInitialConcentration(reactant.init_conc)
 
             # Controls if annotation will be added
             reactantAnnotation = self.setupXMLNode('enzymeml:reactant')

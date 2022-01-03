@@ -173,9 +173,9 @@ class EnzymeMLReader:
             if "doi" in element.tag:
                 enzmldoc.doi = element.text
             elif 'pubmedID' in element.tag:
-                enzmldoc.pubmed_id = element.text
+                enzmldoc.pubmedid = element.text
             elif 'url' in element.tag:
-                enzmldoc.setUrl(element.text)
+                enzmldoc.url = element.text
 
     def _getCreators(self, omex_desc, enzmldoc) -> None:
         """Fetches all creators from an Combine archive's metadata.
@@ -289,7 +289,16 @@ class EnzymeMLReader:
 
         for species in species_list:
 
-            # Parse annotations and construct a kwargs dictionary
+            # Check if init conc is given
+            init_conc = species.getInitialConcentration()
+            unit_id = species.getSubstanceUnits()
+
+            if repr(species.getInitialConcentration()) == "nan":
+                init_conc, unit_id, unit = None, None, None
+            else:
+                unit = enzmldoc.getUnitString(unit_id)
+
+                # Parse annotations and construct a kwargs dictionary
             param_dict = self._parseSpeciesAnnotation(
                 species.getAnnotationString())
             param_dict.update(
@@ -298,11 +307,11 @@ class EnzymeMLReader:
                     "meta_id": species.getMetaId(),
                     "vessel_id": species.getCompartment(),
                     "name": species.getName(),
-                    "init_conc": species.getInitialConcentration(),
-                    "_unit_id": species.getSubstanceUnits(),
-                    "unit": enzmldoc.getUnitString(species.getSubstanceUnits()),
                     "constant": species.getConstant(),
-                    "ontology": self._sboterm_to_enum(species.getSBOTerm())
+                    "ontology": self._sboterm_to_enum(species.getSBOTerm()),
+                    "init_conc": init_conc,
+                    "_unit_id": unit_id,
+                    "unit": unit
                 }
             )
 
