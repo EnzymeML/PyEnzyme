@@ -19,13 +19,11 @@ This library depends on the following libraries:
 * python-copasi
 * pandas
 * numpy
-* flask
-* flask-restful
-* flask-apispec
-* openpyxl
-* marshmallow
 * scipy
-* apispec
+* fastapi
+* uvicorn
+* easyDataverse
+* pyDaRUS
 
 ---
 

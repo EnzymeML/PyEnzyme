@@ -41,7 +41,10 @@ setup(
         'deprecation',
         'deepdiff',
         'python-multipart',
-        'uvicorn'
+        'fastapi',
+        'uvicorn',
+        'easyDataverse',
+        'pyDaRUS'
     ],
     extras_require={
         'test': [
