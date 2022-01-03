@@ -40,7 +40,7 @@ else:
 class MeasurementData(EnzymeMLBase):
     """Helper class to organize elements"""
 
-    init_conc: PositiveFloat = Field(
+    init_conc: float = Field(
         ...,
         description="Initial concentration of the measurement data.",
     )

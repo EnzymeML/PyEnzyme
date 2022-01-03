@@ -37,7 +37,7 @@ class EnzymeMLBase(BaseModel):
                 "file_dict": ...,
                 "protein_dict":
                     {
-                        "Protein": {"__all__": {"unit_id"}}
+                        "Protein": {"__all__": {"_unit_id"}}
                     }
             },
             by_alias=True,

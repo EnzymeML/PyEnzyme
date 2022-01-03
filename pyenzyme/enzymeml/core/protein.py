@@ -12,7 +12,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 
 import re
 
-from pydantic import PositiveFloat, validator, Field
+from pydantic import validator, Field
 from typing import Optional, TYPE_CHECKING, Any
 from enum import Enum
 from dataclasses import dataclass
@@ -38,38 +38,42 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     name: Optional[str] = Field(
         None,
         description="Name of the protein",
+        template_alias="Name"
     )
 
     sequence: Optional[str] = Field(
         None,
         description="Amino acid sequence of the protein",
+        template_alias="Sequence"
     )
 
     vessel_id: str = Field(
         ...,
         description="Identifier of the vessel in which the protein was stored.",
+        template_alias="Vessel",
         regex=r"v[\d.]+"
     )
 
-    init_conc: PositiveFloat = Field(
-        ...,
+    init_conc: Optional[float] = Field(
+        default=None,
         description="Initial concentration of the protein.",
-        inclusiveMinimum=0.0
     )
 
-    unit: str = Field(
-        ...,
+    unit: Optional[str] = Field(
+        None,
         description="Unit of the proteins intial concentration.",
     )
 
     constant: bool = Field(
         True,
         description="Whether the proteins concentration remains constant or not.",
+        template_alias="Constant"
     )
 
     id: Optional[str] = Field(
         None,
         description="Unique identifier of the protein.",
+        template_alias="ID",
         regex=r"p[\d]+"
     )
 
@@ -81,11 +85,13 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     ecnumber: Optional[str] = Field(
         None,
         description="EC number of the protein.",
+        template_alias="EC Number"
     )
 
     organism: Optional[str] = Field(
         None,
         description="Organism the protein was expressed in.",
+        template_alias="Source organism"
     )
 
     organism_tax_id: Optional[str] = Field(
@@ -116,9 +122,20 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     uniprotid: Optional[str] = Field(
         None,
         description="Unique identifier referencing a protein entry at UniProt. Use this identifier to initialize the object from the UniProt database.",
+        template_alias="UniProt ID"
     )
 
     # ! Validators
+    @validator("init_conc")
+    def init_conccentration_warning(cls, init_conc: float):
+        """Sets a warning if an initial concentration hasnt been given"""
+
+        if init_conc == float("nan"):
+            raise Warning("Lol this is a warning!")
+
+        else:
+            return init_conc
+
     @validator("id")
     def set_meta_id(cls, id: Optional[str], values: dict):
         """Sets the meta ID when an ID is provided"""

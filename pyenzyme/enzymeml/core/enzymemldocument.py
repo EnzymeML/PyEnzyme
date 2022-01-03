@@ -33,7 +33,7 @@ from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
 from pyenzyme.enzymeml.models.kineticmodel import KineticParameter
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
-from pyenzyme.enzymeml.databases.dataverse import toDataverseJSON
+from pyenzyme.enzymeml.tools.templatereader import read_template
 from pyenzyme.enzymeml.databases.dataverse import uploadToDataverse
 
 from pyenzyme.enzymeml.core.ontology import EnzymeMLPart, SBOTerm
@@ -164,6 +164,19 @@ class EnzymeMLDocument(EnzymeMLBase):
             return "https://identifiers.org/pubmed:" + pubmedid
 
     # ! Imports and exports
+    @classmethod
+    def fromTemplate(cls, path: str):
+        """Reads an EnzymeML spreadsheet template to an EnzymeMLDocument object.
+
+        Args:
+            path (str): Path to the EnzymeML spreadsheet template.
+
+        Returns:
+            EnzymeMLDocument: Resulting EnzymeML document.
+        """
+
+        return read_template(path, cls)
+
     @staticmethod
     def fromFile(path: str):
         """Initializes an EnzymeMLDocument from an OMEX container."
@@ -197,36 +210,21 @@ class EnzymeMLDocument(EnzymeMLBase):
     @validate_arguments
     def uploadToDataverse(
         self,
-        base_url: str,
-        API_Token: str,
         dataverse_name: str
     ):
         """Uploads an EnzymeML document to a Dataverse installation of choice.
 
+        It should be noted, that the environment variables 'DATAVERSE_URL' and 'DATAVERSE_API_TOKEN'
+        should be given approriately before the upload. If not, tje upload cant be done.
+
         Args:
-            base_url (str): URL to a Dataverse installation
-            API_Token (str): API Token given from your Dataverse installation for authentication.
             dataverse_name (str): Name of the dataverse to upload the EnzymeML document. You can find the name in the link of your dataverse (e.g. https://dataverse.installation/dataverse/{dataverseName})
 
-        Raises:
-            AttributeError: Raised when neither a filename nor an EnzymeMLDocument object was provided.
-            ValidationError: Raised when the validation fails.
         """
         uploadToDataverse(
-            base_url=base_url,
-            API_Token=API_Token,
-            dataverse_name=dataverse_name,
-            enzmldoc=self
+            enzmldoc=self,
+            dataverse_name=dataverse_name
         )
-
-    def toDataverseJSON(self) -> str:
-        """Generates a Dataverse compatible JSON representation of this EnzymeML document.
-
-        Returns:
-            String: JSON string representation of this EnzymeML document.
-        """
-
-        return json.dumps(toDataverseJSON(self), indent=4)
 
     # ! Utility methods
     def unifyMeasurementUnits(
@@ -836,6 +834,27 @@ class EnzymeMLDocument(EnzymeMLBase):
             by_id=by_id
         )
 
+    def getVessel(self, id: str, by_id: bool = True) -> Vessel:
+        """Returns the vessel associated with the given ID.
+
+        Args:
+            id (str): Unique internal ID of the vessel.
+            by_id (bool, optional): Whether the unit is retrieved via ID or name. Defaults to True.
+
+        Raises:
+            SpeciesNotFoundError: Raised when the requested vessel is not found.
+
+        Returns:
+            Vessel: The corresponding unit object.
+        """
+
+        return self._getSpecies(
+            id=id,
+            dictionary=self.vessel_dict,
+            element_type="Vessels",
+            by_id=by_id
+        )
+
     def getReaction(self, id: str, by_id: bool = True) -> EnzymeReaction:
         """Returns the reaction associated with the given ID.
 
@@ -938,6 +957,35 @@ class EnzymeMLDocument(EnzymeMLBase):
             id=id,
             dictionary=self.file_dict,
             element_type="File",
+            by_id=by_id
+        )
+
+    def getAny(self, id: str, by_id: bool = True) -> AbstractSpecies:
+        """Returns anything associated with the given ID.
+
+        Args:
+            id (str): Unique internal ID of the object.
+            by_id (bool, optional): Whether the object is retrieved via ID or name. Defaults to True.
+
+        Raises:
+            SpeciesNotFoundError: Raised when the requested object is not found.
+
+        Returns:
+            dict[str, dict]: The corresponding file object.
+        """
+
+        all_dicts = {
+            **self.unit_dict,
+            **self.vessel_dict,
+            **self.reactant_dict,
+            **self.protein_dict,
+            **self.reaction_dict
+        }
+
+        return self._getSpecies(
+            id=id,
+            dictionary=all_dicts,
+            element_type="Document",
             by_id=by_id
         )
 
@@ -1045,10 +1093,6 @@ class EnzymeMLDocument(EnzymeMLBase):
     @ deprecated_getter("creators")
     def getCreator(self):
         return self.creator_dict
-
-    @ deprecated_getter("vessel")
-    def getVessel(self):
-        return self.vessel
 
     @ deprecated_getter("name")
     def getName(self):

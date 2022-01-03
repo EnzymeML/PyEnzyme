@@ -177,7 +177,7 @@ class Measurement(EnzymeMLBase):
     @validate_arguments
     def addData(
         self,
-        init_conc: PositiveFloat,
+        init_conc: float,
         unit: str,
         reactant_id: Optional[str] = None,
         protein_id: Optional[str] = None,
@@ -205,7 +205,7 @@ class Measurement(EnzymeMLBase):
         self,
         reactant_id: Optional[str],
         protein_id: Optional[str],
-        init_conc: PositiveFloat,
+        init_conc: float,
         unit: str,
         replicates: list[Replicate]
     ) -> None:

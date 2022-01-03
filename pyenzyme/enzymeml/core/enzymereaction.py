@@ -78,22 +78,26 @@ class EnzymeReaction(EnzymeMLBase):
     name: str = Field(
         ...,
         description="Name of the reaction.",
+        template_alias="Name"
     )
 
     temperature: float = Field(
         ...,
         description="Numeric value of the temperature of the reaction.",
+        template_alias="Temperature value"
     )
 
     temperature_unit: str = Field(
         ...,
         description="Unit of the temperature of the reaction.",
+        template_alias="Temperature unit",
         regex=r"kelvin|Kelvin|k|K|celsius|Celsius|C|c"
     )
 
     ph: float = Field(
         ...,
         description="PH value of the reaction.",
+        template_alias="pH value",
         inclusiveMinimum=0,
         inclusiveMaximum=14
     )
@@ -101,6 +105,7 @@ class EnzymeReaction(EnzymeMLBase):
     reversible: bool = Field(
         ...,
         description="Whether the reaction is reversible or irreversible",
+        template_alias="Reversible"
     )
 
     ontology: Optional[SBOTerm] = Field(
@@ -111,6 +116,7 @@ class EnzymeReaction(EnzymeMLBase):
     id: Optional[str] = Field(
         None,
         description="Unique identifier of the reaction.",
+        template_alias="ID",
         regex=r"r[\d]+"
     )
 
@@ -137,16 +143,19 @@ class EnzymeReaction(EnzymeMLBase):
     educts: List[ReactionElement] = Field(
         default_factory=list,
         description="List of educts containing ReactionElement objects.",
+        template_alias="Educts"
     )
 
     products: List[ReactionElement] = Field(
         default_factory=list,
         description="List of products containing ReactionElement objects.",
+        template_alias="Products"
     )
 
     modifiers: List[ReactionElement] = Field(
         default_factory=list,
         description="List of modifiers (Proteins, snhibitors, stimulators) containing ReactionElement objects.",
+        template_alias="Modifiers"
     )
 
     # * Private attributes
@@ -373,6 +382,28 @@ class EnzymeReaction(EnzymeMLBase):
             constant=constant,
             ontology=ontology
         ))
+
+    def setModel(self, model: KineticModel, enzmldoc) -> None:
+        """Sets the kinetic model of the reaction and in addition converts all units to UnitDefs.
+
+        Args:
+            model (KineticModel): Kinetic model that has been derived.
+            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument that holds the reaction.
+        """
+
+        # ID consistency
+        enzmldoc._check_kinetic_model_ids(
+            equation=model.equation,
+            species_ids=enzmldoc.getSpeciesIDs()
+        )
+
+        # Unit conversion
+        enzmldoc._convert_kinetic_model_units(
+            model.parameters,
+            enzmldoc=enzmldoc
+        )
+
+        self.model = model
 
     # ! Getters (old)
     @deprecated_getter("temperature")

@@ -36,32 +36,35 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
     name: Optional[str] = Field(
         None,
         description="Name of the reactant.",
+        template_alias="Name"
     )
 
     vessel_id: str = Field(
         ...,
         description="Identifier of the vessel in which the reactant was stored.",
+        template_alias="Vessel"
     )
 
-    init_conc: PositiveFloat = Field(
-        0.0,
+    init_conc: Optional[float] = Field(
+        None,
         description="Initial concentration of the reactant.",
-        inclusiveMinimum=0.0
     )
 
-    unit: str = Field(
-        ...,
+    unit: Optional[str] = Field(
+        None,
         description="Unit of the reactant intial concentration.",
     )
 
     constant: bool = Field(
         False,
         description="Whether the reactants concentration remains constant or not.",
+        template_alias="Constant"
     )
 
     id: Optional[str] = Field(
         None,
         description="Unique identifier of the protein.",
+        template_alias="ID",
         regex=r"s[\d]+"
     )
 
@@ -73,11 +76,13 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
     smiles: Optional[str] = Field(
         None,
         description="Simplified Molecular Input Line Entry System (SMILES) encoding of the reactant.",
+        template_alias="SMILES"
     )
 
     inchi: Optional[str] = Field(
         None,
         description="International Chemical Identifier (InChI) encoding of the reactant.",
+        template_alias="InCHI"
     )
 
     boundary: bool = Field(

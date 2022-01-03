@@ -27,7 +27,7 @@ else:
 
 
 @static_check_init_args
-class Protein(EnzymeMLBase, AbstractSpecies):
+class Complex(EnzymeMLBase, AbstractSpecies):
 
     name: Optional[str] = Field(
         None,

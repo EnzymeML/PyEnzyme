@@ -38,6 +38,16 @@ class AbstractSpecies(ABC, AbstractSpeciesDataclass):
         setattr(self, "_unit_id", unit_id)
 
     # ! Validators
+    @validator("init_conc")
+    def init_conccentration_warning(cls, init_conc: float):
+        """Sets a warning if an initial concentration hasnt been given"""
+
+        if init_conc == float("nan"):
+            raise Warning("Lol this is a warning!")
+
+        else:
+            return init_conc
+
     @validator("id")
     def set_meta_id(cls, id: Optional[str], values: dict):
         """Sets the meta ID when an ID is provided"""

@@ -32,16 +32,19 @@ class Vessel(EnzymeMLBase):
     name: str = Field(
         ...,
         description="Name of the used vessel.",
+        template_alias="Name"
     )
 
     volume: PositiveFloat = Field(
         ...,
         description="Volumetric value of the vessel.",
+        template_alias="Volume value"
     )
 
     unit: str = Field(
         ...,
         description="Volumetric unit of the vessel.",
+        template_alias="Volume unit"
     )
 
     constant: bool = Field(
@@ -52,6 +55,7 @@ class Vessel(EnzymeMLBase):
     id: Optional[str] = Field(
         None,
         description="Unique identifier of the vessel.",
+        template_alias="ID",
         regex=r"v[\d]+"
     )
 
