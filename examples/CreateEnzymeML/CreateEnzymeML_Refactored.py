@@ -2,6 +2,9 @@ from pyenzyme.enzymeml import EnzymeMLDocument, Vessel, Reactant, Protein, Enzym
 from pyenzyme.enzymeml.models import MichaelisMenten
 from pyenzyme.enzymeml.core.ontology import DataTypes
 
+print(EnzymeMLDocument.schema_json(indent=2))
+exit()
+
 enzmldoc = EnzymeMLDocument(name="Hello")
 
 # Vessel
@@ -93,5 +96,10 @@ measurement2.addData(init_conc=10.0, reactant_id=substrate_id,
 
 meas2_id = enzmldoc.addMeasurement(measurement2)
 
+# enzmldoc.unifyMeasurementUnits(kind="mole", scale=1)
 
-enzmldoc.unifyMeasurementUnits(kind="mole", scale=1)
+enzmldoc.toFile(path="examples/CreateEnzymeML/")
+
+enzmldoc = EnzymeMLDocument.fromFile(path="examples/CreateEnzymeML/Hello.omex")
+
+print(enzmldoc.json())
