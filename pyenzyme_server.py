@@ -14,6 +14,45 @@ def remove_file(path: str) -> None:
     os.unlink(path)
 
 
+@app.post("/template/convert")
+async def convert_template(background_tasks: BackgroundTasks, enzymeml_template: UploadFile = File(...)):
+
+    # Write to file
+    file_name = enzymeml_template.filename
+    content = await enzymeml_template.read()
+    with open(file_name, "wb") as file_handle:
+        file_handle.write(content)
+
+    # Generate the new EnzymeML file
+    try:
+        enzmldoc = EnzymeMLDocument.fromTemplate(file_name)
+
+    except Exception as e:
+        return str(e)
+
+    finally:
+        background_tasks.add_task(remove_file, path=file_name)
+
+    # Write the new EnzymeML file
+    try:
+        dirpath = "."
+        enzml_name = f"{enzmldoc.name.replace(' ', '_')}.omex"
+        file_path = os.path.join(
+            dirpath,
+            enzml_name
+        )
+
+        enzmldoc.toFile(dirpath)
+
+        return FileResponse(file_path, filename=enzml_name)
+
+    except Exception as e:
+        return str(e)
+
+    finally:
+        background_tasks.add_task(remove_file, path=enzml_name)
+
+
 @app.post("/create")
 async def create_EnzymeML(enzmldoc: EnzymeMLDocument, background_tasks: BackgroundTasks):
 
@@ -97,9 +136,20 @@ async def read_enzymeml(background_tasks: BackgroundTasks, omex_archive: UploadF
     # Read EnzymeML document
     try:
         enzmldoc = EnzymeMLDocument.fromFile(file_name)
-        return enzmldoc.dict(exclude_none=True)
+        return enzmldoc.dict(
+            exclude_none=True,
+            exclude={
+                "unit_dict": ...,
+                "file_dict": ...,
+                "protein_dict":
+                    {
+                        "Protein": {"__all__": {"_unit_id"}}
+                    }
+            },
+            by_alias=True
+        )
     except Exception as e:
-        return str(e)
+        return f"{e.__class__.__name__}: {str(e)}"
     finally:
         background_tasks.add_task(remove_file, path=file_name)
 

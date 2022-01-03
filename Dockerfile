@@ -10,9 +10,9 @@ RUN apt-get update \
     && apt-get purge -y --auto-remove
 
 
-RUN pip3 install . --no-cache-dir
+RUN pip3 install -r requirements.txt --no-cache-dir
 
 COPY pyenzyme_server.py /app
 
 ENTRYPOINT ["uvicorn"]
-CMD ["pyenzyme_server.py"]
+CMD ["pyenzyme_server:app --host 0.0.0.0 --port 8000"]
