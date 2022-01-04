@@ -2,10 +2,7 @@ python-libsbml
 numpy
 pandas
 python-libcombine
-openpyxl
-marshmallow
 scipy
-apispec
 texttable
 pydataverse
 pydantic
