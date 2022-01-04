@@ -1,59 +1,29 @@
 import os
 
 from fastapi import FastAPI, UploadFile, File
-from starlette.responses import FileResponse
+from starlette.responses import FileResponse, RedirectResponse
 from starlette.background import BackgroundTasks
 
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.measurement import Measurement
 
-app = FastAPI()
+app = FastAPI(title="PyEnzyme REST-API", version="1.2", docs_url="/")
+
+# * Functions
 
 
 def remove_file(path: str) -> None:
     os.unlink(path)
 
-
-@app.post("/template/convert")
-async def convert_template(background_tasks: BackgroundTasks, enzymeml_template: UploadFile = File(...)):
-
-    # Write to file
-    file_name = enzymeml_template.filename
-    content = await enzymeml_template.read()
-    with open(file_name, "wb") as file_handle:
-        file_handle.write(content)
-
-    # Generate the new EnzymeML file
-    try:
-        enzmldoc = EnzymeMLDocument.fromTemplate(file_name)
-
-    except Exception as e:
-        return str(e)
-
-    finally:
-        background_tasks.add_task(remove_file, path=file_name)
-
-    # Write the new EnzymeML file
-    try:
-        dirpath = "."
-        enzml_name = f"{enzmldoc.name.replace(' ', '_')}.omex"
-        file_path = os.path.join(
-            dirpath,
-            enzml_name
-        )
-
-        enzmldoc.toFile(dirpath)
-
-        return FileResponse(file_path, filename=enzml_name)
-
-    except Exception as e:
-        return str(e)
-
-    finally:
-        background_tasks.add_task(remove_file, path=enzml_name)
+# ! Basic operations
 
 
-@app.post("/create")
+@app.post(
+    "/create",
+    summary="Creates an EnzymeML document based on a JSON body",
+    description="Please note, in the schema 'aditionalPropsX' represent the individual IDs of the entities. However, these will not be included, since PyEnzyme takes car for that. Thus, feel free to use any string you like. Returns a binary file, which is an OMEX archive",
+    tags=["Basic operations"]
+)
 async def create_EnzymeML(enzmldoc: EnzymeMLDocument, background_tasks: BackgroundTasks):
 
     def _convertUnits(dictionary: dict, key: str):
@@ -124,7 +94,12 @@ async def create_EnzymeML(enzmldoc: EnzymeMLDocument, background_tasks: Backgrou
         background_tasks.add_task(remove_file, path=file_name)
 
 
-@app.post("/read")
+@app.post(
+    "/read",
+    summary="Reads an EnzymeML document served in an OMEX archive to a JSON representation",
+    description="Use this endpoint as form-data and specify the document to be uploaded via the key 'omex_archive' for a succesfull request.",
+    tags=["Basic operations"]
+)
 async def read_enzymeml(background_tasks: BackgroundTasks, omex_archive: UploadFile = File(...)):
 
     # Write to file
@@ -153,8 +128,15 @@ async def read_enzymeml(background_tasks: BackgroundTasks, omex_archive: UploadF
     finally:
         background_tasks.add_task(remove_file, path=file_name)
 
+# ! Modifications
 
-@app.post("/add_measurement")
+
+@app.post(
+    "/add_measurement",
+    summary="Adds a measurement to an existing EnzymeML document",
+    description="By using this endpoint, you can add successive raw data without having to create a new EnzymeML dcoument. Returns a binary file, which is an OMEX Archive",
+    tags=["Modifications"]
+)
 async def add_Measurement(
     background_tasks: BackgroundTasks,
     measurement: Measurement,
@@ -196,3 +178,57 @@ async def add_Measurement(
 
     finally:
         background_tasks.add_task(remove_file, path=file_name)
+
+# ! TOOLS
+
+
+@app.get(
+    "/template/download",
+    summary="Download the EnzymeML spreadsheet template.",
+    tags=["EnzymeML spreadsheet"]
+)
+async def get_enzymeml_template():
+    return FileResponse("./templates/EnzymeML_Template.xlsm", filename="EnzymeML_Template.xlsm")
+
+
+@app.post(
+    "/template/convert",
+    summary="Converts an EnzymeML spreadsheet template to an EnzymeML document.",
+    tags=["EnzymeML spreadsheet"]
+)
+async def convert_template(background_tasks: BackgroundTasks, enzymeml_template: UploadFile = File(...)):
+
+    # Write to file
+    file_name = enzymeml_template.filename
+    content = await enzymeml_template.read()
+    with open(file_name, "wb") as file_handle:
+        file_handle.write(content)
+
+    # Generate the new EnzymeML file
+    try:
+        enzmldoc = EnzymeMLDocument.fromTemplate(file_name)
+
+    except Exception as e:
+        return str(e)
+
+    finally:
+        background_tasks.add_task(remove_file, path=file_name)
+
+    # Write the new EnzymeML file
+    try:
+        dirpath = "."
+        enzml_name = f"{enzmldoc.name.replace(' ', '_')}.omex"
+        file_path = os.path.join(
+            dirpath,
+            enzml_name
+        )
+
+        enzmldoc.toFile(dirpath)
+
+        return FileResponse(file_path, filename=enzml_name)
+
+    except Exception as e:
+        return str(e)
+
+    finally:
+        background_tasks.add_task(remove_file, path=enzml_name)
