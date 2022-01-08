@@ -10,17 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from typing import Union
-
-
-class ValidationError(Exception):
-    """Raised when a Dataverse validation has failed"""
-    pass
-
-
-class DataverseError(Exception):
-    """Raised when a Dataverse validation has failed"""
-    pass
+from typing import Union, Optional
 
 
 class SpeciesNotFoundError(Exception):
@@ -36,17 +26,23 @@ class SpeciesNotFoundError(Exception):
         return f'{self.species_id} in {self.enzymeml_part} -> {self.message}'
 
 
-class MissingSpeciesError(Exception):
-    """Raised when a species has not yet been assigned to a measurement"""
-    pass
-
-
-class IdentifierError(Exception):
+class MeasurementDataSpeciesIdentifierError(Exception):
     """Raised when either no ID has been assigned to a measurementData"""
-    pass
+
+    def __init__(self, both: Optional[list] = None):
+
+        if both:
+            self.message = f"Both reactant ({both[0]}) and protein ({both[1]}) have been ID assigned to a measurement. Please specifiy either one of those."
+        else:
+            self.message = "Neither a reactant not protein has been ID assigned to measurement."
+
+        super().__init__(self.message)
+
+    def __str__(self) -> str:
+        return self.message
 
 
-class IdentifierNameError(Exception):
+class ParticipantIdentifierError(Exception):
     """Raised when an ID does not match the expected format"""
 
     def __init__(self, id: str, prefix: str) -> None:
@@ -70,19 +66,6 @@ class ECNumberError(Exception):
 class DataError(Exception):
     """Raised when incomplete data has been assigned to a replicate"""
     pass
-
-
-class UnitKindError(Exception):
-    """Raised when an to SBML unknown unit kind has been given"""
-
-    def __str__(self) -> str:
-        return (
-            "The unit kind integer that has been given is not supported. Please check 'libsbml' for the supported ones."
-        )
-
-
-class MissingUnitError(Exception):
-    """Raised when a unit is missing """
 
 
 class ChEBIIdentifierError(Exception):

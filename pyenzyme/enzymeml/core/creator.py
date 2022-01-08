@@ -11,7 +11,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 from pydantic import Field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -42,6 +42,12 @@ class Creator(EnzymeMLBase):
     mail: str = Field(
         ...,
         description='Email address of the author or contributor.',
+    )
+
+    id: Optional[str] = Field(
+        None,
+        description="Unique identifier of the protein.",
+        regex=r"a[\d]+"
     )
 
     @deprecated_getter("family_name")

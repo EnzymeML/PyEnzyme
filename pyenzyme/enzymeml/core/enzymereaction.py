@@ -10,12 +10,13 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
+import logging
+
 from typing import List, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 from pydantic import (
     BaseModel,
     PositiveFloat,
-    validator,
     validate_arguments,
     Field,
     PrivateAttr
@@ -25,10 +26,10 @@ from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.models.kineticmodel import KineticModel
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.exceptions import (
-    ValidationError,
     SpeciesNotFoundError,
 )
 
+from pyenzyme.utils.log import log_object
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
     deprecated_getter
@@ -38,6 +39,9 @@ if TYPE_CHECKING:  # pragma: no cover
     static_check_init_args = dataclass
 else:
     static_check_init_args = type_checking
+
+# Initialize the logger
+logger = logging.getLogger("pyenzyme")
 
 
 @static_check_init_args
@@ -64,6 +68,14 @@ class ReactionElement(BaseModel):
         description="Ontology defining the role of the given species.",
     )
 
+    def get_id(self) -> str:
+        """Internal usage to get IDs from objects without ID attribute"""
+
+        if self.species_id:
+            return self.species_id
+        else:
+            raise AttributeError("No species ID given.")
+
 
 @static_check_init_args
 class EnzymeReaction(EnzymeMLBase):
@@ -81,31 +93,31 @@ class EnzymeReaction(EnzymeMLBase):
         template_alias="Name"
     )
 
-    temperature: float = Field(
-        ...,
-        description="Numeric value of the temperature of the reaction.",
-        template_alias="Temperature value"
-    )
-
-    temperature_unit: str = Field(
-        ...,
-        description="Unit of the temperature of the reaction.",
-        template_alias="Temperature unit",
-        regex=r"kelvin|Kelvin|k|K|celsius|Celsius|C|c"
-    )
-
-    ph: float = Field(
-        ...,
-        description="PH value of the reaction.",
-        template_alias="pH value",
-        inclusiveMinimum=0,
-        inclusiveMaximum=14
-    )
-
     reversible: bool = Field(
         ...,
         description="Whether the reaction is reversible or irreversible",
         template_alias="Reversible"
+    )
+
+    temperature: Optional[float] = Field(
+        None,
+        description="Numeric value of the temperature of the reaction.",
+        template_alias="Temperature value"
+    )
+
+    temperature_unit: Optional[str] = Field(
+        None,
+        description="Unit of the temperature of the reaction.",
+        regex=r"kelvin|Kelvin|k|K|celsius|Celsius|C|c",
+        template_alias="Temperature unit"
+    )
+
+    ph: Optional[float] = Field(
+        None,
+        description="PH value of the reaction.",
+        template_alias="pH value",
+        inclusiveMinimum=0,
+        inclusiveMaximum=14
     )
 
     ontology: Optional[SBOTerm] = Field(
@@ -160,17 +172,6 @@ class EnzymeReaction(EnzymeMLBase):
 
     # * Private attributes
     _temperature_unit_id: str = PrivateAttr(None)
-
-    # ! Validators
-    @validator("temperature_unit")
-    def check_temperature_unit(cls, temperature_unit: str):
-        valid_units = ["C", "c", "celsius", "K", "kelvin"]
-        if temperature_unit not in valid_units:
-            raise ValidationError(
-                f"Temperature unit {temperature_unit} is not a valid unit - {valid_units}"
-            )
-
-        return temperature_unit
 
     # ! Getters
     def getEduct(self, id: str) -> ReactionElement:
@@ -263,8 +264,8 @@ class EnzymeReaction(EnzymeMLBase):
         self,
         species_id: str,
         stoichiometry: PositiveFloat,
-        constant: bool,
         enzmldoc,
+        constant: bool = False,
         ontology: SBOTerm = SBOTerm.SUBSTRATE
     ) -> None:
         """
@@ -287,6 +288,7 @@ class EnzymeReaction(EnzymeMLBase):
             constant=constant,
             element_list=self.educts,
             ontology=ontology,
+            list_name="educts",
             enzmldoc=enzmldoc
         )
 
@@ -295,8 +297,8 @@ class EnzymeReaction(EnzymeMLBase):
         self,
         species_id: str,
         stoichiometry: PositiveFloat,
-        constant: bool,
         enzmldoc,
+        constant: bool = False,
         ontology: SBOTerm = SBOTerm.PRODUCT
     ) -> None:
         """
@@ -319,6 +321,7 @@ class EnzymeReaction(EnzymeMLBase):
             constant=constant,
             element_list=self.products,
             ontology=ontology,
+            list_name="products",
             enzmldoc=enzmldoc
         )
 
@@ -351,6 +354,7 @@ class EnzymeReaction(EnzymeMLBase):
             constant=constant,
             element_list=self.modifiers,
             ontology=ontology,
+            list_name="modifiers",
             enzmldoc=enzmldoc
         )
 
@@ -361,6 +365,7 @@ class EnzymeReaction(EnzymeMLBase):
         constant: bool,
         element_list: list[ReactionElement],
         ontology: SBOTerm,
+        list_name: str,
         enzmldoc
     ) -> None:
 
@@ -368,6 +373,7 @@ class EnzymeReaction(EnzymeMLBase):
         all_species = [
             *list(enzmldoc.protein_dict.keys()),
             *list(enzmldoc.reactant_dict.keys()),
+            *list(enzmldoc.complex_dict.keys())
         ]
 
         if species_id not in all_species:
@@ -376,12 +382,19 @@ class EnzymeReaction(EnzymeMLBase):
             )
 
         # Add element to the respecticve list
-        element_list.append(ReactionElement(
+        element = ReactionElement(
             species_id=species_id,
             stoichiometry=stoichiometry,
             constant=constant,
             ontology=ontology
-        ))
+        )
+        element_list.append(element)
+
+        # Log the addition
+        log_object(logger, element)
+        logger.debug(
+            f"Added {type(element).__name__} '{element.species_id}' to reaction '{self.name}' {list_name}"
+        )
 
     def setModel(self, model: KineticModel, enzmldoc) -> None:
         """Sets the kinetic model of the reaction and in addition converts all units to UnitDefs.
@@ -406,17 +419,20 @@ class EnzymeReaction(EnzymeMLBase):
         self.model = model
 
     # ! Getters (old)
-    @deprecated_getter("temperature")
     def getTemperature(self) -> float:
-        return self.temperature
+        raise NotImplementedError(
+            "Temperature is now part of measurements."
+        )
 
-    @deprecated_getter("temperature_unit")
     def getTempunit(self) -> str:
-        return self.temperature_unit
+        raise NotImplementedError(
+            "Temperature unit is now part of measurements."
+        )
 
-    @deprecated_getter("ph")
     def getPh(self) -> PositiveFloat:
-        return self.ph
+        raise NotImplementedError(
+            "Ph is now part of measurements."
+        )
 
     @deprecated_getter("name instead")
     def getName(self) -> str:

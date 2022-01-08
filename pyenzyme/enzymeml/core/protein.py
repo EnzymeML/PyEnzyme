@@ -14,7 +14,6 @@ import re
 
 from pydantic import validator, Field
 from typing import Optional, TYPE_CHECKING, Any
-from enum import Enum
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.ontology import SBOTerm
@@ -168,7 +167,8 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         if match is not None:
             return "".join(match.groups())
         else:
-            raise ECNumberError(ecnumber=ecnumber)
+            raise ValueError("Invalid EC")
+            # raise ECNumberError(ecnumber=ecnumber))
 
     @validator("uniprotid")
     def fetch_uniprot_parameters(cls, uniprotid, values):

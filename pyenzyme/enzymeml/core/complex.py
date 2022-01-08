@@ -10,12 +10,16 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import PositiveFloat, validator, Field
+import re
+
+from pydantic import validator, Field
 from typing import Optional, TYPE_CHECKING
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
+from pyenzyme.enzymeml.core.exceptions import ParticipantIdentifierError
+from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
 )
@@ -34,32 +38,25 @@ class Complex(EnzymeMLBase, AbstractSpecies):
         description="Name of the complex",
     )
 
-    reactants: list[str] = Field(
-        None,
-        description="Array of reactant IDs the complex contains",
-        regex=r"s[\d]+"
-    )
-
-    proteins: list[str] = Field(
-        None,
-        description="Array of reactant IDs the complex contains",
-        regex=r"p[\d]+"
+    participants: list[str] = Field(
+        default_factory=list,
+        description="Array of IDs the complex contains",
     )
 
     vessel_id: str = Field(
         ...,
         description="Identifier of the vessel in which the protein was stored.",
-        regex=r"v[\d.]+"
+        regex=r"v[\d]+"
     )
 
-    init_conc: PositiveFloat = Field(
-        ...,
+    init_conc: Optional[float] = Field(
+        None,
         description="Initial concentration of the protein.",
         inclusiveMinimum=0.0
     )
 
-    unit: str = Field(
-        ...,
+    unit: Optional[str] = Field(
+        None,
         description="Unit of the proteins intial concentration.",
     )
 
@@ -77,6 +74,16 @@ class Complex(EnzymeMLBase, AbstractSpecies):
     meta_id: Optional[str] = Field(
         None,
         description="Unique meta identifier of the protein.",
+    )
+
+    boundary: bool = Field(
+        False,
+        description="Whether the protein is under any boundary conditions (SBML Technicality, better leave it to default)",
+    )
+
+    ontology: SBOTerm = Field(
+        SBOTerm.MACROMOLECULAR_COMPLEX,
+        description="Ontology describing the characteristic of the protein.",
     )
 
     uri: Optional[str] = Field(
@@ -99,3 +106,24 @@ class Complex(EnzymeMLBase, AbstractSpecies):
             values["meta_id"] = f"METAID_{id.upper()}"
 
         return id
+
+    @validator("participants")
+    def check_reactant_ids(cls, ids: list[str]):
+        """Checks ID consistency for reactants"""
+
+        for id in ids:
+            if cls._id_checker(id, r"s[\d]+"):
+                # Check for reactants
+                continue
+            elif cls._id_checker(id, r"p[\d]+"):
+                # Check for proteins
+                continue
+            else:
+                raise ParticipantIdentifierError(id=id, prefix="s/p")
+
+        return ids
+
+    @staticmethod
+    def _id_checker(id: str, pattern: str):
+        """Checks ID pattern"""
+        return bool(re.match(pattern, id))

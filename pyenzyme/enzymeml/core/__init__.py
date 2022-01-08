@@ -13,6 +13,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 from pyenzyme.enzymeml.core.creator import Creator
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.protein import Protein
+from pyenzyme.enzymeml.core.complex import Complex
 from pyenzyme.enzymeml.core.reactant import Reactant
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.unitdef import UnitDef

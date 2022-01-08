@@ -20,6 +20,7 @@ import pandas as pd
 from pyenzyme.enzymeml.core.creator import Creator
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.protein import Protein
+from pyenzyme.enzymeml.core.complex import Complex
 from pyenzyme.enzymeml.core.reactant import Reactant
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.unitdef import UnitDef
@@ -48,12 +49,21 @@ class ReactantFactory(AbstractSpeciesFactory):
 
 
 class ProteinFactory(AbstractSpeciesFactory):
-    """Returns an un-initialized reactant species object"""
+    """Returns an un-initialized protein species object"""
 
     enzymeml_part: str = "protein_dict"
 
     def get_species(self, **kwargs) -> AbstractSpecies:
         return Protein(**kwargs)
+
+
+class ComplexFactory(AbstractSpeciesFactory):
+    """Returns an un-initialized complex species object"""
+
+    enzymeml_part: str = "complex_dict"
+
+    def get_species(self, **kwargs) -> AbstractSpecies:
+        return Complex(**kwargs)
 
 
 def species_factory_mapping(sbo_term: str) -> AbstractSpeciesFactory:
@@ -66,7 +76,10 @@ def species_factory_mapping(sbo_term: str) -> AbstractSpeciesFactory:
         "PROTEIN": ProteinFactory(),
         "SMALL_MOLECULE": ReactantFactory(),
         "ION": ReactantFactory(),
-        "RADICAL": ReactantFactory()
+        "RADICAL": ReactantFactory(),
+        "MACROMOLECULAR_COMPLEX": ComplexFactory(),
+        "PROTEIN_COMPLEX": ComplexFactory(),
+        "DIMER": ComplexFactory()
     }
 
     return factory_mapping[entity]
@@ -91,9 +104,11 @@ class EnzymeMLReader:
         self.archive = CombineArchive()
         self.archive.initializeFromArchive(self.path)
 
-        sbmlfile = self.archive.getEntry(0)
-        content = self.archive.extractEntryToString(sbmlfile.getLocation())
-        desc = self.archive.getMetadataForLocation(sbmlfile.getLocation())
+        content = self.archive.extractEntryToString("./experiment.xml")
+        desc = self.archive.getMetadataForLocation("./experiment.xml")
+
+        # Get previous logs
+        log = self.archive.extractEntryToString("./history.log")
 
         # Read experiment file (sbml)
         reader = SBMLReader()
@@ -107,6 +122,9 @@ class EnzymeMLReader:
             level=model.getLevel(),
             version=model.getVersion()
         )
+
+        # Add logs to the document
+        enzmldoc.log = log
 
         # Fetch references
         self._getRefs(model, enzmldoc)
@@ -269,8 +287,9 @@ class EnzymeMLReader:
                 id=id,
                 volume=volume,
                 unit=enzmldoc.getUnitString(unit_id),
-                _unit_id=unit_id
             )
+
+            vessel._unit_id = unit_id
 
             vessel_dict[vessel.id] = vessel
 
@@ -298,7 +317,13 @@ class EnzymeMLReader:
             else:
                 unit = enzmldoc.getUnitString(unit_id)
 
-                # Parse annotations and construct a kwargs dictionary
+            # Get SBOTerm, but if there is none, give default
+            try:
+                ontology = self._sboterm_to_enum(species.getSBOTerm())
+            except ValueError:
+                ontology = None
+
+            # Parse annotations and construct a kwargs dictionary
             param_dict = self._parseSpeciesAnnotation(
                 species.getAnnotationString())
             param_dict.update(
@@ -308,7 +333,7 @@ class EnzymeMLReader:
                     "vessel_id": species.getCompartment(),
                     "name": species.getName(),
                     "constant": species.getConstant(),
-                    "ontology": self._sboterm_to_enum(species.getSBOTerm()),
+                    "ontology": ontology,
                     "init_conc": init_conc,
                     "_unit_id": unit_id,
                     "unit": unit
@@ -364,10 +389,6 @@ class EnzymeMLReader:
         # parse annotations and filter replicates
         for reaction in reactionsList:
 
-            # Fetch conditions
-            reactionAnnot = ET.fromstring(reaction.getAnnotationString())[0]
-            conditions = self._parseConditions(reactionAnnot, enzmldoc)
-
             # Fetch Elements in SpeciesReference
             educts = self._getElements(
                 reaction.getListOfReactants(),
@@ -384,15 +405,14 @@ class EnzymeMLReader:
 
             # Create object
             enzyme_reaction = EnzymeReaction(
-                id=reaction.getId(),
-                meta_id='META_' + reaction.getId().upper(),
-                name=reaction.getName(),
-                reversible=reaction.getReversible(),
+                id=reaction.id,
+                meta_id='META_' + reaction.id.upper(),
+                name=reaction.name,
+                reversible=reaction.reversible,
                 educts=educts,
                 products=products,
                 modifiers=modifiers,
-                ontology=self._sboterm_to_enum(reaction.getSBOTerm()),
-                ** conditions
+                ontology=self._sboterm_to_enum(reaction.getSBOTerm())
             )
 
             # Check for kinetic model
@@ -406,47 +426,6 @@ class EnzymeMLReader:
             reaction_dict[enzyme_reaction.id] = enzyme_reaction
 
         return reaction_dict
-
-    @staticmethod
-    def _parseConditions(
-        reactionAnnot: ET.Element,
-        enzmldoc: 'EnzymeMLDocument'
-    ) -> dict[str, Union[str, float]]:
-        """Exracts the conditions present in the SBML reaction annotations.
-
-        Args:
-            reactionAnnot (ET.Element): The reaction annotation element.
-            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument against which the data will be validated.
-
-        Returns:
-            dict[str, Union[str, float]]: Mapping for the conditions.
-        """
-
-        # Get the conditions element
-        conditions = reactionAnnot[0]
-        condition_dict = {}
-
-        for condition in conditions:
-            # Sort all the conditions
-            if 'temperature' in condition.tag:
-
-                # Get temperature conditions
-                condition_dict['temperature'] = float(
-                    condition.attrib['value']
-                )
-
-                # Parse unit ID to Unit string
-                condition_dict['_temperature_unit_id'] = condition.attrib['unit']
-                condition_dict['temperature_unit'] = enzmldoc.getUnitString(
-                    condition_dict['_temperature_unit_id']
-                )
-
-            elif 'ph' in condition.tag:
-
-                # Get the pH value
-                condition_dict['ph'] = float(condition.attrib['value'])
-
-        return condition_dict
 
     def _getElements(
         self,
@@ -571,6 +550,8 @@ class EnzymeMLReader:
                 if column['type'] == 'time'
             ][0]
 
+            measurement_dict[measurement_id]._global_time_unit_id = time_unit_id
+
             # Create replicate objects
             for format in measurement_format:
 
@@ -579,30 +560,33 @@ class EnzymeMLReader:
                     # Get time course data
                     data = csvFile.iloc[:, int(format['index'])].tolist()
                     reactant_id = format['species']
-                    replicateID = format['replica']
+                    replicate_id = format['replica']
                     data_type = DataTypes(format['type'])
                     data_unit_id = format['unit']
+                    is_calculated = format['isCalculated']
 
                     replicate = Replicate(
-                        replicate_id=replicateID,
-                        reactant_id=reactant_id,
+                        id=replicate_id,
+                        species_id=reactant_id,
                         data_type=data_type,
                         measurement_id=measurement_id,
                         data_unit=enzmldoc.unit_dict[data_unit_id].name,
                         time_unit=enzmldoc.unit_dict[time_unit_id].name,
-                        _data_unit_id=data_unit_id,
-                        _time_unit_id=time_unit_id,
                         data=data,
-                        time=time
+                        time=time,
+                        is_calculated=is_calculated
                     )
 
+                    replicate._data_unit_id = data_unit_id
+                    replicate._time_unit_id = time_unit_id
+
                     measurement_dict[measurement_id].addReplicates(
-                        replicate
+                        replicate, log=False, enzmldoc=enzmldoc
                     )
 
         return measurement_dict
 
-    @staticmethod
+    @ staticmethod
     def _parseListOfFiles(data_annotation: ET.Element) -> dict[str, dict[str, str]]:
         """Extracts the list of files that are present in the annotation enzymeml:files.
 
@@ -666,8 +650,7 @@ class EnzymeMLReader:
 
         return (measurement_dict, measurement_files)
 
-    @ staticmethod
-    def _parseMeasurement(measurement: ET.Element, enzmldoc: 'EnzymeMLDocument') -> Measurement:
+    def _parseMeasurement(self, measurement: ET.Element, enzmldoc: 'EnzymeMLDocument') -> Measurement:
         """Extracts individual initial concentrations of a measurement.
 
         Args:
@@ -677,40 +660,85 @@ class EnzymeMLReader:
             Measurement: Initialized measurement object.
         """
 
+        # Get conditions (temp, ph)
+        temperature = measurement.attrib.get('temperature_value')
+        temperature_unit = measurement.attrib.get('temperature_unit')
+        ph = measurement.attrib.get('ph')
+
+        # Get the unit string of temp if given
+        if temperature_unit:
+            temperature_unit = enzmldoc.getUnitString(temperature_unit)
+
         # initialize Measurement object
         measurement_object = Measurement(
-            name=measurement.attrib['name']
+            name=measurement.attrib['name'],
+            temperature=temperature,
+            temperature_unit=temperature_unit,
+            ph=ph
         )
 
         measurement_object.id = measurement.attrib['id']
+        temperature_unit_id = measurement.attrib.get('temperature_unit')
+        measurement_object._temperature_unit_id = temperature_unit_id
 
-        for initConc in measurement:
-            value = float(initConc.attrib['value'])
+        for init_conc_element in measurement:
 
-            # Convert the unit ID to the corresponding SI string
-            unit_id = initConc.attrib['unit']
-            unit = enzmldoc.unit_dict[unit_id].name
+            params, unit_id = self._parse_init_conc_element(
+                init_conc_element, enzmldoc)
+            measurement_object.addData(**params, log=False)
 
-            reactant_id = None
-            protein_id = None
-
-            if 'reactant' in initConc.attrib.keys():
-                reactant_id = initConc.attrib['reactant']
-            elif 'protein' in initConc.attrib.keys():
-                protein_id = initConc.attrib['protein']
+            if params["reactant_id"]:
+                meas_data = measurement_object.getReactant(
+                    params["reactant_id"]
+                )
+            elif params["protein_id"]:
+                meas_data = measurement_object.getProtein(
+                    params["protein_id"]
+                )
             else:
-                raise KeyError(
-                    "Neither reactant or protein ID defined."
+                raise ValueError(
+                    "Neither 'reactant_id' nor 'protein_id' are defined"
                 )
 
-            measurement_object.addData(
-                init_conc=float(value),
-                unit=unit,
-                reactant_id=reactant_id,
-                protein_id=protein_id,
-            )
+            meas_data._unit_id = unit_id
 
         return measurement_object
+
+    @ staticmethod
+    def _parse_init_conc_element(element: ET.Element, enzmldoc):
+        """Parses initial concentration data of a measurement.
+
+        Args:
+            element (ET.Element): Element containing information about the initial concentration and species.
+
+        Raises:
+            KeyError: If there is neither a protein nor reactant ID.
+        """
+
+        value = float(element.attrib['value'])
+
+        # Convert the unit ID to the corresponding SI string
+        unit_id = element.attrib['unit']
+        unit = enzmldoc.unit_dict[unit_id].name
+
+        reactant_id = None
+        protein_id = None
+
+        if 'reactant' in element.attrib.keys():
+            reactant_id = element.attrib['reactant']
+        elif 'protein' in element.attrib.keys():
+            protein_id = element.attrib['protein']
+        else:
+            raise KeyError(
+                "Neither reactant or protein ID defined."
+            )
+
+        return {
+            "init_conc": float(value),
+            "unit": unit,
+            "reactant_id": reactant_id,
+            "protein_id": protein_id
+        }, unit_id
 
     def _getFiles(self, enzmldoc):
         """Extracts all added files fro the archive.

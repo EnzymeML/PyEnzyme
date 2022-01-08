@@ -10,16 +10,18 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
+import logging
 import pandas as pd
 
 from typing import Optional, TYPE_CHECKING, Union
 from dataclasses import dataclass
-from pydantic import PositiveFloat, validate_arguments, Field, PrivateAttr
+from pydantic import validate_arguments, Field, PrivateAttr
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
+from pyenzyme.utils.log import log_object
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
     deprecated_getter
@@ -30,6 +32,9 @@ if TYPE_CHECKING:  # pragma: no cover
 else:
     static_check_init_args = type_checking
 
+# Initialize the logger
+logger = logging.getLogger("pyenzyme")
+
 
 @static_check_init_args
 class Measurement(EnzymeMLBase):
@@ -37,6 +42,25 @@ class Measurement(EnzymeMLBase):
     name: str = Field(
         ...,
         description="Name of the measurement",
+    )
+
+    temperature: Optional[float] = Field(
+        None,
+        description="Numeric value of the temperature of the reaction.",
+        template_alias="Temperature value"
+    )
+
+    temperature_unit: Optional[str] = Field(
+        None,
+        description="Unit of the temperature of the reaction.",
+        regex=r"kelvin|Kelvin|k|K|celsius|Celsius|C|c"
+    )
+
+    ph: Optional[float] = Field(
+        None,
+        description="PH value of the reaction.",
+        inclusiveMinimum=0,
+        inclusiveMaximum=14
     )
 
     species_dict: dict[str, dict[str, MeasurementData]] = Field(
@@ -70,6 +94,8 @@ class Measurement(EnzymeMLBase):
         description="Unique identifier of the author.",
     )
 
+    # * Private attributes
+    _temperature_unit_id: str = PrivateAttr(None)
     _global_time_unit_id: str = PrivateAttr(None)
 
     # ! Utility methods
@@ -140,7 +166,7 @@ class Measurement(EnzymeMLBase):
         }
 
     @validate_arguments
-    def addReplicates(self, replicates: Union[list[Replicate], Replicate]) -> None:
+    def addReplicates(self, replicates: Union[list[Replicate], Replicate], enzmldoc, log: bool = True) -> None:
         """Adds a replicate to the corresponding measurementData object. This method is meant to be called if the measurement metadata of a reaction/species has already been done and replicate data has to be added afterwards. If not, use addData instead to introduce the species metadata.
 
         Args:
@@ -154,13 +180,19 @@ class Measurement(EnzymeMLBase):
         for replicate in replicates:
 
             # Check for the species type
-            species_id = replicate.reactant_id
+            species_id = replicate.species_id
             speciesType = "reactants" if species_id[0] == "s" else "proteins"
             speciesData = self.species_dict[speciesType]
 
             try:
 
                 data = speciesData[species_id]
+
+                replicate._data_unit_id = enzmldoc._convertToUnitDef(
+                    replicate.data_unit)
+                replicate._time_unit_id = enzmldoc._convertToUnitDef(
+                    replicate.time_unit)
+
                 data.addReplicate(replicate)
 
                 if len(self.global_time) == 0:
@@ -168,6 +200,15 @@ class Measurement(EnzymeMLBase):
                     # Add global time if this is the first replicate to be added
                     self.global_time = replicate.getData(sep=True)[0]
                     self.global_time_unit = (replicate.getTimeUnit())
+                    self._global_time_unit_id = enzmldoc._convertToUnitDef(
+                        replicate.getTimeUnit())
+
+                # Log Replicate creation
+                if log:
+                    log_object(logger, replicate)
+                    logger.debug(
+                        f"Added {type(replicate).__name__} '{replicate.id}' to data '{data.get_id()}' of measurement '{self.name}'"
+                    )
 
             except KeyError:
                 raise KeyError(
@@ -177,11 +218,12 @@ class Measurement(EnzymeMLBase):
     @validate_arguments
     def addData(
         self,
-        init_conc: float,
         unit: str,
+        init_conc: float = 0.0,
         reactant_id: Optional[str] = None,
         protein_id: Optional[str] = None,
-        replicates: list[Replicate] = []
+        replicates: list[Replicate] = [],
+        log: bool = True,
     ) -> None:
         """Adds data to the measurement object.
 
@@ -198,7 +240,8 @@ class Measurement(EnzymeMLBase):
             protein_id=protein_id,
             init_conc=init_conc,
             unit=unit,
-            replicates=replicates
+            replicates=replicates,
+            log=log
         )
 
     def _appendReactantData(
@@ -207,7 +250,8 @@ class Measurement(EnzymeMLBase):
         protein_id: Optional[str],
         init_conc: float,
         unit: str,
-        replicates: list[Replicate]
+        replicates: list[Replicate],
+        log: bool = True
     ) -> None:
 
         # Create measurement data class before sorting
@@ -216,7 +260,8 @@ class Measurement(EnzymeMLBase):
             protein_id=protein_id,
             init_conc=init_conc,
             unit=unit,
-            replicates=replicates
+            replicates=replicates,
+            measurement_id=self.id
         )
 
         if reactant_id:
@@ -226,6 +271,13 @@ class Measurement(EnzymeMLBase):
         else:
             raise ValueError(
                 "Please enter a reactant or protein ID to add measurement data"
+            )
+
+        # Log the new object
+        if log:
+            log_object(logger, measData)
+            logger.debug(
+                f"Added {type(measData).__name__} '{measData.get_id()}' to measurement '{self.name}'"
             )
 
     def updateReplicates(self, replicates: list[Replicate]) -> None:

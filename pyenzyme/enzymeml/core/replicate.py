@@ -32,15 +32,15 @@ else:
 @static_check_init_args
 class Replicate(EnzymeMLBase):
 
-    replicate_id: str = Field(
+    id: str = Field(
         ...,
         description="Unique identifier of the replicate",
     )
 
-    reactant_id: str = Field(
+    species_id: str = Field(
         ...,
-        description="Unique identifier of the reactant that has been measured.",
-        regex=r"s[\d]+"
+        description="Unique identifier of the species that has been measured.",
+        regex=r"[s|r|p][\d]+"
     )
 
     measurement_id: Optional[str] = Field(
@@ -105,7 +105,7 @@ class Replicate(EnzymeMLBase):
             timesteps = len(values["time"])
             if timesteps != len(data):
                 raise DataError(
-                    f"The number of steps provided for the data [{len(data)}] does not match the number of timesteps [{timesteps}]"
+                    f"The number of steps provided for the data [{len(data)}] does not match the number of timesteps [{timesteps}] for replicate '{values['id']}'"
                 )
 
         return data
@@ -120,11 +120,11 @@ class Replicate(EnzymeMLBase):
 
     @deprecated_getter("replicate_id")
     def getReplica(self):
-        return self.replicate_id
+        return self.id
 
-    @deprecated_getter("reactant_id")
+    @deprecated_getter("species_id")
     def getReactant(self):
-        return self.reactant_id
+        return self.species_id
 
     @deprecated_getter("data_type")
     def getType(self):

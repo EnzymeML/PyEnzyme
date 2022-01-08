@@ -13,6 +13,9 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 import pandas as pd
 import os
 import shutil
+import libsbml
+import tempfile
+import logging
 
 from libsbml import (
     SBMLDocument,
@@ -23,14 +26,12 @@ from libsbml import (
     SBMLWriter
 )
 
-import libsbml
-import tempfile
-
-from typing import Callable
+from typing import Callable, Optional
 from libcombine import CombineArchive, OmexDescription, KnownFormats, VCard
 
 from pyenzyme.enzymeml.core.unitdef import UnitDef
 from pyenzyme.enzymeml.core.vessel import Vessel
+from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
 from pyenzyme.enzymeml.core.protein import Protein
 from pyenzyme.enzymeml.core.reactant import Reactant
 from pyenzyme.enzymeml.core.replicate import Replicate
@@ -38,20 +39,24 @@ from pyenzyme.enzymeml.core.measurement import Measurement
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction, ReactionElement
 
+# Initialize the logger
+logger = logging.getLogger("pyenzyme")
+
 
 class EnzymeMLWriter:
 
     def __init__(self):
         self.namespace = "http://sbml.org/enzymeml/version2"
 
-    def toFile(self, enzmldoc, path: str, verbose: int = 1):
+    def toFile(self, enzmldoc, path: str, name: Optional[str] = None):
         '''
         Writes EnzymeMLDocument object to an .omex container
 
         Args:
-            EnzymeMLDocument enzmldoc: Previously created instance of an
-                                       EnzymeML document
-            String path: EnzymeML file is written to this destination
+            enzmldoc (String): Previously created instance of an EnzymeML document
+            path (String): EnzymeML file is written to this destination
+            name (String): Name of the target EnzymeML file. Defaults to 'None' and thus uses the doc name.
+
         '''
 
         self.path = os.path.normpath(path)
@@ -87,7 +92,7 @@ class EnzymeMLWriter:
         )
 
         # Write to OMEX
-        self._createArchive(enzmldoc, paths, verbose)
+        self._createArchive(enzmldoc, paths, name)
 
         shutil.rmtree(
             os.path.join(self.path, 'data'),
@@ -160,10 +165,11 @@ class EnzymeMLWriter:
         self._addUnits(model, enzmldoc.unit_dict)
         self._addVessel(model, enzmldoc.vessel_dict)
         self._addProteins(model, enzmldoc.protein_dict)
+        self._addComplex(model, enzmldoc.complex_dict)
         self._addReactants(model, enzmldoc.reactant_dict)
         self._addReactions(model, enzmldoc.reaction_dict)
 
-    def _createArchive(self, enzmldoc, listofPaths, verbose=1):
+    def _createArchive(self, enzmldoc, listofPaths, name: str = None):
 
         archive = CombineArchive()
 
@@ -173,6 +179,19 @@ class EnzymeMLWriter:
             "./experiment.xml",
             KnownFormats.lookupFormat("sbml"),
             True
+        )
+
+        # add logs to teh Archive
+        history_path = f'{self.path}/history.log'
+        with open(history_path, "w") as f:
+            f.write(enzmldoc.log.getvalue())
+
+        self.addFileToArchive(
+            archive=archive,
+            file_path=history_path,
+            targetPath="./history.log",
+            format=KnownFormats.lookupFormat("txt"),
+            description="History of the EnzymeML document"
         )
 
         # add metadata to the experiment file
@@ -232,7 +251,11 @@ class EnzymeMLWriter:
                     description=fileDescription
                 )
 
-        out_file = "%s.omex" % enzmldoc.getName().replace(' ', '_')
+        if name:
+            out_file = f"{name}.omex"
+        else:
+            out_file = f"{enzmldoc.getName().replace(' ', '_')}.omex"
+
         out_path = os.path.join(self.path, out_file)
 
         try:
@@ -246,8 +269,10 @@ class EnzymeMLWriter:
         if tmpFolder is not None:
             shutil.rmtree(tmpFolder, ignore_errors=True)
 
-        if verbose > 0:
-            print('\nArchive created:', out_file, '\n')
+        # Remove unused
+        os.remove(f'{self.path}/history.log')
+
+        print(f"\nArchive was written to {out_path}\n")
 
     @staticmethod
     def addFileToArchive(
@@ -321,10 +346,12 @@ class EnzymeMLWriter:
         for key, value in objectMapping.items():
             # "value" --> 10.00
             if hasattr(object, value):
-                node.addAttr(
-                    key,
-                    str(getattr(object, value))
-                )
+                attribute = getattr(object, value)
+                if attribute:
+                    node.addAttr(
+                        key,
+                        str(attribute)
+                    )
             else:
                 return 0
 
@@ -445,42 +472,41 @@ class EnzymeMLWriter:
             protein_dict (dict[str, Protein]): The EnzymeMLDocument proteins to be added to the SBML model.
         """
 
-        for protein_id, protein in protein_dict.items():
+        # EnzymeML attributes
+        proteinAttributes = {
+            'enzymeml:sequence': 'sequence',
+            'enzymeml:ECnumber': 'ecnumber',
+            'enzymeml:uniprotID': 'uniprotid',
+            'enzymeml:organism': 'organism'
+        }
 
-            species = model.createSpecies()
-            species.setId(protein_id)
-            species.setName(protein.name)
-            species.setMetaId(protein.meta_id)
-            species.setSBOTerm(protein.ontology)
-            species.setCompartment(protein.vessel_id)
-            species.setBoundaryCondition(protein.boundary)
-            species.setConstant(protein.constant)
-            species.setHasOnlySubstanceUnits(False)
+        for protein in protein_dict.values():
+            self._addSpecies(
+                obj=protein,
+                annotation_name="enzymeml:protein",
+                model=model,
+                optional_attributes=proteinAttributes
+            )
 
-            if protein.init_conc:
-                species.setSubstanceUnits(protein._unit_id)
-                species.setInitialConcentration(protein.init_conc)
+    def _addComplex(self, model: libsbml.Model, complex_dict: dict[str, Protein]) -> None:
+        """Converts EnzymeMLDocument proteins to SBML.
 
-            # EnzymeML annotation
-            proteinAnnotation = self.setupXMLNode('enzymeml:protein')
+        Args:
+            model (libsbml.Model): The SBML model the proteins are added to.
+            complex_dict (dict[str, Protein]): The EnzymeMLDocument complex to be added to the SBML model.
+        """
 
-            # EnzymeML attributes
-            proteinAttributes = {
-                'enzymeml:sequence': 'sequence',
-                'enzymeml:ECnumber': 'ecnumber',
-                'enzymeml:uniprotID': 'uniprotid',
-                'enzymeml:organism': 'organism'
-            }
+        complexAttributes = {
+            'enzymeml:participant': 'participants',
+        }
 
-            for attributeName, objectName in proteinAttributes.items():
-                self.appendOptionalAttribute(
-                    attributeName=attributeName,
-                    object=protein,
-                    objectName=objectName,
-                    annotationNode=proteinAnnotation
-                )
-
-            species.appendAnnotation(proteinAnnotation)
+        for complex in complex_dict.values():
+            self._addSpecies(
+                obj=complex,
+                annotation_name="enzymeml:complex",
+                model=model,
+                optional_attributes=complexAttributes
+            )
 
     def _addReactants(self, model: libsbml.Model, reactant_dict: dict[str, Reactant]):
         """Converts EnzymeMLDocument reactants to SBML.
@@ -490,41 +516,73 @@ class EnzymeMLWriter:
             reactant_dict (dict[str, Reactant]): The EnzymeMLDocument reactants to be added to the SBML model.
         """
 
-        for reactant_id, reactant in reactant_dict.items():
+        # EnzymeML attributes
+        reactantAttributes = {
+            'enzymeml:inchi': 'inchi',
+            'enzymeml:smiles': 'smiles'
+        }
 
-            species = model.createSpecies()
-            species.setId(reactant_id)
-            species.setName(reactant.name)
-            species.setMetaId(reactant.meta_id)
-            species.setSBOTerm(reactant.ontology)
-            species.setCompartment(reactant.vessel_id)
-            species.setBoundaryCondition(reactant.boundary)
-            species.setConstant(reactant.constant)
-            species.setHasOnlySubstanceUnits(False)
+        for reactant in reactant_dict.values():
+            self._addSpecies(
+                obj=reactant,
+                annotation_name="enzymeml:reactant",
+                model=model,
+                optional_attributes=reactantAttributes
+            )
 
-            if reactant.init_conc:
-                species.setSubstanceUnits(reactant._unit_id)
-                species.setInitialConcentration(reactant.init_conc)
+    def _addSpecies(
+        self,
+        obj: AbstractSpecies,
+        annotation_name: str,
+        model: libsbml.Model,
+        optional_attributes: dict[str, str]
+    ) -> None:
+        """Helper function to create any EnzymeML species from
 
-            # Controls if annotation will be added
-            reactantAnnotation = self.setupXMLNode('enzymeml:reactant')
+        Args:
+            obj (AbstractSpecies): Object containing the species informations.
+        """
 
-            # EnzymeML attributes
-            reactantAttributes = {
-                'enzymeml:inchi': 'inchi',
-                'enzymeml:smiles': 'smiles'
-            }
+        species = model.createSpecies()
+        species.setId(obj.id)
+        species.setName(obj.name)
+        species.setMetaId(obj.meta_id)
+        species.setSBOTerm(obj.ontology)
+        species.setCompartment(obj.vessel_id)
+        species.setBoundaryCondition(obj.boundary)
+        species.setConstant(obj.constant)
+        species.setHasOnlySubstanceUnits(False)
 
-            for attributeName, objectName in reactantAttributes.items():
-                self.appendOptionalAttribute(
-                    attributeName=attributeName,
-                    object=reactant,
-                    objectName=objectName,
-                    annotationNode=reactantAnnotation
-                )
+        if obj.init_conc:
+            species.setSubstanceUnits(obj._unit_id)
+            species.setInitialConcentration(obj.init_conc)
 
-            if reactantAnnotation.getNumChildren() > 0:
-                species.appendAnnotation(reactantAnnotation)
+        # Controls if annotation will be added
+        objAnnotation = self.setupXMLNode(annotation_name)
+
+        # EnzymeML attributes
+        for attributeName, objectName in optional_attributes.items():
+
+            # TODO more elegant way to handle complex parts
+            if isinstance(getattr(obj, objectName), list):
+                for id in getattr(obj, objectName):
+                    value = self.appendAttribute(
+                        attributeName,
+                        id
+                    )
+                    objAnnotation.addChild(value)
+
+                continue
+
+            self.appendOptionalAttribute(
+                attributeName=attributeName,
+                object=obj,
+                objectName=objectName,
+                annotationNode=objAnnotation
+            )
+
+        if objAnnotation.getNumChildren() > 0:
+            species.appendAnnotation(objAnnotation)
 
     def _addReactions(self, model: libsbml.Model, reaction_dict: dict[str, EnzymeReaction]):
         """Converts EnzymeMLDocument reactions to SBML.
@@ -592,12 +650,6 @@ class EnzymeMLWriter:
                 createFunction=reaction.createModifier,
             )
 
-            # Finally, add EnzymeML annotations if given
-            if conditionsAnnotation.getNumChildren() > 0:
-                reactionAnnotation.addChild(conditionsAnnotation)
-
-            reaction.appendAnnotation(reactionAnnotation)
-
     def writeElements(
         self,
         reaction_elements: list[ReactionElement],
@@ -641,8 +693,8 @@ class EnzymeMLWriter:
         )
 
         # Add attributes
-        column.addAttr('replica', replicate.replicate_id)
-        column.addAttr('species', replicate.reactant_id)
+        column.addAttr('replica', replicate.id)
+        column.addAttr('species', replicate.species_id)
         column.addAttr('type', replicate.data_type)
         column.addAttr('unit', replicate._data_unit_id)
         column.addAttr('index', str(self.index))
@@ -751,6 +803,20 @@ class EnzymeMLWriter:
             measurement_annot.addAttr('id', measurement_id)
             measurement_annot.addAttr('name', measurement.getName())
 
+            # TODO find a sustainable way
+            if measurement.temperature:
+                measurement_annot.addAttr(
+                    'temperature_unit', measurement._temperature_unit_id
+                )
+                measurement_annot.addAttr(
+                    'temperature_value', str(measurement.temperature)
+                )
+
+            if measurement.ph:
+                measurement_annot.addAttr(
+                    'ph', str(measurement.ph)
+                )
+
             formats.addChild(format_annot)
             files.addChild(file_annot)
             measurements.addChild(measurement_annot)
@@ -763,6 +829,33 @@ class EnzymeMLWriter:
         model.getListOfReactions().appendAnnotation(data_annotation)
 
         return paths
+
+    def _add_conditions(self, measurement: Measurement):
+        # Track conditions
+        conditionsAnnotation = self.setupXMLNode(
+            'enzymeml:conditions',
+            namespace=False
+        )
+
+        conditionsMapping = {
+            'enzymeml:temperature': {
+                'value': 'temperature',
+                'unit': '_temperature_unit_id'
+            },
+            'enzymeml:ph': {
+                'value': 'ph'
+            }
+        }
+
+        for attributeName, objectMapping in conditionsMapping.items():
+            self.appendMultiAttributes(
+                attributeName=attributeName,
+                object=measurement,
+                objectMapping=objectMapping,
+                annotationNode=conditionsAnnotation
+            )
+
+        return conditionsAnnotation
 
     def writeMeasurementData(
         self,
@@ -820,7 +913,7 @@ class EnzymeMLWriter:
             species_type (str): The type of species in the measurement_data_dict.
         """
 
-        for species_id, data in measurement_data_dict.items():
+        for species_id, measurement_data in measurement_data_dict.items():
 
             # Create the initConc annotation
             initConcAnnot = self.setupXMLNode(
@@ -828,8 +921,8 @@ class EnzymeMLWriter:
             )
 
             initConcAnnot.addAttr(f'{species_type}', species_id)
-            initConcAnnot.addAttr('value', str(data.init_conc))
-            initConcAnnot.addAttr('unit', data._unit_id)
+            initConcAnnot.addAttr('value', str(measurement_data.init_conc))
+            initConcAnnot.addAttr('unit', measurement_data._unit_id)
 
             measurement_annot.addChild(initConcAnnot)
 
@@ -865,8 +958,8 @@ class EnzymeMLWriter:
 
             # Extract series data
             header_info = "/".join([
-                replicate.replicate_id,
-                replicate.reactant_id,
+                replicate.id,
+                replicate.species_id,
                 replicate.data_type.value
             ])
 

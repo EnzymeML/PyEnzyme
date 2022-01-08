@@ -13,11 +13,14 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 import os
 import re
 import json
+import logging
 import pandas as pd
 
 from pydantic import Field, validator, PositiveInt, validate_arguments
 from typing import TYPE_CHECKING, Optional, Union
+from texttable import Texttable
 from dataclasses import dataclass
+from io import StringIO
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
@@ -25,6 +28,7 @@ from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
 from pyenzyme.enzymeml.core.reactant import Reactant
 from pyenzyme.enzymeml.core.creator import Creator
 from pyenzyme.enzymeml.core.protein import Protein
+from pyenzyme.enzymeml.core.complex import Complex
 from pyenzyme.enzymeml.core.vessel import Vessel
 from pyenzyme.enzymeml.core.unitdef import UnitDef
 from pyenzyme.enzymeml.core.measurement import Measurement
@@ -37,19 +41,21 @@ from pyenzyme.enzymeml.tools.templatereader import read_template
 from pyenzyme.enzymeml.databases.dataverse import uploadToDataverse
 
 from pyenzyme.enzymeml.core.ontology import EnzymeMLPart, SBOTerm
+from pyenzyme.utils.log import setup_custom_logger, log_object
 from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
     deprecated_getter
 )
 
-from texttable import Texttable
-
 
 if TYPE_CHECKING:  # pragma: no cover
     static_check_init_args = dataclass
 else:
     static_check_init_args = type_checking
+
+# Initialize the logger
+logger = logging.getLogger("pyenzyme")
 
 
 @static_check_init_args
@@ -98,11 +104,6 @@ class EnzymeMLDocument(EnzymeMLBase):
         description="Date the EnzymeML document was modified.",
     )
 
-    vessel: Optional[Vessel] = Field(
-        None,
-        description="The vessel in which the experiment was performed.",
-    )
-
     creator_dict: dict[str, Creator] = Field(
         alias="creators",
         default_factory=dict,
@@ -119,6 +120,12 @@ class EnzymeMLDocument(EnzymeMLBase):
         alias="proteins",
         default_factory=dict,
         description="Dictionary mapping from protein IDs to protein describing objects.",
+    )
+
+    complex_dict: dict[str, Complex] = Field(
+        alias="complexes",
+        default_factory=dict,
+        description="Dictionary mapping from complex IDs to complex describing objects.",
     )
 
     reactant_dict: dict[str, Reactant] = Field(
@@ -151,7 +158,25 @@ class EnzymeMLDocument(EnzymeMLBase):
         description="Dictionary mapping from protein IDs to protein describing objects.",
     )
 
+    log: str = Field(
+        default="",
+        exclude=True
+    )
+
     # ! Validators
+    @validator("log")
+    def start_logger(cls, logs: str, values: dict):
+        """Starts a logger instance for the document"""
+
+        # Initialite the log stream
+        log_stream = StringIO()
+        log_stream.write(logs)
+
+        # Initialize the global logger
+        logger = setup_custom_logger("pyenzyme", log_stream)
+
+        return log_stream
+
     @validator("pubmedid")
     def add_identifier(cls, pubmedid: Optional[str]):
         """Adds an identifiers.org link in front of the pubmed ID if not given"""
@@ -192,7 +217,84 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return EnzymeMLReader().readFromFile(path)
 
-    def toFile(self, path: str, verbose: PositiveInt = 1):
+    @classmethod
+    def fromJSON(cls, json_string: str):
+
+        # First, use PyDantic to get a raw model
+        enzmldoc = cls.parse_obj(json.loads(json_string))
+
+        # Recreate to get unitDefs and logs
+        nu_enzmldoc = cls(
+            name=enzmldoc.name,
+            level=enzmldoc.level,
+            version=enzmldoc.version,
+            pubmedid=enzmldoc.pubmedid,
+            url=enzmldoc.url,
+            doi=enzmldoc.doi,
+            created=enzmldoc.created,
+            modified=enzmldoc.modified
+        )
+
+        # Creators
+        for creator in enzmldoc.creator_dict.values():
+            nu_enzmldoc.addCreator(creator)
+
+        # Vessels
+        for vessel in enzmldoc.vessel_dict.values():
+            nu_enzmldoc.addVessel(vessel)
+
+        # Proteins
+        for protein in enzmldoc.protein_dict.values():
+            nu_enzmldoc.addProtein(protein)
+
+        # Reactants
+        for reactant in enzmldoc.reactant_dict.values():
+            nu_enzmldoc.addReactant(reactant)
+
+        # Complexes
+        for complex in enzmldoc.complex_dict.values():
+            nu_enzmldoc.addComplex(complex)
+
+        # Reactions
+        for reaction in enzmldoc.reaction_dict.values():
+            nu_enzmldoc.addReaction(reaction)
+
+        # Measurements
+        for measurement in enzmldoc.measurement_dict.values():
+            nu_measurement = Measurement(
+                name=measurement.name,
+                temperature=measurement.temperature,
+                temperature_unit=measurement.temperature_unit,
+                ph=measurement.ph,
+                global_time_unit=measurement.global_time_unit
+            )
+
+            cls._parse_measurement_data(measurement, 'proteins',
+                                        nu_measurement, nu_enzmldoc)
+            cls._parse_measurement_data(measurement, 'reactants',
+                                        nu_measurement, nu_enzmldoc)
+
+            nu_enzmldoc.addMeasurement(nu_measurement)
+
+        return nu_enzmldoc
+
+    @staticmethod
+    def _parse_measurement_data(measurement, key, nu_measurement, enzmldoc):
+        """Parses measurement data for the fromJSON method"""
+
+        for measurement_data in measurement.species_dict[key].values():
+            nu_measurement.addData(
+                init_conc=measurement_data.init_conc,
+                unit=measurement_data.unit,
+                protein_id=measurement_data.protein_id,
+                reactant_id=measurement_data.reactant_id
+            )
+
+            nu_measurement.addReplicates(
+                measurement_data.replicates, enzmldoc=enzmldoc
+            )
+
+    def toFile(self, path: str, name: Optional[str] = None):
         """Saves an EnzymeML document to an OMEX container at the specified path
 
         Args:
@@ -200,7 +302,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             verbose (PositiveInt, optional): Level of verbosity, in order to print a message and the resulting path. Defaults to 1.
         """
 
-        EnzymeMLWriter().toFile(self, path, verbose=verbose)
+        EnzymeMLWriter().toFile(self, path, name)
 
     def toXMLString(self):
         """Generates an EnzymeML XML string"""
@@ -397,12 +499,18 @@ class EnzymeMLDocument(EnzymeMLBase):
         """
 
         # Generate ID
-        creator_id = self._generateID(prefix="a", dictionary=self.creator_dict)
+        creator.id = self._generateID(prefix="a", dictionary=self.creator_dict)
 
         # Add to the document
-        self.creator_dict[creator_id] = creator
+        self.creator_dict[creator.id] = creator
 
-        return creator_id
+        # Log creator object
+        log_object(logger, creator)
+        logger.debug(
+            f"Added {type(creator).__name__} ({creator.id}) '{creator.family_name}' to document '{self.name}'"
+        )
+
+        return creator.id
 
     @ validate_arguments
     def addVessel(self, vessel: Vessel, use_parser: bool = True) -> str:
@@ -461,12 +569,32 @@ class EnzymeMLDocument(EnzymeMLBase):
             use_parser=use_parser
         )
 
+    @ validate_arguments
+    def addComplex(self, complex: Complex, use_parser: bool = True) -> str:
+        """Adds a Complex object to the EnzymeML document.
+
+        Args:
+            complex (Complex): Complex object to be added to the document.
+            use_parser (bool, optional): Whether to user the unit parser or not. Defaults to True.
+
+        Returns:
+            str: Unique internal identifier of the complex.
+        """
+
+        return self._addSpecies(
+            species=complex,
+            prefix="c",
+            dictionary=self.complex_dict,
+            use_parser=use_parser
+        )
+
     def _addSpecies(
         self,
         species: Union[AbstractSpecies, Vessel],
         prefix: str,
         dictionary: dict,
-        use_parser: bool = True
+        use_parser: bool = True,
+        log: bool = True
     ) -> str:
         """Helper function to add any specific species to the EnzymeML document.
 
@@ -494,8 +622,16 @@ class EnzymeMLDocument(EnzymeMLBase):
             species._unit_id = species.unit
             species.unit = self.getUnitString(species._unit_id)
 
+        # Log creation of the object
+        log_object(logger, species)
+
         # Add species to dictionary
         dictionary[species.id] = species
+
+        # Log the addition
+        logger.debug(
+            f"Added {type(species).__name__} ({species.id}) '{species.name}' to document '{self.name}'"
+        )
 
         return species.id
 
@@ -520,7 +656,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         reaction.id = self._generateID("r", self.reaction_dict)
         reaction.meta_id = f"METAID_{reaction.id.upper()}"
 
-        if use_parser:
+        if use_parser and reaction.temperature:
             # Reset temperature for SBML compliance to Kelvin
             reaction.temperature = (
                 reaction.temperature + 273.15
@@ -532,7 +668,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             reaction._temperature_unit_id = self._convertToUnitDef(
                 reaction.temperature_unit
             )
-        else:
+        elif reaction.temperature:
             # Set the temperature unit to the actual string
             reaction._temperature_unit_id = reaction.temperature_unit
             reaction.temperature_unit = self.getUnitString(
@@ -555,6 +691,12 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         # Finally add the reaction to the document
         self.reaction_dict[reaction.id] = reaction
+
+        # Log the object
+        log_object(logger, reaction)
+        logger.debug(
+            f"Added {type(reaction).__name__} ({reaction.id}) '{reaction.name}' to document '{self.name}'"
+        )
 
         return reaction.id
 
@@ -662,6 +804,12 @@ class EnzymeMLDocument(EnzymeMLBase):
         # Add it to the EnzymeMLDocument
         self.measurement_dict[measurement.id] = measurement
 
+        # Log the object
+        log_object(logger, measurement)
+        logger.debug(
+            f"Added {type(measurement).__name__} ({measurement.id}) '{measurement.name}' to document '{self.name}'"
+        )
+
         return measurement.id
 
     def _convertMeasurementUnits(self, measurement: Measurement) -> None:
@@ -672,9 +820,16 @@ class EnzymeMLDocument(EnzymeMLBase):
         """
 
         # Update global time of the measurement
-        measurement._global_time_unit_id = self._convertToUnitDef(
-            measurement.global_time_unit
-        )
+        if measurement.global_time:
+            measurement._global_time_unit_id = self._convertToUnitDef(
+                measurement.global_time_unit
+            )
+
+        # Update temperature unit of the measurement
+        if measurement.temperature_unit:
+            measurement._temperature_unit_id = self._convertToUnitDef(
+                measurement.temperature_unit
+            )
 
         def update_dict_units(measurement_data_dict: dict[str, MeasurementData]) -> None:
             """Helper function to update units"""
@@ -745,7 +900,11 @@ class EnzymeMLDocument(EnzymeMLBase):
             SpeciesNotFoundError: Raised when a species is not defined in the EnzymeML document.
         """
 
-        all_species = {**self.reactant_dict, **self.protein_dict}
+        all_species = {
+            **self.reactant_dict,
+            **self.protein_dict,
+            **self.complex_dict
+        }
 
         if species_id not in all_species.keys():
 
@@ -753,7 +912,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             species = self._getSpecies(
                 id=species_id,
                 dictionary=all_species,
-                element_type="Proteins/Reactants"
+                element_type="Proteins/Reactants/Complexes"
             )
 
             # Use the EnzymeMLPart Enum to derive the correct place
@@ -979,6 +1138,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             **self.vessel_dict,
             **self.reactant_dict,
             **self.protein_dict,
+            **self.complex_dict,
             **self.reaction_dict
         }
 

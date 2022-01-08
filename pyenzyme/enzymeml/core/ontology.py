@@ -34,6 +34,11 @@ class SBOTerm(str, Enum):
     NON_ESSENTIAL_ACTIVATOR = "SBO:0000462"
     POTENTIATOR = "SBO:0000021"
 
+    # Complexes
+    MACROMOLECULAR_COMPLEX = "SBO:0000296"
+    PROTEIN_COMPLEX = "SBO:0000297"
+    DIMER = "SBO:0000607"
+
     # Kinetic models
     MICHAELIS_MENTEN = "SBO:0000028"
 
@@ -59,6 +64,9 @@ class EnzymeMLPart(str, Enum):
     SMALL_MOLECULE = "reactant_dict"
     ION = "reactant_dict"
     RADICAL = "reactant_dict"
+    MACROMOLECULAR_COMPLEX = "complex_dict"
+    PROTEIN_COMPLEX = "complex_dict"
+    DIMER = "complex_dict"
 
     BLANK = "blank"
 

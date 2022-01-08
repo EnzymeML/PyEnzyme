@@ -23,7 +23,7 @@ from typing import Optional, TYPE_CHECKING
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 
 from pyenzyme.enzymeml.core.replicate import Replicate
-from pyenzyme.enzymeml.core.exceptions import IdentifierError
+from pyenzyme.enzymeml.core.exceptions import MeasurementDataSpeciesIdentifierError
 from pyenzyme.enzymeml.core.unitdef import UnitDef
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
@@ -80,14 +80,11 @@ class MeasurementData(EnzymeMLBase):
         reactant_id = values.get("reactant_id")
 
         if reactant_id is None and protein_id is None:
-            raise IdentifierError(
-                "Neither a reactant nor protein identifier has been provided. Please specify either one or the other."
-            )
+            raise MeasurementDataSpeciesIdentifierError()
 
         elif reactant_id and protein_id:
-            raise IdentifierError(
-                "Both a reactant and protein identifier have been provided. Please specify either one or the other"
-            )
+            raise MeasurementDataSpeciesIdentifierError(
+                both=[reactant_id, protein_id])
 
         return protein_id
 
@@ -165,6 +162,16 @@ class MeasurementData(EnzymeMLBase):
     def setMeasurementIDs(self, id: str) -> None:
         for replicate in self.replicates:
             replicate.measurement_id = id
+
+    def get_id(self) -> str:
+        """Internal usage to get IDs from objects without ID attribute"""
+
+        if self.reactant_id:
+            return self.reactant_id
+        elif self.protein_id:
+            return self.protein_id
+        else:
+            raise AttributeError("Neither reactant nor protein ID are given.")
 
     @ deprecated_getter("reactant_id")
     def getReactantID(self) -> Optional[str]:
