@@ -1,11 +1,20 @@
 import os
 
-from fastapi import FastAPI, UploadFile, File
-from starlette.responses import FileResponse, RedirectResponse
+from fastapi import FastAPI, UploadFile, File, Request
+from starlette.responses import FileResponse, JSONResponse
 from starlette.background import BackgroundTasks
 
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.measurement import Measurement
+from pyenzyme.enzymeml.core.exceptions import (
+    MeasurementDataSpeciesIdentifierError,
+    ECNumberError,
+    ChEBIIdentifierError,
+    DataError,
+    SpeciesNotFoundError,
+    UniProtIdentifierError,
+    ParticipantIdentifierError
+)
 
 app = FastAPI(title="PyEnzyme REST-API", version="1.2", docs_url="/")
 
@@ -26,72 +35,43 @@ def remove_file(path: str) -> None:
 )
 async def create_EnzymeML(enzmldoc: EnzymeMLDocument, background_tasks: BackgroundTasks):
 
-    def _convertUnits(dictionary: dict, key: str):
-        """Converts all units to unit_ids and stores them in the model"""
-        for obj in dictionary.values():
-            unit_string = obj.__dict__.get(key.replace("_id", "")[1::])
-            obj.__setattr__(
-                key,
-                enzmldoc._convertToUnitDef(unit_string)
-            )
-
-    # Convert all units
-    _convertUnits(enzmldoc.vessel_dict, "_unit_id")
-    _convertUnits(enzmldoc.protein_dict, "_unit_id")
-    _convertUnits(enzmldoc.reactant_dict, "_unit_id")
-    _convertUnits(enzmldoc.reaction_dict, "_temperature_unit_id")
-
-    # Convert all kinetic parameters
-    for reaction in enzmldoc.reaction_dict.values():
-        if reaction.model is None:
-            continue
-
-        params = {
-            param.name: param
-            for param in reaction.model.parameters
-        }
-
-        _convertUnits(params, "_unit_id")
-
-    # Convert measurment units
-    for measurement in enzmldoc.measurement_dict.values():
-        measurement._global_time_unit_id = enzmldoc._convertToUnitDef(
-            measurement.global_time_unit
-        )
-
-        proteins = measurement.getProteins()
-        reactants = measurement.getReactants()
-
-        _convertUnits({**proteins, **reactants}, "_unit_id")
-
-        # Convert replicates
-        all_replicates = {
-            replicate.replicate_id: replicate
-            for measurement_data in {**proteins, **reactants}.values()
-            for replicate in measurement_data.replicates
-        }
-
-        _convertUnits(all_replicates, "_data_unit_id")
-        _convertUnits(all_replicates, "_time_unit_id")
+    # Recreate the EnzymeML document
+    nu_enzmldoc = EnzymeMLDocument.fromJSON(enzmldoc.json())
 
     # Write the new EnzymeML file
+    dirpath = "."
+    file_name = f"{nu_enzmldoc.name.replace(' ', '_')}.omex"
+    file_path = os.path.join(
+        dirpath,
+        file_name
+    )
+
+    nu_enzmldoc.toFile(dirpath, name=nu_enzmldoc.name)
+
     try:
-        dirpath = "."
-        file_name = f"{enzmldoc.name.replace(' ', '_')}.omex"
-        file_path = os.path.join(
-            dirpath,
-            file_name
-        )
+        response = FileResponse(file_path, filename=file_name)
 
-        enzmldoc.toFile(dirpath)
-
-        return FileResponse(file_path, filename=file_name)
+        return response
 
     except Exception as e:
-        return str(e)
+        raise
 
     finally:
         background_tasks.add_task(remove_file, path=file_name)
+
+
+def parse_measurement_data(measurement, key, nu_measurement, enzmldoc):
+    for measurement_data in measurement.species_dict[key].values():
+        nu_measurement.addData(
+            init_conc=measurement_data.init_conc,
+            unit=measurement_data.unit,
+            protein_id=measurement_data.protein_id,
+            reactant_id=measurement_data.reactant_id
+        )
+
+        nu_measurement.addReplicates(
+            measurement_data.replicates, enzmldoc=enzmldoc
+        )
 
 
 @app.post(
@@ -114,6 +94,7 @@ async def read_enzymeml(background_tasks: BackgroundTasks, omex_archive: UploadF
         return enzmldoc.dict(
             exclude_none=True,
             exclude={
+                "log": ...,
                 "unit_dict": ...,
                 "file_dict": ...,
                 "protein_dict":
@@ -232,3 +213,75 @@ async def convert_template(background_tasks: BackgroundTasks, enzymeml_template:
 
     finally:
         background_tasks.add_task(remove_file, path=enzml_name)
+
+# * Exception handlers
+
+
+@app.exception_handler(MeasurementDataSpeciesIdentifierError)
+async def handle_meas_species_id_error(req: Request, exc: MeasurementDataSpeciesIdentifierError):
+    return JSONResponse(
+        status_code=406,
+        content={
+            "message": str(exc)
+        }
+    )
+
+
+@app.exception_handler(ECNumberError)
+async def handle_ecnumber_error(req: Request, exc: ECNumberError):
+    return JSONResponse(
+        status_code=406,
+        content={
+            "message": str(exc)
+        }
+    )
+
+
+@app.exception_handler(ChEBIIdentifierError)
+async def handle_chebi_error(req: Request, exc: ChEBIIdentifierError):
+    return JSONResponse(
+        status_code=406,
+        content={
+            "message": str(exc)
+        }
+    )
+
+
+@app.exception_handler(DataError)
+async def handle_data_error(req: Request, exc: DataError):
+    return JSONResponse(
+        status_code=406,
+        content={
+            "message": str(exc)
+        }
+    )
+
+
+@app.exception_handler(SpeciesNotFoundError)
+async def handle_species_error(req: Request, exc: SpeciesNotFoundError):
+    return JSONResponse(
+        status_code=406,
+        content={
+            "message": str(exc)
+        }
+    )
+
+
+@app.exception_handler(UniProtIdentifierError)
+async def handle_uniprotid_error(req: Request, exc: UniProtIdentifierError):
+    return JSONResponse(
+        status_code=406,
+        content={
+            "message": str(exc)
+        }
+    )
+
+
+@app.exception_handler(ParticipantIdentifierError)
+async def handle_participant_error(req: Request, exc: ParticipantIdentifierError):
+    return JSONResponse(
+        status_code=406,
+        content={
+            "message": str(exc)
+        }
+    )

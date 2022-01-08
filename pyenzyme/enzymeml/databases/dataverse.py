@@ -136,7 +136,8 @@ def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":
         }
 
         # Apply corrections
-        params["temperature_unit"] = "Kelvin" if params["temperature_unit"] == "K" else "Celsius"
+        if params.get("temperature_unit"):
+            params["temperature_unit"] = "Kelvin" if params["temperature_unit"] == "K" else "Celsius"
 
         # Extract al elements present in the reaction
         educts = [

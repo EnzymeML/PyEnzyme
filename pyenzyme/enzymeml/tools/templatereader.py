@@ -169,8 +169,8 @@ def read_template(path: str, enzmldoc):
             if row_values:
                 # Create Replicate
                 replicate = Replicate(
-                    replicate_id=f"replica_{replicate_index}_{reactant_name}_{experiment_id}",
-                    reactant_id=reactant_id,
+                    id=f"replica_{replicate_index}_{reactant_name}_{experiment_id}",
+                    species_id=reactant_id,
                     data_type=type_mapping[row["Type"]],
                     data_unit=reactant_unit,
                     time_unit=time_unit,
@@ -180,7 +180,7 @@ def read_template(path: str, enzmldoc):
 
                 replicate_index += 1
 
-                measurement.addReplicates(replicate)
+                measurement.addReplicates(replicate, enzmldoc)
 
         # Finally, add measurement to the document
         enzmldoc.addMeasurement(measurement)
