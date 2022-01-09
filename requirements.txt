@@ -13,3 +13,4 @@ fastapi
 uvicorn
 easyDataverse
 pyDaRUS
+openpyxl
