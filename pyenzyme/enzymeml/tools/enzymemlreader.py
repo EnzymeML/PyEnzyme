@@ -389,18 +389,22 @@ class EnzymeMLReader:
         # parse annotations and filter replicates
         for reaction in reactionsList:
 
+            # Fetch conditions
+            reactionAnnot = ET.fromstring(reaction.getAnnotationString())[0]
+            conditions = self._parseConditions(reactionAnnot, enzmldoc)
+
             # Fetch Elements in SpeciesReference
             educts = self._getElements(
-                reaction.getListOfReactants(),
+                reaction.getListOfReactants(), ontology=SBOTerm.SUBSTRATE
             )
 
             products = self._getElements(
-                reaction.getListOfProducts(),
+                reaction.getListOfProducts(), ontology=SBOTerm.PRODUCT
             )
 
             modifiers = self._getElements(
                 reaction.getListOfModifiers(),
-                modifiers=True
+                modifiers=True, ontology=SBOTerm.CATALYST
             )
 
             # Create object
@@ -412,7 +416,8 @@ class EnzymeMLReader:
                 educts=educts,
                 products=products,
                 modifiers=modifiers,
-                ontology=self._sboterm_to_enum(reaction.getSBOTerm())
+                ontology=self._sboterm_to_enum(reaction.getSBOTerm()),
+                **conditions
             )
 
             # Check for kinetic model
@@ -427,10 +432,50 @@ class EnzymeMLReader:
 
         return reaction_dict
 
+    @staticmethod
+    def _parseConditions(
+        reactionAnnot: ET.Element,
+        enzmldoc: 'EnzymeMLDocument'
+    ) -> dict[str, Union[str, float]]:
+        """Exracts the conditions present in the SBML reaction annotations.
+        Args:
+            reactionAnnot (ET.Element): The reaction annotation element.
+            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument against which the data will be validated.
+        Returns:
+            dict[str, Union[str, float]]: Mapping for the conditions.
+        """
+
+        # Get the conditions element
+        conditions = reactionAnnot[0]
+        condition_dict = {}
+
+        for condition in conditions:
+            # Sort all the conditions
+            if 'temperature' in condition.tag:
+
+                # Get temperature conditions
+                condition_dict['temperature'] = float(
+                    condition.attrib['value']
+                )
+
+                # Parse unit ID to Unit string
+                condition_dict['_temperature_unit_id'] = condition.attrib['unit']
+                condition_dict['temperature_unit'] = enzmldoc.getUnitString(
+                    condition_dict['_temperature_unit_id']
+                )
+
+            elif 'ph' in condition.tag:
+
+                # Get the pH value
+                condition_dict['ph'] = float(condition.attrib['value'])
+
+        return condition_dict
+
     def _getElements(
         self,
         species_refs: list[libsbml.SpeciesReference],
-        modifiers: bool = False
+        ontology: SBOTerm,
+        modifiers: bool = False,
     ) -> list[ReactionElement]:
         """Extracts the speciesReference objects from the associated list and converts them to ReactionElements
 
@@ -448,9 +493,10 @@ class EnzymeMLReader:
             species_id = species_ref.getSpecies()
             stoichiometry = 1.0 if modifiers else species_ref.getStoichiometry()
             constant = True if modifiers else species_ref.getConstant()
-            ontology = SBOTerm(
-                libsbml.SBO_intToString(species_ref.getSBOTerm())
-            )
+            sbo_term = libsbml.SBO_intToString(species_ref.getSBOTerm())
+
+            if sbo_term:
+                ontology = SBOTerm(sbo_term)
 
             reaction_elements.append(
                 ReactionElement(
