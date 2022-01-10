@@ -11,6 +11,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 import logging
+import re
 
 from typing import List, Optional, TYPE_CHECKING
 from dataclasses import dataclass
@@ -396,6 +397,54 @@ class EnzymeReaction(EnzymeMLBase):
             f"Added {type(element).__name__} '{element.species_id}' to reaction '{self.name}' {list_name}"
         )
 
+    def addFromEquation(self, reaction_equation: str, enzmldoc) -> None:
+        """Parses a reaction equation string and adds it to the model.
+
+        Args:
+            reaction_equation (str): Strign representing th reaction equation, following the schem r''
+            enzmldoc ([type]): [description]
+        """
+
+        # Split reaction is educts and products
+        if "->" in reaction_equation:
+            educts, products = reaction_equation.split(" -> ")
+        elif "<=>" in reaction_equation:
+            educts, products = reaction_equation.split(" <=> ")
+        else:
+            raise ValueError(
+                "Neither '->' nor '<=>' were found in the reaction euqation, but are essential to distinguish educt from product side."
+            )
+
+        # Parse each side of the reaction
+        self._parse_equation_side(educts, enzmldoc, self.addEduct)
+        self._parse_equation_side(products, enzmldoc, self.addProduct)
+
+    @staticmethod
+    def _parse_equation_side(elements: str, enzmldoc, fun):
+        """Parses a side from a reaction equation."""
+
+        # Setup Regex
+        regex = r"(^\d*[.,]\d*)?\s?(.*)"
+        regex = re.compile(regex)
+
+        for element in elements.split(" + "):
+            stoichiometry, species = regex.findall(element)[0]
+
+            if len(stoichiometry) == 0:
+                stoichiometry = 1.0
+
+            if re.match(r"^[p|s|c]\d*$", species):
+                species_id = species
+            else:
+                species_id = enzmldoc.getAny(species, by_id=False).id
+
+            # Add it to the reaction
+            fun(
+                species_id=species_id,
+                stoichiometry=float(stoichiometry),
+                enzmldoc=enzmldoc
+            )
+
     def setModel(self, model: KineticModel, enzmldoc) -> None:
         """Sets the kinetic model of the reaction and in addition converts all units to UnitDefs.
 
@@ -418,7 +467,76 @@ class EnzymeReaction(EnzymeMLBase):
 
         self.model = model
 
+    # ! Utilities
+    def get_reaction_scheme(self, by_name: bool = False, enzmldoc=None):
+
+        if by_name and enzmldoc is None:
+            raise ValueError(
+                "Please provide an EnzymeMLDocument if the reaction schem should include names")
+
+        educts = self._summarize_elements(self.educts, by_name, enzmldoc)
+        products = self._summarize_elements(self.products, by_name, enzmldoc)
+        modifiers = self._summarize_elements(
+            self.modifiers, by_name, enzmldoc).replace(" + ", ", ")
+
+        if modifiers:
+            return f"{self.name}:\n{educts} -> {products}\nModifiers: {modifiers}\n"
+        else:
+            return f"{self.name}:\n{educts} -> {products}\n"
+
+    def _summarize_elements(self, elements: list, by_name, enzmldoc) -> str:
+        """Parses all reaction elements of a list to a string"""
+
+        if by_name is False:
+            return " + ".join([
+                f"{element.stoichiometry} {element.species_id}"
+                for element in elements
+            ])
+        else:
+            return " + ".join([
+                f"{element.stoichiometry} {enzmldoc.getAny(element.species_id).name}"
+                for element in elements
+            ])
+
+    # ! Initializers
+    @classmethod
+    def fromEquation(cls, equation: str, name: str, enzmldoc):
+        """Creates an EnzymeReaction object from a reaction equation.
+
+        Please make sure that the equation follows either of the following patterns:
+
+            '1.0 Substrate -> 1.0 Product' (for irreversible)
+
+            or
+
+            '1.0 Substrate <=> 1.0 Product' (for reversible)
+
+        Args:
+            equation (str): Reaction equation with educt and product sides.
+            name (str): Name of the reaction.
+            reversible (bool): If the reaction is reversible or not. Defaults
+            enzmldoc ([type]): Used to validate species IDs.
+        """
+
+        if "<=>" in equation:
+            reversible = True
+        elif "->" in equation:
+            reversible = False
+        else:
+            raise ValueError(
+                "Neither '->' nor '<=>' were found in the reaction euqation, but are essential to distinguish educt from product side."
+            )
+
+        # Initialize reaction object
+        reaction = cls(name=name, reversible=reversible)
+
+        # Parse the reaction equation
+        reaction.addFromEquation(equation, enzmldoc)
+
+        return reaction
+
     # ! Getters (old)
+
     def getTemperature(self) -> float:
         raise NotImplementedError(
             "Temperature is now part of measurements."
@@ -434,34 +552,34 @@ class EnzymeReaction(EnzymeMLBase):
             "Ph is now part of measurements."
         )
 
-    @deprecated_getter("name instead")
+    @ deprecated_getter("name instead")
     def getName(self) -> str:
         return self.name
 
-    @deprecated_getter("reveserible")
+    @ deprecated_getter("reveserible")
     def getReversible(self) -> bool:
         return self.reversible
 
-    @deprecated_getter("id")
+    @ deprecated_getter("id")
     def getId(self) -> Optional[str]:
         return self.id
 
-    @deprecated_getter("meta_id")
+    @ deprecated_getter("meta_id")
     def getMetaid(self) -> Optional[str]:
         return self.meta_id
 
-    @deprecated_getter("model")
+    @ deprecated_getter("model")
     def getModel(self) -> Optional[KineticModel]:
         return self.model
 
-    @deprecated_getter("educts")
+    @ deprecated_getter("educts")
     def getEducts(self):
         return self.educts
 
-    @deprecated_getter("products")
+    @ deprecated_getter("products")
     def getProducts(self):
         return self.products
 
-    @deprecated_getter("modifier")
+    @ deprecated_getter("modifier")
     def getModifiers(self):
         return self.modifiers
