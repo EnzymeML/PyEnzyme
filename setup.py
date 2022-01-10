@@ -37,11 +37,15 @@ setup(
         'fastapi',
         'uvicorn',
         'easyDataverse',
-        'pyDaRUS'
+        'pyDaRUS',
+        'openpyxl',
     ],
     extras_require={
         'test': [
             'pytest'
+        ],
+        'examples': [
+            'xmltodict'
         ]
     },
 )
