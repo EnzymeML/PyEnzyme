@@ -145,10 +145,10 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
     def fromChebiID(
         cls,
         chebi_id: Union[str, int],
-        init_conc: float,
-        unit: str,
         vessel_id: str,
-        constant: bool = False
+        constant: bool = False,
+        init_conc: Optional[float] = None,
+        unit: Optional[str] = None,
     ) -> 'Reactant':
         """Initializes a reactant based
 

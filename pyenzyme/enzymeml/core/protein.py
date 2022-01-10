@@ -18,7 +18,7 @@ from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-from pyenzyme.enzymeml.core.exceptions import ECNumberError, UniProtIdentifierError
+from pyenzyme.enzymeml.core.exceptions import UniProtIdentifierError
 from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
 from pyenzyme.enzymeml.core.utils import (
     type_checking,
