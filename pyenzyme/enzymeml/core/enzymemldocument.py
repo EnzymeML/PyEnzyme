@@ -254,7 +254,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         # Complexes
         for complex in enzmldoc.complex_dict.values():
-            nu_enzmldoc.addComplex(complex)
+            nu_enzmldoc._add_complex(complex)
 
         # Reactions
         for reaction in enzmldoc.reaction_dict.values():
