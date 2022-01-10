@@ -45,7 +45,9 @@ class ReactantFactory(AbstractSpeciesFactory):
     enzymeml_part: str = "reactant_dict"
 
     def get_species(self, **kwargs) -> AbstractSpecies:
-        return Reactant(**kwargs)
+        reactant = Reactant(**kwargs)
+        reactant._unit_id = kwargs["_unit_id"]
+        return reactant
 
 
 class ProteinFactory(AbstractSpeciesFactory):
@@ -54,7 +56,9 @@ class ProteinFactory(AbstractSpeciesFactory):
     enzymeml_part: str = "protein_dict"
 
     def get_species(self, **kwargs) -> AbstractSpecies:
-        return Protein(**kwargs)
+        protein = Protein(**kwargs)
+        protein._unit_id = kwargs["_unit_id"]
+        return protein
 
 
 class ComplexFactory(AbstractSpeciesFactory):
@@ -63,7 +67,9 @@ class ComplexFactory(AbstractSpeciesFactory):
     enzymeml_part: str = "complex_dict"
 
     def get_species(self, **kwargs) -> AbstractSpecies:
-        return Complex(**kwargs)
+        complex = Complex(**kwargs)
+        complex._unit_id = kwargs["_unit_id"]
+        return complex
 
 
 def species_factory_mapping(sbo_term: str) -> AbstractSpeciesFactory:
