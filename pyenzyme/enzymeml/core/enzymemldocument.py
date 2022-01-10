@@ -15,8 +15,9 @@ import re
 import json
 import logging
 import pandas as pd
+import functools
 
-from pydantic import Field, validator, PositiveInt, validate_arguments
+from pydantic import Field, validator, validate_arguments
 from typing import TYPE_CHECKING, Optional, Union
 from texttable import Texttable
 from dataclasses import dataclass
@@ -417,13 +418,18 @@ class EnzymeMLDocument(EnzymeMLBase):
             "Function not refactored yet."
         )
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         """
         Magic function return pretty string describing the object.
 
         Returns:
             string: Beautified summarization of object
         """
+
+        return self.printDocument()
+
+    def printDocument(self, measurements: bool = False, units: bool = False):
+        """Prints the document's content"""
 
         fin_string: list[str]
 
@@ -433,8 +439,11 @@ class EnzymeMLDocument(EnzymeMLBase):
                 fin_string.append(
                     f"\tID: {element_id} \t Name: {element.name}")
 
-        fin_string = ['>>> Units']
-        generate_lines(self.unit_dict)
+        fin_string = [self.name]
+
+        if units:
+            fin_string.append('>>> Units')
+            generate_lines(self.unit_dict)
 
         fin_string.append('>>> Reactants')
         generate_lines(self.reactant_dict)
@@ -442,11 +451,15 @@ class EnzymeMLDocument(EnzymeMLBase):
         fin_string.append('>>> Proteins')
         generate_lines(self.protein_dict)
 
+        fin_string.append('>>> Complexes')
+        generate_lines(self.complex_dict)
+
         fin_string.append('>>> Reactions')
         generate_lines(self.reaction_dict)
 
-        fin_string.append('>>> Measurements')
-        fin_string.append(self.printMeasurements())
+        if measurements:
+            fin_string.append('>>> Measurements')
+            fin_string.append(self.printMeasurements())
 
         return "\n".join(fin_string)
 
@@ -485,6 +498,13 @@ class EnzymeMLDocument(EnzymeMLBase):
         table.add_rows(rows)
 
         return f"\n{table.draw()}\n"
+
+    def printReactionSchemes(self, by_name: bool = True):
+        """Prints all reaction equations to inspect the content
+        """
+
+        for reaction in self.reaction_dict.values():
+            print(reaction.get_reaction_scheme(by_name=by_name, enzmldoc=self))
 
     # ! Add methods
     @validate_arguments
@@ -570,7 +590,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         )
 
     @ validate_arguments
-    def addComplex(self, complex: Complex, use_parser: bool = True) -> str:
+    def _add_complex(self, complex: Complex, use_parser: bool = True) -> str:
         """Adds a Complex object to the EnzymeML document.
 
         Args:
@@ -586,6 +606,12 @@ class EnzymeMLDocument(EnzymeMLBase):
             prefix="c",
             dictionary=self.complex_dict,
             use_parser=use_parser
+        )
+
+    @validate_arguments
+    def addComplex(self, name: str, participants: list[str], vessel_id: str):
+        return self._add_complex(
+            Complex(name=name, participants=participants, vessel_id=vessel_id)
         )
 
     def _addSpecies(
@@ -635,8 +661,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return species.id
 
-    @ validate_arguments
-    def addReaction(self, reaction: EnzymeReaction, use_parser=True) -> str:
+    def addReaction(self, reaction: EnzymeReaction, use_parser: bool = True) -> str:
         """
         Adds EnzymeReaction object to EnzymeMLDocument object.
         Automatically assigns ID and converts units.
@@ -699,6 +724,25 @@ class EnzymeMLDocument(EnzymeMLBase):
         )
 
         return reaction.id
+
+    def addReactions(self, reactions: list[EnzymeReaction]):
+        """Adds multiple reactions to an EnzymeML document.
+
+        Args:
+            reactions (list[EnzymeReaction]): List of EnzymeReaction objects
+        """
+
+        return {
+            reaction.name: self.addReaction(reaction)
+            for reaction in reactions
+        }
+
+    def add_by_reaction_equation(self, equation: str, name: str):
+        return EnzymeReaction.fromEquation(
+            equation=equation,
+            name=name,
+            enzmldoc=self
+        )
 
     @ staticmethod
     def _check_kinetic_model_ids(equation: str, species_ids: list[str]) -> None:
