@@ -504,12 +504,34 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return f"\n{table.draw()}\n"
 
-    def printReactionSchemes(self, by_name: bool = True):
+    def printReactionSchemes(self, by_name: bool = True, jupyter: bool = False):
         """Prints all reaction equations to inspect the content
         """
 
+        output = []
+
         for reaction in self.reaction_dict.values():
-            print(reaction.get_reaction_scheme(by_name=by_name, enzmldoc=self))
+
+            # Get the equation
+            equation = reaction.get_reaction_scheme(
+                by_name=by_name, enzmldoc=self
+            )
+
+            if jupyter:
+                output.append(
+                    {
+                        "ID": reaction.id,
+                        "Name": reaction.name,
+                        "equation": equation
+                    }
+                )
+            else:
+                output.append(equation)
+
+        if jupyter:
+            return pd.DataFrame(output)
+        else:
+            print("\n".join(output))
 
     # ! Add methods
     @validate_arguments
