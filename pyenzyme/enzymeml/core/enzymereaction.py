@@ -121,7 +121,7 @@ class EnzymeReaction(EnzymeMLBase):
         inclusiveMaximum=14
     )
 
-    ontology: Optional[SBOTerm] = Field(
+    ontology: SBOTerm = Field(
         SBOTerm.BIOCHEMICAL_REACTION,
         description="Ontology defining the role of the given species.",
     )
@@ -267,7 +267,7 @@ class EnzymeReaction(EnzymeMLBase):
         stoichiometry: PositiveFloat,
         enzmldoc,
         constant: bool = False,
-        ontology: SBOTerm = SBOTerm.SUBSTRATE
+        ontology: SBOTerm = SBOTerm.SUBSTRATE,
     ) -> None:
         """
         Adds element to EnzymeReaction object. Replicates as well
@@ -445,7 +445,7 @@ class EnzymeReaction(EnzymeMLBase):
                 enzmldoc=enzmldoc
             )
 
-    def setModel(self, model: KineticModel, enzmldoc) -> None:
+    def setModel(self, model: KineticModel, enzmldoc, log: bool = True) -> None:
         """Sets the kinetic model of the reaction and in addition converts all units to UnitDefs.
 
         Args:
@@ -464,6 +464,13 @@ class EnzymeReaction(EnzymeMLBase):
             model.parameters,
             enzmldoc=enzmldoc
         )
+
+        if log:
+            # Log creator object
+            log_object(logger, model)
+            logger.debug(
+                f"Added {type(model).__name__} '{model.name}' to reaction '{self.name}'"
+            )
 
         self.model = model
 

@@ -68,8 +68,6 @@ class EnzymeMLPart(str, Enum):
     PROTEIN_COMPLEX = "complex_dict"
     DIMER = "complex_dict"
 
-    BLANK = "blank"
-
     @classmethod
     def partFromSBOTerm(cls, sbo_term: str) -> str:
         sbo_term = SBOTerm(sbo_term).name

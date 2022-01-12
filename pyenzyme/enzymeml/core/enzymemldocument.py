@@ -426,9 +426,9 @@ class EnzymeMLDocument(EnzymeMLBase):
             string: Beautified summarization of object
         """
 
-        return self.printDocument()
+        return self.printDocument(stdout=False)
 
-    def printDocument(self, measurements: bool = False, units: bool = False):
+    def printDocument(self, measurements: bool = False, units: bool = False, stdout: bool = True) -> Optional[str]:
         """Prints the document's content"""
 
         fin_string: list[str]
@@ -461,7 +461,12 @@ class EnzymeMLDocument(EnzymeMLBase):
             fin_string.append('>>> Measurements')
             fin_string.append(self.printMeasurements())
 
-        return "\n".join(fin_string)
+        output = "\n".join(fin_string)
+
+        if stdout:
+            print(output)
+        else:
+            return output
 
     def printMeasurements(self) -> str:
         """Prints all measurements as a human readable table"""
@@ -508,7 +513,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
     # ! Add methods
     @validate_arguments
-    def addCreator(self, creator: Creator) -> str:
+    def addCreator(self, creator: Creator, log: bool = True) -> str:
         """Adds a creator object to the EnzymeML document.
 
         Args:
@@ -524,11 +529,12 @@ class EnzymeMLDocument(EnzymeMLBase):
         # Add to the document
         self.creator_dict[creator.id] = creator
 
-        # Log creator object
-        log_object(logger, creator)
-        logger.debug(
-            f"Added {type(creator).__name__} ({creator.id}) '{creator.family_name}' to document '{self.name}'"
-        )
+        if log:
+            # Log creator object
+            log_object(logger, creator)
+            logger.debug(
+                f"Added {type(creator).__name__} ({creator.id}) '{creator.family_name}' to document '{self.name}'"
+            )
 
         return creator.id
 
@@ -781,14 +787,14 @@ class EnzymeMLDocument(EnzymeMLBase):
     def addFile(
         self,
         filepath=None,
-        fileHandle=None,
+        file_handle=None,
         description="Undefined"
     ) -> str:
-        """Adds any arbitrary file to the document. Please note, that if a filepath is given, any fileHandle will be ignored.
+        """Adds any arbitrary file to the document. Please note, that if a filepath is given, any file_handle will be ignored.
 
         Args:
             filepath (str, optional): Path to the file that is added to the document. Defaults to None.
-            fileHandle (io.BufferedReader, optional): File handle that will be read to a bytes string. Defaults to None.
+            file_handle (io.BufferedReader, optional): File handle that will be read to a bytes string. Defaults to None.
 
         Returns:
             str: Internal identifier for the file.
@@ -799,20 +805,18 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         if filepath:
             # Open file handle
-            fileHandle = open(filepath, "rb")
-        elif filepath is None and fileHandle is None:
+            file_handle = open(filepath, "rb")
+        elif filepath is None and file_handle is None:
             raise ValueError(
                 "Please specify either a file path or a file handle"
             )
 
         # Finally, add the file and close the handler
         self.file_dict[file_id] = {
-            "name": os.path.basename(fileHandle.name),
-            "content": fileHandle.read(),
+            "name": os.path.basename(file_handle.name),
+            "handler": file_handle,
             "description": description
         }
-
-        fileHandle.close()
 
         return file_id
 
@@ -1156,12 +1160,13 @@ class EnzymeMLDocument(EnzymeMLBase):
             dict[str, dict]: The corresponding file object.
         """
 
-        return self._getSpecies(
-            id=id,
-            dictionary=self.file_dict,
-            element_type="File",
-            by_id=by_id
-        )
+        if by_id:
+            return self.file_dict[id]
+        else:
+            return next(filter(
+                lambda file: file["name"] == id,
+                self.file_dict.values()
+            ))
 
     def getAny(self, id: str, by_id: bool = True) -> AbstractSpecies:
         """Returns anything associated with the given ID.

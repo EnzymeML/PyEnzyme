@@ -16,6 +16,7 @@ from typing import Union, Optional
 import libsbml
 import xml.etree.ElementTree as ET
 import pandas as pd
+import tempfile
 
 from pyenzyme.enzymeml.core.creator import Creator
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
@@ -158,9 +159,13 @@ class EnzymeMLReader:
         enzmldoc.vessel_dict = vessel
 
         # Fetch Species
-        protein_dict, reactant_dict = self._getSpecies(model, enzmldoc)
+        protein_dict, reactant_dict, complex_dict = self._getSpecies(
+            model, enzmldoc
+        )
+
         enzmldoc.reactant_dict = reactant_dict
         enzmldoc.protein_dict = protein_dict
+        enzmldoc.complex_dict = complex_dict
 
         # fetch reaction
         reaction_dict = self._getReactions(model, enzmldoc)
@@ -178,11 +183,13 @@ class EnzymeMLReader:
         return enzmldoc
 
     @staticmethod
-    def _sboterm_to_enum(sbo_term: int) -> Optional[Enum]:
+    def _sboterm_to_enum(sbo_term: int) -> Optional[SBOTerm]:
         try:
-            return SBOTerm(
-                libsbml.SBO_intToString(sbo_term)
-            )
+            sbo_string: str = libsbml.SBO_intToString(sbo_term)
+            if len(sbo_string) == 0:
+                return None
+
+            return SBOTerm(sbo_term)
         except ValueError:
             return None
 
@@ -223,7 +230,8 @@ class EnzymeMLReader:
                     family_name=creator.getFamilyName(),
                     given_name=creator.getGivenName(),
                     mail=creator.getEmail()
-                )
+                ),
+                log=False
             )
 
     def _getUnits(self, model: libsbml.Model) -> dict[str, UnitDef]:
@@ -305,11 +313,12 @@ class EnzymeMLReader:
         self,
         model: libsbml.Model,
         enzmldoc: 'EnzymeMLDocument'
-    ) -> tuple[dict[str, Protein], dict[str, Reactant]]:
+    ) -> tuple[dict[str, Protein], dict[str, Reactant], dict[str, Complex]]:
 
         # initialize dictionaries and get species
         protein_dict = {}
         reactant_dict = {}
+        complex_dict = {}
         species_list = model.getListOfSpecies()
 
         for species in species_list:
@@ -324,10 +333,7 @@ class EnzymeMLReader:
                 unit = enzmldoc.getUnitString(unit_id)
 
             # Get SBOTerm, but if there is none, give default
-            try:
-                ontology = self._sboterm_to_enum(species.getSBOTerm())
-            except ValueError:
-                ontology = None
+            ontology = self._sboterm_to_enum(species.getSBOTerm())
 
             # Parse annotations and construct a kwargs dictionary
             param_dict = self._parseSpeciesAnnotation(
@@ -346,16 +352,45 @@ class EnzymeMLReader:
                 }
             )
 
-            # Get scpecies factory from ontology
-            species_factory = species_factory_mapping(param_dict["ontology"])
+            # Get species factory from ontology
+            try:
+                # Current version uses SBOTerms to distinguish between entities
+                species_factory = species_factory_mapping(
+                    param_dict["ontology"]
+                )
+            except ValueError:
+                # Backwards compatibility to old documents that do not incorporate SBOTerms
+                if param_dict["id"].startswith("s"):
+                    species_factory = species_factory_mapping(
+                        SBOTerm.SMALL_MOLECULE.value
+                    )
+
+                    # Remove ontology to get the default
+                    param_dict.pop("ontology")
+
+                elif param_dict["id"].startswith("p"):
+                    species_factory = species_factory_mapping(
+                        SBOTerm.PROTEIN.value
+                    )
+
+                    # Remove ontology to get the default
+                    param_dict.pop("ontology")
+                else:
+                    raise ValueError(
+                        f"ID {param_dict['id']} is not supported. Please use either of these 'p|s|c'"
+                    )
+
+            # Use factory to get the species class
             species = species_factory.get_species(**param_dict)
 
             if species_factory.enzymeml_part == 'protein_dict':
                 protein_dict[species.id] = species
             elif species_factory.enzymeml_part == 'reactant_dict':
                 reactant_dict[species.id] = species
+            elif species_factory.enzymeml_part == 'complex_dict':
+                complex_dict[species.id] = species
 
-        return protein_dict, reactant_dict
+        return protein_dict, reactant_dict, complex_dict
 
     @staticmethod
     def _parseSpeciesAnnotation(annotationString):
@@ -396,8 +431,12 @@ class EnzymeMLReader:
         for reaction in reactionsList:
 
             # Fetch conditions
-            reactionAnnot = ET.fromstring(reaction.getAnnotationString())[0]
-            conditions = self._parseConditions(reactionAnnot, enzmldoc)
+            if reaction.getAnnotationString():
+                reactionAnnot = ET.fromstring(
+                    reaction.getAnnotationString())[0]
+                conditions = self._parseConditions(reactionAnnot, enzmldoc)
+            else:
+                conditions = {}
 
             # Fetch Elements in SpeciesReference
             educts = self._getElements(
@@ -413,6 +452,12 @@ class EnzymeMLReader:
                 modifiers=True, ontology=SBOTerm.CATALYST
             )
 
+            # Get the ontology
+            ontology = self._sboterm_to_enum(reaction.getSBOTerm())
+
+            if ontology is None:
+                ontology = SBOTerm.BIOCHEMICAL_REACTION
+
             # Create object
             enzyme_reaction = EnzymeReaction(
                 id=reaction.id,
@@ -422,7 +467,7 @@ class EnzymeMLReader:
                 educts=educts,
                 products=products,
                 modifiers=modifiers,
-                ontology=self._sboterm_to_enum(reaction.getSBOTerm()),
+                ontology=ontology,
                 **conditions
             )
 
@@ -533,9 +578,7 @@ class EnzymeMLReader:
         # Extract metadata
         name = kineticLaw.getName()
         equation = kineticLaw.getFormula()
-        ontology = SBOTerm(
-            libsbml.SBO_intToString(kineticLaw.getSBOTerm())
-        )
+        ontology = self._sboterm_to_enum(kineticLaw.getSBOTerm())
 
         # Get parameters
         parameters = [
@@ -801,17 +844,27 @@ class EnzymeMLReader:
         """
 
         # Iterate over enries and extract files
-        for fileLocation in self.archive.getAllLocations():
-            fileLocation = str(fileLocation)
-            if "./files/" in fileLocation:
+        for file_location in self.archive.getAllLocations():
+            file_location = str(file_location)
 
-                # Convert raw file to fileHandle
-                fileHandle = BytesIO(
-                    str.encode(self.archive.extractEntryToString(fileLocation))
+            if "./files/" in file_location:
+
+                # Convert raw file to file_handle
+                file_handle = tempfile.NamedTemporaryFile()
+                file_handle.name = os.path.basename(file_location)
+
+                # Write file to temporary file
+                path = f"./{file_handle.name}"
+                self.archive.extractEntry(
+                    file_location, path
                 )
 
-                # Set name of file to the one that is given within the EnzymeMLDocument
-                fileHandle.name = os.path.basename(fileLocation)
+                with open(path, "rb") as f:
+                    file_handle.write(f.read())
+                    file_handle.seek(0)
 
                 # Add the file to the EnzymeMLDocument
-                enzmldoc.addFile(fileHandle=fileHandle)
+                enzmldoc.addFile(file_handle=file_handle)
+
+                # Remove the temporary file
+                os.remove(path)

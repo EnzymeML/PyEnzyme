@@ -11,7 +11,6 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 from typing import TYPE_CHECKING, Optional
-from enum import Enum
 from pydantic import Field
 from dataclasses import dataclass
 
@@ -77,11 +76,11 @@ class KineticModel(EnzymeMLBase):
     )
 
     ontology: Optional[SBOTerm] = Field(
-        ...,
+        None,
         description="Type of the estimated parameter.",
     )
-
     # ! Utilities
+
     def addToReaction(self, reaction: Reaction) -> None:
         '''
         Adds kinetic law to SBML reaction.
@@ -109,6 +108,9 @@ class KineticModel(EnzymeMLBase):
 
         if self.ontology:
             kl.setSBOTerm(self.ontology)
+
+    def get_id(self) -> str:
+        return self.name
 
     # ! Getters
     @deprecated_getter("equation")

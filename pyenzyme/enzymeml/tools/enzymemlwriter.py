@@ -189,7 +189,7 @@ class EnzymeMLWriter:
         self.addFileToArchive(
             archive=archive,
             file_path=history_path,
-            targetPath="./history.log",
+            target_path="./history.log",
             format=KnownFormats.lookupFormat("txt"),
             description="History of the EnzymeML document"
         )
@@ -221,7 +221,7 @@ class EnzymeMLWriter:
             self.addFileToArchive(
                 archive=archive,
                 file_path=csvPath,
-                targetPath=file_path,
+                target_path=file_path,
                 format=KnownFormats.lookupFormat("csv"),
                 description="Time course data",
             )
@@ -234,19 +234,19 @@ class EnzymeMLWriter:
 
             for fileDict in enzmldoc.getFileDict().values():
 
-                fileContent = fileDict["content"]
+                file_handler = fileDict["handler"]
                 file_name = fileDict["name"]
                 fileDescription = fileDict["description"]
                 tmpPath = os.path.join(tmpFolder, file_name)
 
                 # Write file locally and add it to the document
                 with open(tmpPath, "wb") as fileHandle:
-                    fileHandle.write(fileContent)
+                    fileHandle.write(file_handler.read())
 
                 self.addFileToArchive(
                     archive=archive,
                     file_path=tmpPath,
-                    targetPath=f"./files/{file_name}",
+                    target_path=f"./files/{file_name}",
                     format=KnownFormats.guessFormat(file_name),
                     description=fileDescription
                 )
@@ -278,7 +278,7 @@ class EnzymeMLWriter:
     def addFileToArchive(
         archive,
         file_path,
-        targetPath,
+        target_path,
         format,
         description
     ):
@@ -286,17 +286,17 @@ class EnzymeMLWriter:
         # Add file to archive
         archive.addFile(
             file_path,
-            targetPath,
+            target_path,
             format,
             False
         )
 
         # Add metadata to the file
         omexDesc = OmexDescription()
-        omexDesc.setAbout(targetPath)
+        omexDesc.setAbout(target_path)
         omexDesc.setDescription(description)
         omexDesc.setCreated(OmexDescription.getCurrentDateAndTime())
-        archive.addMetadata(targetPath, omexDesc)
+        archive.addMetadata(target_path, omexDesc)
 
     def setupXMLNode(self, name, namespace=True):
         # Helper function
@@ -631,6 +631,9 @@ class EnzymeMLWriter:
                     objectMapping=objectMapping,
                     annotationNode=conditionsAnnotation
                 )
+
+            if reactionAnnotation.getNumChildren() > 0:
+                reaction.appendAnnotation(reactionAnnotation)
 
             # Write educts
             self.writeElements(
