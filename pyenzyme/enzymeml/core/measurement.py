@@ -99,6 +99,47 @@ class Measurement(EnzymeMLBase):
     _global_time_unit_id: str = PrivateAttr(None)
 
     # ! Utility methods
+    def __repr__(self):
+        return self.printMeasurementScheme(stdout=False)
+
+    def printMeasurementScheme(self, species_type: str = "all", stdout: bool = True) -> Optional[str]:
+        """Prints the scheme of the measurement and as such an overview of what has been done.
+
+        Args:
+            species_type (str, optional): Specifies whether only "reactants"/"proteins" should be displayed or all of them. Defaults to "all".
+        """
+
+        # Get all measurement data objects
+        reactants = self.getReactants()
+        proteins = self.getProteins()
+
+        if species_type == "reactants":
+            species = list(reactants.values())
+        elif species_type == "proteins":
+            species = list(proteins.values())
+        elif species_type == "all":
+            species = list(reactants.values()) + list(proteins.values())
+        else:
+            raise ValueError(
+                f"Species type of {species_type} is not supported. Please enter use one of the following: 'reactants', 'proteins' or 'all'."
+            )
+
+        # Start printing
+        output = []
+        output.append(f">>> Measurement {self.id}: {self.name}")
+
+        for meas_data in species:
+            output.append(
+                f"    {meas_data.get_id()} | initial conc: {meas_data.init_conc} {meas_data.unit} \t| #replicates: {len(meas_data.replicates)}"
+            )
+
+        output = "\n".join(output)
+
+        if stdout:
+            print(output)
+        else:
+            return output
+
     def exportData(self, species_ids: Union[str, list[str]] = "all") -> dict[str, dict[str, Union[dict[str, tuple[float, str]], pd.DataFrame]]]:
         """Returns data stored in the measurement object as DataFrames nested in dictionaries. These are sorted hierarchially by reactions where each holds a DataFrame each for proteins and reactants.
 
