@@ -170,35 +170,6 @@ class Protein(EnzymeMLBase, AbstractSpecies):
             raise ValueError("Invalid EC")
             # raise ECNumberError(ecnumber=ecnumber))
 
-    @validator("uniprotid")
-    def fetch_uniprot_parameters(cls, uniprotid, values):
-        """PYDANTIC VALIDATOR: Automatically fills out fields present in the UniProt database with appropriate values.
-
-        Caution, this function will overwrite any values in name, seqence and ecnumber that were given to the constructor!!
-
-        Args:
-            uniprotid (Union[str, int]): The UniProt ID from which the data will be fetched.
-            values (dict): Already initialiized values from teh constructor.
-        """
-
-        # Guard clauses
-        if uniprotid is None:
-            if values.get("name") is None:
-                raise NameError(
-                    "Please provide a name for the protein if there is no UniProt ID to fetch it from."
-                )
-            else:
-                return uniprotid
-
-        # Get chebi parameters
-        parameters = cls._getUniProtParameters(uniprotid=uniprotid)
-
-        # Override already given parameters in the data model
-        for key, item in parameters.items():
-            values[key] = str(item)
-
-        return uniprotid
-
     # ! Initializers
     @classmethod
     def fromUniProtID(
