@@ -631,7 +631,8 @@ class EnzymeMLReader:
             fileInfo = files[measurement_file]
             file_content = self.archive.extractEntryToString(fileInfo['file'])
             csvFile = pd.read_csv(
-                StringIO(file_content)
+                StringIO(file_content),
+                header=None
             )
 
             # Get format data and extract time column
