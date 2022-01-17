@@ -15,7 +15,6 @@ import re
 import json
 import logging
 import pandas as pd
-import functools
 
 from pydantic import Field, validator, validate_arguments
 from typing import TYPE_CHECKING, Optional, Union
@@ -92,7 +91,6 @@ class EnzymeMLDocument(EnzymeMLBase):
     doi: Optional[str] = Field(
         None,
         description="Digital Object Identifier of the referenced publication or the EnzymeML document.",
-        regex=r"/^10.\d{4,9}/[-._;()/:A-Z0-9]+$/i"
     )
 
     created: Optional[str] = Field(
@@ -683,9 +681,10 @@ class EnzymeMLDocument(EnzymeMLBase):
         dictionary[species.id] = species
 
         # Log the addition
-        logger.debug(
-            f"Added {type(species).__name__} ({species.id}) '{species.name}' to document '{self.name}'"
-        )
+        if log:
+            logger.debug(
+                f"Added {type(species).__name__} ({species.id}) '{species.name}' to document '{self.name}'"
+            )
 
         return species.id
 
@@ -804,7 +803,8 @@ class EnzymeMLDocument(EnzymeMLBase):
         """
 
         for parameter in parameters:
-            parameter._unit_id = enzmldoc._convertToUnitDef(parameter.unit)
+            if parameter.unit:
+                parameter._unit_id = enzmldoc._convertToUnitDef(parameter.unit)
 
     def addFile(
         self,

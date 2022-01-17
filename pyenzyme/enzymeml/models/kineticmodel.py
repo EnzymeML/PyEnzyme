@@ -11,6 +11,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 import ast
+import numexpr
 
 from typing import TYPE_CHECKING, Optional
 from pydantic import Field
@@ -67,6 +68,10 @@ class KineticParameter(EnzymeMLBase):
 
     # * Private attributes
     _unit_id: Optional[str] = PrivateAttr(None)
+
+    def get_id(self):
+        """For logging. Dont bother."""
+        return self.name
 
 
 @static_check_init_args
@@ -128,8 +133,10 @@ class KineticModel(EnzymeMLBase):
 
             local_param = kl.createLocalParameter()
             local_param.setId(kinetic_parameter.name)
-            local_param.setValue(kinetic_parameter.value)
-            local_param.setUnits(kinetic_parameter._unit_id)
+
+            if kinetic_parameter.value:
+                local_param.setValue(kinetic_parameter.value)
+                local_param.setUnits(kinetic_parameter._unit_id)
 
             if kinetic_parameter.ontology:
                 local_param.setSBOTerm(kinetic_parameter.ontology)
@@ -143,7 +150,40 @@ class KineticModel(EnzymeMLBase):
     def get_id(self) -> str:
         return self.name
 
+    def evaluate(self, **kwargs):
+        """Calculates the the reaction velocity given the internal parameters and variable concentrations handed as keyword arguments.
+
+        Examples:
+
+            model = KineticModel(...) <- Lets assume this is a Menten Model with already estimated parameters
+            print(model.evaluate(protein=10.0, substrate=1.0))
+
+            >> 1.002 <- This is the resulting velocity
+
+        Returns:
+            float: Corresponding reaction velocity given the internal parameters and variables.
+        """
+
+        # Initialize a dictionary which will take care to create an eval string
+        params = {}
+
+        # Get the values for the parameters
+        for parameter in self.parameters:
+            if parameter.value:
+                params.update({
+                    parameter.name: parameter.value
+                })
+
+        # Now replace the strings in the equation to evaluate it using numexpr
+        eval_string = self.equation
+        for key, value in {**kwargs, **params}.items():
+
+            eval_string = eval_string.replace(key, str(value))
+
+        return numexpr.evaluate(eval_string).tolist()
+
     # ! Getters
+
     def getParameter(self, name: str) -> KineticParameter:
         """Returns a parameter of choice from the model.
 
@@ -185,7 +225,13 @@ class ModelFactory:
     parameters: list[str]
     name: str
 
-    def __init__(self, name: str, equation: str, **parameters) -> None:
+    def __init__(
+        self,
+        name: str,
+        equation: str,
+        ontology: Optional[SBOTerm] = None,
+        **parameters
+    ) -> None:
 
         # Parse the eqation and get all names and variables
         self.variables = self.parse_equation(equation)
