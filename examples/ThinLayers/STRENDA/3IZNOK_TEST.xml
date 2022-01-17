@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<experiment strendaId="3IZNOK_TEST" doi="10.22011/strenda_db.3IZNOK_TEST" created="3/4/16" finalized="3/4/16" >
-<experimentDescription>
-<![CDATA[
+<experiment strendaId="3IZNOK_TEST" doi="10.22011/strenda_db.3IZNOK_TEST" created="3/4/16" finalized="3/4/16">
+    <experimentDescription>
+        <![CDATA[
 steady-state kinetics with TrpB2o from Arabidopsis thaliana
 ]]>
-</experimentDescription>
-<methodology>
-<![CDATA[
+    </experimentDescription>
+    <methodology>
+        <![CDATA[
 steady-state kinetics with TrpB2o from Arabidopsis thaliana
 ]]>
-</methodology>
-<protein uniprotKbAC="N.A.">
-<name>TrpB2o from Arabidopsis thaliana</name>
-<originalSequence>null</originalSequence>
-<sequenceModifiations value="no"/>
-<ptModifications value="no"></ptModifications>
-<expressedFromPlasmid value="yes"/>
-<sourceComments>The gene for trpB2 from Arabidopsis thaliana was expressed in Escherichia coli.</sourceComments>
-<expressionSystem>Escherichia coli</expressionSystem>
-<organism>Arabidopsis thaliana</organism>
-<taxonId>4702</taxonId>
-</protein>
-<datasets>
-<dataset name="indole fixed, o-phospho-L-serine varied">
-<assayConditions>
-<value name="enzymeConcentration" type="Concentration" value="10.0" unit="microM" />
-<value name="pH" type="Physical" value="7.5" />
-<value name="temperature" type="Temperature" value="30.0" unit="C" />
-<smallCompound role="Substrate" refId="s-sub-349978701">
-<name>indole</name>
-<cid>798</cid>
-<chebiId>16881</chebiId>
-<inchi>InChI=1S/C8H7N/c1-2-4-8-7(3-1)5-6-9-8/h1-6,9H</inchi>
-<iupac>1H-indole</iupac>
-<smiles>C1=CC=C2C(=C1)C=CN2</smiles>
-<stoichiometry>1</stoichiometry>
-<value name="concentration" type="Concentration" value="100.0" unit="microM" />
-</smallCompound>
-<smallCompound role="Substrate" refId="s-sub-706895085">
-<name>O-phospho-L-serine</name>
-<cid>68841</cid>
-<chebiId>15811</chebiId>
-<inchi>InChI=1S/C3H8NO6P/c4-2(3(5)6)1-10-11(7,8)9/h2H,1,4H2,(H,5,6)(H2,7,8,9)/t2-/m0/s1</inchi>
-<iupac>(2S)-2-amino-3-phosphonooxypropanoic acid</iupac>
-<smiles>C(C(C(=O)O)N)OP(=O)(O)O</smiles>
-<stoichiometry>1</stoichiometry>
-<value name="concentration" type="ConcentrationRange" startValue="0.0" endValue="0.5" unit="mM" />
-</smallCompound>
-</assayConditions>
-<resultSet>
-<kineticParameter substanceId="s-sub-706895085">
-<value name="kcatOverKm" type="specificityConstant" value="1500.0" unit="M-1S-1" />
-<value name="kcat" type="CatalyticConstant" value="0.015" unit="s-1" />
-<value name="km" type="ConcentrationSE" value="0.01" unit="mM" />
-<value name="kcat" type="CatalyticConstant" value="0.015" unit="s-1" />
-</kineticParameter>
-</resultSet>
-</dataset>
-</datasets>
+    </methodology>
+    <protein uniprotKbAC="N.A.">
+        <name>TrpB2o from Arabidopsis thaliana</name>
+        <originalSequence>null</originalSequence>
+        <sequenceModifiations value="no"/>
+        <ptModifications value="no"></ptModifications>
+        <expressedFromPlasmid value="yes"/>
+        <sourceComments>The gene for trpB2 from Arabidopsis thaliana was expressed in Escherichia coli.</sourceComments>
+        <expressionSystem>Escherichia coli</expressionSystem>
+        <organism>Arabidopsis thaliana</organism>
+        <taxonId>4702</taxonId>
+    </protein>
+    <datasets>
+        <dataset name="indole fixed, o-phospho-L-serine varied">
+            <assayConditions>
+                <value name="enzymeConcentration" type="Concentration" value="10.0" unit="microM" />
+                <value name="pH" type="Physical" value="7.5" />
+                <value name="temperature" type="Temperature" value="30.0" unit="C" />
+                <smallCompound role="Substrate" refId="s-sub-349978701">
+                    <name>indole</name>
+                    <cid>798</cid>
+                    <chebiId>16881</chebiId>
+                    <inchi>InChI=1S/C8H7N/c1-2-4-8-7(3-1)5-6-9-8/h1-6,9H</inchi>
+                    <iupac>1H-indole</iupac>
+                    <smiles>C1=CC=C2C(=C1)C=CN2</smiles>
+                    <stoichiometry>1</stoichiometry>
+                    <value name="concentration" type="Concentration" value="100.0" unit="microM" />
+                </smallCompound>
+                <smallCompound role="Substrate" refId="s-sub-706895085">
+                    <name>O-phospho-L-serine</name>
+                    <cid>68841</cid>
+                    <chebiId>15811</chebiId>
+                    <inchi>InChI=1S/C3H8NO6P/c4-2(3(5)6)1-10-11(7,8)9/h2H,1,4H2,(H,5,6)(H2,7,8,9)/t2-/m0/s1</inchi>
+                    <iupac>(2S)-2-amino-3-phosphonooxypropanoic acid</iupac>
+                    <smiles>C(C(C(=O)O)N)OP(=O)(O)O</smiles>
+                    <stoichiometry>1</stoichiometry>
+                    <value name="concentration" type="ConcentrationRange" startValue="0.0" endValue="0.5" unit="mM" />
+                </smallCompound>
+            </assayConditions>
+            <resultSet>
+                <kineticParameter substanceId="s-sub-706895085">
+                    <value name="kcatOverKm" type="specificityConstant" value="1500.0" unit="M-1S-1" />
+                    <value name="kcat" type="CatalyticConstant" value="0.015" unit="s-1" />
+                    <value name="km" type="ConcentrationSE" value="0.01" unit="mM" />
+                    <value name="kcat" type="CatalyticConstant" value="0.015" unit="s-1" />
+                </kineticParameter>
+            </resultSet>
+        </dataset>
+    </datasets>
 </experiment>

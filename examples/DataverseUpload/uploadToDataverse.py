@@ -9,7 +9,7 @@ from pyenzyme import EnzymeMLDocument
 
 # Load the EnzymeML template to an EnzymeML document object
 enzmldoc = EnzymeMLDocument.fromTemplate(
-    "examples/DataverseUpload/EnzymeML_Template_Example.xlsm")
+    "./EnzymeML_Template_Example.xlsm")
 enzmldoc.toFile(".")
 
 # Now upload the EnzymeML document to your Dataverse of choice
