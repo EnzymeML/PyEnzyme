@@ -505,6 +505,20 @@ class EnzymeReaction(EnzymeMLBase):
                 for element in elements
             ])
 
+    def getStoichiometricCoefficients(self) -> dict[str, float]:
+        """Returns the approprate stoichiometric coefficients of all educts and products.
+
+        This function is intended to be used for modeling, where data should be easily accessible.
+
+        Returns:
+            dict[str, float]: Mapping from identifier to stiochiometric coefficient.
+        """
+
+        return {
+            **{element.species_id: element.stoichiometry for element in self.educts},
+            **{element.species_id: (-1) * element.stoichiometry for element in self.products}
+        }
+
     # ! Initializers
     @classmethod
     def fromEquation(cls, equation: str, name: str, enzmldoc):
