@@ -39,6 +39,7 @@ setup(
         'easyDataverse',
         'pyDaRUS',
         'openpyxl',
+        'numexpr'
     ],
     extras_require={
         'test': [
