@@ -10,29 +10,28 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
+from typing import Any
 from pyenzyme.enzymeml.core.ontology import SBOTerm
-from pyenzyme.enzymeml.models.kineticmodel import KineticModel, KineticParameter
+from pyenzyme.enzymeml.models.kineticmodel import ModelFactory
 from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
 
 
 def MichaelisMenten(
-    kcat_val: float,
-    kcat_unit: str,
-    km_val: float,
-    km_unit: str,
-    substrate_id: str,
-    protein_id: str,
-    enzmldoc
+    substrate: str,
+    protein: str,
+    enzmldoc,
+    k_cat: dict[str, Any] = {"ontology": SBOTerm.K_CAT},
+    k_m: dict[str, Any] = {"ontology": SBOTerm.K_M},
 ):
     """Sets up a rate law following the Henri-Michaelis-Menten law.
 
     Args:
-        kcat_val (float): Numeric value of the estimated kcat value.
-        kcat_unit (str): Unit string of the estimated kcat value.
-        km_val (float): Numeric value of the estimated Km value.
-        km_unit (str): Unit string of the estimated Km value.
-        substrate_id (str): Reactant ID of the converted substrate.
-        protein_id (str): Protein ID of the catalysing enzyme.
+        k_cat_val (float): Numeric value of the estimated k_cat value.
+        k_cat_unit (str): Unit string of the estimated k_cat value.
+        k_m_val (float): Numeric value of the estimated Km value.
+        k_m_unit (str): Unit string of the estimated Km value.
+        substrate (str): Reactant ID of the converted substrate.
+        protein (str): Protein ID of the catalysing enzyme.
         enzmldoc (EnzymeMLDocument): EnzymeML document against which will be validated in terms of IDs.
 
     Raises:
@@ -43,39 +42,32 @@ def MichaelisMenten(
         KineticModel: The resulting kinetic model.
     """
     # Check if the given IDs are part of the EnzymeML document already
-    if substrate_id not in enzmldoc.getSpeciesIDs():
+    if substrate not in enzmldoc.getSpeciesIDs():
         raise SpeciesNotFoundError(
-            species_id=substrate_id,
+            species_id=substrate,
             enzymeml_part="Reactants/Proteins"
         )
 
-    if protein_id not in enzmldoc.getSpeciesIDs():
+    if protein not in enzmldoc.getSpeciesIDs():
         raise SpeciesNotFoundError(
-            species_id=protein_id,
+            species_id=protein,
             enzymeml_part="Reactants/Proteins"
         )
 
-    # Create the corresponding equation
-    equation = f"(kcat*{substrate_id}*{protein_id}) / ({substrate_id} + Km)"
+    # Check if ontologies are added, if not add them
+    if k_m.get("ontology") is None:
+        k_m["ontology"] = SBOTerm.K_M
 
-    # Create list of parameters
-    km_parameter = KineticParameter(
-        name="Km",
-        value=km_val,
-        unit=km_unit,
-        ontology=SBOTerm.K_M
-    )
+    if k_cat.get("ontology") is None:
+        k_cat["ontology"] = SBOTerm.K_CAT
 
-    kcat_parameter = KineticParameter(
-        name="kcat",
-        value=kcat_val,
-        unit=kcat_unit,
-        ontology=SBOTerm.K_CAT
-    )
-
-    return KineticModel(
-        name="Henri-Michaelis-Menten rate law",
-        equation=equation,
-        parameters=[km_parameter, kcat_parameter],
+    # Create the model using a factory
+    model = ModelFactory(
+        name="Michaelis-Menten Rate Law",
+        equation="k_cat * protein * substrate / (k_m + substrate)",
+        k_cat=k_cat,
+        k_m=k_m,
         ontology=SBOTerm.MICHAELIS_MENTEN
     )
+
+    return model(protein=protein, substrate=substrate)
