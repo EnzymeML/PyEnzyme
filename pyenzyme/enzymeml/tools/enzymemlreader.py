@@ -293,17 +293,22 @@ class EnzymeMLReader:
         for compartment in compartments:
             name = compartment.getName()
             id = compartment.getId()
-            volume = compartment.getSize()
-            unit_id = compartment.getUnits()
+
+            # Set up dictionary for optional attributes
+            params = {}
+
+            if compartment.isSetVolume():
+                params["volume"] = compartment.getSize()
+                params["_unit_id"] = compartment.getUnits()
+                params["unit"] = enzmldoc.getUnitString(params["_unit_id"])
 
             vessel = Vessel(
                 name=name,
                 id=id,
-                volume=volume,
-                unit=enzmldoc.getUnitString(unit_id),
+                **params
             )
 
-            vessel._unit_id = unit_id
+            vessel._unit_id = params.get("_unit_id")
 
             vessel_dict[vessel.id] = vessel
 
@@ -581,16 +586,19 @@ class EnzymeMLReader:
         ontology = self._sboterm_to_enum(kineticLaw.getSBOTerm())
 
         # Get parameters
-        parameters = [
-            KineticParameter(
-                name=localParam.getId(),
-                value=localParam.getValue(),
-                _unit_id=localParam.getUnits(),
-                unit=enzmldoc.getUnitString(localParam.getUnits()),
-                ontology=self._sboterm_to_enum(localParam.getSBOTerm())
+        parameters = []
+
+        for local_param in kineticLaw.getListOfLocalParameters():
+
+            parameter = KineticParameter(
+                name=local_param.getId(),
+                value=local_param.getValue(),
+                unit=enzmldoc.getUnitString(local_param.getUnits()),
+                ontology=self._sboterm_to_enum(local_param.getSBOTerm())
             )
-            for localParam in kineticLaw.getListOfLocalParameters()
-        ]
+
+            parameter._unit_id = local_param.getUnits()
+            parameters.append(parameter)
 
         return KineticModel(
             name=name,
@@ -611,13 +619,14 @@ class EnzymeMLReader:
 
         # Parse EnzymeML:format annotation
         reactions = model.getListOfReactions()
-        data_annotation = ET.fromstring(reactions.getAnnotationString())[0]
+        annotation_string = reactions.getAnnotationString()
 
-        # Fetch list of files
-        files = self._parseListOfFiles(data_annotation)
+        # Guard clause for when there is no data
+        if annotation_string == "":
+            return {}
 
-        # Fetch formats
-        formats = self._parseListOfFormats(data_annotation)
+        # Parse annotation to an ElementTree
+        data_annotation = ET.fromstring(annotation_string)[0]
 
         # Fetch measurements
         measurement_dict, measurement_files = self._parseListOfMeasurements(
@@ -626,6 +635,12 @@ class EnzymeMLReader:
 
         # Iterate over measurements and assign replicates
         for measurement_id, measurement_file in measurement_files.items():
+
+            # Fetch list of files
+            files = self._parseListOfFiles(data_annotation)
+
+            # Fetch formats
+            formats = self._parseListOfFormats(data_annotation)
 
             # Get file content
             fileInfo = files[measurement_file]
@@ -682,8 +697,7 @@ class EnzymeMLReader:
 
         return measurement_dict
 
-    @ staticmethod
-    def _parseListOfFiles(data_annotation: ET.Element) -> dict[str, dict[str, str]]:
+    def _parseListOfFiles(self, data_annotation: ET.Element) -> dict[str, dict[str, str]]:
         """Extracts the list of files that are present in the annotation enzymeml:files.
 
         Args:
@@ -700,11 +714,10 @@ class EnzymeMLReader:
                 'format': file.attrib['format'],
                 'id': file.attrib['id']
 
-            } for file in data_annotation[1]
+            } for file in self._get_element(data_annotation, "files")
         }
 
-    @ staticmethod
-    def _parseListOfFormats(data_annotation: ET.Element) -> dict[str, list[dict]]:
+    def _parseListOfFormats(self, data_annotation: ET.Element) -> dict[str, list[dict]]:
         """Extracts the list of formats that areb present in the annotation enzymeml:formats.
 
         Args:
@@ -719,7 +732,7 @@ class EnzymeMLReader:
                 column.attrib
                 for column in format
             ]
-            for format in data_annotation[0]
+            for format in self._get_element(data_annotation, "formats")
         }
 
     def _parseListOfMeasurements(self, data_annotation: ET.Element, enzmldoc: 'EnzymeMLDocument') -> tuple[dict[str, Measurement], dict]:
@@ -732,11 +745,19 @@ class EnzymeMLReader:
             tuple[dict[str, dict], dict[str, Measurement]]: Two dictionaries returning the measurement objects and files.
         """
 
-        measurements = data_annotation[2]
+        measurements = self._get_element(data_annotation, "listOfMeasurements")
+
+        if measurements is None:
+            # There was a typo and it should be catched here
+            measurements = self._get_element(
+                data_annotation, "listOfMasurements"
+            )
+
         measurement_files = {
             measurement.attrib['id']:
             measurement.attrib['file']
             for measurement in measurements
+            if measurement.attrib.get("file")
         }
         measurement_dict = {
             measurement.attrib['id']:
@@ -835,6 +856,14 @@ class EnzymeMLReader:
             "reactant_id": reactant_id,
             "protein_id": protein_id
         }, unit_id
+
+    @staticmethod
+    def _get_element(tree: ET.Element, name: str):
+        for element in tree.iter("*"):
+            if name in element.tag:
+                return element
+
+        return None
 
     def _getFiles(self, enzmldoc):
         """Extracts all added files fro the archive.

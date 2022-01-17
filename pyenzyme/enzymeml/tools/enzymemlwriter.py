@@ -459,10 +459,12 @@ class EnzymeMLWriter:
             compartment = model.createCompartment()
             compartment.setId(vessel_id)
             compartment.setName(vessel.name)
-            compartment.setSize(vessel.volume)
             compartment.setConstant(vessel.constant)
             compartment.setSpatialDimensions(3)
-            compartment.setUnits(vessel._unit_id)
+
+            if vessel.volume:
+                compartment.setSize(vessel.volume)
+                compartment.setUnits(vessel._unit_id)
 
     def _addProteins(self, model: libsbml.Model, protein_dict: dict[str, Protein]) -> None:
         """Converts EnzymeMLDocument proteins to SBML.
@@ -730,7 +732,7 @@ class EnzymeMLWriter:
             'enzymeml:formats', namespace=False
         )
         measurements = self.setupXMLNode(
-            'enzymeml:listOfMasurements', namespace=False
+            'enzymeml:listOfMeasurements', namespace=False
         )
         paths = {}
 
@@ -753,23 +755,14 @@ class EnzymeMLWriter:
             )
 
             # Get time and add to format node
-            time = measurement.global_time
-            time_unit = measurement._global_time_unit_id
-
-            time_column = XMLNode(
-                XMLTriple('enzymeml:column'),
-                XMLAttributes()
-            )
-
-            time_column.addAttr('type', 'time')
-            time_column.addAttr('unit', time_unit)
-            time_column.addAttr('index', '0')
-
-            format_annot.addChild(time_column)
-
-            # write initConc annotation and prepare raw data
-            data_columns = {f"time/{time_unit}": time}
-            self.index = 1
+            data_columns = {}
+            if measurement._has_replicates():
+                # Only write time data if replicates are present
+                self.writeTimeData(
+                    measurement=measurement,
+                    format_annot=format_annot,
+                    data_columns=data_columns
+                )
 
             self.writeMeasurementData(
                 measurement=measurement,
@@ -779,30 +772,37 @@ class EnzymeMLWriter:
             )
 
             # Create DataFrame to save measurement
-            file_name = f'{measurement_id}.csv'
-            file_path = f'./data/{file_name}'
-            df = pd.DataFrame(data_columns)
+            if data_columns:
+                file_name = f'{measurement_id}.csv'
+                file_path = f'./data/{file_name}'
+                df = pd.DataFrame(data_columns)
 
-            if self.path:
-                df_path = os.path.join(self.path, 'data', file_name)
-                df.to_csv(
-                    df_path,
-                    index=False,
-                    header=False
-                )
+                if self.path:
+                    df_path = os.path.join(self.path, 'data', file_name)
+                    df.to_csv(
+                        df_path,
+                        index=False,
+                        header=False
+                    )
+                else:
+                    df_path = "Unused"
 
                 paths[df_path] = file_path
 
-            # Add data to data annotation
-            file_annot = self.setupXMLNode(
-                'enzymeml:file',
-                namespace=False)
+                # Add data to data annotation
+                file_annot = self.setupXMLNode(
+                    'enzymeml:file',
+                    namespace=False)
 
-            file_annot.addAttr('file', file_path)
-            file_annot.addAttr('format', format_id)
-            file_annot.addAttr('id', file_id)
+                file_annot.addAttr('file', file_path)
+                file_annot.addAttr('format', format_id)
+                file_annot.addAttr('id', file_id)
 
-            measurement_annot.addAttr('file', file_id)
+                files.addChild(file_annot)
+                formats.addChild(format_annot)
+
+                measurement_annot.addAttr('file', file_id)
+
             measurement_annot.addAttr('id', measurement_id)
             measurement_annot.addAttr('name', measurement.getName())
 
@@ -820,45 +820,38 @@ class EnzymeMLWriter:
                     'ph', str(measurement.ph)
                 )
 
-            formats.addChild(format_annot)
-            files.addChild(file_annot)
             measurements.addChild(measurement_annot)
 
         # add annotation to listOfReactions
-        data_annotation.addChild(formats)
-        data_annotation.addChild(files)
-        data_annotation.addChild(measurements)
-
-        model.getListOfReactions().appendAnnotation(data_annotation)
+        if formats.getNumChildren() > 0:
+            data_annotation.addChild(formats)
+        if measurements.getNumChildren() > 0:
+            data_annotation.addChild(measurements)
+        if files.getNumChildren() > 0:
+            data_annotation.addChild(files)
+        if data_annotation.getNumChildren() > 0:
+            model.getListOfReactions().appendAnnotation(data_annotation)
 
         return paths
 
-    def _add_conditions(self, measurement: Measurement):
-        # Track conditions
-        conditionsAnnotation = self.setupXMLNode(
-            'enzymeml:conditions',
-            namespace=False
+    def writeTimeData(self, measurement: Measurement, format_annot: XMLNode, data_columns: dict):
+        time = measurement.global_time
+        time_unit = measurement._global_time_unit_id
+
+        time_column = XMLNode(
+            XMLTriple('enzymeml:column'),
+            XMLAttributes()
         )
 
-        conditionsMapping = {
-            'enzymeml:temperature': {
-                'value': 'temperature',
-                'unit': '_temperature_unit_id'
-            },
-            'enzymeml:ph': {
-                'value': 'ph'
-            }
-        }
+        time_column.addAttr('type', 'time')
+        time_column.addAttr('unit', time_unit)
+        time_column.addAttr('index', '0')
 
-        for attributeName, objectMapping in conditionsMapping.items():
-            self.appendMultiAttributes(
-                attributeName=attributeName,
-                object=measurement,
-                objectMapping=objectMapping,
-                annotationNode=conditionsAnnotation
-            )
+        format_annot.addChild(time_column)
 
-        return conditionsAnnotation
+        # write initConc annotation and prepare raw data
+        data_columns.update({f"time/{time_unit}": time})
+        self.index = 1
 
     def writeMeasurementData(
         self,
@@ -895,12 +888,13 @@ class EnzymeMLWriter:
             measurement_data_dict=reactants, species_type="reactant"
         )
 
-        # Replicates
-        self.appendReplicateData(
-            {**proteins, **reactants},
-            format_annot=format_annot,
-            data_columns=data_columns
-        )
+        if measurement._has_replicates():
+            # Replicates
+            self.appendReplicateData(
+                {**proteins, **reactants},
+                format_annot=format_annot,
+                data_columns=data_columns
+            )
 
     def appendInitConcData(
         self,

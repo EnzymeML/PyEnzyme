@@ -180,7 +180,7 @@ class Measurement(EnzymeMLBase):
         if isinstance(species_ids, str):
             species_ids = [species_ids]
 
-        columns = {f"time/{self.global_time_unit}": self.global_time}
+        columns = {f"time|{self.global_time_unit}": self.global_time}
         initial_concentration = {}
 
         # Iterate over measurementData to fill columns
@@ -191,7 +191,7 @@ class Measurement(EnzymeMLBase):
                 # Fetch replicate data
                 for replicate in data.getReplicates():
 
-                    header = f"{replicate.getReplica()}/{species_id}/{replicate.getDataUnit()}"
+                    header = f"{replicate.getReplica()}|{species_id}|{replicate.getDataUnit()}"
                     columns[header] = replicate.data
 
                     # Fetch initial concentration
@@ -347,6 +347,26 @@ class Measurement(EnzymeMLBase):
             measurement_data.unifyUnits(
                 kind=kind, scale=scale, enzmldoc=enzmldoc
             )
+
+    def _has_replicates(self) -> bool:
+        """Checks whether replicates are present in the measurement.
+
+        This is only used for the to check whether to write time course data or not.
+
+        Returns:
+            bool: Returns True if there are any replicate otherwise False.
+        """
+
+        all_species = {
+            **self.species_dict["proteins"],
+            **self.species_dict["reactants"]
+        }
+
+        for obj in all_species.values():
+            if len(obj.replicates) > 0:
+                return True
+
+        return False
 
     # ! Getters
 
