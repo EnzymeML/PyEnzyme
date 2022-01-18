@@ -311,7 +311,9 @@ class EnzymeMLDocument(EnzymeMLBase):
     @validate_arguments
     def uploadToDataverse(
         self,
-        dataverse_name: str
+        dataverse_name: str,
+        base_url: Optional[str] = None,
+        api_token: Optional[str] = None
     ):
         """Uploads an EnzymeML document to a Dataverse installation of choice.
 
@@ -324,7 +326,9 @@ class EnzymeMLDocument(EnzymeMLBase):
         """
         uploadToDataverse(
             enzmldoc=self,
-            dataverse_name=dataverse_name
+            dataverse_name=dataverse_name,
+            base_url=base_url,
+            api_token=api_token
         )
 
     # ! Utility methods

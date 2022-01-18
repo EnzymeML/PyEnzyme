@@ -14,13 +14,13 @@ import json
 import os
 import pydantic
 
-from typing import Any
+from typing import Any, Optional
 from pyDaRUS import EnzymeMl, Citation, Dataset
 from pyDaRUS.metadatablocks.enzymeML import Constant
 from pyDaRUS.metadatablocks.citation import SubjectEnum
 
 
-def uploadToDataverse(enzmldoc, dataverse_name: str) -> None:
+def uploadToDataverse(enzmldoc, dataverse_name: str, base_url: Optional[str] = None, api_token: Optional[str] = None) -> None:
     """Uploads a givene EnzymeMLDocument object to a dataverse installation.
 
     It should be noted, that the environment variables 'DATAVERSE_URL' and 'DATAVERSE_API_TOKEN'
@@ -29,6 +29,8 @@ def uploadToDataverse(enzmldoc, dataverse_name: str) -> None:
     Args:
         enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to be uploaded.
         dataverse_name (str): Name of the dataverse to be uploaded to.
+        base_url (str): Base URL of the dataverse to upload. Defaults to None. If None the URL will be drawn from env vars.
+        api_token (str): API Token of the dataverse to upload. Defaults to None. If None the API Token will be drawn from env vars.
     """
 
     # Fill in all the metadatablocks
@@ -48,7 +50,9 @@ def uploadToDataverse(enzmldoc, dataverse_name: str) -> None:
     try:
         dataset.upload(
             dataverse_name=dataverse_name,
-            filenames=[f"{enzmldoc.name.replace(' ', '_')}.omex"]
+            filenames=[f"{enzmldoc.name.replace(' ', '_')}.omex"],
+            base_url=base_url,
+            api_token=api_token
         )
     except Exception as e:
         os.remove(f"{enzmldoc.name.replace(' ', '_')}.omex")
@@ -202,7 +206,6 @@ def add_object(json_data, mapping, add_fun):
         # TODO find a better way to handle this error
         for error in e.errors():
             if error["loc"][0] == "unit":
-                print(params["name"], params["unit"])
                 params.pop("unit")
                 add_fun(**params)
 

@@ -1,6 +1,7 @@
 import os
 
 from fastapi import FastAPI, UploadFile, File, Request
+from pydantic import BaseSettings
 from starlette.responses import FileResponse, JSONResponse
 from starlette.background import BackgroundTasks
 
@@ -16,6 +17,17 @@ from pyenzyme.enzymeml.core.exceptions import (
     ParticipantIdentifierError
 )
 
+
+# * Settings
+
+
+class Settings(BaseSettings):
+    # Used for Dataverse upload
+    DATAVERSE_URL: str
+    DATAVERSE_API_TOKEN: str
+
+
+settings = Settings()
 app = FastAPI(title="PyEnzyme REST-API", version="1.2", docs_url="/")
 
 # * Functions
@@ -72,6 +84,34 @@ def parse_measurement_data(measurement, key, nu_measurement, enzmldoc):
         nu_measurement.addReplicates(
             measurement_data.replicates, enzmldoc=enzmldoc
         )
+
+
+@app.post(
+    "/upload/dataverse",
+    summary="Uploads an OMEX archive to a dataverse installation.",
+    description="Use this endpoint as form-data and specify the document to be uploaded via the key 'omex_archive' for a succesfull upload.",
+    tags=["Databases"]
+)
+async def upload_to_dataverse(background_tasks: BackgroundTasks, dataverse_name: str, omex_archive: UploadFile = File(...)):
+
+    # Write to file
+    file_name = omex_archive.filename
+    content = await omex_archive.read()
+    with open(file_name, "wb") as file_handle:
+        file_handle.write(content)
+
+    # Read EnzymeML document
+    try:
+        enzmldoc = EnzymeMLDocument.fromFile(file_name)
+        enzmldoc.uploadToDataverse(
+            dataverse_name=dataverse_name,
+            base_url=settings.DATAVERSE_URL,
+            api_token=settings.DATAVERSE_API_TOKEN
+        )
+    except Exception as e:
+        return f"{e.__class__.__name__}: {str(e)}"
+    finally:
+        background_tasks.add_task(remove_file, path=file_name)
 
 
 @app.post(
