@@ -19,15 +19,6 @@ from pyenzyme.enzymeml.core.exceptions import (
 
 
 # * Settings
-
-
-class Settings(BaseSettings):
-    # Used for Dataverse upload
-    DATAVERSE_URL: str
-    DATAVERSE_API_TOKEN: str
-
-
-settings = Settings()
 app = FastAPI(title="PyEnzyme REST-API", version="1.2", docs_url="/")
 
 # * Functions
@@ -92,7 +83,7 @@ def parse_measurement_data(measurement, key, nu_measurement, enzmldoc):
     description="Use this endpoint as form-data and specify the document to be uploaded via the key 'omex_archive' for a succesfull upload.",
     tags=["Databases"]
 )
-async def upload_to_dataverse(background_tasks: BackgroundTasks, dataverse_name: str, omex_archive: UploadFile = File(...)):
+async def upload_to_dataverse(background_tasks: BackgroundTasks, dataverse_name: str, api_token: str, base_url: str, omex_archive: UploadFile = File(...)):
 
     # Write to file
     file_name = omex_archive.filename
@@ -105,8 +96,8 @@ async def upload_to_dataverse(background_tasks: BackgroundTasks, dataverse_name:
         enzmldoc = EnzymeMLDocument.fromFile(file_name)
         enzmldoc.uploadToDataverse(
             dataverse_name=dataverse_name,
-            base_url=settings.DATAVERSE_URL,
-            api_token=settings.DATAVERSE_API_TOKEN
+            base_url=base_url,
+            api_token=api_token
         )
     except Exception as e:
         return f"{e.__class__.__name__}: {str(e)}"
