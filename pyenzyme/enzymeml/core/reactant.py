@@ -110,36 +110,6 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
         description="Unique identifier of the CHEBI database. Use this identifier to initialize the object from the CHEBI database.",
     )
 
-    # ! Validators
-    @validator("chebi_id")
-    def fetch_chebi_parameters(cls, chebi_id, values):
-        """PYDANTIC VALIDATOR: Automatically fills out fields present in the ChEBI database with appropriate values.
-
-        Caution, this function will overwrite any values in smiles, inchi and name that were given to the constructor!!
-
-        Args:
-            chebi_id (Union[str, int]): The ChEBI ID from which the data will be fetched.
-            values ([type]): Already initialiized values from teh constructor.
-        """
-
-        # Guard clauses
-        if chebi_id is None:
-            if values.get("name") is None:
-                raise NameError(
-                    "Please provide a name for the reactant if there is no ChEBI ID to fetch it from."
-                )
-            else:
-                return chebi_id
-
-        # Get chebi parameters
-        parameters = cls._getChEBIParameters(chebi_id=chebi_id)
-
-        # Override already given parameters in the data model
-        for key, item in parameters.items():
-            values[key] = item
-
-        return chebi_id
-
     # ! Initializers
     @classmethod
     def fromChebiID(
