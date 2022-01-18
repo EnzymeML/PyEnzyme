@@ -201,16 +201,12 @@ class EnzymeMLWriter:
         description.setDescription("EnzymeML model")
         description.setCreated(OmexDescription.getCurrentDateAndTime())
 
-        try:
-            for creat in enzmldoc.getCreator():
-                creator = VCard()
-                creator.setFamilyName(creat.getFname())
-                creator.setGivenName(creat.getGname())
-                creator.setEmail(creat.getMail())
-                description.addCreator(creator)
-
-        except AttributeError:
-            pass
+        for creat in enzmldoc.creator_dict.values():
+            creator = VCard()
+            creator.setFamilyName(creat.family_name)
+            creator.setGivenName(creat.given_name)
+            creator.setEmail(creat.mail)
+            description.addCreator(creator)
 
         archive.addMetadata(".", description)
         archive.addMetadata(location, description)

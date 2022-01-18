@@ -860,7 +860,7 @@ class EnzymeMLReader:
     @staticmethod
     def _get_element(tree: ET.Element, name: str):
         for element in tree.iter("*"):
-            if name in element.tag:
+            if name.lower() in element.tag.lower():
                 return element
 
         return None
