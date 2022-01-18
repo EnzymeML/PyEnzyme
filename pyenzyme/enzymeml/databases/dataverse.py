@@ -12,6 +12,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 
 import json
 import os
+import pydantic
 
 from typing import Any
 from pyDaRUS import EnzymeMl, Citation, Dataset
@@ -175,7 +176,7 @@ def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":
                     name=f"{json_data['name']}_{reaction.id}",
                     value=json_data["value"],
                     unit=json_data["unit"],
-                    sbo_term=json_data["ontology"]
+                    sbo_term=json_data.get("ontology")
                 )
 
     return enzml_meta
@@ -189,8 +190,25 @@ def add_object(json_data, mapping, add_fun):
         if mapping.get(key) and repr(item) != "nan" and item
     }
 
-    # Add infos to metadatablock
-    add_fun(**params)
+    # TODO fix metadatablock to accept other units than MOLAR
+    if params.get("unit"):
+        params["unit"] = params["unit"].replace("mole / l", "M")
+
+    try:
+        # Add infos to metadatablock
+        add_fun(**params)
+    except pydantic.ValidationError as e:
+
+        # TODO find a better way to handle this error
+        for error in e.errors():
+            if error["loc"][0] == "unit":
+                print(params["name"], params["unit"])
+                params.pop("unit")
+                add_fun(**params)
+
+                return None
+
+        raise e
 
 
 def kinetic_law_params(reaction: "EnzymeReaction") -> dict[str, str]:
