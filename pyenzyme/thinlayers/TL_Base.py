@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Union
-
+import os
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 
 
@@ -102,8 +102,11 @@ class ModelingTool(BaseThinLayer):
 
 
 def main():
+    this_dir = os.path.dirname(__file__)
+    filename = os.path.join(this_dir + "/../../", "examples/ThinLayers/COPASI/3IZNOK_SIMULATED.omex")
+    assert os.path.exists(filename)
     thin_layer = ModelingTool(
-        path="examples/ThinLayers/COPASI/3IZNOK_SIMULATED.omex"
+        path=filename
     )
     thin_layer.optimize()
 
