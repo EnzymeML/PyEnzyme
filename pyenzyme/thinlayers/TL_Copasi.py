@@ -2,6 +2,7 @@
 File: TL_Copasi.py
 Project: ThinLayers
 Author: Jan Range
+Author: Frank Bergmann
 License: BSD-2 clause
 -----
 Last Modified: Wednesday June 23rd 2021 10:25:11 pm
@@ -9,418 +10,283 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
-
+import logging
 from typing import Union
 
-from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
-from pyenzyme.enzymeml.core import Replicate
-from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
-from pyenzyme.enzymeml.models import MichaelisMenten
+from pyenzyme.thinlayers import BaseThinLayer
 import os
 
 import COPASI
+import pandas as pd
 from builtins import enumerate
 
 
-class ThinLayerCopasi(object):
+class ThinLayerCopasi(BaseThinLayer):
 
-    def modelEnzymeML(
-        self,
-        reaction_id: str,
-        protein_id: str,
-        reactants: list[str],
-        path: str,
-        outdir: str = None
-    ):
-        """ThinLayer interface from an OMEX EnzymeML container to COPASI compatible CPS file format.
+    def __init__(self, path, outdir, measurement_ids: Union[str, list] = "all"):
+        """
+        Initializes a new instance of the COPASI thin layer, by loading the EnzymeML file
+        specified in `path` and creating a COPASI file (+ data) in `outdir`.
 
-        Args:
-            reaction_id (str): Measurement ID from which the data is used for modeling.
-            protein_id (str): The ID of the protein that is catalysing the reaction.
-            reactants (list[str]): The IDs of the modeled reactants.
-            path (str): Path to the OMEX EnzymeML file.
-            outdir (str, optional): Path to store the CPS COPASI file. Defaults to None.
+        :param path: the enzyme ml document to load
+        :param outdir: the output dir
+        :param measurement_ids: the measurement ids or all
         """
 
-        # Save path in variable
-        path = os.path.normpath(path)
-        enzmldoc = EnzymeMLDocument.fromFile(path)
+        # initialize base class, let it do the reading
+        BaseThinLayer.__init__(self, path, measurement_ids)
+        self.name = self.enzmldoc.name
+        self.working_dir = os.path.join(os.path.abspath(outdir), self.name)
+        self.cps_file = os.path.join(self.working_dir, self.name + '.cps')
+        if not os.path.exists(self.working_dir):
+            os.makedirs(self.working_dir)
 
-        # store files in the output dir unless not specified (in that case use
-        # the directory from the example)
-        if outdir is None:
-            outdir = os.path.dirname(path)
+        # now initialize the COPASI document from it
+        self.dm = COPASI.CRootContainer.addDatamodel()
+        try:
+            self.dm.importSBMLFromString(self.sbml_xml)
+        except COPASI.CCopasiException:
+            logging.error(COPASI.CCopasiMessage.getAllMessageText())
 
-        # Create directory for modeled data
-        dirpath = os.path.join(outdir, f"Modeled_{reaction_id}")
-        os.makedirs(dirpath, exist_ok=True)
+        # maps
+        self._init_maps()
 
-        # Estimate parameters
-        # TODO estimate kcat rather than vmax
-        km_val, km_unit, vmax_val, vmax_unit = self.importEnzymeML(
-            reaction_id,
-            reactants,
-            dirpath,
-            enzmldoc
-        )
+        # variables
+        self.model = self.dm.getModel()
+        self.task = self.dm.getTask('Parameter Estimation')
+        self.task.setScheduled(True)
+        self.task.setUpdateModel(True)
+        self.task.setMethodType(COPASI.CTaskEnum.Method_HookeJeeves)
+        self.problem = self.task.getProblem()
+        self.problem.setCalculateStatistics(False)
+        self.exp_set = self.problem.getExperimentSet()
 
-        # TODO generalize to multiple reactants/proteins
-        # ? Specific classmethods maybe to streamline known models?
-        menten_model = MichaelisMenten(
-            kcat_val=vmax_val,
-            kcat_unit=vmax_unit,
-            km_val=km_val,
-            km_unit=km_unit,
-            substrate_id=reactants[0],
-            protein_id=protein_id,
-            enzmldoc=enzmldoc
-        )
+        # read in experiments
+        self._import_experiments()
 
-        # Write model to reaction
-        enzmldoc.reaction_dict[reaction_id].model = menten_model
+        # set all parameters as fit items
+        self._set_default_items()
 
-        enzmldoc.toFile(dirpath)
+        self.dm.saveModel(self.cps_file, True)
 
-    def importEnzymeML(
-        self,
-        reaction_id: str,
-        reactants: Union[list[str], str],
-        dirpath,
-        enzmldoc
-    ) -> tuple[float, str, float, str]:
-        '''
-        ThinLayer interface from an .omex EnzymeML container
-        to COPASI comatible .cps file format.
+    def _init_maps(self):
+        """Initializes a map from SBML id to COPASI objects"""
+        self.sbml_id_map = {}
+        for item in self.dm.getModel().getMetabolites():
+            self.sbml_id_map[item.getSBMLId()] = item
+        for item in self.dm.getModel().getModelValues():
+            self.sbml_id_map[item.getSBMLId()] = item
+        for item in self.dm.getModel().getReactions():
+            self.sbml_id_map[item.getSBMLId()] = item
+        for item in self.dm.getModel().getCompartments():
+            self.sbml_id_map[item.getSBMLId()] = item
 
-        Args:
-            String path: Path to .omex EnzymeML file
-            String outdir: Path to store .cps COPASI file
-            String reaction: Reaction ID to extract data from
-            String reactants: Single or multiple IDs for desired reactant(s)
-        '''
+    def _get_cn_for_item(self, item):
+        """Resolves the given item to CN or None
 
-        if isinstance(reactants, str):
-            reactants = [reactants]
+        :param item: dictionary with 'name' and optinally 'reaction_id'
+        :type item: dict
+        :return: the CN if found, or None
+        :rtype: COPASI.CCommonName
+        """
+        reaction = None
+        if 'reaction_id' in item and item['reaction_id'] in self.sbml_id_map:
+            reaction = self.sbml_id_map[item['reaction_id']]
 
-        # Get reaction and replicates
-        reaction = enzmldoc.getReaction(reaction_id)
+        if 'name' in item:
+            if reaction is not None:
+                return reaction.getParameterObjects(item['name'])[0].getCN()
 
-        # Set up the kind of unit and scale the measurements will be set to
-        # ? Exponent and multiplier also important
-        kind = "mole"
-        scale = -3
+            mv = self.model.getModelValue(item['name'])
+            if mv is not None:
+                return mv.getInitialValueReference().getCN()
 
-        # initialize COPASI data model
-        dm = COPASI.CRootContainer.addDatamodel()
-        sbml = enzmldoc.toXMLString()
-        dm.importSBMLFromString(sbml)
+            metab = self.model.getMetabolite(item['name'])
+            if metab is not None:
+                return metab.getInitialConcentrationReference().getCN()
 
-        # COPASI
+        return None
 
-        # Get Reactant specific ConcentrationReference
-        col_cn_map = {
-            metab.sbml_id: metab.getConcentrationReference().getCN()
-            for metab in dm.getModel().getMetabolites()
-            if metab.sbml_id in reactants
-        }
+    def _import_experiments(self):
+        """ Writes all experiments to TSV file and performs mapping in COPASI
 
-        # Describe .tsv file and call COPASI bindings
-        task = dm.getTask('Parameter Estimation')
-        task.setScheduled(True)
-        problem = task.getProblem()
-        problem.setCalculateStatistics(False)
-        exp_set = problem.getExperimentSet()
+        :return: None
+        """
+        for measurement_id, measurement_dict in self.data.items():
+            sbml_ids = [d[0] if len(d) == 2 else d[1] for d in [
+                c.split('|') for c in measurement_dict['data'].columns.to_list()
+            ]]
 
-        for reactant in reactants:
+            data = measurement_dict['data']
 
-            # include each replicate
-            for i, repl in enumerate(reaction.getEduct(reactant)[3]):
+            for k, v in measurement_dict['initConc'].items():
+                data = data.join(pd.DataFrame({'init_{0}'.format(k): [v[0]]}))
+                sbml_ids.append('init_{0}'.format(k))
 
-                data = repl.getData()
-                speciesID = repl.getReactant()
+            exp_filename = os.path.abspath(os.path.join(self.working_dir, measurement_id + '.tsv'))
 
-                concVal, concUnit = enzmldoc.getConcDict()[repl.getInitConc()]
-                timeUnit = repl.getTimeUnit()
-                metab = [
-                    metab
-                    for metab in dm.getModel().getMetabolites()
-                    if metab.sbml_id == reactant
-                ][0]
+            data.to_csv(exp_filename,
+                        sep='\t', header=True, index=False)
 
-                cn = metab.getInitialConcentrationReference().getCN()
+            exp = COPASI.CExperiment(self.dm)
+            exp.setObjectName(
+                '{0}'.format(measurement_id)
+            )
+            exp.setFirstRow(1)
+            exp.setLastRow(data.shape[0] + 1)
+            exp.setHeaderRow(1)
+            exp.setFileName(exp_filename)
+            exp.setExperimentType(COPASI.CTaskEnum.Task_timeCourse)
+            exp.setSeparator('\t')
+            exp.setNumColumns(len(sbml_ids))
+            exp = self.exp_set.addExperiment(exp)
+            info = COPASI.CExperimentFileInfo(self.exp_set)
+            info.setFileName(exp_filename)
 
-                # TSV path
-                tsvpath = os.path.join(
-                    dirpath,
-                    f'experiment_{reactant}_{i}.tsv'
-                )
+            # Mapping from .tsv file to COPASI bindings
+            obj_map = exp.getObjectMap()
+            obj_map.setNumCols(data.shape[1])
 
-                data.to_csv(tsvpath,
-                            sep='\t', header=True)
+            for i, col in enumerate(sbml_ids):
+                if col == "time":
+                    role = COPASI.CExperiment.time
+                    obj_map.setRole(i, role)
 
-                exp = COPASI.CExperiment(dm)
-                exp.setObjectName(
-                    '{0} at {1:.2f}'.format(metab.getObjectName(), concVal)
-                )
-                exp.setFirstRow(1)
-                exp.setLastRow(data.shape[0] + 1)
-                exp.setHeaderRow(1)
-                exp.setFileName(tsvpath)
-                exp.setExperimentType(COPASI.CTaskEnum.Task_timeCourse)
-                exp.setSeparator('\t')
-                exp.setNumColumns(2)
-                exp = exp_set.addExperiment(exp)
-                info = COPASI.CExperimentFileInfo(exp_set)
-                info.setFileName(tsvpath)
+                elif col in self.sbml_id_map.keys():
+                    role = COPASI.CExperiment.dependent
+                    obj_map.setRole(i, role)
+                    obj_map.setObjectCN(i, self.sbml_id_map[col].getConcentrationReference().getCN())
 
-                # add the initial concentration as fit item
-                item = problem.addFitItem(cn)
-                item.setStartValue(concVal)
-                item.setLowerBound(COPASI.CCommonName(str(concVal * 0.01)))
-                item.setUpperBound(COPASI.CCommonName(str(concVal * 100)))
-                item.addExperiment(exp.getKey())
+                elif col.startswith('init_') and col[5:] in self.sbml_id_map.keys():
+                    role = COPASI.CExperiment.independent
+                    obj_map.setRole(i, role)
+                    obj_map.setObjectCN(i, self.sbml_id_map[col[5:]].getInitialConcentrationReference().getCN())
 
-                # Mapping from .tsv file to COPASI bindings
-                obj_map = exp.getObjectMap()
-                obj_map.setNumCols(2)
+                else:
+                    role = COPASI.CExperiment.ignore
+                    obj_map.setRole(i, role)
 
-                for i, col in enumerate(["time"] + [speciesID]):
-                    if col == "time":
-                        role = COPASI.CExperiment.time
-                        obj_map.setRole(i, role)
+    def get_fit_parameters(self):
+        """ Returns all fit items specified as a list of dictionaries of the form
 
-                    elif col in col_cn_map.keys():
-                        role = COPASI.CExperiment.dependent
-                        obj_map.setRole(i, role)
-                        obj_map.setObjectCN(i, col_cn_map[col])
+            [ { 'name': 'km', 'start': 0.1, 'lower': 1e-6, 'upper': 1e6, 'reaction_id': 'r1'  } ...  ]
 
-                    else:
-                        role = COPASI.CExperiment.ignore
-                        obj_map.setRole(i, role)
-
-        # Finally save the model and add plot/progress
-        task = dm.getTask('Parameter Estimation')
-        task.setMethodType(COPASI.CTaskEnum.Method_Statistics)
-        COPASI.COutputAssistant.getListOfDefaultOutputDescriptions(task)
-        COPASI.COutputAssistant.createDefaultOutput(913, task, dm)
-        COPASI.COutputAssistant.createDefaultOutput(911, task, dm)
-
-        # Gather Menten parameters
-        km_value, vmax_value = self.run_parameter_estimation(dm)
-        km_unit = enzmldoc.getUnitDict()[concUnit].getName()
-        timeUnit = enzmldoc.getUnitDict()[timeUnit].getName()
-
-        if "M" in km_unit:
-            vmax_unit = km_unit + ' / ' + timeUnit
-        else:
-            split_u = km_unit.split('/')
-            vmax_unit = split_u[0] + ' / ' + f'( {split_u[1]} * {timeUnit} )'
-
-        return (km_value, km_unit, vmax_value, vmax_unit)
-
-    def unifyUnits(
-        self,
-        reactant: str,
-        reaction: EnzymeReaction,
-        enzmldoc: 'EnzymeMLDocument',
-        kind
-    ):
-
-        # get unit of specified reactant
-        unit = enzmldoc.getReactant(reactant)._unit_id
-        unit = enzmldoc.unit_dict[unit]
-        units = unit.units
-        scale = next(filter(
-            lambda base_unit: base_unit.kind == kind,
-            units
-        ))
-
-        # iterate through elements
-        reaction_elements = [
-            *reaction.educts,
-            *reaction.products,
-            *reaction.modifiers
-        ]
-
-        for index, reaction_element in enumerate(reaction_elements):
-            for tup in elem:
-
-                # get exponent and scale to calculate
-                # factor for new calculation
-                if tup[0][0] == 's':
-                    unit_r = enzmldoc.getUnitDict()[
-                        enzmldoc.getReactant(tup[0]).getSubstanceUnits()
-                    ]
-
-                if tup[0][0] == 'p':
-                    unit_r = enzmldoc.getUnitDict()[
-                        enzmldoc.getProtein(tup[0]).getSubstanceUnits()
-                    ]
-
-                units_r = unit_r.getUnits()
-                exponent_r = [tup[1] for tup in units_r if tup[0] == kind][0]
-                scale_r = [tup[2] for tup in units_r if tup[0] == kind][0]
-
-                nu_scale = exponent_r * (scale_r - scale)
-
-                if nu_scale != 0:
-
-                    # Reset Species initial concentrations
-                    if tup[0][0] == 's':
-
-                        enzmldoc.getReactant(tup[0]).setSubstanceUnits(
-                            unit.getId()
-                        )
-                        enzmldoc.getReactant(tup[0]).setInitConc(
-                            enzmldoc.getReactant(
-                                tup[0]).getInitConc() * (10**nu_scale)
-                        )
-
-                    elif tup[0][0] == 'p':
-
-                        enzmldoc.getProtein(tup[0]).setSubstanceUnits(
-                            unit.getId()
-                        )
-
-                        enzmldoc.getProtein(tup[0]).setInitConc(
-                            enzmldoc.getProtein(
-                                tup[0]).getInitConc() * (10**nu_scale)
-                        )
-
-                    # Reset replicate concentrations
-                    nu_repls = [
-                        Replicate(
-                            replica=repl.getReplica(),
-                            reactant=repl.getReactant(),
-                            type_=repl.getType(),
-                            data_unit=unit.getId(),
-                            time_unit=repl.getTimeUnit(),
-                            init_conc=repl.getInitConc() * (10**nu_scale),
-                            measurement=repl.getMeasurement()
-                        )
-
-                        for repl in tup[3]
-                    ]
-
-                    # Reset initial concentrations
-                    nu_inits = list()
-                    for initValue, initUnit in tup[4]:
-                        nu_conc = initValue * (10**nu_scale)
-                        nu_inits.append((nu_conc, initUnit))
-                        enzmldoc.addConc((nu_conc, initUnit))
-
-                    # Remove old element
-                    elementTuple = (tup[0], tup[1], tup[2], nu_repls, nu_inits)
-
-                    if i == 0:
-                        reaction.getEducts()[
-                            reaction.getEduct(tup[0], index=True)
-                        ] = elementTuple
-                    if i == 1:
-                        reaction.getProducts()[
-                            reaction.getProduct(tup[0], index=True)
-                        ] = elementTuple
-                    if i == 2:
-                        reaction.getModifiers()[
-                            reaction.getModifier(tup[0], index=True)
-                        ] = elementTuple
-
-    ##### COPASI FUNCTIONS #####
-
-    def replace_kinetic_law(self, dm, reaction, function_name):
-        # type: (COPASI.CDataModel, COPASI.CReaction, str) -> None
-        functions = COPASI.CRootContainer.getFunctionList()
-        function = functions.findFunction(function_name)
-        if function is None:
-            print("No such function defined, can't change kinetics")
-            return
-
-        if reaction.isReversible():  # for now force the kinetic to be irreversible
-            # (otherwise the kinetic law does not apply)
-            reaction.setReversible(False)
-
-        # now since we have 2 substrates in this case and we would automatically assign the first substrate
-        # to the new function, we want to make sure that we map to the same substrates as the old reaction
-        substrates = None
-        fun_params = reaction.getFunctionParameters()
-        for i in range(fun_params.size()):
-            param = fun_params.getParameter(i)
-            if param.getUsage() == COPASI.CFunctionParameter.Role_SUBSTRATE:
-                substrates = reaction.getParameterCNs(param.getObjectName())
-                break
-
-        # set the new function
-        reaction.setFunction(function)
-        if substrates is not None:
-            # in case we found substrates map them
-            reaction.setParameterCNs('substrate', substrates)
-
-        # recompile model so it can be simulated later on
-        reaction.compile()
-        dm.getModel().forceCompile()
-        pass
-
-    def run_parameter_estimation(self, dm):
-        task = dm.getTask('Parameter Estimation')
-        assert (isinstance(task, COPASI.CFitTask))
-        task.setScheduled(True)
-        problem = task.getProblem()
-        problem.setCalculateStatistics(False)
-        # problem.setRandomizeStartValues(True)  # not randomizing this time
-
-        reaction = dm.getModel().getReaction(0)
-        self.replace_kinetic_law(
-            dm,
-            reaction,
-            "Henri-Michaelis-Menten (irreversible)"
-        )
-        objects = reaction.getParameterObjects()
-
-        cn_name_map = {}
-
-        # add fit items for reaction parameters
-        for obj in objects:
-            param = obj[0]
-            if param.getObjectAncestor('Reaction') is None:
-                # skip all non-local parameters
+        :return: list of dictionaries with fit items
+        :rtype: [{}]
+        """
+        result = []
+        for i in range(self.problem.getOptItemSize()):
+            p = self.problem.getOptItem(i)
+            assert (isinstance(p, COPASI.COptItem))
+            obj = self.dm.getObject(p.getObjectCN())
+            if obj is None:
                 continue
-            value = reaction.getParameterValue(param.getObjectName())
-            item = problem.addFitItem(param.getValueObject().getCN())
-            item.setStartValue(value)  # the current initial concentration
-            item.setLowerBound(COPASI.CCommonName(str(value * 0.0001)))
-            item.setUpperBound(COPASI.CCommonName(str(value * 10000)))
-            cn_name_map[param.getValueObject().getCN().getString()
-                        ] = param.getObjectName()
+            name = obj.getObjectName() if obj.getObjectType() != "Reference" else obj.getObjectParent().getObjectName()
 
-        # switch optimization method
-        task.setMethodType(COPASI.CTaskEnum.Method_LevenbergMarquardt)
+            result.append({
+                'name': name,
+                'start': p.getStartValue(),
+                'lower': p.getLowerBoundValue(),
+                'upper': p.getUpperBoundValue(),
+                'reaction_id': obj.getObjectAncestor('Reaction').getSBMLId()
+            })
+        return result
 
+    def set_fit_parameters(self, fit_parameters):
+        """Replaces all fit items with the ones specified
+
+        :param fit_parameters: list of dictionaries of the same form as returned by get_fit_parameters
+        :return: None
+        """
+        assert(isinstance(self.problem, COPASI.CFitProblem))
+        assert (isinstance(self.task, COPASI.CFitTask))
+        assert (isinstance(self.dm, COPASI.CDataModel))
+
+        for i in range(self.problem.getOptItemSize()):
+            self.problem.removeOptItem(0)
+
+        for item in fit_parameters:
+            if 'name' not in item:
+                continue
+
+            cn = self._get_cn_for_item(item)
+            if cn is None:
+                continue
+
+            fit_item = self.problem.addFitItem(cn)
+            assert (isinstance(fit_item, COPASI.CFitItem))
+            if 'lower' in item:
+                fit_item.setLowerBound(COPASI.CCommonName(str(item['lower'])))
+            if 'upper' in item:
+                fit_item.setUpperBound(COPASI.CCommonName(str(item['upper'])))
+            if 'start' in item:
+                fit_item.setStartValue(float(item['start']))
+
+    def optimize(self):
+        """ Carries out the Parameter estimation
+        :return: None
+        """
         # run optimization
-        task.initialize(COPASI.CCopasiTask.OUTPUT_UI)
-        task.process(True)
+        self.task.initialize(COPASI.CCopasiTask.OUTPUT_UI)
+        self.task.process(True)
+        self.task.restore()
 
-        # print parameter values
-        assert (isinstance(problem, COPASI.CFitProblem))
-        results = problem.getSolutionVariables()
+    def update_enzymeml_doc(self):
+        """ Updates the enzyme ml document with the values from last optimization run
 
-        vmax = None
-        km = None
+        :return: None
+        """
+        assert (isinstance(self.problem, COPASI.CFitProblem))
+        results = self.problem.getSolutionVariables()
 
-        for i in range(problem.getOptItemSize()):
-            item = problem.getOptItem(i)
-            cn = item.getObjectCN().getString()
-            if cn not in cn_name_map:
+        logging.debug('OBJ: {0}'.format(self.problem.getSolutionValue()))
+        logging.debug('RMS: {0}'.format(self.problem.getRMS()))
+
+        for i in range(self.problem.getOptItemSize()):
+            item = self.problem.getOptItem(i)
+            obj = self.dm.getObject(item.getObjectCN())
+            if obj is None:
                 continue
+
+            name = obj.getObjectName() if obj.getObjectType() != 'Reference' else obj.getObjectParent().getObjectName()
             value = results.get(i)
+            logging.debug(name, value)
 
-            if cn_name_map[cn] == 'V':
-                vmax = value
-            if cn_name_map[cn] == 'Km':
-                km = value
+            reaction = obj.getObjectAncestor('Reaction')
+            if reaction is not None:
+                model = self.reaction_data[reaction.getSBMLId()][0]
+                for p in model.parameters:
+                    if p.name == name:
+                        p.value = value
+                        break
 
-        return km, vmax
+    def _set_default_items(self):
+        """ Initializes fit items from the local parameters specified in the reaction_data
+
+        :return: None
+        """
+        for reaction_id, data in self.reaction_data.items():
+            r = self.sbml_id_map[reaction_id]
+            assert (isinstance(r, COPASI.CReaction))
+            for p in self.reaction_data[reaction_id][0].parameters:
+                obj = r.getParameterObjects(p.name)[0].getObject(COPASI.CCommonName('Reference=Value'))
+                cn = obj.getCN()
+                fit_item = self.problem.addFitItem(cn)
+                assert (isinstance(fit_item, COPASI.CFitItem))
+                fit_item.setLowerBound(COPASI.CCommonName(str(1e-6)))
+                fit_item.setUpperBound(COPASI.CCommonName(str(1e6)))
+                fit_item.setStartValue(float(p.value))
 
 
 if __name__ == '__main__':
-    path = os.path.join('COPASI', '3IZNOK_TEST.omex')
-    ThinLayerCopasi().modelEnzymeML('r0', 's1', path)
+    this_dir = os.path.dirname(__file__)
+    filename = os.path.join(this_dir + "/../../", "examples/ThinLayers/COPASI/3IZNOK_SIMULATED.omex")
+    assert os.path.exists(filename)
+
+    thin_layer = ThinLayerCopasi(
+        path=filename,
+        outdir='./out'
+    )
+
+    thin_layer.optimize()
+    thin_layer.update_enzymeml_doc()
