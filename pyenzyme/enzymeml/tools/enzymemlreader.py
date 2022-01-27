@@ -186,10 +186,12 @@ class EnzymeMLReader:
     def _sboterm_to_enum(sbo_term: int) -> Optional[SBOTerm]:
         try:
             sbo_string: str = libsbml.SBO_intToString(sbo_term)
+
             if len(sbo_string) == 0:
                 return None
 
-            return SBOTerm(sbo_term)
+            return SBOTerm(sbo_string)
+
         except ValueError:
             return None
 
@@ -332,7 +334,7 @@ class EnzymeMLReader:
             init_conc = species.getInitialConcentration()
             unit_id = species.getSubstanceUnits()
 
-            if repr(species.getInitialConcentration()) == "nan":
+            if repr(init_conc) == "nan":
                 init_conc, unit_id, unit = None, None, None
             else:
                 unit = enzmldoc.getUnitString(unit_id)
@@ -590,14 +592,24 @@ class EnzymeMLReader:
 
         for local_param in kineticLaw.getListOfLocalParameters():
 
+            value = local_param.getValue()
+            unit_id = local_param.getUnits()
+
+            if repr(local_param.getValue()) == "nan":
+                value, unit_id, unit = None, None, None
+            else:
+                unit = enzmldoc.getUnitString(unit_id)
+
             parameter = KineticParameter(
                 name=local_param.getId(),
-                value=local_param.getValue(),
-                unit=enzmldoc.getUnitString(local_param.getUnits()),
+                value=value,
+                unit=unit,
                 ontology=self._sboterm_to_enum(local_param.getSBOTerm())
             )
 
-            parameter._unit_id = local_param.getUnits()
+            if unit:
+                parameter._unit_id = local_param.getUnits()
+
             parameters.append(parameter)
 
         return KineticModel(
