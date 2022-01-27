@@ -12,6 +12,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 
 import logging
 import re
+import ast
 
 from typing import List, Optional, TYPE_CHECKING
 from dataclasses import dataclass
@@ -481,15 +482,25 @@ class EnzymeReaction(EnzymeMLBase):
             raise ValueError(
                 "Please provide an EnzymeMLDocument if the reaction schem should include names")
 
+        # Determine the appropriate arrow
+        direction = "<=>" if self.reversible else "->"
+
         educts = self._summarize_elements(self.educts, by_name, enzmldoc)
         products = self._summarize_elements(self.products, by_name, enzmldoc)
         modifiers = self._summarize_elements(
             self.modifiers, by_name, enzmldoc).replace(" + ", ", ")
 
-        if modifiers:
-            return f"{self.name}:\n{educts} -> {products}\nModifiers: {modifiers}\n"
+        if self.model:
+            equation = "v = " + self._convert_equation_ids_to_names(
+                self.model.equation, by_name, enzmldoc
+            ) + "\n"
         else:
-            return f"{self.name}:\n{educts} -> {products}\n"
+            equation = ""
+
+        if modifiers:
+            return f">{self.name}\nEquation: {educts} {direction} {products}\nModifiers: {modifiers}\n{equation}\n"
+        else:
+            return f">{self.name}\nEquation: {educts} {direction} {products}\nModel: {equation}\n"
 
     def _summarize_elements(self, elements: list, by_name, enzmldoc) -> str:
         """Parses all reaction elements of a list to a string"""
@@ -504,6 +515,22 @@ class EnzymeReaction(EnzymeMLBase):
                 f"{element.stoichiometry} {enzmldoc.getAny(element.species_id).name}"
                 for element in elements
             ])
+
+    def _convert_equation_ids_to_names(self, equation: str, by_name: bool, enzmldoc) -> str:
+        """Converts species IDs to names for readable elements when printing reaction schemes"""
+
+        if by_name is False:
+            return equation
+
+        for node in ast.walk(ast.parse(equation)):
+            if isinstance(node, ast.Name):
+                try:
+                    name = enzmldoc.getAny(node.id).name
+                    equation = equation.replace(node.id, name)
+                except SpeciesNotFoundError:
+                    pass
+
+        return equation
 
     def getStoichiometricCoefficients(self) -> dict[str, float]:
         """Returns the approprate stoichiometric coefficients of all educts and products.
