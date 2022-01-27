@@ -278,8 +278,10 @@ class ModelFactory:
 
             try:
                 identifier: str = variables[stock_variable]
+
                 model.equation = model.equation.replace(
-                    stock_variable, identifier)
+                    stock_variable, identifier
+                )
             except KeyError:
                 raise KeyError(
                     f"Variable {stock_variable} has not been given. Please make sure to cover all variables: [{repr(self.variables)}]"
