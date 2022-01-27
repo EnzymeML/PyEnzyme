@@ -322,6 +322,8 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         Args:
             dataverse_name (str): Name of the dataverse to upload the EnzymeML document. You can find the name in the link of your dataverse (e.g. https://dataverse.installation/dataverse/{dataverseName})
+            base_url (str): Base URL of the dataverse to upload. Defaults to None. If None the URL will be drawn from env vars.
+            api_token (str): API Token of the dataverse to upload. Defaults to None. If None the API Token will be drawn from env vars.
 
         """
         uploadToDataverse(
