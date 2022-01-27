@@ -180,7 +180,7 @@ class Measurement(EnzymeMLBase):
         if isinstance(species_ids, str):
             species_ids = [species_ids]
 
-        columns = {f"time|{self.global_time_unit}": self.global_time}
+        columns = {"time": self.global_time}
         initial_concentration = {}
 
         # Iterate over measurementData to fill columns
@@ -191,8 +191,7 @@ class Measurement(EnzymeMLBase):
                 # Fetch replicate data
                 for replicate in data.getReplicates():
 
-                    header = f"{replicate.getReplica()}|{species_id}|{replicate.getDataUnit()}"
-                    columns[header] = replicate.data
+                    columns[species_id] = replicate.data
 
                     # Fetch initial concentration
                     initial_concentration[species_id] = (

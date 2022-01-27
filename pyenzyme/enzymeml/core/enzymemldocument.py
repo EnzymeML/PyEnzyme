@@ -359,7 +359,9 @@ class EnzymeMLDocument(EnzymeMLBase):
     def exportMeasurementData(
         self,
         measurement_ids: Union[str, list[str]] = "all",
-        species_ids: Union[str, list[str]] = "all"
+        species_ids: Union[str, list[str]] = "all",
+        proteins: bool = True,
+        reactants: bool = True,
     ) -> dict[str, dict[str, Union[tuple, pd.DataFrame]]]:
         """Exports either all replicates present in any measurement or the ones specified via 'species_ids' or 'measurement_ids'
 
@@ -381,14 +383,17 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         for measurement_id, measurement in self.measurement_dict.items():
             if measurement_id in measurement_ids or measurement_ids == ["all"]:
-                measurement_data = measurement.exportData(
+                data = measurement.exportData(
                     species_ids=species_ids
                 )
 
-                measurement_data = {
-                    **measurement_data["proteins"],
-                    **measurement_data["reactants"]
-                }
+                # Initialize the data dict that will be returned
+                measurement_data = {}
+
+                if reactants:
+                    measurement_data.update(data["reactants"])
+                if proteins:
+                    measurement_data.update(data["proteins"])
 
                 if measurement_data["data"] is not None:
                     replicate_data[measurement_id] = measurement_data
