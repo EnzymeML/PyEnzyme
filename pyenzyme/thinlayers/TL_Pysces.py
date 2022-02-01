@@ -53,8 +53,8 @@ class ThinLayerPysces():
             # ? It is now possible to ensure, that the units are the same: m.unifyUnits(kind="mole", scale=-3)
             measurement_data = m.exportData()
             replicate_df = measurement_data['reactants']['data']
-            rename_dict = {i: i.split('/')[-2] for i in replicate_df.columns}
-            replicate_df.rename(rename_dict, axis=1, inplace=True)
+            # rename_dict = {i: i.split('/')[-2] for i in replicate_df.columns}
+            # replicate_df.rename(rename_dict, axis=1, inplace=True)
 
             inits_dict = {}
 
@@ -111,7 +111,7 @@ class ThinLayerPysces():
         params = {}
         for rID, r in self.enzmldoc.reaction_dict.items():
             for kinetic_parameter in r.model.parameters:
-                params[f"{rID}_{kinetic_parameter.id}"] = kinetic_parameter.value
+                params[f"{rID}_{kinetic_parameter.name}"] = kinetic_parameter.value
         return params
 
     def _makeLmfitParameters(self):
