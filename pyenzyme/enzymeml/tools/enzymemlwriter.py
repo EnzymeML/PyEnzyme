@@ -551,9 +551,13 @@ class EnzymeMLWriter:
         species.setConstant(obj.constant)
         species.setHasOnlySubstanceUnits(False)
 
-        if obj.init_conc:
+        if obj.init_conc and obj._unit_id:
             species.setSubstanceUnits(obj._unit_id)
             species.setInitialConcentration(obj.init_conc)
+        elif obj.init_conc and obj._unit_id is None:
+            raise ValueError(
+                f"The object {obj.name} ({obj.id}) has an initial concentration value but no unit. Please specify a unit for a successful export to SBML."
+            )
 
         # Controls if annotation will be added
         objAnnotation = self.setupXMLNode(annotation_name)
