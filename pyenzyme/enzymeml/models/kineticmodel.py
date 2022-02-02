@@ -277,11 +277,19 @@ class ModelFactory:
         for stock_variable in self.variables:
 
             try:
-                identifier: str = variables[stock_variable]
+                identifier = variables[stock_variable]
+
+                if isinstance(identifier, list):
+                    # Allow multiple species
+                    identifier = [repr(name) for name in identifier]
+                    identifier = f"({' * '.join(identifier)})"
+                else:
+                    identifier = repr(identifier)
 
                 model.equation = model.equation.replace(
                     stock_variable, identifier
                 )
+
             except KeyError:
                 raise KeyError(
                     f"Variable {stock_variable} has not been given. Please make sure to cover all variables: [{repr(self.variables)}]"
