@@ -456,8 +456,7 @@ class EnzymeReaction(EnzymeMLBase):
 
         # ID consistency
         enzmldoc._check_kinetic_model_ids(
-            equation=model.equation,
-            species_ids=enzmldoc.getSpeciesIDs()
+            model=model,
         )
 
         # Unit conversion

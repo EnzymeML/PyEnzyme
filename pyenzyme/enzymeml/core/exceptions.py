@@ -16,7 +16,7 @@ from typing import Union, Optional
 class SpeciesNotFoundError(Exception):
     """Raised when a species hasnt been found in a specific element"""
 
-    def __init__(self, species_id: str, enzymeml_part: str, message: str = "Species ID has not been found in "):
+    def __init__(self, species_id: str, enzymeml_part: str, message: str = "Species ID has not been found"):
         self.species_id = species_id
         self.enzymeml_part = enzymeml_part
         self.message = message
