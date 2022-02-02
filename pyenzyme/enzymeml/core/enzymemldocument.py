@@ -12,6 +12,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 
 import os
 import re
+import ast
 import json
 import logging
 import pandas as pd
@@ -646,9 +647,22 @@ class EnzymeMLDocument(EnzymeMLBase):
         )
 
     @validate_arguments
-    def addComplex(self, name: str, participants: list[str], vessel_id: str):
+    def addComplex(
+        self,
+        name: str,
+        participants: list[str],
+        vessel_id: str,
+        init_conc: Optional[float] = None,
+        unit: Optional[str] = None
+    ):
         return self._add_complex(
-            Complex(name=name, participants=participants, vessel_id=vessel_id)
+            Complex(
+                name=name,
+                participants=participants,
+                vessel_id=vessel_id,
+                init_conc=init_conc,
+                unit=unit
+            )
         )
 
     def _addSpecies(
@@ -742,8 +756,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         if reaction.model:
             # ID consistency
             self._check_kinetic_model_ids(
-                equation=reaction.model.equation,
-                species_ids=self.getSpeciesIDs()
+                model=reaction.model
             )
 
             # Unit conversion
@@ -782,27 +795,49 @@ class EnzymeMLDocument(EnzymeMLBase):
             enzmldoc=self
         )
 
-    @ staticmethod
-    def _check_kinetic_model_ids(equation: str, species_ids: list[str]) -> None:
-        """Checks if the given species IDs are consistent with the EnzymeML document.
+    def _check_kinetic_model_ids(self, model) -> None:
+        """Checks if the given species IDs/names are consistent with the EnzymeML document. Also converts names into IDs, if given in the document.
 
         Args:
             equation (str): The rate law given in the KineticModel
-            species_ids (list[str]): All species IDs from the EnzymeML document.
         """
 
-        # Get all IDs from the KineticModel equation
-        kinetic_model_ids = re.findall(
-            r"[p|s][\d]+",
-            equation
-        )
+        # Get all the params of the model to distinguis params from names
+        all_params = [param.name for param in model.parameters]
 
-        for species_id in kinetic_model_ids:
-            if species_id not in species_ids:
-                raise SpeciesNotFoundError(
-                    species_id=species_id,
-                    enzymeml_part="KineticModel equation"
-                )
+        for node in ast.walk(ast.parse(model.equation)):
+
+            if isinstance(node, ast.Constant):
+                # If the equation was generated  via the ModelFactory
+                name = repr(node.value)
+            elif isinstance(node, ast.Name):
+                # If the equation has been done manually
+                name = node.id
+
+                if name in all_params:
+                    # If its a parameter
+                    continue
+            else:
+                continue
+
+            if name not in self.getSpeciesIDs():
+
+                try:
+                    # Try to get by name and substitute in equation
+                    species_id = self.getAny(
+                        name.replace("'", ""),
+                        by_id=False
+                    ).id
+
+                    model.equation = model.equation.replace(
+                        name, species_id
+                    )
+                except StopIteration:
+                    # If neither name or ID is found, raise Error
+                    raise SpeciesNotFoundError(
+                        enzymeml_part="Kinetic Model",
+                        species_id=name
+                    )
 
     @ staticmethod
     def _convert_kinetic_model_units(parameters: list[KineticParameter], enzmldoc) -> None:
@@ -1027,7 +1062,8 @@ class EnzymeMLDocument(EnzymeMLBase):
     def getSpeciesIDs(self) -> list[str]:
         return list({
             **self.protein_dict,
-            **self.reactant_dict
+            **self.reactant_dict,
+            **self.complex_dict
         }.keys())
 
     def getUnitString(self, unit_id: Optional[str]) -> str:
