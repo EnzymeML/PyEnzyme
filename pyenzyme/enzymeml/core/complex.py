@@ -65,15 +65,15 @@ class Complex(EnzymeMLBase, AbstractSpecies):
         description="Whether the proteins concentration remains constant or not.",
     )
 
+    meta_id: Optional[str] = Field(
+        None,
+        description="Unique meta identifier of the protein.",
+    )
+
     id: Optional[str] = Field(
         None,
         description="Unique identifier of the protein.",
         regex=r"c[\d]+"
-    )
-
-    meta_id: Optional[str] = Field(
-        None,
-        description="Unique meta identifier of the protein.",
     )
 
     boundary: bool = Field(

@@ -600,11 +600,16 @@ class EnzymeMLReader:
             else:
                 unit = enzmldoc.getUnitString(unit_id)
 
+            annotation = local_param.getAnnotationString()
+            param_dict = self._parseSpeciesAnnotation(annotation)
+
             parameter = KineticParameter(
                 name=local_param.getId(),
                 value=value,
                 unit=unit,
-                ontology=self._sboterm_to_enum(local_param.getSBOTerm())
+                ontology=self._sboterm_to_enum(local_param.getSBOTerm()),
+                # TODO generalise here
+                initial_value=param_dict.get("initialvalue")
             )
 
             if unit:

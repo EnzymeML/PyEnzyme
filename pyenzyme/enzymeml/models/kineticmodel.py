@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, Optional
 from pydantic import Field
 from dataclasses import dataclass
 
-from libsbml import parseL3Formula, Reaction
+from libsbml import parseL3Formula, Reaction, XMLNode, XMLTriple
 from pydantic.fields import PrivateAttr
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -117,35 +117,6 @@ class KineticModel(EnzymeMLBase):
         )
 
     # ! Utilities
-    def addToReaction(self, reaction: Reaction) -> None:
-        '''
-        Adds kinetic law to SBML reaction.
-        Only relevant for EnzymeML > SBML conversion.
-
-        Args:
-            reaction (libsbml.Reaction): SBML reaciton class
-        '''
-
-        # Set up SBML kinetic law node
-        kl = reaction.createKineticLaw()
-
-        for kinetic_parameter in self.parameters:
-
-            local_param = kl.createLocalParameter()
-            local_param.setId(kinetic_parameter.name)
-
-            if kinetic_parameter.value:
-                local_param.setValue(kinetic_parameter.value)
-                local_param.setUnits(kinetic_parameter._unit_id)
-
-            if kinetic_parameter.ontology:
-                local_param.setSBOTerm(kinetic_parameter.ontology)
-
-        kl.setMath(parseL3Formula(self.equation))
-        kl.setName(self.name)
-
-        if self.ontology:
-            kl.setSBOTerm(self.ontology)
 
     def get_id(self) -> str:
         return self.name

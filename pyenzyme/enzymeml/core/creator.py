@@ -10,7 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import Field
+from pydantic import Field, validator
 from typing import TYPE_CHECKING, Optional
 from dataclasses import dataclass
 
