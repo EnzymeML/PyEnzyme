@@ -38,6 +38,7 @@ from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.measurement import Measurement
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction, ReactionElement
+from pyenzyme.enzymeml.models.kineticmodel import KineticModel
 
 # Initialize the logger
 logger = logging.getLogger("pyenzyme")
@@ -60,6 +61,7 @@ class EnzymeMLWriter:
         '''
 
         self.path = os.path.normpath(path)
+        self.enzmldoc = enzmldoc  # TODO replace all static enzmldocs with self.enzmldoc
 
         try:
             os.makedirs(
@@ -162,12 +164,12 @@ class EnzymeMLWriter:
         """
 
         self._addRefs(model, enzmldoc)
-        self._addUnits(model, enzmldoc.unit_dict)
         self._addVessel(model, enzmldoc.vessel_dict)
         self._addProteins(model, enzmldoc.protein_dict)
         self._addComplex(model, enzmldoc.complex_dict)
         self._addReactants(model, enzmldoc.reactant_dict)
         self._addReactions(model, enzmldoc.reaction_dict)
+        self._addUnits(model, enzmldoc.unit_dict)
 
     def _createArchive(self, enzmldoc, listofPaths, name: str = None):
 
@@ -365,7 +367,7 @@ class EnzymeMLWriter:
         if object.__dict__.get(objectName):
             value = self.appendAttribute(
                 attributeName,
-                getattr(object, objectName)
+                str(getattr(object, objectName))
             )
             annotationNode.addChild(value)
 
@@ -533,7 +535,7 @@ class EnzymeMLWriter:
         obj: AbstractSpecies,
         annotation_name: str,
         model: libsbml.Model,
-        optional_attributes: dict[str, str]
+        optional_attributes: dict[str, str],
     ) -> None:
         """Helper function to create any EnzymeML species from
 
@@ -551,10 +553,15 @@ class EnzymeMLWriter:
         species.setConstant(obj.constant)
         species.setHasOnlySubstanceUnits(False)
 
-        if obj.init_conc and obj._unit_id:
+        # Check if the unit is already part of the enzymeml document
+        # Otherwise add it
+        if obj.unit and not obj._unit_id:
+            obj._unit_id = self.enzmldoc._convertToUnitDef(obj.unit)
+
+        if obj.init_conc is not None and obj._unit_id:
             species.setSubstanceUnits(obj._unit_id)
             species.setInitialConcentration(obj.init_conc)
-        elif obj.init_conc and obj._unit_id is None:
+        elif obj.init_conc and not obj._unit_id:
             raise ValueError(
                 f"The object {obj.name} ({obj.id}) has an initial concentration value but no unit. Please specify a unit for a successful export to SBML."
             )
@@ -605,7 +612,9 @@ class EnzymeMLWriter:
 
             # Add kinetic model
             if enzyme_reaction.model:
-                enzyme_reaction.model.addToReaction(reaction)
+                self._addModelToReaction(
+                    reaction=reaction, model=enzyme_reaction.model
+                )
 
             # Enzymeml attributes
             reactionAnnotation = self.setupXMLNode('enzymeml:reaction')
@@ -654,6 +663,55 @@ class EnzymeMLWriter:
                 reaction_elements=enzyme_reaction.modifiers,
                 createFunction=reaction.createModifier,
             )
+
+    def _addModelToReaction(self, reaction: libsbml.Reaction, model: KineticModel) -> None:
+        '''
+        Adds kinetic law to SBML reaction.
+        Only relevant for EnzymeML > SBML conversion.
+
+        Args:
+            reaction (libsbml.Reaction): SBML reaction class
+            model (KineticModel): PyEnzyme Model object
+        '''
+
+        # Set up SBML kinetic law node
+        kl = reaction.createKineticLaw()
+
+        for kinetic_parameter in model.parameters:
+
+            local_param = kl.createLocalParameter()
+            local_param.setId(kinetic_parameter.name)
+
+            if kinetic_parameter.value:
+                local_param.setValue(kinetic_parameter.value)
+                local_param.setUnits(kinetic_parameter._unit_id)
+
+            if kinetic_parameter.ontology:
+                local_param.setSBOTerm(kinetic_parameter.ontology)
+
+            # Create a mapping for the 'enzymeml:parameter' annotation
+            annotation = self.setupXMLNode("enzymeml:parameter")
+            optional_parameters = {
+                'enzymeml:initialValue': 'initial_value',
+            }
+
+            for attributeName, objectName in optional_parameters.items():
+
+                self.appendOptionalAttribute(
+                    attributeName=attributeName,
+                    object=kinetic_parameter,
+                    objectName=objectName,
+                    annotationNode=annotation
+                )
+
+            if annotation.getNumChildren() > 0:
+                local_param.appendAnnotation(annotation)
+
+        kl.setMath(libsbml.parseL3Formula(model.equation))
+        kl.setName(model.name)
+
+        if model.ontology:
+            kl.setSBOTerm(model.ontology)
 
     def writeElements(
         self,
