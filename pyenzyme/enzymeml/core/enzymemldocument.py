@@ -14,6 +14,7 @@ import os
 import re
 import ast
 import json
+import yaml
 import logging
 import pandas as pd
 
@@ -514,7 +515,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return f"\n{table.draw()}\n"
 
-    def printReactionSchemes(self, by_name: bool = True, jupyter: bool = False):
+    def printReactionSchemes(self, by_name: bool = True):
         """Prints all reaction equations to inspect the content
         """
 
@@ -527,23 +528,92 @@ class EnzymeMLDocument(EnzymeMLBase):
                 by_name=by_name, enzmldoc=self
             )
 
-            if jupyter:
+            if self.in_ipynb():
                 output.append(
                     {
                         "ID": reaction.id,
                         "Name": reaction.name,
-                        "equation": equation
+                        "equation": equation.split("\n")[1].replace("Equation: ", ""),
+                        "kinetic law": equation.split("\n")[2].replace("Model: v = ", "")
                     }
                 )
             else:
                 output.append(equation)
 
-        if jupyter:
-            return pd.DataFrame(output)
+        if self.in_ipynb():
+            return pd.DataFrame(output).set_index("ID")
         else:
             print("\n".join(output))
 
+    @staticmethod
+    def in_ipynb():
+        """Checks whether in an ipynb or not"""
+        try:
+            cfg = get_ipython().config
+            if get_ipython().__class__.__name__ == 'ZMQInteractiveShell':
+                return True
+            else:
+                return False
+        except NameError:
+            return False
+
+    def generateInitialValueTemplate(self, dir: str = ".") -> None:
+        """Generates an initial value template as a YAML file, which can be used for modeling.
+
+        Args:
+            dir (str, optional): Dirpath to the output file. Defaults to ".".
+        """
+
+        init_values = {}
+
+        for reaction in self.reaction_dict.values():
+
+            if reaction.model is None:
+                continue
+
+            parameters = {
+                param.name: None
+                for param in reaction.model.parameters
+            }
+
+            init_values[reaction.id] = parameters
+
+            # Finally, write the template to YAML
+            out = os.path.join(dir, self.name.replace(
+                " ", "_") + "_init_values.yaml"
+            )
+
+            with open(out, "w") as file_handle:
+                yaml.dump(
+                    init_values,
+                    file_handle,
+                    default_flow_style=False,
+                    sort_keys=False
+                )
+
+    def applyModelInitialization(self, path: str) -> None:
+        """Adds initial values per reaction to the model from a YAML config file.
+
+        This method loads a YAML that previously generated from the function 'generateInitialValueTemplate'
+        and was filled with values. These are then used to populate the 'initial_value' fields of KineticParameter objects.
+
+        Args:
+            path (str): Path to the YAML file containing the initial values.
+        """
+
+        # Load the YAML file
+        with open(path, "r") as file_handle:
+            initial_values = yaml.safe_load(file_handle)
+
+        # Apply all given initial values to the model
+        for reaction_id, value_dict in initial_values.items():
+
+            # Get the reaction
+            reaction = self.getReaction(reaction_id)
+            reaction.apply_initial_values(value_dict)
+
     # ! Add methods
+
     @validate_arguments
     def addCreator(self, creator: Creator, log: bool = True) -> str:
         """Adds a creator object to the EnzymeML document.
@@ -655,6 +725,13 @@ class EnzymeMLDocument(EnzymeMLBase):
         init_conc: Optional[float] = None,
         unit: Optional[str] = None
     ):
+
+        # First convert all participants given as name to IDs
+        participants = [
+            self.getAny(participant).id
+            for participant in participants
+        ]
+
         return self._add_complex(
             Complex(
                 name=name,
@@ -826,7 +903,6 @@ class EnzymeMLDocument(EnzymeMLBase):
                     # Try to get by name and substitute in equation
                     species_id = self.getAny(
                         name.replace("'", ""),
-                        by_id=False
                     ).id
 
                     model.equation = model.equation.replace(
@@ -1089,12 +1165,11 @@ class EnzymeMLDocument(EnzymeMLBase):
                 species_id=unit_id, enzymeml_part="Units"
             )
 
-    def getUnitDef(self, id: str, by_id: bool = True) -> UnitDef:
+    def getUnitDef(self, id: str) -> UnitDef:
         """Returns the unit associated with the given ID.
 
         Args:
             id (str): Unique internal ID of the unit.
-            by_id (bool, optional): Whether the unit is retrieved via ID or name. Defaults to True.
 
         Raises:
             SpeciesNotFoundError: Raised when the requested unit is not found.
@@ -1107,15 +1182,13 @@ class EnzymeMLDocument(EnzymeMLBase):
             id=id,
             dictionary=self.unit_dict,
             element_type="Units",
-            by_id=by_id
         )
 
-    def getVessel(self, id: str, by_id: bool = True) -> Vessel:
+    def getVessel(self, id: str) -> Vessel:
         """Returns the vessel associated with the given ID.
 
         Args:
             id (str): Unique internal ID of the vessel.
-            by_id (bool, optional): Whether the unit is retrieved via ID or name. Defaults to True.
 
         Raises:
             SpeciesNotFoundError: Raised when the requested vessel is not found.
@@ -1128,15 +1201,13 @@ class EnzymeMLDocument(EnzymeMLBase):
             id=id,
             dictionary=self.vessel_dict,
             element_type="Vessels",
-            by_id=by_id
         )
 
-    def getReaction(self, id: str, by_id: bool = True) -> EnzymeReaction:
+    def getReaction(self, id: str) -> EnzymeReaction:
         """Returns the reaction associated with the given ID.
 
         Args:
             id (str): Unique internal ID of the reaction.
-            by_id (bool, optional): Whether the reaction is retrieved via ID or name. Defaults to True.
 
         Raises:
             SpeciesNotFoundError: Raised when the requested reaction is not found.
@@ -1149,15 +1220,13 @@ class EnzymeMLDocument(EnzymeMLBase):
             id=id,
             dictionary=self.reaction_dict,
             element_type="EnzymeReaction",
-            by_id=by_id
         )
 
-    def getMeasurement(self, id: str, by_id: bool = True) -> Measurement:
+    def getMeasurement(self, id: str) -> Measurement:
         """Returns the measurement associated with the given ID.
 
         Args:
             id (str): Unique internal ID of the measurement.
-            by_id (bool, optional): Whether the measurement is retrieved via ID or name. Defaults to True.
 
         Raises:
             SpeciesNotFoundError: Raised when the requested measurement is not found.
@@ -1170,15 +1239,13 @@ class EnzymeMLDocument(EnzymeMLBase):
             id=id,
             dictionary=self.measurement_dict,
             element_type="Measurement",
-            by_id=by_id
         )
 
-    def getReactant(self, id: str, by_id=True) -> Reactant:
+    def getReactant(self, id: str) -> Reactant:
         """Returns the reactant associated with the given ID.
 
         Args:
             id (str): Unique internal ID of the reactant.
-            by_id (bool, optional): Whether the reactant is retrieved via ID or name. Defaults to True.
 
         Raises:
             SpeciesNotFoundError: Raised when the requested reactant is not found.
@@ -1191,15 +1258,13 @@ class EnzymeMLDocument(EnzymeMLBase):
             id=id,
             dictionary=self.reactant_dict,
             element_type="Reactant",
-            by_id=by_id
         )
 
-    def getProtein(self, id: str, by_id: bool = True) -> Protein:
+    def getProtein(self, id: str) -> Protein:
         """Returns the protein associated with the given ID.
 
         Args:
             id (str): Unique internal ID of the protein.
-            by_id (bool, optional): Whether the protein is retrieved via ID or name. Defaults to True.
 
         Raises:
             SpeciesNotFoundError: Raised when the requested protein is not found.
@@ -1212,7 +1277,6 @@ class EnzymeMLDocument(EnzymeMLBase):
             id=id,
             dictionary=self.protein_dict,
             element_type="Protein",
-            by_id=by_id
         )
 
     def getFile(self, id: str, by_id: bool = True) -> dict:
@@ -1220,7 +1284,6 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         Args:
             id (str): Unique internal ID of the file.
-            by_id (bool, optional): Whether the file is retrieved via ID or name. Defaults to True.
 
         Raises:
             SpeciesNotFoundError: Raised when the requested file is not found.
@@ -1237,12 +1300,11 @@ class EnzymeMLDocument(EnzymeMLBase):
                 self.file_dict.values()
             ))
 
-    def getAny(self, id: str, by_id: bool = True) -> AbstractSpecies:
+    def getAny(self, id: str) -> AbstractSpecies:
         """Returns anything associated with the given ID.
 
         Args:
             id (str): Unique internal ID of the object.
-            by_id (bool, optional): Whether the object is retrieved via ID or name. Defaults to True.
 
         Raises:
             SpeciesNotFoundError: Raised when the requested object is not found.
@@ -1264,7 +1326,6 @@ class EnzymeMLDocument(EnzymeMLBase):
             id=id,
             dictionary=all_dicts,
             element_type="Document",
-            by_id=by_id
         )
 
     def _getSpecies(
@@ -1272,7 +1333,6 @@ class EnzymeMLDocument(EnzymeMLBase):
         id: str,
         dictionary: dict,
         element_type: str,
-        by_id: bool = True
     ):
         """Helper function to retrieve any kind of species from the EnzymeML document.
 
@@ -1280,7 +1340,6 @@ class EnzymeMLDocument(EnzymeMLBase):
             id (str): Unique internal ID.
             dictionary (dict): Dictionary that stores all objects.
             element_type (str): Type of object that is in the dictionary.
-            by_id (bool, optional): [description]. Defaults to True.
 
         Raises:
             SpeciesNotFoundError: Raised when the requested species is not found.
@@ -1289,20 +1348,38 @@ class EnzymeMLDocument(EnzymeMLBase):
             Union[ AbstractSpecies, EnzymeReaction, Measurement ]: The requested object
         """
 
-        # Fix the searched attribute
-        searched_attribute = "id" if by_id else "name"
+        for attr in ["id", "name"]:
+            species = self._search_object(
+                value=id, attr=attr, dictionary=dictionary
+            )
+
+            if species:
+                return species
+
+        raise SpeciesNotFoundError(
+            species_id=id, enzymeml_part=element_type
+        )
+
+    def _search_object(self, value, attr: str, dictionary: dict):
+        """Filters a given dictionary for an attributes and returns it if found.
+
+        Args:
+            value ([type]): Term that is searched for.
+            attr (str): Corresponding attribute to look for.
+            dictionary (dict): Dictionary that si searched.
+
+        Returns:
+            AbstractSpecies: Species from the EnzymeML document.
+        """
 
         try:
             # Filter the dict for the desired species
             return next(filter(
-                lambda obj: obj.__dict__[searched_attribute] == id,
+                lambda obj: obj.__dict__[attr] == value,
                 dictionary.values()
             ))
         except StopIteration:
-            # When the generator is empty, raise error
-            raise SpeciesNotFoundError(
-                species_id=id, enzymeml_part=element_type
-            )
+            return None
 
     def getReactantList(self) -> list[Reactant]:
         """Returns a list of all reactants in the EnzymeML document."
