@@ -409,8 +409,8 @@ class EnzymeReaction(EnzymeMLBase):
         # Split reaction is educts and products
         if "->" in reaction_equation:
             educts, products = reaction_equation.split(" -> ")
-        elif "<=>" in reaction_equation:
-            educts, products = reaction_equation.split(" <=> ")
+        elif "=" in reaction_equation:
+            educts, products = reaction_equation.split(" = ")
         else:
             raise ValueError(
                 "Neither '->' nor '<=>' were found in the reaction euqation, but are essential to distinguish educt from product side."
@@ -437,7 +437,7 @@ class EnzymeReaction(EnzymeMLBase):
             if re.match(r"^[p|s|c]\d*$", species):
                 species_id = species
             else:
-                species_id = enzmldoc.getAny(species, by_id=False).id
+                species_id = enzmldoc.getAny(species).id
 
             # Add it to the reaction
             fun(
@@ -545,7 +545,24 @@ class EnzymeReaction(EnzymeMLBase):
             **{element.species_id: (-1) * element.stoichiometry for element in self.products}
         }
 
+    def apply_initial_values(self, initial_values: dict[str, float]) -> None:
+        """Applies the initial values for all given parameters to the underlying model.
+
+        Args:
+            kwargs (dict[str, float]): Mapping from the parameter name to the given initial value.
+        """
+
+        if not self.model:
+            raise ValueError(
+                f"Reaction {self.name} ({self.id}) has no associated model. Please specify a model to add initial values."
+            )
+
+        for param_name, value in initial_values.items():
+            param = self.model.getParameter(param_name)
+            param.initial_value = value
+
     # ! Initializers
+
     @classmethod
     def fromEquation(cls, equation: str, name: str, enzmldoc):
         """Creates an EnzymeReaction object from a reaction equation.
@@ -565,7 +582,7 @@ class EnzymeReaction(EnzymeMLBase):
             enzmldoc ([type]): Used to validate species IDs.
         """
 
-        if "<=>" in equation:
+        if "=" in equation:
             reversible = True
         elif "->" in equation:
             reversible = False

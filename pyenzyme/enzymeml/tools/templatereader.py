@@ -143,14 +143,14 @@ def read_template(path: str, enzmldoc):
                 init_conc=protein_conc,
                 unit=protein_unit,
                 protein_id=enzmldoc.getProtein(
-                    protein_name.strip(), by_id=False).id
+                    protein_name.strip()).id
             )
 
             reactant_name = row_meta["Reactant Name"]
             reactant_conc = row_meta["Reactant Initial concentration"]
             reactant_unit = row_meta["Reactant Unit"]
             reactant_id = enzmldoc.getReactant(
-                reactant_name.strip(), by_id=False).id
+                reactant_name.strip()).id
 
             # Get the type of the measurement
             type_mapping = {
@@ -225,7 +225,7 @@ def extract_values(sheet: pd.DataFrame, mapping: dict[str, str]) -> list:
 def clean_instance(instance: dict, enzmldoc) -> dict:
 
     def get_vessel_name(name: str, enzmldoc):
-        return enzmldoc.getVessel(name, by_id=False).id
+        return enzmldoc.getVessel(name).id
 
     def get_constant(constant: str, enzmldoc):
         if constant == "Constant":
@@ -327,7 +327,7 @@ def add_instances(fun, elements, enzmldoc) -> None:
 
     for element in elements:
         fun(
-            species_id=enzmldoc.getAny(element.strip(), by_id=False).id,
+            species_id=enzmldoc.getAny(element.strip()).id,
             stoichiometry=1.0,
             constant=False,
             enzmldoc=enzmldoc
