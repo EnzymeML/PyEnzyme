@@ -13,7 +13,6 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 from pydantic import (
     PositiveFloat,
     validate_arguments,
-    BaseModel,
     validator,
     Field,
     PrivateAttr

@@ -45,6 +45,7 @@ class SBOTerm(str, Enum):
     # Kinetic parameters
     K_CAT = "SBO:0000025"
     K_M = "SBO:0000027"
+    V_MAX = "SBO:0000186"
 
 
 class DataTypes(str, Enum):

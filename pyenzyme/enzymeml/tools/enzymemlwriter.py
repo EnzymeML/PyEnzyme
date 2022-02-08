@@ -250,7 +250,7 @@ class EnzymeMLWriter:
                 )
 
         if name:
-            out_file = f"{name}.omex"
+            out_file = f"{name.replace(' ', '_')}.omex"
         else:
             out_file = f"{enzmldoc.getName().replace(' ', '_')}.omex"
 

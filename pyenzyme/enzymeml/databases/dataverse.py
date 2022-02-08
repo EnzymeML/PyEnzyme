@@ -45,21 +45,22 @@ def uploadToDataverse(enzmldoc, dataverse_name: str, base_url: Optional[str] = N
     dataset.add_metadatablock(citation_meta)
 
     # Write EnzymeMLDocument to file
-    enzmldoc.toFile(".", name=enzmldoc.name + "_dv_upload")
+    archive_name = f"{enzmldoc.name.replace(' ', '_')}_dv_upload"
+    enzmldoc.toFile(".", name=archive_name)
 
     try:
         dataset.upload(
             dataverse_name=dataverse_name,
-            filenames=[f"{enzmldoc.name.replace(' ', '_')}.omex"],
+            filenames=[f"{archive_name}.omex"],
             DATAVERSE_URL=base_url,
             API_TOKEN=api_token
         )
     except Exception as e:
-        os.remove(f"{enzmldoc.name.replace(' ', '_')}_dv_upload.omex")
+        os.remove(f"{archive_name}.omex")
         raise e
 
     # Remove the unsued EnzymeML document
-    os.remove(f"{enzmldoc.name.replace(' ', '_')}_dv_upload.omex")
+    os.remove(f"{archive_name}.omex")
 
 
 def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":

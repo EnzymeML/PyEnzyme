@@ -188,15 +188,15 @@ class Measurement(EnzymeMLBase):
 
             if species_id in species_ids or species_ids == ["all"]:
 
+                # Fetch initial concentration
+                initial_concentration[species_id] = (
+                    data.init_conc, data._unit_id
+                )
+
                 # Fetch replicate data
                 for replicate in data.getReplicates():
 
                     columns[species_id] = replicate.data
-
-                    # Fetch initial concentration
-                    initial_concentration[species_id] = (
-                        data.init_conc, data._unit_id
-                    )
 
         return {
             "data": pd.DataFrame(columns)

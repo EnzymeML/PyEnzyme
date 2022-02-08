@@ -22,3 +22,4 @@ from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
 from pyenzyme.enzymeml.core.measurement import Measurement
+from pyenzyme.enzymeml.core.ontology import SBOTerm, DataTypes
