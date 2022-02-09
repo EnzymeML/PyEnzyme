@@ -1,0 +1,151 @@
+{
+  "name": "Test",
+  "level": 3,
+  "version": "2",
+  "pubmedid": "PubMedID",
+  "url": "URL",
+  "doi": "DOI",
+  "creators": {
+    "a0": {
+      "given_name": "Jan",
+      "family_name": "Range",
+      "mail": "jan.range@simtech.uni-stuttgart.de",
+      "id": "a0"
+    }
+  },
+  "vessels": {
+    "v0": {
+      "name": "Vessel",
+      "volume": 10.0,
+      "unit": "ml",
+      "constant": true,
+      "id": "v0",
+      "meta_id": "METAID_V0",
+      "uri": "URI",
+      "creator_id": "a0"
+    }
+  },
+  "proteins": {
+    "p0": {
+      "name": "Protein",
+      "id": "p0",
+      "vessel_id": "v0",
+      "meta_id": "METAID_P0",
+      "init_conc": 10.0,
+      "constant": true,
+      "boundary": false,
+      "unit": "mmole / l",
+      "ontology": "SBO:0000252",
+      "uri": "URI",
+      "creator_id": "a0",
+      "sequence": "HLPMV",
+      "ecnumber": "1.1.1.1",
+      "organism": "E.coli",
+      "organism_tax_id": "27367",
+      "uniprotid": "P02357"
+    }
+  },
+  "complexes": {
+    "c0": {
+      "name": "Complex",
+      "id": "c0",
+      "vessel_id": "v0",
+      "meta_id": "METAID_C0",
+      "init_conc": 10.0,
+      "constant": false,
+      "boundary": false,
+      "unit": "mmole / l",
+      "ontology": "SBO:0000296",
+      "uri": "URI",
+      "creator_id": "a0",
+      "participants": [
+        "s0", "p0"
+      ]
+    }
+  },
+  "reactants": {
+    "s0": {
+      "name": "Reactant",
+      "id": "s0",
+      "vessel_id": "v0",
+      "meta_id": "METAID_S0",
+      "init_conc": 10.0,
+      "constant": false,
+      "boundary": false,
+      "unit": "mmole / l",
+      "ontology": "SBO:0000247",
+      "uri": "URI",
+      "creator_id": "a0",
+      "smiles": "[H]O[H]",
+      "inchi": "InChI:HJJH",
+      "chebi_id": "CHEBI:09823"
+    },
+    "s1": {
+      "name": "Reactant2",
+      "id": "s1",
+      "vessel_id": "v0",
+      "meta_id": "METAID_S0",
+      "init_conc": 10.0,
+      "constant": false,
+      "boundary": false,
+      "unit": "mmole / l",
+      "ontology": "SBO:0000247",
+      "uri": "URI",
+      "creator_id": "a0",
+      "smiles": "[H]O[H]",
+      "inchi": "InChI:HJJH",
+      "chebi_id": "CHEBI:09823"
+    }
+  },
+  "reactions": {
+    "r0": {
+      "name": "string",
+      "reversible": true,
+      "temperature": 200,
+      "temperature_unit": "C",
+      "ph": 7.0,
+      "ontology": "SBO:0000176",
+      "id": "r0",
+      "meta_id": "METAID_R0",
+      "uri": "URI",
+      "creator_id": "a0",
+      "model": {
+        "name": "Menten",
+        "equation": "s0 * x",
+        "parameters": [
+          {
+            "name": "x",
+            "value": 10.0,
+            "unit": "1 / s",
+            "stdev": 0.1,
+            "initial_value": 10.0
+          }
+        ]
+      },
+      "educts": [
+        {
+          "species_id": "s0",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000015"
+        }
+      ],
+      "products": [
+        {
+          "species_id": "s1",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000011"
+        }
+      ],
+      "modifiers": [
+        {
+          "species_id": "p0",
+          "stoichiometry": 1.0,
+          "constant": true,
+          "ontology": "SBO:0000013"
+        }
+      ]
+    }
+  }
+}
