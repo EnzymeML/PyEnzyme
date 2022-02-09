@@ -21,7 +21,8 @@ from pydantic import (
     PositiveFloat,
     validate_arguments,
     Field,
-    PrivateAttr
+    PrivateAttr,
+    validator
 )
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -127,16 +128,16 @@ class EnzymeReaction(EnzymeMLBase):
         description="Ontology defining the role of the given species.",
     )
 
+    meta_id: Optional[str] = Field(
+        None,
+        description="Unique meta identifier for the reaction.",
+    )
+
     id: Optional[str] = Field(
         None,
         description="Unique identifier of the reaction.",
         template_alias="ID",
         regex=r"r[\d]+"
-    )
-
-    meta_id: Optional[str] = Field(
-        None,
-        description="Unique meta identifier for the reaction.",
     )
 
     uri: Optional[str] = Field(
@@ -174,6 +175,18 @@ class EnzymeReaction(EnzymeMLBase):
 
     # * Private attributes
     _temperature_unit_id: str = PrivateAttr(None)
+
+    # ! Validators
+    @validator("id")
+    def set_meta_id(cls, id: Optional[str], values: dict):
+        """Sets the meta ID when an ID is provided"""
+
+        if id:
+            # Set Meta ID with ID
+            values["meta_id"] = f"METAID_{id.upper()}"
+            print(values)
+
+        return id
 
     # ! Getters
     def getEduct(self, id: str) -> ReactionElement:
@@ -398,54 +411,6 @@ class EnzymeReaction(EnzymeMLBase):
             f"Added {type(element).__name__} '{element.species_id}' to reaction '{self.name}' {list_name}"
         )
 
-    def addFromEquation(self, reaction_equation: str, enzmldoc) -> None:
-        """Parses a reaction equation string and adds it to the model.
-
-        Args:
-            reaction_equation (str): Strign representing th reaction equation, following the schem r''
-            enzmldoc ([type]): [description]
-        """
-
-        # Split reaction is educts and products
-        if "->" in reaction_equation:
-            educts, products = reaction_equation.split(" -> ")
-        elif "=" in reaction_equation:
-            educts, products = reaction_equation.split(" = ")
-        else:
-            raise ValueError(
-                "Neither '->' nor '<=>' were found in the reaction euqation, but are essential to distinguish educt from product side."
-            )
-
-        # Parse each side of the reaction
-        self._parse_equation_side(educts, enzmldoc, self.addEduct)
-        self._parse_equation_side(products, enzmldoc, self.addProduct)
-
-    @staticmethod
-    def _parse_equation_side(elements: str, enzmldoc, fun):
-        """Parses a side from a reaction equation."""
-
-        # Setup Regex
-        regex = r"(^\d*[.,]\d*)?\s?(.*)"
-        regex = re.compile(regex)
-
-        for element in elements.split(" + "):
-            stoichiometry, species = regex.findall(element)[0]
-
-            if len(stoichiometry) == 0:
-                stoichiometry = 1.0
-
-            if re.match(r"^[p|s|c]\d*$", species):
-                species_id = species
-            else:
-                species_id = enzmldoc.getAny(species).id
-
-            # Add it to the reaction
-            fun(
-                species_id=species_id,
-                stoichiometry=float(stoichiometry),
-                enzmldoc=enzmldoc
-            )
-
     def setModel(self, model: KineticModel, enzmldoc, log: bool = True) -> None:
         """Sets the kinetic model of the reaction and in addition converts all units to UnitDefs.
 
@@ -564,7 +529,15 @@ class EnzymeReaction(EnzymeMLBase):
     # ! Initializers
 
     @classmethod
-    def fromEquation(cls, equation: str, name: str, enzmldoc):
+    def fromEquation(
+        cls,
+        equation: str,
+        name: str,
+        enzmldoc,
+        temperature: Optional[float] = None,
+        temperature_unit: Optional[str] = None,
+        ph: Optional[float] = None,
+    ):
         """Creates an EnzymeReaction object from a reaction equation.
 
         Please make sure that the equation follows either of the following patterns:
@@ -592,12 +565,63 @@ class EnzymeReaction(EnzymeMLBase):
             )
 
         # Initialize reaction object
-        reaction = cls(name=name, reversible=reversible)
+        reaction = cls(
+            name=name, reversible=reversible, temperature=temperature,
+            temperature_unit=temperature_unit, ph=ph
+        )
 
         # Parse the reaction equation
-        reaction.addFromEquation(equation, enzmldoc)
+        reaction._addFromEquation(equation, enzmldoc)
 
         return reaction
+
+    def _addFromEquation(self, reaction_equation: str, enzmldoc) -> None:
+        """Parses a reaction equation string and adds it to the model.
+
+        Args:
+            reaction_equation (str): Strign representing th reaction equation, following the schem r''
+            enzmldoc ([type]): [description]
+        """
+
+        # Split reaction is educts and products
+        if "->" in reaction_equation:
+            educts, products = reaction_equation.split(" -> ")
+        elif "=" in reaction_equation:
+            educts, products = reaction_equation.split(" = ")
+        else:
+            raise ValueError(
+                "Neither '->' nor '<=>' were found in the reaction euqation, but are essential to distinguish educt from product side."
+            )
+
+        # Parse each side of the reaction
+        self._parse_equation_side(educts, enzmldoc, self.addEduct)
+        self._parse_equation_side(products, enzmldoc, self.addProduct)
+
+    @staticmethod
+    def _parse_equation_side(elements: str, enzmldoc, fun):
+        """Parses a side from a reaction equation."""
+
+        # Setup Regex
+        regex = r"(^\d*[.,]\d*)?\s?(.*)"
+        regex = re.compile(regex)
+
+        for element in elements.split(" + "):
+            stoichiometry, species = regex.findall(element)[0]
+
+            if len(stoichiometry) == 0:
+                stoichiometry = 1.0
+
+            if re.match(r"^[p|s|c]\d*$", species):
+                species_id = species
+            else:
+                species_id = enzmldoc.getAny(species).id
+
+            # Add it to the reaction
+            fun(
+                species_id=species_id,
+                stoichiometry=float(stoichiometry),
+                enzmldoc=enzmldoc
+            )
 
     # ! Getters (old)
 

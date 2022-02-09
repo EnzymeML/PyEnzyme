@@ -52,16 +52,16 @@ class Vessel(EnzymeMLBase):
         description="Whether the volume of the vessel is constant or not.",
     )
 
+    meta_id: Optional[str] = Field(
+        None,
+        description="Unique meta identifier of the vessel.",
+    )
+
     id: Optional[str] = Field(
         None,
         description="Unique identifier of the vessel.",
         template_alias="ID",
         regex=r"v[\d]+"
-    )
-
-    meta_id: Optional[str] = Field(
-        None,
-        description="Unique meta identifier of the vessel.",
     )
 
     uri: Optional[str] = Field(
@@ -87,20 +87,6 @@ class Vessel(EnzymeMLBase):
             values["meta_id"] = f"METAID_{id.upper()}"
 
         return id
-
-    @validator("meta_id")
-    def check_meta_id(cls, meta_id: Optional[str], values: dict):
-        """Checks if the meta ID provided is following the standard"""
-
-        if values.get("meta_id"):
-            # When the ID init already set the meta ID
-            return values.get("meta_id")
-
-        return None
-
-    # ! Setters
-    def set_unit_id(self, unit_id: str):
-        self._unit_id = unit_id
 
     # ! Getters (old)
     @deprecated_getter("name")

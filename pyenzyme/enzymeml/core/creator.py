@@ -10,7 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import Field, validator
+from pydantic import Field, validator, ValidationError
 from typing import TYPE_CHECKING, Optional
 from dataclasses import dataclass
 
@@ -49,6 +49,24 @@ class Creator(EnzymeMLBase):
         description="Unique identifier of the protein.",
         regex=r"a[\d]+"
     )
+
+    @validator("given_name", "family_name", "mail", pre=True)
+    def check_empty_strings(cls, value):
+        if not value:
+            raise ValueError(
+                "An empty string has been provided. Please make sure to provide a valid string."
+            )
+
+        return value
+
+    @validator("mail")
+    def check_mail_consistency(cls, mail):
+        if len(mail.split("@")) != 2:
+            raise ValueError(
+                f"{mail} is not a valid mail adress."
+            )
+
+        return mail
 
     @deprecated_getter("family_name")
     def getFname(self) -> str:

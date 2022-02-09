@@ -14,4 +14,3 @@ try:
     from .TL_Strenda import ThinLayerStrendaML
 except ModuleNotFoundError:
     ThinLayerStrendaML = None
-

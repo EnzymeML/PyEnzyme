@@ -23,7 +23,7 @@ from pyenzyme.enzymeml.core.reactant import Reactant
 from pyenzyme.enzymeml.core.protein import Protein
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
 from pyenzyme.enzymeml.core.vessel import Vessel
-from pyenzyme.enzymeml.models.michaelismenten import MichaelisMenten
+from pyenzyme.enzymeml.models.michaelismenten import MichaelisMentenKCat
 
 
 class ThinLayerStrendaML(object):
@@ -263,7 +263,7 @@ class ThinLayerStrendaML(object):
                 }
 
         # Create the model and add it to the reaction
-        model = MichaelisMenten(
+        model = MichaelisMentenKCat(
             substrate=species_id,
             protein="p0",
             enzmldoc=self.enzmldoc,

@@ -175,9 +175,9 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     def fromUniProtID(
         cls,
         uniprotid: str,
-        init_conc: float,
-        unit: str,
         vessel_id: str,
+        init_conc: Optional[float] = None,
+        unit: Optional[str] = None,
         constant: bool = False
     ) -> 'Protein':
         """Initializes a protein based on the UniProt database.
@@ -197,6 +197,7 @@ class Protein(EnzymeMLBase, AbstractSpecies):
             unit=unit,
             vessel_id=vessel_id,
             constant=constant,
+            uniprotid=uniprotid,
             **parameters
         )
 
@@ -292,3 +293,11 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     @ deprecated_getter("constant")
     def getConstant(self):
         return self.constant
+
+
+if __name__ == "__main__":
+    protein = Protein.fromUniProtID(
+        uniprotid="P0A955", vessel_id="v0"
+    )
+
+    print(protein.json())

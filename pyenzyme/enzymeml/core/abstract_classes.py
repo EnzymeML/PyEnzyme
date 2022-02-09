@@ -10,24 +10,26 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import BaseModel, PositiveFloat, PrivateAttr, validator
+from pydantic import BaseModel, PrivateAttr, validator
 from typing import Optional
 from enum import Enum
 from abc import ABC, abstractmethod
+
+from pyenzyme.enzymeml.core.ontology import SBOTerm
 
 
 class AbstractSpeciesDataclass(BaseModel):
     """Abstract dataclass to describe an EnzymeML/SBML species."""
 
     name: str
-    id: str
+    meta_id: Optional[str]
+    id: Optional[str]
     vessel_id: str
-    meta_id: str
     init_conc: Optional[float] = None
     constant: bool
     boundary: bool
     unit: Optional[str] = None
-    ontology: Enum
+    ontology: SBOTerm
     _unit_id: Optional[str] = PrivateAttr(default=None)
     uri: Optional[str]
     creator_id: Optional[str]

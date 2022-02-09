@@ -10,9 +10,8 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from pydantic import Field, PositiveFloat, validator
+from pydantic import Field
 from typing import TYPE_CHECKING, Optional, Union, Any
-from enum import Enum
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -137,6 +136,7 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
             unit=unit,
             vessel_id=vessel_id,
             constant=constant,
+            chebi_id=chebi_id,
             **parameters
         )
 
