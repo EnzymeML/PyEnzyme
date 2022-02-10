@@ -38,9 +38,6 @@ class AbstractSpeciesDataclass(BaseModel):
 class AbstractSpecies(ABC, AbstractSpeciesDataclass):
     """Due to inheritance and type-checking issues, the dataclass has to be mixed in."""
 
-    def set_unit_id(self, unit_id: str):
-        setattr(self, "_unit_id", unit_id)
-
     # ! Validators
     @validator("id")
     def set_meta_id(cls, id: Optional[str], values: dict):

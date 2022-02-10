@@ -51,6 +51,14 @@ class BaseUnit(EnzymeMLBase):
         description="Unit multiplier.",
     )
 
+    def get_id(self) -> str:
+        """Internal usage to get IDs from objects without ID attribute"""
+
+        if self.kind:
+            return self.kind
+        else:
+            raise AttributeError("No species ID given.")
+
     # @validator("kind")
     # def check_sbml_unit_enum(cls, kind_int: int):
     #     kind_string: str = libsbml.UnitKind_toString(kind_int)

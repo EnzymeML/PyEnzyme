@@ -10,25 +10,15 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
+import json
 import logging
 
-from typing import TYPE_CHECKING
 from pydantic import BaseModel
-from dataclasses import dataclass
-
-from pyenzyme.enzymeml.core.utils import type_checking
 from pyenzyme.utils.log import log_change
-
-if TYPE_CHECKING:  # pragma: no cover
-    static_check_init_args = dataclass
-else:
-    static_check_init_args = type_checking
-
 
 logger = logging.getLogger("pyenzyme")
 
 
-@static_check_init_args
 class EnzymeMLBase(BaseModel):
     class Config:
         validate_assignment = True
@@ -49,6 +39,12 @@ class EnzymeMLBase(BaseModel):
             },
             by_alias=True,
             **kwargs
+        )
+
+    @classmethod
+    def fromJSON(cls, json_string):
+        return cls.parse_obj(
+            json.loads(json_string)
         )
 
     def __setattr__(self, name, value):

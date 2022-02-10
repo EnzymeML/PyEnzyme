@@ -684,6 +684,8 @@ class EnzymeMLWriter:
 
             if kinetic_parameter.value:
                 local_param.setValue(kinetic_parameter.value)
+
+            if kinetic_parameter._unit_id:
                 local_param.setUnits(kinetic_parameter._unit_id)
 
             if kinetic_parameter.ontology:

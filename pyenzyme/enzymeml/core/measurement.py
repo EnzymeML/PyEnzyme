@@ -190,7 +190,7 @@ class Measurement(EnzymeMLBase):
 
                 # Fetch initial concentration
                 initial_concentration[species_id] = (
-                    data.init_conc, data._unit_id
+                    data.init_conc, data.unit
                 )
 
                 # Fetch replicate data
@@ -341,6 +341,19 @@ class Measurement(EnzymeMLBase):
             scale (int): Decade scale to which the values will be rescaled.
             enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to which the new unit will be added.
         """
+
+        if kind not in ["mole", "gram", "litre"]:
+            raise ValueError(
+                f"Kind {kind} is not supported. Please use 'mole', 'gram', or 'litre'"
+            )
+
+        if abs(scale) % 3 > 0:
+            if abs(scale) == 1:
+                pass
+            else:
+                raise ValueError(
+                    f"Scale {scale} is not a multiple of 3. Please make sure the scale is a multiple of 3."
+                )
 
         for measurement_data in {**self.getProteins(), **self.getReactants()}.values():
             measurement_data.unifyUnits(

@@ -161,7 +161,6 @@ class EnzymeMLDocument(EnzymeMLBase):
 
     log: str = Field(
         default="",
-        exclude=True
     )
 
     # ! Validators
@@ -362,7 +361,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         self,
         measurement_ids: Union[str, list[str]] = "all",
         species_ids: Union[str, list[str]] = "all",
-        proteins: bool = True,
+        proteins: bool = False,
         reactants: bool = True,
     ) -> dict[str, dict[str, Union[tuple, pd.DataFrame]]]:
         """Exports either all replicates present in any measurement or the ones specified via 'species_ids' or 'measurement_ids'
@@ -591,7 +590,7 @@ class EnzymeMLDocument(EnzymeMLBase):
                     sort_keys=False
                 )
 
-    def applyModelInitialization(self, path: str) -> None:
+    def applyModelInitialization(self, path: str, to_values: bool = False) -> None:
         """Adds initial values per reaction to the model from a YAML config file.
 
         This method loads a YAML that previously generated from the function 'generateInitialValueTemplate'
@@ -610,7 +609,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
             # Get the reaction
             reaction = self.getReaction(reaction_id)
-            reaction.apply_initial_values(value_dict)
+            reaction.apply_initial_values(value_dict, to_values=to_values)
 
     # ! Add methods
 

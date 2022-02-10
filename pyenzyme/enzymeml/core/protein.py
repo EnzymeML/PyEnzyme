@@ -84,7 +84,8 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     ecnumber: Optional[str] = Field(
         None,
         description="EC number of the protein.",
-        template_alias="EC Number"
+        template_alias="EC Number",
+        regex=r"(\d+.)(\d+.)(\d+.)(\d+)"
     )
 
     organism: Optional[str] = Field(
@@ -125,16 +126,6 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     )
 
     # ! Validators
-    @validator("init_conc")
-    def init_conccentration_warning(cls, init_conc: float):
-        """Sets a warning if an initial concentration hasnt been given"""
-
-        if init_conc == float("nan"):
-            raise Warning("Lol this is a warning!")
-
-        else:
-            return init_conc
-
     @validator("id")
     def set_meta_id(cls, id: Optional[str], values: dict):
         """Sets the meta ID when an ID is provided"""
@@ -153,22 +144,6 @@ class Protein(EnzymeMLBase, AbstractSpecies):
             return re.sub(r"\s+", "", sequence).upper()
         else:
             return sequence
-
-    @validator("ecnumber")
-    def validate_ecnumber(cls, ecnumber: Optional[str]):
-        """Validates whether given EC number complies to the established pattern."""
-
-        if ecnumber is None:
-            return ecnumber
-
-        pattern = r"(\d+.)(\d+.)(\d+.)(\d+)"
-        match = re.search(pattern, ecnumber)
-
-        if match is not None:
-            return "".join(match.groups())
-        else:
-            raise ValueError("Invalid EC")
-            # raise ECNumberError(ecnumber=ecnumber))
 
     # ! Initializers
     @classmethod
@@ -293,11 +268,3 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     @ deprecated_getter("constant")
     def getConstant(self):
         return self.constant
-
-
-if __name__ == "__main__":
-    protein = Protein.fromUniProtID(
-        uniprotid="P0A955", vessel_id="v0"
-    )
-
-    print(protein.json())

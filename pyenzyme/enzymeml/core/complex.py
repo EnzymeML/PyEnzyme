@@ -104,7 +104,6 @@ class Complex(EnzymeMLBase, AbstractSpecies):
         if id:
             # Set Meta ID with ID
             values["meta_id"] = f"METAID_{id.upper()}"
-            print(values)
 
         return id
 

@@ -184,7 +184,6 @@ class EnzymeReaction(EnzymeMLBase):
         if id:
             # Set Meta ID with ID
             values["meta_id"] = f"METAID_{id.upper()}"
-            print(values)
 
         return id
 
@@ -510,7 +509,7 @@ class EnzymeReaction(EnzymeMLBase):
             **{element.species_id: (-1) * element.stoichiometry for element in self.products}
         }
 
-    def apply_initial_values(self, initial_values: dict[str, float]) -> None:
+    def apply_initial_values(self, initial_values: dict[str, float], to_values: bool = False) -> None:
         """Applies the initial values for all given parameters to the underlying model.
 
         Args:
@@ -525,6 +524,9 @@ class EnzymeReaction(EnzymeMLBase):
         for param_name, value in initial_values.items():
             param = self.model.getParameter(param_name)
             param.initial_value = value
+
+            if to_values:
+                param.value = value
 
     # ! Initializers
 
@@ -591,6 +593,13 @@ class EnzymeReaction(EnzymeMLBase):
         else:
             raise ValueError(
                 "Neither '->' nor '<=>' were found in the reaction euqation, but are essential to distinguish educt from product side."
+            )
+
+        print(educts, products)
+
+        if not educts or not products:
+            raise ValueError(
+                "Reaction equation is incomplete. Please make sure both sides contain information."
             )
 
         # Parse each side of the reaction
