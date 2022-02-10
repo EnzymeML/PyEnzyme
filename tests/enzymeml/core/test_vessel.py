@@ -1,5 +1,3 @@
-import pytest
-
 from pyenzyme.enzymeml.core.vessel import Vessel
 
 

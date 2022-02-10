@@ -1,5 +1,3 @@
-import pytest
-
 from pyenzyme.enzymeml.core.reactant import Reactant
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 

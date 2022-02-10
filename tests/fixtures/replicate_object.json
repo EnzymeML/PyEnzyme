@@ -1,0 +1,22 @@
+{
+  "id": "repl_s0_0",
+  "species_id": "s0",
+  "data_type": "conc",
+  "data_unit": "mmole / l",
+  "time_unit": "s",
+  "time": [
+    1.0,
+    2.0,
+    3.0,
+    4.0
+  ],
+  "data": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "is_calculated": false,
+  "uri": "URI",
+  "creator_id": "a0"
+}

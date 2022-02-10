@@ -1,5 +1,3 @@
-import pytest
-
 from pyenzyme.enzymeml.core.protein import Protein
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 

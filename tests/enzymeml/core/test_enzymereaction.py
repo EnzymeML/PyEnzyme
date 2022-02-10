@@ -1,37 +1,8 @@
 import pytest
 
-from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction, ReactionElement
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
-from pyenzyme.enzymeml.models.kineticmodel import KineticModel, KineticParameter
-
-
-@pytest.fixture
-def enzmldoc():
-    return EnzymeMLDocument.fromJSON(
-        open("./tests/test_object.json").read()
-    )
-
-
-@pytest.fixture
-def correct_model():
-    parameters = [
-        KineticParameter(name="x", value=10.0, unit="mmole / l")
-    ]
-    return KineticModel(
-        name="SomeModel", equation="s0 * x", parameters=parameters
-    )
-
-
-@pytest.fixture
-def faulty_model():
-    parameters = [
-        KineticParameter(name="x", value=10.0, unit="mmole / l")
-    ]
-    return KineticModel(
-        name="SomeModel", equation="s10 * x", parameters=parameters
-    )
 
 
 class TestEnzymeReactionBasic:
@@ -80,11 +51,8 @@ class TestEnzymeReactionBasic:
         assert reaction.products == []
         assert reaction.modifiers == []
 
-    def test_get_element(self, enzmldoc):
+    def test_get_element(self, reaction):
         """Tests the element getter"""
-
-        # Fetch the reaction for testing
-        reaction = enzmldoc.reaction_dict["r0"]
 
         # Now apply the get methods
         educt = reaction.getEduct("s0")
@@ -160,6 +128,25 @@ class TestEnzymeReactionBasic:
         assert modifier.stoichiometry == 1.0
         assert modifier.constant is False
         assert modifier.ontology == SBOTerm.CATALYST
+
+        # Test case, ID not in document
+        with pytest.raises(SpeciesNotFoundError):
+            reaction.addEduct(
+                species_id="s100", stoichiometry=1.0, constant=False,
+                enzmldoc=enzmldoc
+            )
+
+        with pytest.raises(SpeciesNotFoundError):
+            reaction.addProduct(
+                species_id="s100", stoichiometry=1.0, constant=False,
+                enzmldoc=enzmldoc
+            )
+
+        with pytest.raises(SpeciesNotFoundError):
+            reaction.addModifier(
+                species_id="s100", stoichiometry=1.0, constant=False,
+                enzmldoc=enzmldoc
+            )
 
     def test_from_equation_with_names(self, enzmldoc):
         """Tests initialization from equation using names"""
@@ -298,6 +285,39 @@ class TestEnzymeReactionBasic:
         assert product.stoichiometry == 1.0
         assert product.constant is False
         assert product.ontology == SBOTerm.PRODUCT
+
+    def test_faulty_equation_init(self, enzmldoc):
+        """Tests faulty instances of equation initialization"""
+
+        # No arrow
+        with pytest.raises(ValueError):
+            EnzymeReaction.fromEquation(
+                "1.0 s0 + 2.0 p0", "FaultyReaction", enzmldoc
+            )
+
+        # No right side (irrev)
+        with pytest.raises(ValueError):
+            EnzymeReaction.fromEquation(
+                "1.0 s0 + 2.0 p0 -> ", "FaultyReaction", enzmldoc
+            )
+
+        # No right side (rev)
+        with pytest.raises(ValueError):
+            EnzymeReaction.fromEquation(
+                "1.0 s0 + 2.0 p0 = ", "FaultyReaction", enzmldoc
+            )
+
+        # No right side (irrev)
+        with pytest.raises(ValueError):
+            EnzymeReaction.fromEquation(
+                " -> 1.0 s0 + 2.0 p0", "FaultyReaction", enzmldoc
+            )
+
+        # No right side (rev)
+        with pytest.raises(ValueError):
+            EnzymeReaction.fromEquation(
+                "= 1.0 s0 + 2.0 p0", "FaultyReaction", enzmldoc
+            )
 
     def test_set_model(self, enzmldoc, correct_model, faulty_model):
         """Tests if the model is set correctly."""

@@ -1,8 +1,5 @@
-import pytest
-
 from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
 from pyenzyme.enzymeml.core.ontology import SBOTerm
-from pyenzyme.enzymeml.core.exceptions import ParticipantIdentifierError
 
 
 class TestAbstractSpecies:
