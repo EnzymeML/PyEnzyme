@@ -17,6 +17,7 @@ import json
 import yaml
 import logging
 import pandas as pd
+import seaborn as sns
 
 from pydantic import Field, validator, validate_arguments
 from typing import TYPE_CHECKING, Optional, Union
@@ -215,7 +216,12 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         from pyenzyme.enzymeml.tools.enzymemlreader import EnzymeMLReader
 
-        return EnzymeMLReader().readFromFile(path)
+        try:
+            return EnzymeMLReader().readFromFile(path)
+        except AttributeError:
+            raise TypeError(
+                f"{path} is not a valid OMEX archive."
+            )
 
     @classmethod
     def fromJSON(cls, json_string: str):
@@ -335,6 +341,83 @@ class EnzymeMLDocument(EnzymeMLBase):
         )
 
     # ! Utility methods
+    def visualize(
+        self,
+        measurement_ids: list[str] = ["all"],
+        use_names: bool = False,
+        sharey: bool = True,
+        col_wrap: int = 4,
+        **kwargs
+    ) -> sns.axisgrid.FacetGrid:
+        """Visualizes eitehr all or selected measurements found in the EnzymeML document.
+
+        In order to use this method correctly, make sure to pass nothing to 'measurement_ids' when all meassurements
+        should be visualised. Otherwise pass a list or string for multiple or single measurements respectively.
+
+        Args:
+            measurement_ids (list[str], optional): Measurements that should be visualized. Defaults to ["all"].
+            use_names (bool, optional): Whether legend and titles should be based on names or IDs. Defaults to True.
+            sharey (bool, optional): Whether individual plots should share the y-axis. Defaults to True.
+
+        Returns:
+            sns.axisgrid.FacetGrid: Seaborn plot object which can be further customized.
+        """
+
+        if isinstance(measurement_ids, str):
+            measurement_ids = [measurement_ids]
+
+        # First export all the experimental data
+        data = self.exportMeasurementData()
+
+        # Reformat the dataframe for a FacetGrid plot
+        df_plot = []
+        for measurement_id, measurement in data.items():
+
+            if measurement_id not in measurement_ids and measurement_ids != ["all"]:
+                # Drop discarded measurements
+                continue
+
+            if use_names:
+                # Turn ID to name if specified
+                measurement_id = self.measurement_dict[measurement_id].name
+
+            # Get the dataframe from the data export
+            exp_data = measurement["data"]
+
+            # Rename to names if specified
+            columns = []
+            for column in exp_data.columns:
+                if use_names and column != "time":
+                    columns.append(self.getAny(column).name)
+                else:
+                    columns.append(column)
+
+            # Reset columns
+            exp_data.columns = columns
+
+            # Reduce DataFrame to three columns to hue indicidual species
+            exp_data = pd.melt(exp_data, id_vars=["time"], var_name="species")
+            exp_data["measurement"] = [measurement_id] * exp_data.shape[0]
+
+            df_plot.append(exp_data)
+
+        # Finally, concatenate all indivdidual datasets
+        df_plot = pd.concat(df_plot)
+
+        # Set up the FacetGrid plot
+        g = sns.FacetGrid(
+            df_plot, col="measurement", hue="species",
+            col_wrap=col_wrap, sharey=sharey, legend_out=True,
+            ** kwargs
+        )
+
+        g.map(sns.lineplot, "time", "value")
+        g.map(sns.scatterplot, "time", "value")
+        g.add_legend(loc='upper right', bbox_to_anchor=(
+            0.5, -0.01), fancybox=True, shadow=True, ncol=2)
+
+        return g
+
     def unifyMeasurementUnits(
         self,
         kind: str,
