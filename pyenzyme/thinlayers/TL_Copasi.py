@@ -113,9 +113,7 @@ class ThinLayerCopasi(BaseThinLayer):
         :return: None
         """
         for measurement_id, measurement_dict in self.data.items():
-            sbml_ids = [d[0] if len(d) == 2 else d[1] for d in [
-                c.split('|') for c in measurement_dict['data'].columns.to_list()
-            ]]
+            sbml_ids = measurement_dict['data'].columns.to_list()
 
             data = measurement_dict['data']
 
