@@ -39,11 +39,12 @@ setup(
         'easyDataverse',
         'pyDaRUS',
         'openpyxl',
-        'numexpr'
+        'numexpr',
+        'seaborn'
     ],
     extras_require={
         'test': [
-            'pytest'
+            'pytest-cov'
         ],
         'examples': [
             'xmltodict'
