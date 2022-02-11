@@ -60,6 +60,7 @@ class Replicate(EnzymeMLBase):
     )
 
     time_unit: str = Field(
+        ...,
         description="Time unit of the replicate.",
     )
 
