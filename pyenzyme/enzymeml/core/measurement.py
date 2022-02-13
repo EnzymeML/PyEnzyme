@@ -183,6 +183,7 @@ class Measurement(EnzymeMLBase):
 
         columns = {"time": self.global_time}
         initial_concentration = {}
+        num_replicates = 0
 
         # Iterate over measurementData to fill columns
         for species_id, data in measurement_species.items():

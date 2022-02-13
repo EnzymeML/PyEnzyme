@@ -1054,6 +1054,7 @@ class EnzymeMLDocument(EnzymeMLBase):
                 if isinstance(node.value, str):
                     name = repr(node.value)
                 else:
+                    # Numeric constants are ignored now
                     continue
 
             elif isinstance(node, ast.Name):
