@@ -10,6 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
+import copy
 import logging
 import pandas as pd
 
@@ -194,9 +195,18 @@ class Measurement(EnzymeMLBase):
                 )
 
                 # Fetch replicate data
-                for replicate in data.getReplicates():
+                if len(data.replicates) > num_replicates:
+                    num_replicates = len(data.replicates)
+                for replicate in data.replicates:
 
-                    columns[species_id] = replicate.data
+                    if columns.get(species_id):
+                        # For multiple replicates
+                        columns[species_id] += copy.deepcopy(replicate.data)
+                    else:
+                        columns[species_id] = copy.deepcopy(replicate.data)
+
+        # Add global time to columns according to the number of replicates
+        columns["time"] = self.global_time * num_replicates
 
         return {
             "data": pd.DataFrame(columns)

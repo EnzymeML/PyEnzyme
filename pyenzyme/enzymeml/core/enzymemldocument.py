@@ -17,6 +17,8 @@ import json
 import yaml
 import logging
 import pandas as pd
+import seaborn as sns
+import plotly.express as px
 
 from pydantic import Field, validator, validate_arguments
 from typing import TYPE_CHECKING, Optional, Union
@@ -335,6 +337,170 @@ class EnzymeMLDocument(EnzymeMLBase):
         )
 
     # ! Utility methods
+    def visualize(
+        self,
+        measurement_ids: list[str] = ["all"],
+        interactive: bool = False,
+        use_names: bool = False,
+        sharey: bool = True,
+        col_wrap: int = 4,
+        trendline: bool = False,
+        width: int = 1000,
+        height: int = 500,
+        **kwargs
+    ):
+        """Visualizes either all or selected measurements found in the EnzymeML document as FacetGrid or interactive.
+
+        In order to use this method correctly, make sure to pass nothing to 'measurement_ids' when all meassurements
+        should be visualised. Otherwise pass a list or string for multiple or single measurements respectively.
+
+
+        Args:
+            measurement_ids (list[str], optional): List of measurements that should be plotted or all. Defaults to ["all"].
+            interactive (bool, optional): [description]. Whether to return an interatcive or static plot. Defaults to to False.
+            use_names (bool, optional): Whether names or IDs should be used. Defaults to False.
+            sharey (bool, optional): Whether all plots in FacetGrid should share the y-axis. Defaults to True.
+            col_wrap (int, optional): Specifies in FacetGrid at which number of cols to create a new row. Defaults to 4.
+            trendline (bool, optional): Whether the plot should include a trendline. Defaults to False.
+            width (int, optional): Interactive plot width. Defaults to 1000.
+            height (int, optional): Interactive plot height. Defaults to 500.
+
+        Returns:
+            [type]: [description]
+        """
+
+        if isinstance(measurement_ids, str):
+            measurement_ids = [measurement_ids]
+
+        df = self.toDataFrame(
+            use_names=use_names, measurement_ids=measurement_ids
+        )
+
+        if interactive:
+            return self._create_interactive_plot(
+                df=df, trendline=trendline, width=width, height=height, **kwargs
+            )
+
+        return self._create_facet_grid(
+            df=df, trendline=trendline, col_wrap=col_wrap, sharey=sharey, **kwargs
+        )
+
+    def _create_facet_grid(
+        self,
+        df: pd.DataFrame,
+        col_wrap: int,
+        sharey: bool,
+        trendline: bool,
+        **kwargs,
+    ):
+
+        # Set up the FacetGrid plot
+        g = sns.FacetGrid(
+            df, col="measurement", hue="species",
+            col_wrap=col_wrap, sharey=sharey, legend_out=True,
+            **kwargs
+        )
+
+        if trendline:
+            g.map(sns.lineplot, "time", "value")
+        g.map(sns.scatterplot, "time", "value")
+        g.add_legend(loc='upper right', bbox_to_anchor=(
+            0.5, -0.01), fancybox=True, shadow=True, ncol=2)
+
+        return g
+
+    def _create_interactive_plot(
+        self,
+        df: pd.DataFrame,
+        trendline: bool,
+        width: int,
+        height: int,
+        **kwargs
+    ):
+        """Visualizes all measurements as an interactive plot based on plotly. Best used in Jupyter Notebooks.
+
+        Args:
+            trendline (bool, optional): Whether or not an average trendline should be drawn. Defaults to False.
+            width (int, optional): Plot width. Defaults to 1000.
+            height (int, optional): Plot height. Defaults to 500.
+        """
+
+        if trendline:
+            kwargs.update(
+                {"trendline": "lowess", "trendline_options": {"frac": 0.5}}
+            )
+
+        fig = px.scatter(
+            df, x="time", y="value", animation_frame="measurement",
+            color="species", range_y=[-5, df.value.max() + df.value.std()],
+            width=width, height=height, template="plotly_white", **kwargs
+        )
+
+        fig.update_layout(legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        ))
+
+        return fig
+
+    def toDataFrame(
+        self,
+        measurement_ids: list[str] = ["all"],
+        use_names: bool = False,
+    ) -> pd.DataFrame:
+        """Transforms exported measurement data to a single DataFrame
+
+        Args:
+            measurement_ids (list[str], optional): Measurements to include or all of them. Defaults to ["all"].
+            use_names (bool, optional): Wether names or IDs should be used. Defaults to False.
+
+        Returns:
+            pd.DataFrame: Transformed measurement data.
+        """
+
+        # First export all the experimental data
+        data = self.exportMeasurementData()
+
+        # Reformat the dataframe for a FacetGrid plot
+        df_plot = []
+        for measurement_id, measurement in data.items():
+
+            if measurement_id not in measurement_ids and measurement_ids != ["all"]:
+                # Drop discarded measurements
+                continue
+
+            if use_names:
+                # Turn ID to name if specified
+                measurement_id = self.measurement_dict[measurement_id].name
+
+            # Get the dataframe from the data export
+            exp_data = measurement["data"]
+
+            # Rename to names if specified
+            columns = []
+            for column in exp_data.columns:
+                if use_names and column != "time":
+                    columns.append(self.getAny(column).name)
+                else:
+                    columns.append(column)
+
+            # Reset columns
+            exp_data.columns = columns
+
+            # Reduce DataFrame to three columns to hue indicidual species
+            exp_data = pd.melt(exp_data, id_vars=["time"], var_name="species")
+            exp_data["measurement"] = [measurement_id] * exp_data.shape[0]
+
+            df_plot.append(exp_data)
+
+        # Finally, concatenate all indivdidual datasets
+        df_plot = pd.concat(df_plot)
+
+        return df_plot
+
     def unifyMeasurementUnits(
         self,
         kind: str,
@@ -885,11 +1051,14 @@ class EnzymeMLDocument(EnzymeMLBase):
 
             if isinstance(node, ast.Constant):
                 # If the equation was generated  via the ModelFactory
-                name = repr(node.value)
+                if isinstance(node.value, str):
+                    name = repr(node.value)
+                else:
+                    continue
+
             elif isinstance(node, ast.Name):
                 # If the equation has been done manually
                 name = node.id
-
                 if name in all_params:
                     # If its a parameter
                     continue
