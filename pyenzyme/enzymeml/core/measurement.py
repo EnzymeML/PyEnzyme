@@ -10,6 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
+import copy
 import logging
 import pandas as pd
 
@@ -180,9 +181,8 @@ class Measurement(EnzymeMLBase):
         if isinstance(species_ids, str):
             species_ids = [species_ids]
 
+        columns = {"time": self.global_time}
         initial_concentration = {}
-        columns = {}
-        num_replicates = 0
 
         # Iterate over measurementData to fill columns
         for species_id, data in measurement_species.items():
@@ -195,21 +195,22 @@ class Measurement(EnzymeMLBase):
                 )
 
                 # Fetch replicate data
-                num_replicates = len(data.replicates)
+                if len(data.replicates) > num_replicates:
+                    num_replicates = len(data.replicates)
                 for replicate in data.replicates:
 
                     if columns.get(species_id):
                         # For multiple replicates
-                        columns[species_id].append(replicate.data)
+                        columns[species_id] += copy.deepcopy(replicate.data)
                     else:
-                        columns[species_id] = replicate.data
+                        columns[species_id] = copy.deepcopy(replicate.data)
 
         # Add global time to columns according to the number of replicates
         columns["time"] = self.global_time * num_replicates
 
         return {
             "data": pd.DataFrame(columns)
-            if num_replicates > 0
+            if len(columns) > 1
             else pd.DataFrame(),
             "initConc": initial_concentration,
         }
