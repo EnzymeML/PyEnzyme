@@ -42,6 +42,9 @@ class BaseThinLayer(ABC):
             if reaction.model
         }
 
+        # Store global parameters if given
+        self.global_parameters = self.enzmldoc.global_parameters
+
     @abstractmethod
     def optimize(self):
         """

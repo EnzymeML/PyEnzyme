@@ -73,19 +73,44 @@ class ThinLayerPysces(BaseThinLayer):
         # Initialize lmfit parameters
         self.parameters = lmfit.Parameters()
 
+        # Add global parameters
+        for global_param in self.global_parameters.values():
+
+            if global_param.value:
+                self.parameters.add(
+                    f"{global_param.name}", global_param.value, vary=True,
+                    min=global_param.lower, max=global_param.upper
+                )
+
+            elif global_param.initial_value:
+                self.parameters.add(
+                    f"{global_param.name}", global_param.initial_value, vary=True,
+                    min=global_param.lower, max=global_param.upper
+                )
+
+            else:  # parameter is
+                raise ValueError(
+                    f"Neither initial_value nor value given for parameter {global_param.name} in global parameters"
+                )
+
         # Consistency check
         for reaction_id, (model, _) in self.reaction_data.items():
 
             # Apply parameters to lmfit parameters
             for parameter in model.parameters:
 
+                if parameter.is_global:
+                    continue
+
                 if parameter.value:
                     self.parameters.add(
-                        f"{reaction_id}_{parameter.name}", parameter.value, vary=True, min=1.0e-9
+                        f"{reaction_id}_{parameter.name}", parameter.value, vary=True,
+                        min=parameter.lower, max=parameter.upper
                     )
                 elif parameter.initial_value:
                     self.parameters.add(
-                        f"{reaction_id}_{parameter.name}", parameter.initial_value, vary=True, min=1.0e-9
+                        f"{reaction_id}_{parameter.name}", parameter.initial_value, vary=True,
+                        min=parameter.lower, max=parameter.upper
                     )
                 else:  # parameter is
                     raise ValueError(
