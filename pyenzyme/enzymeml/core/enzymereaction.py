@@ -595,8 +595,6 @@ class EnzymeReaction(EnzymeMLBase):
                 "Neither '->' nor '<=>' were found in the reaction euqation, but are essential to distinguish educt from product side."
             )
 
-        print(educts, products)
-
         if not educts or not products:
             raise ValueError(
                 "Reaction equation is incomplete. Please make sure both sides contain information."
@@ -629,7 +627,8 @@ class EnzymeReaction(EnzymeMLBase):
             fun(
                 species_id=species_id,
                 stoichiometry=float(stoichiometry),
-                enzmldoc=enzmldoc
+                enzmldoc=enzmldoc,
+                constant=False
             )
 
     # ! Getters (old)

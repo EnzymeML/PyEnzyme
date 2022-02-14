@@ -21,5 +21,3 @@ from pyenzyme.enzymeml.core import Replicate
 from pyenzyme.enzymeml.core import Creator
 from pyenzyme.enzymeml.models import KineticModel
 from pyenzyme.utils.log import setup_custom_logger
-
-from io import StringIO

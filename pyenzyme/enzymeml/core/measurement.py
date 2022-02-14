@@ -181,7 +181,7 @@ class Measurement(EnzymeMLBase):
         if isinstance(species_ids, str):
             species_ids = [species_ids]
 
-        columns = {"time": self.global_time}
+        columns = {}
         initial_concentration = {}
         num_replicates = 0
 

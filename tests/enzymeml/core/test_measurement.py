@@ -63,11 +63,11 @@ class TestMeasurement:
         # Construct expected DataFrame
         expected_protein = {
             'p0': {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
-            'time': {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0}
+            'time': {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0},
         }
         expected_reactant = {
             's0': {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
-            'time': {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0}
+            'time': {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0},
         }
 
         assert data["reactants"]["data"].to_dict() == expected_reactant
@@ -98,7 +98,6 @@ class TestMeasurement:
 
         # Test case with list as argument
         data = measurement.exportData(species_ids=["s0"])
-        init_conc = data["reactants"]["initConc"]
         expected_reactant = {
             's0': {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
             'time': {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0}
