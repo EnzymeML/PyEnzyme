@@ -51,14 +51,34 @@ class KineticParameter(EnzymeMLBase):
         description="Unit of the estimated parameter.",
     )
 
+    initial_value: Optional[float] = Field(
+        None,
+        description="Initial value that was used for the parameter estimation."
+    )
+
+    upper: Optional[float] = Field(
+        None,
+        description="Upper bound of the estimated parameter."
+    )
+
+    lower: Optional[float] = Field(
+        None,
+        description="Lower bound of the estimated parameter."
+    )
+
+    is_global: bool = Field(
+        False,
+        description="Specifies if this parameter is a global parameter."
+    )
+
     stdev: Optional[float] = Field(
         None,
         description="Standard deviation of the estimated parameter."
     )
 
-    initial_value: Optional[float] = Field(
-        None,
-        description="Initial value that was used for the parameter estimation."
+    constant: bool = Field(
+        False,
+        description="Specifies if this parameter is constant"
     )
 
     ontology: Optional[SBOTerm] = Field(
@@ -237,12 +257,12 @@ class ModelFactory:
 
             self.model.parameters.append(parameter)
 
-    def __call__(self, **variables) -> KineticModel:
+    def __call__(self, mapping: dict = {}, **variables) -> KineticModel:
         """Returns a KineticModel that is suited for the given parameters.
         """
 
         # Copy the internal object and modify it to the needs
-        model = self.model.copy()
+        model = KineticModel(**self.model.dict())
 
         # Replace everything
         for stock_variable in self.variables:
@@ -266,7 +286,39 @@ class ModelFactory:
                     f"Variable {stock_variable} has not been given. Please make sure to cover all variables: [{repr(self.variables)}]"
                 )
 
+        # Apply mapping
+        if mapping:
+            self._apply_mapping(mapping, model)
+
         return model
+
+    def _apply_mapping(self, mapping: dict, model: KineticModel):
+        """Applies a mapping that has been given to the model."""
+
+        for param_old, param_new in mapping.items():
+            model.equation = model.equation.replace(param_old, param_new)
+
+            # Variable to control when a parameter has found
+            found = False
+
+            for index, parameter in enumerate(model.parameters):
+                if parameter.name == param_old:
+
+                    # Copy old and add new parameter
+                    nu_param = parameter.copy()
+                    nu_param.name = param_new
+                    model.parameters.append(nu_param)
+
+                    found = True
+
+                    # Remove old one
+                    del model.parameters[index]
+                    continue
+
+            if not found:
+                raise KeyError(
+                    f"Parameter {param_old} is not part of the model."
+                )
 
     @staticmethod
     def parse_equation(equation: str):
