@@ -744,7 +744,6 @@ class EnzymeMLWriter:
         for parameter in kinetic_model.parameters:
 
             if parameter.is_global:
-                print(parameter)
                 continue
 
             param = self._write_local_parameter(parameter, sbml_law)
