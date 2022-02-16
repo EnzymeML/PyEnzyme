@@ -206,11 +206,11 @@ class ThinLayerPysces(BaseThinLayer):
                 else:
                     setattr(self.model, species_id, value)
 
-                # Simulate the experiment and save results
-                self.model.Simulate(userinit=1)
-                output.append(
-                    [getattr(self.model.sim, species)
-                     for species in self.model.species]
-                )
+            # Simulate the experiment and save results
+            self.model.Simulate(userinit=1)
+            output.append(
+                [getattr(self.model.sim, species)
+                 for species in self.model.species]
+            )
 
         return pd.DataFrame(np.hstack(output).T, columns=self.model.species)
