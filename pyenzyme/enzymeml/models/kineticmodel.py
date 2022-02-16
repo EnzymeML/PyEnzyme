@@ -11,13 +11,13 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 import ast
+import re
 import numexpr
 
 from typing import TYPE_CHECKING, Optional
-from pydantic import Field
+from pydantic import Field, validator
 from dataclasses import dataclass
 
-from libsbml import parseL3Formula, Reaction, XMLNode, XMLTriple
 from pydantic.fields import PrivateAttr
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -93,6 +93,11 @@ class KineticParameter(EnzymeMLBase):
         """For logging. Dont bother."""
         return self.name
 
+    # ! Utilities
+    def update(self, **kwargs):
+        """Adds attributes to this parameter based in kwargs"""
+        self.__dict__.update(kwargs)
+
 
 @static_check_init_args
 class KineticModel(EnzymeMLBase):
@@ -117,6 +122,44 @@ class KineticModel(EnzymeMLBase):
         description="Type of the estimated parameter.",
     )
 
+    # ! Add methods
+    def addParameter(
+        self,
+        name: str,
+        value: Optional[float] = None,
+        unit: Optional[str] = None,
+        initial_value: Optional[float] = None,
+        upper: Optional[float] = None,
+        lower: Optional[float] = None,
+        is_global: bool = False,
+        stdev: Optional[float] = None,
+        constant: bool = False,
+        ontology: Optional[SBOTerm] = None
+    ):
+        """Adds a parameter to the KineticModel object
+
+        Args:
+            name (str): Name of the estimated parameter.
+            value (Optional[float], optional): Numerical value of the estimated parameter.. Defaults to None.
+            unit (Optional[str], optional): Unit of the estimated parameter.. Defaults to None.
+            initial_value (Optional[float], optional): Initial value that was used for the parameter estimation. Defaults to None.
+            upper (Optional[float], optional): Upper bound of the estimated parameter.. Defaults to None.
+            lower (Optional[float], optional): Lower bound of the estimated parameter.. Defaults to None.
+            is_global (bool, optional): Specifies if this parameter is a global parameter.. Defaults to False.
+            stdev (Optional[float], optional): Standard deviation of the estimated parameter.. Defaults to None.
+            constant (bool, optional): Specifies if this parameter is constant. Defaults to False.
+            ontology (Optional[SBOTerm], optional): Type of the estimated parameter.. Defaults to None.
+        """
+
+        self.parameters.append(
+            KineticParameter(
+                name=name, value=value, unit=unit, initial_value=initial_value, upper=upper, lower=lower,
+                is_global=is_global, stdev=stdev, constant=constant, ontology=ontology
+            )
+        )
+
+        self.__dict__["_" + self.parameters[-1].name] = self.parameters[-1]
+
     # ! Initializers
     @staticmethod
     def createGenerator(name: str, equation: str, **parameters):
@@ -135,6 +178,30 @@ class KineticModel(EnzymeMLBase):
             equation=equation,
             **parameters
         )
+
+    @classmethod
+    def fromEquation(cls, name: str, equation: str):
+        """Creates a Kinetic Model instance from an equation
+
+        Args:
+            equation (str): Mathematical equation decribing the model.
+
+        Returns:
+            KineticModel: Resulting kinetic model
+        """
+
+        # Create a new instance
+        cls = cls(name=name, equation=equation)
+
+        # Parse equation and add parameters
+        for node in ast.walk(ast.parse(equation)):
+            if isinstance(node, ast.Name):
+                name = node.id
+                regex = re.compile(r"[s|p|c]\d*")
+                if not bool(regex.match(name)) and "_" + name not in cls.__dict__:
+                    cls.addParameter(name=name)
+
+        return cls
 
     # ! Utilities
 
