@@ -344,8 +344,8 @@ class EnzymeReaction(EnzymeMLBase):
         self,
         species_id: str,
         stoichiometry: PositiveFloat,
-        enzmldoc,
         constant: bool,
+        enzmldoc,
         ontology: SBOTerm = SBOTerm.CATALYST
     ) -> None:
         """
