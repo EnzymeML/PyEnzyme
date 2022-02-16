@@ -380,13 +380,20 @@ class EnzymeMLDocument(EnzymeMLBase):
         if isinstance(measurement_ids, str):
             measurement_ids = [measurement_ids]
 
+        # Aloow for custom templates if specified
+        if interactive and "template" in kwargs:
+            template = kwargs["template"]
+        else:
+            kwargs["template"] = "plotly_white"
+
         df = self.toDataFrame(
             use_names=use_names, measurement_ids=measurement_ids
         )
 
         if interactive:
             return self._create_interactive_plot(
-                df=df, trendline=trendline, width=width, height=height, hovermode=hovermode, **kwargs
+                df=df, trendline=trendline, width=width, height=height,
+                hovermode=hovermode, **kwargs
             )
 
         return self._create_facet_grid(
@@ -442,7 +449,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         fig = px.scatter(
             df, x="time", y="value", animation_frame="measurement",
             color="species", range_y=[-5, df.value.max() + df.value.std()],
-            width=width, height=height, template="plotly_white", hover_name="species", **kwargs
+            width=width, height=height, hover_name="species", **kwargs
         )
 
         fig.update_layout(legend=dict(
