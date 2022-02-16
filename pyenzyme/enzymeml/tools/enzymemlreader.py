@@ -614,7 +614,11 @@ class EnzymeMLReader:
         for local_param in kineticLaw.getListOfLocalParameters():
 
             parameter = self._parse_parameter(local_param, enzmldoc)
-            parameters.append(parameter)
+
+            if parameter.name in enzmldoc.global_parameters:
+                parameters.append(enzmldoc.global_parameters[parameter.name])
+            else:
+                parameters.append(parameter)
 
         return KineticModel(
             name=name,
@@ -623,13 +627,18 @@ class EnzymeMLReader:
             ontology=ontology
         )
 
-    def _parse_parameter(self, parameter: libsbml.Parameter, enzmldoc):
+    def _parse_parameter(self, parameter, enzmldoc):
         """Parses a paramater and converts it to a KineticParameter instance"""
 
         # TODO refactor here
 
         value = parameter.getValue()
         unit_id = parameter.getUnits()
+
+        if parameter.__class__.__name__ == "LocalParameter":
+            constant = False
+        else:
+            constant = parameter.getConstant()
 
         if repr(parameter.getValue()) == "nan":
             value, unit_id, unit = None, None, None
@@ -647,7 +656,7 @@ class EnzymeMLReader:
             initial_value=param_dict.get("initialvalue"),
             upper=param_dict.get("upperbound"),
             lower=param_dict.get("lowerbound"),
-            constant=parameter.getConstant()
+            constant=constant
         )
 
         if unit:

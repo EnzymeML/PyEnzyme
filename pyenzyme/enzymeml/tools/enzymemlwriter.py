@@ -783,7 +783,6 @@ class EnzymeMLWriter:
 
         local_param = kinetic_law.createLocalParameter()
         local_param.setId(parameter.name)
-        local_param.setConstant(parameter.constant)
 
         if parameter.value:
             local_param.setValue(parameter.value)

@@ -78,13 +78,13 @@ class ThinLayerPysces(BaseThinLayer):
 
             if global_param.value:
                 self.parameters.add(
-                    f"{global_param.name}", global_param.value, vary=True,
+                    f"{global_param.name}", global_param.value, vary=not global_param.constant,
                     min=global_param.lower, max=global_param.upper
                 )
 
             elif global_param.initial_value:
                 self.parameters.add(
-                    f"{global_param.name}", global_param.initial_value, vary=True,
+                    f"{global_param.name}", global_param.initial_value, vary=not global_param.constant,
                     min=global_param.lower, max=global_param.upper
                 )
 
@@ -104,12 +104,12 @@ class ThinLayerPysces(BaseThinLayer):
 
                 if parameter.value:
                     self.parameters.add(
-                        f"{reaction_id}_{parameter.name}", parameter.value, vary=True,
+                        f"{reaction_id}_{parameter.name}", parameter.value, vary=not parameter.constant,
                         min=parameter.lower, max=parameter.upper
                     )
                 elif parameter.initial_value:
                     self.parameters.add(
-                        f"{reaction_id}_{parameter.name}", parameter.initial_value, vary=True,
+                        f"{reaction_id}_{parameter.name}", parameter.initial_value, vary=not parameter.constant,
                         min=parameter.lower, max=parameter.upper
                     )
                 else:  # parameter is
