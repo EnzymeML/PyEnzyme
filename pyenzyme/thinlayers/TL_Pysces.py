@@ -14,26 +14,43 @@ import pysces
 import lmfit
 import copy
 
+from typing import Union, Optional
 from pyenzyme.thinlayers.TL_Base import BaseThinLayer
 
 
 class ThinLayerPysces(BaseThinLayer):
 
-    # ! Interface
-    def optimize(self, model_dir: str):
-        """Performs optimization of the given parameters"""
+    def __init__(
+        self,
+        path,
+        model_dir: str,
+        measurement_ids: Union[str, list] = "all",
+        init_file: Optional[str] = None
+    ):
 
-        # Prepare the model
+        super().__init__(path, measurement_ids, init_file)
+
+        # Convert model to PSC and get experimental data
         self._get_pysces_model(model_dir)
-        self._initialize_parameters()
         self._get_experimental_data()
+
+    # ! Interface
+    def optimize(self, method='leastsq'):
+        """Performs optimization of the given parameters
+
+        Args:
+            method (str): lmfit optimization algorithm, see https://lmfit.github.io/lmfit-py/fitting.html#choosing-different-fitting-methods
+        """
+
+        # Initialize the model parameters
+        self._initialize_parameters()
 
         # Perform optimization
         self.minimizer = lmfit.Minimizer(
             self._calculate_residual, self.parameters
         )
 
-        return self.minimizer.minimize()
+        return self.minimizer.minimize(method=method)
 
     def write(self):
         """Writes the estimated parameters to a copy of the EnzymeMLDocument"""
