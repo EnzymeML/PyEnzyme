@@ -11,8 +11,9 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 import logging
-from typing import Union
+from typing import Union, Optional
 
+from pyenzyme import EnzymeMLDocument
 from pyenzyme.thinlayers import BaseThinLayer
 import os
 
@@ -23,7 +24,9 @@ from builtins import enumerate
 
 class ThinLayerCopasi(BaseThinLayer):
 
-    def __init__(self, path, outdir, measurement_ids: Union[str, list] = "all"):
+    def __init__(self, path, outdir,
+                 measurement_ids: Union[str, list] = "all",
+                 init_file: Optional[str] = None):
         """
         Initializes a new instance of the COPASI thin layer, by loading the EnzymeML file
         specified in `path` and creating a COPASI file (+ data) in `outdir`.
@@ -31,10 +34,11 @@ class ThinLayerCopasi(BaseThinLayer):
         :param path: the enzyme ml document to load
         :param outdir: the output dir
         :param measurement_ids: the measurement ids or all
+        :param init_file: optional initialization file for fit items
         """
 
         # initialize base class, let it do the reading
-        BaseThinLayer.__init__(self, path, measurement_ids)
+        BaseThinLayer.__init__(self, path, measurement_ids, init_file=init_file)
         self.name = self.enzmldoc.name
         self.working_dir = os.path.join(os.path.abspath(outdir), self.name)
         self.cps_file = os.path.join(self.working_dir, self.name + '.cps')
@@ -65,7 +69,10 @@ class ThinLayerCopasi(BaseThinLayer):
         self._import_experiments()
 
         # set all parameters as fit items
-        self._set_default_items()
+        if init_file is None:
+            self._set_default_items()
+        else:
+            self._set_default_items_from_init_file()
 
         self.dm.saveModel(self.cps_file, True)
 
@@ -183,12 +190,15 @@ class ThinLayerCopasi(BaseThinLayer):
                 continue
             name = obj.getObjectName() if obj.getObjectType() != "Reference" else obj.getObjectParent().getObjectName()
 
+            r = obj.getObjectAncestor('Reaction')
+            reaction_id = r.getSBMLId() if r else None
+
             result.append({
                 'name': name,
                 'start': p.getStartValue(),
                 'lower': p.getLowerBoundValue(),
                 'upper': p.getUpperBoundValue(),
-                'reaction_id': obj.getObjectAncestor('Reaction').getSBMLId()
+                'reaction_id': reaction_id
             })
         return result
 
@@ -230,6 +240,39 @@ class ThinLayerCopasi(BaseThinLayer):
         self.task.initialize(COPASI.CCopasiTask.OUTPUT_UI)
         self.task.process(True)
         self.task.restore()
+
+    def write(self):
+        """Writes the estimated parameters to a copy of the EnzymeMLDocument"""
+
+        nu_enzmldoc = self.enzmldoc.copy(deep=True)
+
+        assert (isinstance(self.problem, COPASI.CFitProblem))
+        results = self.problem.getSolutionVariables()
+
+        logging.debug('OBJ: {0}'.format(self.problem.getSolutionValue()))
+        logging.debug('RMS: {0}'.format(self.problem.getRMS()))
+
+        for i in range(self.problem.getOptItemSize()):
+            item = self.problem.getOptItem(i)
+            obj = self.dm.getObject(item.getObjectCN())
+            if obj is None:
+                continue
+
+            name = obj.getObjectName() if obj.getObjectType() != 'Reference' else obj.getObjectParent().getObjectName()
+            value = results.get(i)
+            logging.debug(name, value)
+
+            reaction = obj.getObjectAncestor('Reaction')
+            if reaction is not None:
+                enz_reaction = nu_enzmldoc.getReaction(reaction.getSBMLId())
+                if enz_reaction:
+                    parameter = enz_reaction.model.getParameter(name)
+                    parameter.value = value
+            else:
+                p = nu_enzmldoc.global_parameters.get(name)
+                p.value = value
+
+        return nu_enzmldoc
 
     def update_enzymeml_doc(self):
         """ Updates the enzyme ml document with the values from last optimization run
@@ -276,6 +319,69 @@ class ThinLayerCopasi(BaseThinLayer):
                 fit_item.setLowerBound(COPASI.CCommonName(str(1e-6)))
                 fit_item.setUpperBound(COPASI.CCommonName(str(1e6)))
                 fit_item.setStartValue(float(p.value))
+
+    def _set_default_items_from_init_file(self):
+        """ Use this to create a default template, when an init file was passed to the thin layer
+            and it has been already appied
+
+        :return: None
+        """
+        assert (isinstance(self.problem, COPASI.CFitProblem))
+
+        # remove old items
+        while self.problem.getOptItemSize() > 0:
+            self.problem.removeOptItem(0)
+
+        for global_param in self.global_parameters.values():
+
+            if not global_param.lower or not global_param.upper:
+                # nan values used to indicate that this should not be fitted
+                continue
+
+            mv = self.dm.getModel().getModelValue(global_param.name)
+            if not mv:
+                logging.warning("No global parameter {0} in the model".format(global_param.name))
+                continue
+
+            value = global_param.value if global_param.value else global_param.initial_value
+
+            if not value:
+                raise ValueError(
+                    f"Neither initial_value nor value given for parameter {global_param.name} in global parameters"
+                )
+
+            cn = mv.getInitialValueReference().getCN()
+            fit_item = self.problem.addFitItem(cn)
+            assert (isinstance(fit_item, COPASI.CFitItem))
+            fit_item.setLowerBound(COPASI.CCommonName(str(global_param.lower)))
+            fit_item.setUpperBound(COPASI.CCommonName(str(global_param.upper)))
+            fit_item.setStartValue(float(value))
+
+        for reaction_id, (model, _) in self.reaction_data.items():
+            r = self.sbml_id_map[reaction_id]
+            assert (isinstance(r, COPASI.CReaction))
+            for p in model.parameters:
+                if p.is_global:
+                    continue
+
+                if not p.lower or not p.upper:
+                    # nan values used to indicate that this should not be fitted
+                    continue
+
+                value = p.value if p.value else p.initial_value
+
+                if not value:
+                    raise ValueError(
+                        f"Neither initial_value nor value given for parameter {p.name} in reaction {reaction_id}"
+                    )
+
+                obj = r.getParameterObjects(p.name)[0].getObject(COPASI.CCommonName('Reference=Value'))
+                cn = obj.getCN()
+                fit_item = self.problem.addFitItem(cn)
+                assert (isinstance(fit_item, COPASI.CFitItem))
+                fit_item.setLowerBound(COPASI.CCommonName(str(p.lower)))
+                fit_item.setUpperBound(COPASI.CCommonName(str(p.upper)))
+                fit_item.setStartValue(float(value))
 
 
 if __name__ == '__main__':
