@@ -16,3 +16,4 @@ pyDaRUS
 openpyxl
 numexpr
 seaborn
+plotly

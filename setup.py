@@ -40,7 +40,8 @@ setup(
         'pyDaRUS',
         'openpyxl',
         'numexpr',
-        'seaborn'
+        'seaborn',
+        'plotly'
     ],
     extras_require={
         'test': [
