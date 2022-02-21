@@ -344,8 +344,8 @@ class EnzymeReaction(EnzymeMLBase):
         self,
         species_id: str,
         stoichiometry: PositiveFloat,
-        constant: bool,
         enzmldoc,
+        constant: bool,
         ontology: SBOTerm = SBOTerm.CATALYST
     ) -> None:
         """
@@ -647,7 +647,8 @@ class EnzymeReaction(EnzymeMLBase):
             fun(
                 species_id=species_id,
                 stoichiometry=float(stoichiometry),
-                enzmldoc=enzmldoc
+                enzmldoc=enzmldoc,
+                constant=False
             )
 
     # ! Getters (old)

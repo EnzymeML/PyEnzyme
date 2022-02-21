@@ -380,7 +380,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         if isinstance(measurement_ids, str):
             measurement_ids = [measurement_ids]
 
-        # Aloow for custom templates if specified
+        # Allow for custom templates if specified
         if interactive and "template" in kwargs:
             template = kwargs["template"]
         else:
@@ -394,6 +394,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             return self._create_interactive_plot(
                 df=df, trendline=trendline, width=width, height=height,
                 hovermode=hovermode, **kwargs
+                df=df, trendline=trendline, width=width, height=height, **kwargs
             )
 
         return self._create_facet_grid(

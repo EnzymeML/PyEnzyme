@@ -63,7 +63,7 @@ def uploadToDataverse(enzmldoc, dataverse_name: str, base_url: Optional[str] = N
     os.remove(f"{archive_name}.omex")
 
 
-def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":
+def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":   # noqa: F821
 
     # Initialize the EnzymeML metadatablock
     enzml_meta = EnzymeMl()
@@ -215,7 +215,7 @@ def add_object(json_data, mapping, add_fun):
         raise e
 
 
-def kinetic_law_params(reaction: "EnzymeReaction") -> dict[str, str]:
+def kinetic_law_params(reaction: "EnzymeReaction") -> dict[str, str]:  # noqa: F821
     """Retrieves the arguments to add a kinetic law to an EnzymeML Metadatablock"""
 
     kinetic_law_mapping = {
@@ -237,7 +237,7 @@ def kinetic_law_params(reaction: "EnzymeReaction") -> dict[str, str]:
     return params
 
 
-def create_citation_metadatablock(enzmldoc: "EnzymeMLDocument"):
+def create_citation_metadatablock(enzmldoc: "EnzymeMLDocument"):  # noqa: F821
 
     # Initialize the Citation metadatablock
     citation_meta = Citation(

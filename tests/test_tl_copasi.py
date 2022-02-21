@@ -9,7 +9,7 @@ temp_dir = os.path.join(this_dir, 'tmp')
 if not os.path.exists(temp_dir):
     os.mkdir(temp_dir)
 
-example_file = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', '3IZNOK_SIMULATED.omex')
+example_file = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', '3IZNOK_Simulated.omex')
     
 
 class TestTlCopasi(unittest.TestCase):

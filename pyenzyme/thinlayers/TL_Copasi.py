@@ -113,9 +113,7 @@ class ThinLayerCopasi(BaseThinLayer):
         :return: None
         """
         for measurement_id, measurement_dict in self.data.items():
-            sbml_ids = [d[0] if len(d) == 2 else d[1] for d in [
-                c.split('|') for c in measurement_dict['data'].columns.to_list()
-            ]]
+            sbml_ids = measurement_dict['data'].columns.to_list()
 
             data = measurement_dict['data']
 
@@ -155,12 +153,14 @@ class ThinLayerCopasi(BaseThinLayer):
                 elif col in self.sbml_id_map.keys():
                     role = COPASI.CExperiment.dependent
                     obj_map.setRole(i, role)
-                    obj_map.setObjectCN(i, self.sbml_id_map[col].getConcentrationReference().getCN())
+                    obj_map.setObjectCN(i, self.sbml_id_map[col]
+                                        .getConcentrationReference().getCN().getString())
 
                 elif col.startswith('init_') and col[5:] in self.sbml_id_map.keys():
                     role = COPASI.CExperiment.independent
                     obj_map.setRole(i, role)
-                    obj_map.setObjectCN(i, self.sbml_id_map[col[5:]].getInitialConcentrationReference().getCN())
+                    obj_map.setObjectCN(i, self.sbml_id_map[col[5:]]
+                                        .getInitialConcentrationReference().getCN().getString())
 
                 else:
                     role = COPASI.CExperiment.ignore
@@ -280,7 +280,7 @@ class ThinLayerCopasi(BaseThinLayer):
 
 if __name__ == '__main__':
     this_dir = os.path.dirname(__file__)
-    filename = os.path.join(this_dir + "/../../", "examples/ThinLayers/COPASI/3IZNOK_SIMULATED.omex")
+    filename = os.path.join(this_dir + "/../../", "examples/ThinLayers/COPASI/3IZNOK_Simulated.omex")
     assert os.path.exists(filename)
 
     thin_layer = ThinLayerCopasi(
