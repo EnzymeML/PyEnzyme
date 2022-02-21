@@ -394,7 +394,6 @@ class EnzymeMLDocument(EnzymeMLBase):
             return self._create_interactive_plot(
                 df=df, trendline=trendline, width=width, height=height,
                 hovermode=hovermode, **kwargs
-                df=df, trendline=trendline, width=width, height=height, **kwargs
             )
 
         return self._create_facet_grid(
