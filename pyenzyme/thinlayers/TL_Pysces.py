@@ -7,122 +7,227 @@ License: BSD-2 clause
 Copyright (c) 2021 Stellenbosch University
 """
 
-from pyenzyme.enzymeml.core import EnzymeMLDocument
 import numpy as np
 import pandas as pd
 import os
 import pysces
-import libcombine
 import lmfit
+import copy
+
+from typing import Union, Optional
+from pyenzyme.thinlayers.TL_Base import BaseThinLayer
 
 
-class ThinLayerPysces():
+class ThinLayerPysces(BaseThinLayer):
 
-    def __init__(self, omexarchive):
-        self.omexarchive = omexarchive
-        self.enzmldoc = EnzymeMLDocument.fromFile(omexarchive)
-        self.mod = self._getPyscesModel(omexarchive)
+    def __init__(
+        self,
+        path,
+        model_dir: str,
+        measurement_ids: Union[str, list] = "all",
+        init_file: Optional[str] = None
+    ):
 
-    def _getPyscesModel(self, omexarchive):
-        if not os.path.isdir('pysces'):
-            os.mkdir('pysces')
-        a = libcombine.CombineArchive()
-        a.initializeFromArchive(omexarchive)
-        sbmlfilename = os.path.split(a.getEntry(0).getLocation())[1]
-        if not (
-            os.path.isfile(f'./pysces/{sbmlfilename}')
-            and os.path.isfile(f'./pysces/{sbmlfilename}.psc')
-            and (
-                os.path.getmtime(f'./pysces/{sbmlfilename}.psc')
-                > os.path.getmtime(f'./pysces/{sbmlfilename}')
-            )
-        ):
-            a.extractEntry(sbmlfilename, './pysces')
-            pysces.interface.convertSBML2PSC(
-                sbmlfilename, sbmldir='./pysces', pscdir='./pysces'
-            )
-        return pysces.model(sbmlfilename, dir='./pysces')
+        super().__init__(path, measurement_ids, init_file)
 
-    def _getExperimentalData(self):
+        # Convert model to PSC and get experimental data
+        self._get_pysces_model(model_dir)
+        self._get_experimental_data()
 
-        measurements = []
-        inits = []
+    # ! Interface
+    def optimize(self, method='leastsq'):
+        """Performs optimization of the given parameters
 
-        for m in self.enzmldoc.measurement_dict.values():
+        Args:
+            method (str): lmfit optimization algorithm, see https://lmfit.github.io/lmfit-py/fitting.html#choosing-different-fitting-methods
+        """
 
-            # ? It is now possible to ensure, that the units are the same: m.unifyUnits(kind="mole", scale=-3)
-            measurement_data = m.exportData()
-            replicate_df = measurement_data['reactants']['data']
-            # rename_dict = {i: i.split('/')[-2] for i in replicate_df.columns}
-            # replicate_df.rename(rename_dict, axis=1, inplace=True)
+        # Initialize the model parameters
+        self._initialize_parameters()
 
-            inits_dict = {}
+        # Perform optimization
+        self.minimizer = lmfit.Minimizer(
+            self._calculate_residual, self.parameters
+        )
 
-            for reactant_id, (init_value, _) in measurement_data['reactants']['initConc'].items():
-                inits_dict[reactant_id] = init_value
+        return self.minimizer.minimize(method=method)
 
-            for protein_id, (init_value, _) in measurement_data['proteins']['initConc'].items():
-                inits_dict[protein_id] = init_value
+    def write(self):
+        """Writes the estimated parameters to a copy of the EnzymeMLDocument"""
 
-            inits_dict['time'] = replicate_df.time
-            inits.append(inits_dict)
+        nu_enzmldoc = self.enzmldoc.copy(deep=True)
+        parameters = self.parameters.valuesdict()
 
-            measurements.append(replicate_df.drop('time', axis=1))
+        for name, value in parameters.items():
+            # names contain information about reaction and parameter
+            # Pattern: rX_name
 
-        expdata = pd.concat(measurements)
-        expdata.reset_index(inplace=True)
-        expdata.drop('index', axis=1, inplace=True)
+            splitted = name.split("_")
+            reaction_id = splitted[0]
+            parameter_id = "_".join(splitted[1::])
 
-        self.expdata = expdata
-        self.inits = inits
-        return expdata, inits
+            # Fetch reaction and parameter
+            reaction = nu_enzmldoc.getReaction(reaction_id)
 
-    def _simulateExpData(self, params):
-        self.mod.SetQuiet()
-        parvals = params.valuesdict()
-        for p, v in parvals.items():
-            setattr(self.mod, p, v)
+            if reaction.model:
+                parameter = reaction.model.getParameter(parameter_id)
+                parameter.value = value
+            else:
+                raise TypeError(
+                    f"Reaction {reaction_id} has no model to add values to"
+                )
+
+        return nu_enzmldoc
+
+    # ! Helper methods
+    def _initialize_parameters(self) -> None:
+        """Adds all parameters to an lmfit Parameters instance.
+
+        Raises:
+            ValueError: Raised when parameter posesses neither an initial value or value attribute
+        """
+
+        # Initialize lmfit parameters
+        self.parameters = lmfit.Parameters()
+
+        # Add global parameters
+        for global_param in self.global_parameters.values():
+
+            if global_param.value:
+                self.parameters.add(
+                    f"{global_param.name}", global_param.value, vary=not global_param.constant,
+                    min=global_param.lower, max=global_param.upper
+                )
+
+            elif global_param.initial_value:
+                self.parameters.add(
+                    f"{global_param.name}", global_param.initial_value, vary=not global_param.constant,
+                    min=global_param.lower, max=global_param.upper
+                )
+
+            else:  # parameter is
+                raise ValueError(
+                    f"Neither initial_value nor value given for parameter {global_param.name} in global parameters"
+                )
+
+        # Consistency check
+        for reaction_id, (model, _) in self.reaction_data.items():
+
+            # Apply parameters to lmfit parameters
+            for parameter in model.parameters:
+
+                if parameter.is_global:
+                    continue
+
+                if parameter.value:
+                    self.parameters.add(
+                        f"{reaction_id}_{parameter.name}", parameter.value, vary=not parameter.constant,
+                        min=parameter.lower, max=parameter.upper
+                    )
+                elif parameter.initial_value:
+                    self.parameters.add(
+                        f"{reaction_id}_{parameter.name}", parameter.initial_value, vary=not parameter.constant,
+                        min=parameter.lower, max=parameter.upper
+                    )
+                else:  # parameter is
+                    raise ValueError(
+                        f"Neither initial_value nor value given for parameter {parameter.name} in reaction {reaction_id}"
+                    )
+
+    def _get_experimental_data(self):
+        """Extract measurement data from the EnzymeML document"""
+
+        # Initialize data structure to store experimental data
+        raw_data, self.inits = [], []
+
+        for measurement_data in self.data.values():
+
+            # Gather data
+            data: pd.DataFrame = measurement_data["data"]
+            init_concs: dict = measurement_data["initConc"]
+
+            # Collect raw_data
+            raw_data.append(data.drop("time", axis=1))
+
+            # Collect initial concentrations for simulation
+            init_mapping = {
+                "time": data.time,
+                **{species_id: value
+                   for species_id, (value, _) in init_concs.items()
+                   }
+            }
+
+            self.inits.append(init_mapping)
+
+        # Concatenate and clean all DataFrames
+        self.experimental_data = pd.concat(raw_data)
+        self.experimental_data.reset_index(drop=True, inplace=True)
+        self.cols = list(self.experimental_data.columns)
+
+    def _get_pysces_model(self, model_dir: str):
+        """Converts an EnzymeMLDocument to a PySCeS model."""
+
+        # Set up the PySCeS directory structure
+        model_dir = os.path.join(model_dir)
+        os.makedirs(model_dir, exist_ok=True)
+
+        # Write the raw XMLString to the dir
+        sbmlfile_name = f"{self.enzmldoc.name.replace(' ', '_')}.xml"
+        sbmlfile_path = os.path.join(model_dir, sbmlfile_name)
+        with open(sbmlfile_path, "w") as file:
+            file.write(self.enzmldoc.toXMLString())
+
+        # First, convert the EnzymeML model to a PySCeS model
+        pysces.interface.convertSBML2PSC(
+            sbmlfile_name,
+            sbmldir=model_dir,
+            pscdir=model_dir
+        )
+
+        # Finally, load the PSC model
+        self.model = pysces.model(sbmlfile_name, dir=model_dir)
+
+    def _calculate_residual(self, parameters: lmfit.Parameters) -> np.ndarray:
+        """Function that will be optimized"""
+
+        simulated_data = self._simulate_experiment(parameters)
+        simulated_data = simulated_data.drop(
+            simulated_data.columns.difference(self.cols), axis=1
+        )
+
+        return np.array(self.experimental_data - simulated_data)
+
+    def _simulate_experiment(self, parameters: lmfit.Parameters):
+        """Performs simulation based on the PySCeS model"""
+
+        self.model.SetQuiet()
+        self.model.__dict__.update(parameters.valuesdict())
+
+        # intialize collection
         output = []
-        for i in self.inits:
-            for k, v in i.items():
-                if (type(v) == int or type(v) == float) and v == 0.0:
-                    v = 1.0e-6
-                if k in self.mod.species:
-                    setattr(self.mod, f"{k}_init", v)
-                elif k == "time":
-                    self.mod.sim_time = np.array(v)
+
+        # Now iterate over all initial concentrations and simulate accordingly
+        for init_concs in self.inits:
+            for species_id, value in init_concs.items():
+
+                if type(value) in [float, int] and value == 0:
+                    # Catch initial values with zero and set them ot a small number
+                    value = 1.0e-6
+
+                if species_id in self.model.species:
+                    # Add if given in the model
+                    setattr(self.model, f"{species_id}_init", value)
+                elif species_id == "time":
+                    # Add time to the model
+                    self.model.sim_time = value.values
                 else:
-                    setattr(self.mod, k, v)
-            self.mod.Simulate(userinit=1)
-            output.append([getattr(self.mod.sim, s) for s in self.mod.species])
-        return pd.DataFrame(np.hstack(output).T, columns=self.mod.species)
+                    setattr(self.model, species_id, value)
 
-    def _residual(self, params):
-        exp_data, inits = self._getExperimentalData()
-        # get columns of experimental data, corresponding to measured reactants
-        cols = list(exp_data.columns)
-        model_data = self._simulateExpData(params)
-        # create dataframe containing only modelled data for reactants that have also been measured
-        new_model_data = model_data.drop(
-            model_data.columns.difference(cols), axis=1)
-        return np.array(exp_data - new_model_data)
+            # Simulate the experiment and save results
+            self.model.Simulate(userinit=1)
+            output.append(
+                [getattr(self.model.sim, species)
+                 for species in self.model.species]
+            )
 
-    def _getParamsFromEnzymeML(self):
-        params = {}
-        for rID, r in self.enzmldoc.reaction_dict.items():
-            for kinetic_parameter in r.model.parameters:
-                params[f"{rID}_{kinetic_parameter.name}"] = kinetic_parameter.value
-        return params
-
-    def _makeLmfitParameters(self):
-        modelparams = self._getParamsFromEnzymeML()
-        params = lmfit.Parameters()
-        for k, v in modelparams.items():
-            params.add(k, v, vary=True, min=1.0e-9)
-        return params
-
-    def runOptimisation(self, params=None):
-        if params is None:
-            params = self._makeLmfitParameters()
-        self.mini = lmfit.Minimizer(self._residual, params)
-        return self.mini.minimize()
+        return pd.DataFrame(np.hstack(output).T, columns=self.model.species)

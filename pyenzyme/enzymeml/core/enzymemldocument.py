@@ -161,6 +161,12 @@ class EnzymeMLDocument(EnzymeMLBase):
         description="Dictionary mapping from protein IDs to protein describing objects.",
     )
 
+    global_parameters: dict[str, KineticParameter] = Field(
+        alias="global_parameters",
+        default_factory=dict,
+        description="Dictionary mapping from parameter IDs to global kinetic parameter describing objects.",
+    )
+
     log: str = Field(
         default="",
     )
@@ -175,7 +181,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         log_stream.write(logs)
 
         # Initialize the global logger
-        logger = setup_custom_logger("pyenzyme", log_stream)
+        setup_custom_logger("pyenzyme", log_stream)
 
         return log_stream
 
@@ -347,6 +353,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         trendline: bool = False,
         width: int = 1000,
         height: int = 500,
+        hovermode: str = "closest",
         **kwargs
     ):
         """Visualizes either all or selected measurements found in the EnzymeML document as FacetGrid or interactive.
@@ -364,6 +371,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             trendline (bool, optional): Whether the plot should include a trendline. Defaults to False.
             width (int, optional): Interactive plot width. Defaults to 1000.
             height (int, optional): Interactive plot height. Defaults to 500.
+            hovermode (str, optional): Changes behaviour of hovering. Following options are available ['closest', 'x unified', 'x', 'y', 'y unified']. Defaults to 'closest'.
 
         Returns:
             [type]: [description]
@@ -372,12 +380,20 @@ class EnzymeMLDocument(EnzymeMLBase):
         if isinstance(measurement_ids, str):
             measurement_ids = [measurement_ids]
 
+        # Allow for custom templates if specified
+        if interactive and "template" in kwargs:
+            template = kwargs["template"]
+        else:
+            kwargs["template"] = "plotly_white"
+
         df = self.toDataFrame(
             use_names=use_names, measurement_ids=measurement_ids
         )
 
         if interactive:
             return self._create_interactive_plot(
+                df=df, trendline=trendline, width=width, height=height,
+                hovermode=hovermode, **kwargs
                 df=df, trendline=trendline, width=width, height=height, **kwargs
             )
 
@@ -415,6 +431,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         trendline: bool,
         width: int,
         height: int,
+        hovermode: str,
         **kwargs
     ):
         """Visualizes all measurements as an interactive plot based on plotly. Best used in Jupyter Notebooks.
@@ -433,7 +450,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         fig = px.scatter(
             df, x="time", y="value", animation_frame="measurement",
             color="species", range_y=[-5, df.value.max() + df.value.std()],
-            width=width, height=height, template="plotly_white", **kwargs
+            width=width, height=height, hover_name="species", **kwargs
         )
 
         fig.update_layout(legend=dict(
@@ -443,6 +460,8 @@ class EnzymeMLDocument(EnzymeMLBase):
             xanchor="right",
             x=1
         ))
+
+        fig.update_layout(hovermode=hovermode)
 
         return fig
 
@@ -482,7 +501,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             # Rename to names if specified
             columns = []
             for column in exp_data.columns:
-                if use_names and column != "time":
+                if use_names and column not in ["time", "data_unit", "time_unit"]:
                     columns.append(self.getAny(column).name)
                 else:
                     columns.append(column)
@@ -729,7 +748,16 @@ class EnzymeMLDocument(EnzymeMLBase):
             dir (str, optional): Dirpath to the output file. Defaults to ".".
         """
 
-        init_values = {}
+        init_values = {
+            "global": {
+                param.name: {
+                    "initial_value": None,
+                    "upper": None,
+                    "lower": None
+                }
+                for param in self.global_parameters.values()
+            }
+        }
 
         for reaction in self.reaction_dict.values():
 
@@ -737,24 +765,30 @@ class EnzymeMLDocument(EnzymeMLBase):
                 continue
 
             parameters = {
-                param.name: None
+                param.name: {
+                    "initial_value": None,
+                    "upper": None,
+                    "lower": None
+                }
                 for param in reaction.model.parameters
+                if param.is_global is False
             }
 
-            init_values[reaction.id] = parameters
+            if parameters:
+                init_values[reaction.id] = parameters
 
-            # Finally, write the template to YAML
-            out = os.path.join(dir, self.name.replace(
-                " ", "_") + "_init_values.yaml"
+        # Finally, write the template to YAML
+        out = os.path.join(dir, self.name.replace(
+            " ", "_") + "_init_values.yaml"
+        )
+
+        with open(out, "w") as file_handle:
+            yaml.dump(
+                init_values,
+                file_handle,
+                default_flow_style=False,
+                sort_keys=False
             )
-
-            with open(out, "w") as file_handle:
-                yaml.dump(
-                    init_values,
-                    file_handle,
-                    default_flow_style=False,
-                    sort_keys=False
-                )
 
     def applyModelInitialization(self, path: str, to_values: bool = False) -> None:
         """Adds initial values per reaction to the model from a YAML config file.
@@ -773,11 +807,62 @@ class EnzymeMLDocument(EnzymeMLBase):
         # Apply all given initial values to the model
         for reaction_id, value_dict in initial_values.items():
 
-            # Get the reaction
-            reaction = self.getReaction(reaction_id)
-            reaction.apply_initial_values(value_dict, to_values=to_values)
+            if reaction_id == "global":
+                for name, options in value_dict.items():
+                    if to_values:
+                        self.global_parameters[name].value = options.get(
+                            "initial_value")
+
+                    self.global_parameters[name].initial_value = options.get(
+                        "initial_value")
+                    self.global_parameters[name].upper = options.get("upper")
+                    self.global_parameters[name].lower = options.get("lower")
+
+            else:
+                # Get the reaction
+                reaction = self.getReaction(reaction_id)
+                reaction.apply_initial_values(value_dict, to_values=to_values)
 
     # ! Add methods
+
+    @validate_arguments
+    def addGlobalParameter(
+        self,
+        name: str,
+        value: Optional[float] = None,
+        initial_value: Optional[float] = None,
+        unit: Optional[str] = None,
+        constant: bool = False,
+        stdev: Optional[float] = None,
+        ontology: Optional[SBOTerm] = None,
+    ):
+        """Adds a global parameter to the model that will be referred by KineticModel objects in reaction models.
+
+        Args:
+            name (str): Name of the estimated parameter.
+            value (Optional[float], optional): Numerical value of the estimated parameter. Defaults to None.
+            initial_value (Optional[float], optional): Initial value that was used for the parameter estimation. Defaults to None.
+            unit (Optional[str], optional): Unit of the estimated parameter. Defaults to None.
+            stdev (Optional[float], optional): Standard deviation of the estimated parameter. Defaults to None.
+            ontology (Optional[SBOTerm], optional): Type of the estimated parameter. Defaults to None.
+
+        Returns:
+            str: Name of the parameter that has been added.
+        """
+
+        param = KineticParameter(
+            name=name, value=value, unit=unit, stdev=stdev,
+            initial_value=initial_value, ontology=ontology,
+            is_global=True, constant=constant
+        )
+
+        if param.unit:
+            param._unit_id = self._convertToUnitDef(param.unit)
+
+        # Add the parameter to the parameter_dict
+        self.global_parameters[param.name] = param
+
+        return param.name
 
     @validate_arguments
     def addCreator(self, creator: Creator, log: bool = True) -> str:
@@ -1001,6 +1086,11 @@ class EnzymeMLDocument(EnzymeMLBase):
                 model=reaction.model
             )
 
+            # Reference global parameters
+            self._reference_global_parameters(
+                model=reaction.model
+            )
+
             # Unit conversion
             self._convert_kinetic_model_units(
                 reaction.model.parameters,
@@ -1017,25 +1107,6 @@ class EnzymeMLDocument(EnzymeMLBase):
         )
 
         return reaction.id
-
-    def addReactions(self, reactions: list[EnzymeReaction]):
-        """Adds multiple reactions to an EnzymeML document.
-
-        Args:
-            reactions (list[EnzymeReaction]): List of EnzymeReaction objects
-        """
-
-        return {
-            reaction.name: self.addReaction(reaction)
-            for reaction in reactions
-        }
-
-    def add_by_reaction_equation(self, equation: str, name: str):
-        return EnzymeReaction.fromEquation(
-            equation=equation,
-            name=name,
-            enzmldoc=self
-        )
 
     def _check_kinetic_model_ids(self, model) -> None:
         """Checks if the given species IDs/names are consistent with the EnzymeML document. Also converts names into IDs, if given in the document.
@@ -1054,6 +1125,7 @@ class EnzymeMLDocument(EnzymeMLBase):
                 if isinstance(node.value, str):
                     name = repr(node.value)
                 else:
+                    # Numeric constants are ignored now
                     continue
 
             elif isinstance(node, ast.Name):
@@ -1083,6 +1155,21 @@ class EnzymeMLDocument(EnzymeMLBase):
                         species_id=name
                     )
 
+    def _reference_global_parameters(self, model):
+        """Removes single parameters and references global parameters if names match"""
+
+        nu_parameters = []
+        for parameter in model.parameters:
+            name = parameter.name
+            if name in self.global_parameters:
+                nu_parameters.append(
+                    self.global_parameters[name]
+                )
+            else:
+                nu_parameters.append(parameter)
+
+        model.parameters = nu_parameters
+
     @ staticmethod
     def _convert_kinetic_model_units(parameters: list[KineticParameter], enzmldoc) -> None:
         """Converts given unit strings to unit IDs and adds them to the model.
@@ -1095,6 +1182,18 @@ class EnzymeMLDocument(EnzymeMLBase):
         for parameter in parameters:
             if parameter.unit:
                 parameter._unit_id = enzmldoc._convertToUnitDef(parameter.unit)
+
+    def addReactions(self, reactions: list[EnzymeReaction]):
+        """Adds multiple reactions to an EnzymeML document.
+
+        Args:
+            reactions (list[EnzymeReaction]): List of EnzymeReaction objects
+        """
+
+        return {
+            reaction.name: self.addReaction(reaction)
+            for reaction in reactions
+        }
 
     def addFile(
         self,

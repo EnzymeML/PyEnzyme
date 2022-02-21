@@ -358,7 +358,7 @@ class TestEnzymeReactionBasic:
 
         # Correct test case
         # Set up initial values and get reaction
-        init_values = {"x": 100.0}
+        init_values = {"x": {"initial_value": 100.0}}
         reaction = enzmldoc.getReaction("r0")
 
         # Apply method and assert

@@ -167,6 +167,9 @@ class EnzymeMLReader:
         enzmldoc.protein_dict = protein_dict
         enzmldoc.complex_dict = complex_dict
 
+        # fetch global parameters
+        self._getGlobalParameters(model, enzmldoc)
+
         # fetch reaction
         reaction_dict = self._getReactions(model, enzmldoc)
         enzmldoc.reaction_dict = reaction_dict
@@ -426,6 +429,17 @@ class EnzymeMLReader:
 
         return param_dict
 
+    def _getGlobalParameters(self, model: libsbml.Model, enzmldoc):
+        """Fetches global parameters from the SBML model"""
+
+        parameters = model.getListOfParameters()
+
+        for parameter in parameters:
+            parameter = self._parse_parameter(parameter, enzmldoc)
+            parameter.is_global = True
+
+            enzmldoc.global_parameters[parameter.name] = parameter
+
     def _getReactions(self, model: libsbml.Model, enzmldoc: 'EnzymeMLDocument') -> dict[str, EnzymeReaction]:
 
         # Get SBML list of reactions
@@ -484,6 +498,14 @@ class EnzymeMLReader:
                 kinetic_law = reaction.getKineticLaw()
                 kinetic_model = self._getKineticModel(kinetic_law, enzmldoc)
                 enzyme_reaction.model = kinetic_model
+
+                # Add global parameters
+                for name, global_parameter in enzmldoc.global_parameters.items():
+                    # Keep a reference to the global paremeter
+                    if name in enzyme_reaction.model.equation:
+                        enzyme_reaction.model.parameters.append(
+                            global_parameter
+                        )
 
             # Add reaction to reaction_dict
             reaction_dict[enzyme_reaction.id] = enzyme_reaction
@@ -587,35 +609,16 @@ class EnzymeMLReader:
         equation = kineticLaw.getFormula()
         ontology = self._sboterm_to_enum(kineticLaw.getSBOTerm())
 
-        # Get parameters
+        # Get local parameters
         parameters = []
-
         for local_param in kineticLaw.getListOfLocalParameters():
 
-            value = local_param.getValue()
-            unit_id = local_param.getUnits()
+            parameter = self._parse_parameter(local_param, enzmldoc)
 
-            if repr(local_param.getValue()) == "nan":
-                value, unit_id, unit = None, None, None
+            if parameter.name in enzmldoc.global_parameters:
+                parameters.append(enzmldoc.global_parameters[parameter.name])
             else:
-                unit = enzmldoc.getUnitString(unit_id)
-
-            annotation = local_param.getAnnotationString()
-            param_dict = self._parseSpeciesAnnotation(annotation)
-
-            parameter = KineticParameter(
-                name=local_param.getId(),
-                value=value,
-                unit=unit,
-                ontology=self._sboterm_to_enum(local_param.getSBOTerm()),
-                # TODO generalise here
-                initial_value=param_dict.get("initialvalue")
-            )
-
-            if unit:
-                parameter._unit_id = local_param.getUnits()
-
-            parameters.append(parameter)
+                parameters.append(parameter)
 
         return KineticModel(
             name=name,
@@ -623,6 +626,43 @@ class EnzymeMLReader:
             parameters=parameters,
             ontology=ontology
         )
+
+    def _parse_parameter(self, parameter, enzmldoc):
+        """Parses a paramater and converts it to a KineticParameter instance"""
+
+        # TODO refactor here
+
+        value = parameter.getValue()
+        unit_id = parameter.getUnits()
+
+        if parameter.__class__.__name__ == "LocalParameter":
+            constant = False
+        else:
+            constant = parameter.getConstant()
+
+        if repr(parameter.getValue()) == "nan":
+            value, unit_id, unit = None, None, None
+        else:
+            unit = enzmldoc.getUnitString(unit_id)
+
+        annotation = parameter.getAnnotationString()
+        param_dict = self._parseSpeciesAnnotation(annotation)
+
+        nu_param = KineticParameter(
+            name=parameter.getId(),
+            value=value,
+            unit=unit,
+            ontology=self._sboterm_to_enum(parameter.getSBOTerm()),
+            initial_value=param_dict.get("initialvalue"),
+            upper=param_dict.get("upperbound"),
+            lower=param_dict.get("lowerbound"),
+            constant=constant
+        )
+
+        if unit:
+            nu_param._unit_id = parameter.getUnits()
+
+        return nu_param
 
     def _getData(self, model: libsbml.Model, enzmldoc: 'EnzymeMLDocument') -> dict[str, Measurement]:
         """Retrieves all available measurements found in the EnzymeML document.

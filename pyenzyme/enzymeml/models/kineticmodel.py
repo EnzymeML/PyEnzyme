@@ -11,13 +11,13 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 import ast
+import re
 import numexpr
 
 from typing import TYPE_CHECKING, Optional
-from pydantic import Field
+from pydantic import Field, validator
 from dataclasses import dataclass
 
-from libsbml import parseL3Formula, Reaction, XMLNode, XMLTriple
 from pydantic.fields import PrivateAttr
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -51,14 +51,34 @@ class KineticParameter(EnzymeMLBase):
         description="Unit of the estimated parameter.",
     )
 
+    initial_value: Optional[float] = Field(
+        None,
+        description="Initial value that was used for the parameter estimation."
+    )
+
+    upper: Optional[float] = Field(
+        None,
+        description="Upper bound of the estimated parameter."
+    )
+
+    lower: Optional[float] = Field(
+        None,
+        description="Lower bound of the estimated parameter."
+    )
+
+    is_global: bool = Field(
+        False,
+        description="Specifies if this parameter is a global parameter."
+    )
+
     stdev: Optional[float] = Field(
         None,
         description="Standard deviation of the estimated parameter."
     )
 
-    initial_value: Optional[float] = Field(
-        None,
-        description="Initial value that was used for the parameter estimation."
+    constant: bool = Field(
+        False,
+        description="Specifies if this parameter is constant"
     )
 
     ontology: Optional[SBOTerm] = Field(
@@ -72,6 +92,11 @@ class KineticParameter(EnzymeMLBase):
     def get_id(self):
         """For logging. Dont bother."""
         return self.name
+
+    # ! Utilities
+    def update(self, **kwargs):
+        """Adds attributes to this parameter based in kwargs"""
+        self.__dict__.update(kwargs)
 
 
 @static_check_init_args
@@ -97,6 +122,44 @@ class KineticModel(EnzymeMLBase):
         description="Type of the estimated parameter.",
     )
 
+    # ! Add methods
+    def addParameter(
+        self,
+        name: str,
+        value: Optional[float] = None,
+        unit: Optional[str] = None,
+        initial_value: Optional[float] = None,
+        upper: Optional[float] = None,
+        lower: Optional[float] = None,
+        is_global: bool = False,
+        stdev: Optional[float] = None,
+        constant: bool = False,
+        ontology: Optional[SBOTerm] = None
+    ):
+        """Adds a parameter to the KineticModel object
+
+        Args:
+            name (str): Name of the estimated parameter.
+            value (Optional[float], optional): Numerical value of the estimated parameter.. Defaults to None.
+            unit (Optional[str], optional): Unit of the estimated parameter.. Defaults to None.
+            initial_value (Optional[float], optional): Initial value that was used for the parameter estimation. Defaults to None.
+            upper (Optional[float], optional): Upper bound of the estimated parameter.. Defaults to None.
+            lower (Optional[float], optional): Lower bound of the estimated parameter.. Defaults to None.
+            is_global (bool, optional): Specifies if this parameter is a global parameter.. Defaults to False.
+            stdev (Optional[float], optional): Standard deviation of the estimated parameter.. Defaults to None.
+            constant (bool, optional): Specifies if this parameter is constant. Defaults to False.
+            ontology (Optional[SBOTerm], optional): Type of the estimated parameter.. Defaults to None.
+        """
+
+        self.parameters.append(
+            KineticParameter(
+                name=name, value=value, unit=unit, initial_value=initial_value, upper=upper, lower=lower,
+                is_global=is_global, stdev=stdev, constant=constant, ontology=ontology
+            )
+        )
+
+        self.__dict__["_" + self.parameters[-1].name] = self.parameters[-1]
+
     # ! Initializers
     @staticmethod
     def createGenerator(name: str, equation: str, **parameters):
@@ -115,6 +178,30 @@ class KineticModel(EnzymeMLBase):
             equation=equation,
             **parameters
         )
+
+    @classmethod
+    def fromEquation(cls, name: str, equation: str):
+        """Creates a Kinetic Model instance from an equation
+
+        Args:
+            equation (str): Mathematical equation decribing the model.
+
+        Returns:
+            KineticModel: Resulting kinetic model
+        """
+
+        # Create a new instance
+        cls = cls(name=name, equation=equation)
+
+        # Parse equation and add parameters
+        for node in ast.walk(ast.parse(equation)):
+            if isinstance(node, ast.Name):
+                name = node.id
+                regex = re.compile(r"[s|p|c]\d*")
+                if not bool(regex.match(name)) and "_" + name not in cls.__dict__:
+                    cls.addParameter(name=name)
+
+        return cls
 
     # ! Utilities
 
@@ -237,12 +324,12 @@ class ModelFactory:
 
             self.model.parameters.append(parameter)
 
-    def __call__(self, **variables) -> KineticModel:
+    def __call__(self, mapping: dict = {}, **variables) -> KineticModel:
         """Returns a KineticModel that is suited for the given parameters.
         """
 
         # Copy the internal object and modify it to the needs
-        model = self.model.copy()
+        model = KineticModel(**self.model.dict())
 
         # Replace everything
         for stock_variable in self.variables:
@@ -266,7 +353,39 @@ class ModelFactory:
                     f"Variable {stock_variable} has not been given. Please make sure to cover all variables: [{repr(self.variables)}]"
                 )
 
+        # Apply mapping
+        if mapping:
+            self._apply_mapping(mapping, model)
+
         return model
+
+    def _apply_mapping(self, mapping: dict, model: KineticModel):
+        """Applies a mapping that has been given to the model."""
+
+        for param_old, param_new in mapping.items():
+            model.equation = model.equation.replace(param_old, param_new)
+
+            # Variable to control when a parameter has found
+            found = False
+
+            for index, parameter in enumerate(model.parameters):
+                if parameter.name == param_old:
+
+                    # Copy old and add new parameter
+                    nu_param = parameter.copy()
+                    nu_param.name = param_new
+                    model.parameters.append(nu_param)
+
+                    found = True
+
+                    # Remove old one
+                    del model.parameters[index]
+                    continue
+
+            if not found:
+                raise KeyError(
+                    f"Parameter {param_old} is not part of the model."
+                )
 
     @staticmethod
     def parse_equation(equation: str):

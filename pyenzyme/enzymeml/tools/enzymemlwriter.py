@@ -16,6 +16,7 @@ import shutil
 import libsbml
 import tempfile
 import logging
+import warnings
 
 from libsbml import (
     SBMLDocument,
@@ -38,7 +39,7 @@ from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.measurement import Measurement
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction, ReactionElement
-from pyenzyme.enzymeml.models.kineticmodel import KineticModel
+from pyenzyme.enzymeml.models.kineticmodel import KineticModel, KineticParameter
 
 # Initialize the logger
 logger = logging.getLogger("pyenzyme")
@@ -93,6 +94,9 @@ class EnzymeMLWriter:
             )
         )
 
+        # Validate the SBML document
+        self._validate_sbml_doc(document=doc)
+
         # Write to OMEX
         self._createArchive(enzmldoc, paths, name)
 
@@ -123,6 +127,7 @@ class EnzymeMLWriter:
         model.setId(enzmldoc.name)
 
         self.path = None
+        self.enzmldoc = enzmldoc
 
         # Convert the SBML model to EnzymeML
         self.convertEnzymeMLToSBML(model, enzmldoc)
@@ -168,6 +173,7 @@ class EnzymeMLWriter:
         self._addProteins(model, enzmldoc.protein_dict)
         self._addComplex(model, enzmldoc.complex_dict)
         self._addReactants(model, enzmldoc.reactant_dict)
+        self._addGlobalParameters(model, enzmldoc.global_parameters)
         self._addReactions(model, enzmldoc.reaction_dict)
         self._addUnits(model, enzmldoc.unit_dict)
 
@@ -530,6 +536,59 @@ class EnzymeMLWriter:
                 optional_attributes=reactantAttributes
             )
 
+    def _addGlobalParameters(self, model: libsbml.Model, global_parameters: dict[str, KineticParameter]):
+        """Writes global parameters to the SBML document.
+
+        Args:
+            model (libsbml.Model): SBML model the global parameters are added to.
+            global_parameters (dict[str, KineticParameter]): Global parameters that will be added to the SBML document.
+        """
+
+        for parameter in global_parameters.values():
+            sbml_param = self._write_global_parameter(parameter, model)
+
+            # Create a mapping for the 'enzymeml:parameter' annotation
+            annotation = self.setupXMLNode("enzymeml:parameter")
+            optional_parameters = {
+                'enzymeml:initialValue': 'initial_value',
+                'enzymeml:upperBound': 'upper',
+                'enzymeml:lowerBound': 'lower'
+            }
+
+            for attributeName, objectName in optional_parameters.items():
+
+                self.appendOptionalAttribute(
+                    attributeName=attributeName,
+                    object=parameter,
+                    objectName=objectName,
+                    annotationNode=annotation
+                )
+
+            if annotation.getNumChildren() > 0:
+                sbml_param.appendAnnotation(annotation)
+
+    def _write_global_parameter(
+        self,
+        parameter: KineticParameter,
+        model: libsbml.Model
+    ):
+        """Writes a global parameter to a reaction"""
+
+        global_param = model.createParameter()
+        global_param.setId(parameter.name)
+        global_param.setConstant(parameter.constant)
+
+        if parameter.value:
+            global_param.setValue(parameter.value)
+
+        if parameter._unit_id:
+            global_param.setUnits(parameter._unit_id)
+
+        if parameter.ontology:
+            global_param.setSBOTerm(parameter.ontology)
+
+        return global_param
+
     def _addSpecies(
         self,
         obj: AbstractSpecies,
@@ -613,7 +672,7 @@ class EnzymeMLWriter:
             # Add kinetic model
             if enzyme_reaction.model:
                 self._addModelToReaction(
-                    reaction=reaction, model=enzyme_reaction.model
+                    reaction=reaction, kinetic_model=enzyme_reaction.model, sbml_model=model
                 )
 
             # Enzymeml attributes
@@ -664,56 +723,77 @@ class EnzymeMLWriter:
                 createFunction=reaction.createModifier,
             )
 
-    def _addModelToReaction(self, reaction: libsbml.Reaction, model: KineticModel) -> None:
+    def _addModelToReaction(
+        self,
+        reaction: libsbml.Reaction,
+        kinetic_model: KineticModel,
+        sbml_model: libsbml.Model
+    ) -> None:
         '''
         Adds kinetic law to SBML reaction.
         Only relevant for EnzymeML > SBML conversion.
 
         Args:
             reaction (libsbml.Reaction): SBML reaction class
-            model (KineticModel): PyEnzyme Model object
+            kinetic_model (KineticModel): PyEnzyme Model object
         '''
 
         # Set up SBML kinetic law node
-        kl = reaction.createKineticLaw()
+        sbml_law = reaction.createKineticLaw()
 
-        for kinetic_parameter in model.parameters:
+        for parameter in kinetic_model.parameters:
 
-            local_param = kl.createLocalParameter()
-            local_param.setId(kinetic_parameter.name)
+            if parameter.is_global:
+                continue
 
-            if kinetic_parameter.value:
-                local_param.setValue(kinetic_parameter.value)
-
-            if kinetic_parameter._unit_id:
-                local_param.setUnits(kinetic_parameter._unit_id)
-
-            if kinetic_parameter.ontology:
-                local_param.setSBOTerm(kinetic_parameter.ontology)
+            param = self._write_local_parameter(parameter, sbml_law)
 
             # Create a mapping for the 'enzymeml:parameter' annotation
             annotation = self.setupXMLNode("enzymeml:parameter")
             optional_parameters = {
                 'enzymeml:initialValue': 'initial_value',
+                'enzymeml:upperBound': 'upper',
+                'enzymeml:lowerBound': 'lower'
             }
 
             for attributeName, objectName in optional_parameters.items():
 
                 self.appendOptionalAttribute(
                     attributeName=attributeName,
-                    object=kinetic_parameter,
+                    object=parameter,
                     objectName=objectName,
                     annotationNode=annotation
                 )
 
             if annotation.getNumChildren() > 0:
-                local_param.appendAnnotation(annotation)
+                param.appendAnnotation(annotation)
 
-        kl.setMath(libsbml.parseL3Formula(model.equation))
-        kl.setName(model.name)
+        sbml_law.setMath(libsbml.parseL3Formula(kinetic_model.equation))
+        sbml_law.setName(kinetic_model.name)
 
-        if model.ontology:
-            kl.setSBOTerm(model.ontology)
+        if kinetic_model.ontology:
+            sbml_law.setSBOTerm(kinetic_model.ontology)
+
+    def _write_local_parameter(
+        self,
+        parameter: KineticParameter,
+        kinetic_law: libsbml.KineticLaw,
+    ):
+        """Writes a local parameter to a reaction"""
+
+        local_param = kinetic_law.createLocalParameter()
+        local_param.setId(parameter.name)
+
+        if parameter.value:
+            local_param.setValue(parameter.value)
+
+        if parameter._unit_id:
+            local_param.setUnits(parameter._unit_id)
+
+        if parameter.ontology:
+            local_param.setSBOTerm(parameter.ontology)
+
+        return local_param
 
     def writeElements(
         self,
@@ -1025,3 +1105,11 @@ class EnzymeMLWriter:
             self.index += 1
 
         return data_columns
+
+    def _validate_sbml_doc(self, document):
+        """Validates an SBML documentument and checks for errors."""
+
+        document.checkConsistency()
+        if document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0:
+            warnings.warn("Invalid SBML document! See warnings:")
+            warnings.warn(document.getErrorLog().toString())

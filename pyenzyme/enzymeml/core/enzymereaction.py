@@ -410,7 +410,7 @@ class EnzymeReaction(EnzymeMLBase):
             f"Added {type(element).__name__} '{element.species_id}' to reaction '{self.name}' {list_name}"
         )
 
-    def setModel(self, model: KineticModel, enzmldoc, log: bool = True) -> None:
+    def setModel(self, model: KineticModel, enzmldoc, mapping: dict[str, str] = {}, log: bool = True) -> None:
         """Sets the kinetic model of the reaction and in addition converts all units to UnitDefs.
 
         Args:
@@ -428,6 +428,23 @@ class EnzymeReaction(EnzymeMLBase):
             model.parameters,
             enzmldoc=enzmldoc
         )
+
+        # Replace kinetic parameter names to customize names if specified
+        for param_old, param_new in mapping.items():
+
+            model.equation = model.equation.replace(param_old, param_new)
+
+            for parameter in model.parameters:
+
+                if enzmldoc.global_parameters.get(param_new):
+                    # Set a global parameter if specified
+                    model.parameters.remove(parameter)
+                    model.parameters.append(
+                        enzmldoc.global_parameters[param_new]
+                    )
+                else:
+                    # If still local, just change the name
+                    parameter.name = param_new
 
         if log:
             # Log creator object
@@ -509,7 +526,7 @@ class EnzymeReaction(EnzymeMLBase):
             **{element.species_id: (-1) * element.stoichiometry for element in self.products}
         }
 
-    def apply_initial_values(self, initial_values: dict[str, float], to_values: bool = False) -> None:
+    def apply_initial_values(self, config: dict[str, dict], to_values: bool = False) -> None:
         """Applies the initial values for all given parameters to the underlying model.
 
         Args:
@@ -521,12 +538,15 @@ class EnzymeReaction(EnzymeMLBase):
                 f"Reaction {self.name} ({self.id}) has no associated model. Please specify a model to add initial values."
             )
 
-        for param_name, value in initial_values.items():
+        for param_name, options in config.items():
+
             param = self.model.getParameter(param_name)
-            param.initial_value = value
 
             if to_values:
-                param.value = value
+                param.value = options.get("initial_value")
+            param.initial_value = options.get("initial_value")
+            param.upper = options.get("upper")
+            param.lower = options.get("lower")
 
     # ! Initializers
 
