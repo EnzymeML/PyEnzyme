@@ -17,3 +17,5 @@ openpyxl
 numexpr
 seaborn
 plotly
+pysces
+lmfit

@@ -41,14 +41,23 @@ setup(
         'openpyxl',
         'numexpr',
         'seaborn',
-        'plotly'
+        'plotly',
     ],
     extras_require={
         'test': [
             'pytest-cov'
         ],
-        'examples': [
-            'xmltodict'
-        ]
+        'copasi': [
+            'python-copasi'
+        ],
+        'pysces': [
+            'pysces',
+            'lmfit'
+        ],
+        'all': [
+            'python-copasi',
+            'pysces',
+            'lmfit'
+        ] 
     },
 )
