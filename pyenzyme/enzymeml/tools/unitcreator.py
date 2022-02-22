@@ -113,9 +113,9 @@ class UnitCreator:
         if self.__checkFootprints(enzmldoc, unitdef.getFootprint()) != "NEW":
             return self.__checkFootprints(enzmldoc, unitdef.getFootprint())
 
-        enzmldoc.getUnitDict()[unitdef.getId()] = unitdef
+        enzmldoc.unit_dict[unitdef.id] = unitdef
 
-        return unitdef.getId()
+        return unitdef.id
 
     def __checkFootprints(self, enzmldoc, footprint):
 

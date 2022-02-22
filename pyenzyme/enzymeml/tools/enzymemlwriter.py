@@ -152,8 +152,8 @@ class EnzymeMLWriter:
         doc.setLevelAndVersion(3, 2)
 
         model = doc.createModel()
-        model.setName(enzmldoc.getName())
-        model.setId(enzmldoc.getName())
+        model.setName(enzmldoc.name)
+        model.setId(enzmldoc.name)
 
         # Convert the SBML model to EnzymeML
         self.convertEnzymeMLToSBML(model, enzmldoc)
@@ -232,11 +232,11 @@ class EnzymeMLWriter:
 
         # Add files from fileDict
         tmpFolder = None
-        if enzmldoc.getFileDict() != {}:
+        if enzmldoc.file_dict:
             # create temporary directory for files
             tmpFolder = tempfile.mkdtemp()
 
-            for fileDict in enzmldoc.getFileDict().values():
+            for fileDict in enzmldoc.file_dict.values():
 
                 file_handler = fileDict["handler"]
                 file_name = fileDict["name"]
@@ -258,7 +258,7 @@ class EnzymeMLWriter:
         if name:
             out_file = f"{name.replace(' ', '_')}.omex"
         else:
-            out_file = f"{enzmldoc.getName().replace(' ', '_')}.omex"
+            out_file = f"{enzmldoc.name.replace(' ', '_')}.omex"
 
         out_path = os.path.join(self.path, out_file)
 
@@ -420,8 +420,8 @@ class EnzymeMLWriter:
 
             unit = model.createUnitDefinition()
             unit.setId(unit_id)
-            unit.setMetaId(unit_def.getMetaid())
-            unit.setName(unit_def.getName())
+            unit.setMetaId(unit_def.meta_id)
+            unit.setName(unit_def.name)
 
             # TODO Add ontology
             # if unit_def.getOntology() != "NONE":
@@ -944,7 +944,7 @@ class EnzymeMLWriter:
                 measurement_annot.addAttr('file', file_id)
 
             measurement_annot.addAttr('id', measurement_id)
-            measurement_annot.addAttr('name', measurement.getName())
+            measurement_annot.addAttr('name', measurement.name)
 
             # TODO find a sustainable way
             if measurement.temperature:
@@ -1083,7 +1083,7 @@ class EnzymeMLWriter:
         replicates = [
             replicate
             for data in species.values()
-            for replicate in data.getReplicates()
+            for replicate in data.replicates
         ]
 
         for replicate in replicates:

@@ -249,10 +249,9 @@ class Measurement(EnzymeMLBase):
                 if len(self.global_time) == 0:
 
                     # Add global time if this is the first replicate to be added
-                    self.global_time = replicate.getData(sep=True)[0]
-                    self.global_time_unit = (replicate.getTimeUnit())
-                    self._global_time_unit_id = enzmldoc._convertToUnitDef(
-                        replicate.getTimeUnit())
+                    self.global_time = replicate.time
+                    self.global_time_unit = replicate.time_unit
+                    self._global_time_unit_id = replicate._time_unit_id
 
                 # Log Replicate creation
                 if log:
