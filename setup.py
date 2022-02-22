@@ -34,8 +34,6 @@ setup(
         'deprecation',
         'deepdiff',
         'python-multipart',
-        'fastapi',
-        'uvicorn',
         'easyDataverse',
         'pyDaRUS',
         'openpyxl',
@@ -54,10 +52,21 @@ setup(
             'pysces',
             'lmfit'
         ],
-        'all': [
+        'rest': [
+            'fastapi',
+            'uvicorn'
+        ],
+        'modeling': [
             'python-copasi',
             'pysces',
             'lmfit'
-        ] 
+        ],
+        'all': [
+            'python-copasi',
+            'pysces',
+            'lmfit',
+            'fastapi',
+            'uvicorn'
+        ]
     },
 )
