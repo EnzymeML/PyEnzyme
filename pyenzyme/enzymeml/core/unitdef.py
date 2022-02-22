@@ -11,7 +11,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 from pydantic import Field, validator, validate_arguments
-from typing import TYPE_CHECKING, Optional
+from typing import List, TYPE_CHECKING, Optional
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -84,7 +84,7 @@ class UnitDef(EnzymeMLBase):
         description="Interal meta identifier of the SI unit.",
     )
 
-    units: list[BaseUnit] = Field(
+    units: List[BaseUnit] = Field(
         default_factory=list,
         description="List of SI baseunits.",
     )

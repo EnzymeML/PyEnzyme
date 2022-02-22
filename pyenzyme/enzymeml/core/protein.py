@@ -13,7 +13,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 import re
 
 from pydantic import validator, Field
-from typing import Optional, TYPE_CHECKING, Any
+from typing import Dict, Optional, TYPE_CHECKING, Any
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.ontology import SBOTerm
@@ -177,7 +177,7 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         )
 
     @staticmethod
-    def _getUniProtParameters(uniprotid: str) -> dict[str, Any]:
+    def _getUniProtParameters(uniprotid: str) -> Dict[str, Any]:
         import requests
         import xml.etree.ElementTree as ET
 

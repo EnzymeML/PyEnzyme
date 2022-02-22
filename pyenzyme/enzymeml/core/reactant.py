@@ -11,7 +11,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 from pydantic import Field
-from typing import TYPE_CHECKING, Optional, Union, Any
+from typing import Dict, TYPE_CHECKING, Optional, Union, Any
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -113,7 +113,7 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
     @classmethod
     def fromChebiID(
         cls,
-        chebi_id: Union[str, int],
+        chebi_id: str,
         vessel_id: str,
         constant: bool = False,
         init_conc: Optional[float] = None,
@@ -141,7 +141,7 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
         )
 
     @staticmethod
-    def _getChEBIParameters(chebi_id: Union[str, int]) -> dict[str, Any]:
+    def _getChEBIParameters(chebi_id: Union[str, int]) -> Dict[str, Any]:
         import requests
         import xml.etree.ElementTree as ET
 

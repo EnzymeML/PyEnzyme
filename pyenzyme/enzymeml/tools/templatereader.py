@@ -1,6 +1,8 @@
 import pandas as pd
 import re
 
+from typing import List, Dict
+
 from pyenzyme.enzymeml.core.ontology import DataTypes
 from pyenzyme.enzymeml.core.creator import Creator
 from pyenzyme.enzymeml.core.vessel import Vessel
@@ -208,7 +210,7 @@ def get_template_map(obj) -> dict:
     }
 
 
-def extract_values(sheet: pd.DataFrame, mapping: dict[str, str]) -> list:
+def extract_values(sheet: pd.DataFrame, mapping: Dict[str, str]) -> list:
     sheet = sheet.dropna(thresh=len(mapping))
     records = sheet.to_dict(orient="records")
 
@@ -274,7 +276,7 @@ def merge_protein_modifier(protein, modifier):
     ])
 
 
-def rename_columns(columns: list[str]) -> list[str]:
+def rename_columns(columns: List[str]) -> List[str]:
     mapping = {
         "Unnamed: 4": "Protein Initial concentration",
         "Unnamed: 5": "Protein Unit",

@@ -13,7 +13,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 import re
 
 from pydantic import validator, Field
-from typing import Optional, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -38,7 +38,7 @@ class Complex(EnzymeMLBase, AbstractSpecies):
         description="Name of the complex",
     )
 
-    participants: list[str] = Field(
+    participants: List[str] = Field(
         default_factory=list,
         description="Array of IDs the complex contains",
     )
@@ -108,7 +108,7 @@ class Complex(EnzymeMLBase, AbstractSpecies):
         return id
 
     @validator("participants")
-    def check_reactant_ids(cls, ids: list[str]):
+    def check_reactant_ids(cls, ids: List[str]):
         """Checks ID consistency for reactants"""
 
         for id in ids:

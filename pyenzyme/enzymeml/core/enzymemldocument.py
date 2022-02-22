@@ -21,7 +21,7 @@ import seaborn as sns
 import plotly.express as px
 
 from pydantic import Field, validator, validate_arguments
-from typing import TYPE_CHECKING, Optional, Union
+from typing import Dict, List, Tuple, TYPE_CHECKING, Optional, Union
 from texttable import Texttable
 from dataclasses import dataclass
 from io import StringIO
@@ -107,61 +107,61 @@ class EnzymeMLDocument(EnzymeMLBase):
         description="Date the EnzymeML document was modified.",
     )
 
-    creator_dict: dict[str, Creator] = Field(
+    creator_dict: Dict[str, Creator] = Field(
         alias="creators",
         default_factory=dict,
         description="Dictionary mapping from creator IDs to creator describing objects.",
     )
 
-    vessel_dict: dict[str, Vessel] = Field(
+    vessel_dict: Dict[str, Vessel] = Field(
         alias="vessels",
         default_factory=dict,
         description="Dictionary mapping from vessel IDs to vessel describing objects."
     )
 
-    protein_dict: dict[str, Protein] = Field(
+    protein_dict: Dict[str, Protein] = Field(
         alias="proteins",
         default_factory=dict,
         description="Dictionary mapping from protein IDs to protein describing objects.",
     )
 
-    complex_dict: dict[str, Complex] = Field(
+    complex_dict: Dict[str, Complex] = Field(
         alias="complexes",
         default_factory=dict,
         description="Dictionary mapping from complex IDs to complex describing objects.",
     )
 
-    reactant_dict: dict[str, Reactant] = Field(
+    reactant_dict: Dict[str, Reactant] = Field(
         alias="reactants",
         default_factory=dict,
         description="Dictionary mapping from reactant IDs to reactant describing objects.",
     )
 
-    reaction_dict: dict[str, EnzymeReaction] = Field(
+    reaction_dict: Dict[str, EnzymeReaction] = Field(
         alias="reactions",
         default_factory=dict,
         description="Dictionary mapping from reaction IDs to reaction describing objects.",
     )
 
-    unit_dict: dict[str, UnitDef] = Field(
+    unit_dict: Dict[str, UnitDef] = Field(
         alias="units",
         default_factory=dict,
         description="Dictionary mapping from unit IDs to unit describing objects.",
     )
 
-    measurement_dict: dict[str, Measurement] = Field(
+    measurement_dict: Dict[str, Measurement] = Field(
         alias="measurements",
         default_factory=dict,
         description="Dictionary mapping from measurement IDs to measurement describing objects.",
     )
 
-    file_dict: dict[str, dict] = Field(
+    file_dict: Dict[str, dict] = Field(
         alias="files",
         default_factory=dict,
         description="Dictionary mapping from protein IDs to protein describing objects.",
     )
 
-    global_parameters: dict[str, KineticParameter] = Field(
+    global_parameters: Dict[str, KineticParameter] = Field(
         alias="global_parameters",
         default_factory=dict,
         description="Dictionary mapping from parameter IDs to global kinetic parameter describing objects.",
@@ -345,7 +345,7 @@ class EnzymeMLDocument(EnzymeMLBase):
     # ! Utility methods
     def visualize(
         self,
-        measurement_ids: list[str] = ["all"],
+        measurement_ids: List[str] = ["all"],
         interactive: bool = False,
         use_names: bool = False,
         sharey: bool = True,
@@ -363,7 +363,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
 
         Args:
-            measurement_ids (list[str], optional): List of measurements that should be plotted or all. Defaults to ["all"].
+            measurement_ids (List[str], optional): List of measurements that should be plotted or all. Defaults to ["all"].
             interactive (bool, optional): [description]. Whether to return an interatcive or static plot. Defaults to to False.
             use_names (bool, optional): Whether names or IDs should be used. Defaults to False.
             sharey (bool, optional): Whether all plots in FacetGrid should share the y-axis. Defaults to True.
@@ -466,13 +466,13 @@ class EnzymeMLDocument(EnzymeMLBase):
 
     def toDataFrame(
         self,
-        measurement_ids: list[str] = ["all"],
+        measurement_ids: List[str] = ["all"],
         use_names: bool = False,
     ) -> pd.DataFrame:
         """Transforms exported measurement data to a single DataFrame
 
         Args:
-            measurement_ids (list[str], optional): Measurements to include or all of them. Defaults to ["all"].
+            measurement_ids (List[str], optional): Measurements to include or all of them. Defaults to ["all"].
             use_names (bool, optional): Wether names or IDs should be used. Defaults to False.
 
         Returns:
@@ -523,14 +523,14 @@ class EnzymeMLDocument(EnzymeMLBase):
         self,
         kind: str,
         scale: int,
-        measurement_ids: Union[str, list[str]] = "all"
+        measurement_ids: Union[str, List[str]] = "all"
     ) -> None:
         """Rescales and unifies the units of either all measurements or those that are provided to the given kind and scale.
 
         Args:
             kind (str): The unit kind from which to rescale. Currently supported: 'mole', 'gram', 'litre'.
             scale (int): Decade scale to which the values will be rescaled.
-            measurement_ids (Union[str, list[str]], optional): Measurements that will be rescaled. Defaults to "all".
+            measurement_ids (Union[str, List[str]], optional): Measurements that will be rescaled. Defaults to "all".
         """
 
         # Transform single strings to list
@@ -543,19 +543,19 @@ class EnzymeMLDocument(EnzymeMLBase):
 
     def exportMeasurementData(
         self,
-        measurement_ids: Union[str, list[str]] = "all",
-        species_ids: Union[str, list[str]] = "all",
+        measurement_ids: Union[str, List[str]] = "all",
+        species_ids: Union[str, List[str]] = "all",
         proteins: bool = False,
         reactants: bool = True,
-    ) -> dict[str, dict[str, Union[tuple, pd.DataFrame]]]:
+    ) -> Dict[str, Dict[str, Union[Tuple, pd.DataFrame]]]:
         """Exports either all replicates present in any measurement or the ones specified via 'species_ids' or 'measurement_ids'
 
         Args:
-            measurement_ids (Union[str, list[str]], optional): The measurements from which to export the data. Defaults to "all".
-            species_ids (Union[str, list[str]], optional): The species from which to export the data. Defaults to "all".
+            measurement_ids (Union[str, List[str]], optional): The measurements from which to export the data. Defaults to "all".
+            species_ids (Union[str, List[str]], optional): The species from which to export the data. Defaults to "all".
 
         Returns:
-            dict[str, dict[str, Union[tuple, pd.DataFrame]]]: The data corresponding to the specified options. The dictionary will still distinguish between meassuremnts.
+            Dict[str, Dict[str, Union[tuple, pd.DataFrame]]]: The data corresponding to the specified options. The dictionary will still distinguish between meassuremnts.
         """
 
         if isinstance(measurement_ids, str):
@@ -612,7 +612,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             "Function not refactored yet."
         )
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         """
         Magic function return pretty string describing the object.
 
@@ -625,7 +625,7 @@ class EnzymeMLDocument(EnzymeMLBase):
     def printDocument(self, measurements: bool = False, units: bool = False, stdout: bool = True) -> Optional[str]:
         """Prints the document's content"""
 
-        fin_string: list[str]
+        fin_string: List[str]
 
         def generate_lines(dictionary: dict) -> None:
             """Breaks up a dictionary and generates a human readible line."""
@@ -832,6 +832,8 @@ class EnzymeMLDocument(EnzymeMLBase):
         initial_value: Optional[float] = None,
         unit: Optional[str] = None,
         constant: bool = False,
+        upper: Optional[float] = None,
+        lower: Optional[float] = None,
         stdev: Optional[float] = None,
         ontology: Optional[SBOTerm] = None,
     ):
@@ -852,7 +854,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         param = KineticParameter(
             name=name, value=value, unit=unit, stdev=stdev,
             initial_value=initial_value, ontology=ontology,
-            is_global=True, constant=constant
+            is_global=True, constant=constant, upper=upper, lower=lower
         )
 
         if param.unit:
@@ -969,7 +971,7 @@ class EnzymeMLDocument(EnzymeMLBase):
     def addComplex(
         self,
         name: str,
-        participants: list[str],
+        participants: List[str],
         vessel_id: str,
         init_conc: Optional[float] = None,
         unit: Optional[str] = None
@@ -1170,11 +1172,11 @@ class EnzymeMLDocument(EnzymeMLBase):
         model.parameters = nu_parameters
 
     @ staticmethod
-    def _convert_kinetic_model_units(parameters: list[KineticParameter], enzmldoc) -> None:
+    def _convert_kinetic_model_units(parameters: List[KineticParameter], enzmldoc) -> None:
         """Converts given unit strings to unit IDs and adds them to the model.
 
         Args:
-            parameters (list[KineticParameter]): List of all kinetic parameters.
+            parameters (List[KineticParameter]): List of all kinetic parameters.
             enzmldoc ([type]): Used to convert unit strings to unit IDs.
         """
 
@@ -1182,11 +1184,11 @@ class EnzymeMLDocument(EnzymeMLBase):
             if parameter.unit:
                 parameter._unit_id = enzmldoc._convertToUnitDef(parameter.unit)
 
-    def addReactions(self, reactions: list[EnzymeReaction]):
+    def addReactions(self, reactions: List[EnzymeReaction]):
         """Adds multiple reactions to an EnzymeML document.
 
         Args:
-            reactions (list[EnzymeReaction]): List of EnzymeReaction objects
+            reactions (List[EnzymeReaction]): List of EnzymeReaction objects
         """
 
         return {
@@ -1289,7 +1291,7 @@ class EnzymeMLDocument(EnzymeMLBase):
                 measurement.temperature_unit
             )
 
-        def update_dict_units(measurement_data_dict: dict[str, MeasurementData]) -> None:
+        def update_dict_units(measurement_data_dict: Dict[str, MeasurementData]) -> None:
             """Helper function to update units"""
             for measurement_data in measurement_data_dict.values():
                 measurement_data._unit_id = self._convertToUnitDef(
@@ -1307,7 +1309,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         update_dict_units(measurement.species_dict["proteins"])
         update_dict_units(measurement.species_dict["reactants"])
 
-    def _convertReplicateUnits(self, measurement_data: MeasurementData) -> Optional[list[float]]:
+    def _convertReplicateUnits(self, measurement_data: MeasurementData) -> Optional[List[float]]:
         """Converts replicate unit strings to unit definitions.
 
         Args:
@@ -1331,7 +1333,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return global_time
 
-    def _updateReplicateMeasurementIDs(self, measurement_data_dict: dict[str, MeasurementData], measurement_id: str):
+    def _updateReplicateMeasurementIDs(self, measurement_data_dict: Dict[str, MeasurementData], measurement_id: str):
         """Updates the measurement IDs of replicates."""
         for measurement_data in measurement_data_dict.values():
             replicates = measurement_data.replicates
@@ -1401,7 +1403,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         return UnitCreator().getUnit(unit, self)
 
     # ! Getter methods
-    def getSpeciesIDs(self) -> list[str]:
+    def getSpeciesIDs(self) -> List[str]:
         return list({
             **self.protein_dict,
             **self.reactant_dict,
@@ -1555,7 +1557,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             SpeciesNotFoundError: Raised when the requested file is not found.
 
         Returns:
-            dict[str, dict]: The corresponding file object.
+            Dict[str, dict]: The corresponding file object.
         """
 
         if by_id:
@@ -1576,7 +1578,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             SpeciesNotFoundError: Raised when the requested object is not found.
 
         Returns:
-            dict[str, dict]: The corresponding file object.
+            Dict[str, dict]: The corresponding file object.
         """
 
         all_dicts = {
@@ -1647,27 +1649,27 @@ class EnzymeMLDocument(EnzymeMLBase):
         except StopIteration:
             return None
 
-    def getReactantList(self) -> list[Reactant]:
+    def getReactantList(self) -> List[Reactant]:
         """Returns a list of all reactants in the EnzymeML document."
 
         Returns:
-            list[Reactant]: List of all reactants in the EnzymeML document.
+            List[Reactant]: List of all reactants in the EnzymeML document.
         """
         return self._getSpeciesList(self.reactant_dict)
 
-    def getProteinList(self) -> list[Protein]:
+    def getProteinList(self) -> List[Protein]:
         """Returns a list of all proteins in the EnzymeML document."
 
         Returns:
-            list[Protein]: List of all proteins in the EnzymeML document.
+            List[Protein]: List of all proteins in the EnzymeML document.
         """
         return self._getSpeciesList(self.protein_dict)
 
-    def getReactionList(self) -> list[EnzymeReaction]:
+    def getReactionList(self) -> List[EnzymeReaction]:
         """Returns a list of all reactions in the EnzymeML document."
 
         Returns:
-            list[EnzymeReaction]: List of all reactions in the EnzymeML document.
+            List[EnzymeReaction]: List of all reactions in the EnzymeML document.
         """
         return self._getSpeciesList(self.reaction_dict)
 
@@ -1675,7 +1677,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         """Returns a list of all files in the EnzymeML document."
 
         Returns:
-            list[dict]: List of all files in the EnzymeML document.
+            List[dict]: List of all files in the EnzymeML document.
         """
         return self._getSpeciesList(self.file_dict)
 

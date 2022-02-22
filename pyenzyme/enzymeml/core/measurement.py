@@ -14,7 +14,7 @@ import copy
 import logging
 import pandas as pd
 
-from typing import Optional, TYPE_CHECKING, Union
+from typing import List, Dict, Tuple, Optional, TYPE_CHECKING, Union
 from dataclasses import dataclass
 from pydantic import validate_arguments, Field, PrivateAttr
 
@@ -64,12 +64,12 @@ class Measurement(EnzymeMLBase):
         inclusiveMaximum=14
     )
 
-    species_dict: dict[str, dict[str, MeasurementData]] = Field(
+    species_dict: Dict[str, Dict[str, MeasurementData]] = Field(
         {"proteins": {}, "reactants": {}},
         description="Species of the measurement.",
     )
 
-    global_time: list[float] = Field(
+    global_time: List[float] = Field(
         default_factory=list,
         description="Global time of the measurement all replicates agree on.",
     )
@@ -141,12 +141,12 @@ class Measurement(EnzymeMLBase):
         else:
             return output
 
-    def exportData(self, species_ids: Union[str, list[str]] = "all") -> dict[str, dict[str, Union[dict[str, tuple[float, str]], pd.DataFrame]]]:
+    def exportData(self, species_ids: Union[str, List[str]] = "all") -> Dict[str, Dict[str, Union[Dict[str, Tuple[float, str]], pd.DataFrame]]]:
         """Returns data stored in the measurement object as DataFrames nested in dictionaries. These are sorted hierarchially by reactions where each holds a DataFrame each for proteins and reactants.
 
         Returns:
             measurements (dict): Follows the hierarchy Reactions > Proteins/Reactants > { initial_concentration, data }
-            species_ids (Union[str, list[str]]): List of species IDs to extract data from. Defaults to 'all'.
+            species_ids (Union[str, List[str]]): List of species IDs to extract data from. Defaults to 'all'.
         """
 
         # Combine Replicate objects for each reaction
@@ -166,16 +166,16 @@ class Measurement(EnzymeMLBase):
 
     def _combineReplicates(
         self,
-        measurement_species: dict[str, MeasurementData],
-        species_ids: Union[str, list[str]] = "all"
-    ) -> dict[str, Union[dict[str, tuple[float, str]], pd.DataFrame]]:
+        measurement_species: Dict[str, MeasurementData],
+        species_ids: Union[str, List[str]] = "all"
+    ) -> Dict[str, Union[Dict[str, Tuple[float, str]], pd.DataFrame]]:
         """Combines replicates of a certain species to a dataframe.
 
         Args:
-            measurement_species (dict[str, MeasurementData]): The species_dict from the measurement.
+            measurement_species (Dict[str, MeasurementData]): The species_dict from the measurement.
 
         Returns:
-            dict[str, Any]: The associated replicat and initconc data.
+            Dict[str, Any]: The associated replicat and initconc data.
         """
 
         if isinstance(species_ids, str):
@@ -217,7 +217,7 @@ class Measurement(EnzymeMLBase):
         }
 
     @validate_arguments
-    def addReplicates(self, replicates: Union[list[Replicate], Replicate], enzmldoc, log: bool = True) -> None:
+    def addReplicates(self, replicates: Union[List[Replicate], Replicate], enzmldoc, log: bool = True) -> None:
         """Adds a replicate to the corresponding measurementData object. This method is meant to be called if the measurement metadata of a reaction/species has already been done and replicate data has to be added afterwards. If not, use addData instead to introduce the species metadata.
 
         Args:
@@ -273,7 +273,7 @@ class Measurement(EnzymeMLBase):
         init_conc: float = 0.0,
         reactant_id: Optional[str] = None,
         protein_id: Optional[str] = None,
-        replicates: list[Replicate] = [],
+        replicates: List[Replicate] = [],
         log: bool = True,
     ) -> None:
         """Adds data to the measurement object.
@@ -283,7 +283,7 @@ class Measurement(EnzymeMLBase):
             unit (str): The SI unit of the measurement.
             reactant_id (Optional[str], optional): Identifier of the reactant that was measured. Defaults to None.
             protein_id (Optional[str], optional): Identifier of the protein that was measured. Defaults to None.
-            replicates (list[Replicate], optional): List of replicates that were measured. Defaults to [].
+            replicates (List[Replicate], optional): List of replicates that were measured. Defaults to [].
         """
 
         self._appendReactantData(
@@ -301,7 +301,7 @@ class Measurement(EnzymeMLBase):
         protein_id: Optional[str],
         init_conc: float,
         unit: str,
-        replicates: list[Replicate],
+        replicates: List[Replicate],
         log: bool = True
     ) -> None:
 
@@ -331,7 +331,7 @@ class Measurement(EnzymeMLBase):
                 f"Added {type(measData).__name__} '{measData.get_id()}' to measurement '{self.name}'"
             )
 
-    def updateReplicates(self, replicates: list[Replicate]) -> None:
+    def updateReplicates(self, replicates: List[Replicate]) -> None:
         for replicate in replicates:
             # Set the measurement name for the replicate
             replicate.measurement_id = self.name
@@ -416,7 +416,7 @@ class Measurement(EnzymeMLBase):
         """
         return self._getSpecies(protein_id)
 
-    def getReactants(self) -> dict[str, MeasurementData]:
+    def getReactants(self) -> Dict[str, MeasurementData]:
         """Returns a list of all participating reactants in the measurement.
 
         Returns:
@@ -424,7 +424,7 @@ class Measurement(EnzymeMLBase):
         """
         return self.species_dict["reactants"]
 
-    def getProteins(self) -> dict[str, MeasurementData]:
+    def getProteins(self) -> Dict[str, MeasurementData]:
         """Returns a list of all participating proteins in the measurement.
 
         Returns:

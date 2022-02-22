@@ -14,8 +14,8 @@ import ast
 import re
 import numexpr
 
-from typing import TYPE_CHECKING, Optional
-from pydantic import Field, validator
+from typing import List, TYPE_CHECKING, Optional
+from pydantic import Field
 from dataclasses import dataclass
 
 from pydantic.fields import PrivateAttr
@@ -112,7 +112,7 @@ class KineticModel(EnzymeMLBase):
         description="Equation for the kinetic law.",
     )
 
-    parameters: list[KineticParameter] = Field(
+    parameters: List[KineticParameter] = Field(
         default_factory=list,
         description="List of estimated parameters.",
     )
@@ -280,7 +280,7 @@ class KineticModel(EnzymeMLBase):
 class ModelFactory:
 
     equation: str
-    parameters: list[str]
+    parameters: List[str]
     name: str
 
     def __init__(
@@ -312,6 +312,8 @@ class ModelFactory:
             unit = options.get("unit")
             ontology = options.get("ontology")
             stdev = options.get("stdev")
+            upper = options.get("upper")
+            lower = options.get("lower")
 
             parameter = KineticParameter(
                 name=name,
@@ -319,7 +321,11 @@ class ModelFactory:
                 unit=unit,
                 initial_value=init_value,
                 stdev=stdev,
-                ontology=ontology
+                ontology=ontology,
+                upper=upper,
+                lower=lower,
+                is_global=False,
+                constant=False
             )
 
             self.model.parameters.append(parameter)

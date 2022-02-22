@@ -10,7 +10,7 @@ Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 '''
 
-from typing import Any
+from typing import Any, Dict
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.models.kineticmodel import ModelFactory
 from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
@@ -20,8 +20,8 @@ def MichaelisMentenKCat(
     substrate: str,
     protein: str,
     enzmldoc,
-    k_cat: dict[str, Any] = {"ontology": SBOTerm.K_CAT},
-    k_m: dict[str, Any] = {"ontology": SBOTerm.K_M},
+    k_cat: Dict[str, Any] = {"ontology": SBOTerm.K_CAT},
+    k_m: Dict[str, Any] = {"ontology": SBOTerm.K_M},
 ):
     """Sets up a rate law following the Henri-Michaelis-Menten law.
 
@@ -31,8 +31,8 @@ def MichaelisMentenKCat(
         substrate (str): Identifier or name of the substrate.
         protein (str): Identifier or name of the protein.
         enzmldoc ([type]): EnzymeML document to which the model will be adopted.
-        k_cat (dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
-        k_m (dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
+        k_cat (Dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
+        k_m (Dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
 
     Returns:
         KineticModel: Michaelis-Menten model in K_cat form with the specified parameters.
@@ -72,8 +72,8 @@ def MichaelisMentenKCat(
 def MichaelisMentenVMax(
     substrate: str,
     enzmldoc,
-    vmax: dict[str, Any] = {"ontology": SBOTerm.V_MAX},
-    k_m: dict[str, Any] = {"ontology": SBOTerm.K_M},
+    vmax: Dict[str, Any] = {"ontology": SBOTerm.V_MAX},
+    k_m: Dict[str, Any] = {"ontology": SBOTerm.K_M},
 ):
     """Sets up a rate law following the Henri-Michaelis-Menten law.
 
@@ -83,8 +83,8 @@ def MichaelisMentenVMax(
         substrate (str): Identifier or name of the substrate.
         protein (str): Identifier or name of the protein.
         enzmldoc ([type]): EnzymeML document to which the model will be adopted.
-        k_cat (dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
-        k_m (dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
+        k_cat (Dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
+        k_m (Dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
 
     Returns:
         KineticModel: Michaelis-Menten model in K_cat form with the specified parameters.

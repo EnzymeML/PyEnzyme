@@ -18,7 +18,7 @@ from pydantic import (
     PrivateAttr
 )
 from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 
 from pyenzyme.enzymeml.core.replicate import Replicate
@@ -64,7 +64,7 @@ class MeasurementData(EnzymeMLBase):
         description="The identifier for the described protein.",
     )
 
-    replicates: list[Replicate] = Field(
+    replicates: List[Replicate] = Field(
         default_factory=list,
         description="A list of replicate objects holding raw data of the measurement.",
     )
@@ -189,5 +189,5 @@ class MeasurementData(EnzymeMLBase):
         return self.unit
 
     @ deprecated_getter("replicates")
-    def getReplicates(self) -> list[Replicate]:
+    def getReplicates(self) -> List[Replicate]:
         return self.replicates

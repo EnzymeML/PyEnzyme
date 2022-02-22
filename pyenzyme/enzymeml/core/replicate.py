@@ -11,8 +11,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 '''
 
 from pydantic import Field, validator, PrivateAttr
-from typing import TYPE_CHECKING, Optional
-from enum import Enum
+from typing import List, TYPE_CHECKING, Optional
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -64,12 +63,12 @@ class Replicate(EnzymeMLBase):
         description="Time unit of the replicate.",
     )
 
-    time: list[float] = Field(
+    time: List[float] = Field(
         None,
         description="Time steps of the replicate.",
     )
 
-    data: list[float] = Field(
+    data: List[float] = Field(
         None,
         description="Data that was measured.",
     )
@@ -94,7 +93,7 @@ class Replicate(EnzymeMLBase):
     _data_unit_id: Optional[str] = PrivateAttr(None)
 
     @validator("data")
-    def check_data_completeness(cls, data: list[float], values: dict):
+    def check_data_completeness(cls, data: List[float], values: dict):
         if values.get("time") is None and data is not None:
             # Check if time is given
             raise DataError(

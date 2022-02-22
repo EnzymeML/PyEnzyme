@@ -38,7 +38,8 @@ class ThinLayerCopasi(BaseThinLayer):
         """
 
         # initialize base class, let it do the reading
-        BaseThinLayer.__init__(self, path, measurement_ids, init_file=init_file)
+        BaseThinLayer.__init__(
+            self, path, measurement_ids, init_file=init_file)
         self.name = self.enzmldoc.name
         self.working_dir = os.path.join(os.path.abspath(outdir), self.name)
         self.cps_file = os.path.join(self.working_dir, self.name + '.cps')
@@ -128,7 +129,8 @@ class ThinLayerCopasi(BaseThinLayer):
                 data = data.join(pd.DataFrame({'init_{0}'.format(k): [v[0]]}))
                 sbml_ids.append('init_{0}'.format(k))
 
-            exp_filename = os.path.abspath(os.path.join(self.working_dir, measurement_id + '.tsv'))
+            exp_filename = os.path.abspath(os.path.join(
+                self.working_dir, measurement_id + '.tsv'))
 
             data.to_csv(exp_filename,
                         sep='\t', header=True, index=False)
@@ -188,7 +190,8 @@ class ThinLayerCopasi(BaseThinLayer):
             obj = self.dm.getObject(p.getObjectCN())
             if obj is None:
                 continue
-            name = obj.getObjectName() if obj.getObjectType() != "Reference" else obj.getObjectParent().getObjectName()
+            name = obj.getObjectName() if obj.getObjectType(
+            ) != "Reference" else obj.getObjectParent().getObjectName()
 
             r = obj.getObjectAncestor('Reaction')
             reaction_id = r.getSBMLId() if r else None
@@ -258,7 +261,8 @@ class ThinLayerCopasi(BaseThinLayer):
             if obj is None:
                 continue
 
-            name = obj.getObjectName() if obj.getObjectType() != 'Reference' else obj.getObjectParent().getObjectName()
+            name = obj.getObjectName() if obj.getObjectType(
+            ) != 'Reference' else obj.getObjectParent().getObjectName()
             value = results.get(i)
             logging.debug(name, value)
 
@@ -291,7 +295,8 @@ class ThinLayerCopasi(BaseThinLayer):
             if obj is None:
                 continue
 
-            name = obj.getObjectName() if obj.getObjectType() != 'Reference' else obj.getObjectParent().getObjectName()
+            name = obj.getObjectName() if obj.getObjectType(
+            ) != 'Reference' else obj.getObjectParent().getObjectName()
             value = results.get(i)
             logging.debug(name, value)
 
@@ -312,7 +317,8 @@ class ThinLayerCopasi(BaseThinLayer):
             r = self.sbml_id_map[reaction_id]
             assert (isinstance(r, COPASI.CReaction))
             for p in self.reaction_data[reaction_id][0].parameters:
-                obj = r.getParameterObjects(p.name)[0].getObject(COPASI.CCommonName('Reference=Value'))
+                obj = r.getParameterObjects(p.name)[0].getObject(
+                    COPASI.CCommonName('Reference=Value'))
                 cn = obj.getCN()
                 fit_item = self.problem.addFitItem(cn)
                 assert (isinstance(fit_item, COPASI.CFitItem))
@@ -340,7 +346,8 @@ class ThinLayerCopasi(BaseThinLayer):
 
             mv = self.dm.getModel().getModelValue(global_param.name)
             if not mv:
-                logging.warning("No global parameter {0} in the model".format(global_param.name))
+                logging.warning(
+                    "No global parameter {0} in the model".format(global_param.name))
                 continue
 
             value = global_param.value if global_param.value else global_param.initial_value
@@ -375,7 +382,8 @@ class ThinLayerCopasi(BaseThinLayer):
                         f"Neither initial_value nor value given for parameter {p.name} in reaction {reaction_id}"
                     )
 
-                obj = r.getParameterObjects(p.name)[0].getObject(COPASI.CCommonName('Reference=Value'))
+                obj = r.getParameterObjects(p.name)[0].getObject(
+                    COPASI.CCommonName('Reference=Value'))
                 cn = obj.getCN()
                 fit_item = self.problem.addFitItem(cn)
                 assert (isinstance(fit_item, COPASI.CFitItem))
@@ -386,7 +394,8 @@ class ThinLayerCopasi(BaseThinLayer):
 
 if __name__ == '__main__':
     this_dir = os.path.dirname(__file__)
-    filename = os.path.join(this_dir + "/../../", "examples/ThinLayers/COPASI/3IZNOK_Simulated.omex")
+    filename = os.path.join(this_dir + "/../../",
+                            "examples/ThinLayers/COPASI/3IZNOK_Simulated.omex")
     assert os.path.exists(filename)
 
     thin_layer = ThinLayerCopasi(

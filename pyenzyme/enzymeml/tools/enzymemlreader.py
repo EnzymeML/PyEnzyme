@@ -12,7 +12,7 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 
 import os
 import re
-from typing import Union, Optional
+from typing import Dict, List, Tuple, Union, Optional
 import libsbml
 import xml.etree.ElementTree as ET
 import pandas as pd
@@ -220,7 +220,7 @@ class EnzymeMLReader:
             omex_desc (OMEX obj): Combine metadata description.
 
         Returns:
-            list[Creator]: Fetched list of creator objects.
+            List[Creator]: Fetched list of creator objects.
         """
 
         # Get the number of creators to iterate
@@ -239,7 +239,7 @@ class EnzymeMLReader:
                 log=False
             )
 
-    def _getUnits(self, model: libsbml.Model) -> dict[str, UnitDef]:
+    def _getUnits(self, model: libsbml.Model) -> Dict[str, UnitDef]:
         """Fetches all the units present in the SBML model.^
 
         Args:
@@ -282,14 +282,14 @@ class EnzymeMLReader:
 
         return unitDict
 
-    def _getVessel(self, model: libsbml.Model, enzmldoc: 'EnzymeMLDocument') -> dict[str, Vessel]:
+    def _getVessel(self, model: libsbml.Model, enzmldoc: 'EnzymeMLDocument') -> Dict[str, Vessel]:
         """Fetches all the vessels/compartments present in the SBML model.
 
         Args:
             model (libsbml.Model): The SBML model from which the vessels are fetched.
 
         Returns:
-            dict[str, Vessel]: Corresponding vessel dictionary that has been converted.
+            Dict[str, Vessel]: Corresponding vessel dictionary that has been converted.
         """
 
         vessel_dict = {}
@@ -323,7 +323,7 @@ class EnzymeMLReader:
         self,
         model: libsbml.Model,
         enzmldoc: 'EnzymeMLDocument'
-    ) -> tuple[dict[str, Protein], dict[str, Reactant], dict[str, Complex]]:
+    ) -> Tuple[Dict[str, Protein], Dict[str, Reactant], Dict[str, Complex]]:
 
         # initialize dictionaries and get species
         protein_dict = {}
@@ -440,7 +440,7 @@ class EnzymeMLReader:
 
             enzmldoc.global_parameters[parameter.name] = parameter
 
-    def _getReactions(self, model: libsbml.Model, enzmldoc: 'EnzymeMLDocument') -> dict[str, EnzymeReaction]:
+    def _getReactions(self, model: libsbml.Model, enzmldoc: 'EnzymeMLDocument') -> Dict[str, EnzymeReaction]:
 
         # Get SBML list of reactions
         reactionsList = model.getListOfReactions()
@@ -516,13 +516,13 @@ class EnzymeMLReader:
     def _parseConditions(
         reactionAnnot: ET.Element,
         enzmldoc: 'EnzymeMLDocument'
-    ) -> dict[str, Union[str, float]]:
+    ) -> Dict[str, Union[str, float]]:
         """Exracts the conditions present in the SBML reaction annotations.
         Args:
             reactionAnnot (ET.Element): The reaction annotation element.
             enzmldoc (EnzymeMLDocument): The EnzymeMLDocument against which the data will be validated.
         Returns:
-            dict[str, Union[str, float]]: Mapping for the conditions.
+            Dict[str, Union[str, float]]: Mapping for the conditions.
         """
 
         # Get the conditions element
@@ -553,18 +553,18 @@ class EnzymeMLReader:
 
     def _getElements(
         self,
-        species_refs: list[libsbml.SpeciesReference],
+        species_refs: List[libsbml.SpeciesReference],
         ontology: SBOTerm,
         modifiers: bool = False,
-    ) -> list[ReactionElement]:
+    ) -> List[ReactionElement]:
         """Extracts the speciesReference objects from the associated list and converts them to ReactionElements
 
         Args:
-            species_refs (list[libsbml.SpeciesReference]): The species refrences for the reaction <-> Chemical reaction elements.
+            species_refs (List[libsbml.SpeciesReference]): The species refrences for the reaction <-> Chemical reaction elements.
             modifiers (bool, optional): Used to override missing stoichiometry and constant for modifiers. Defaults to False.
 
         Returns:
-            list[ReactionElement]: The list of reaction elements.
+            List[ReactionElement]: The list of reaction elements.
         """
 
         reaction_elements = []
@@ -664,14 +664,14 @@ class EnzymeMLReader:
 
         return nu_param
 
-    def _getData(self, model: libsbml.Model, enzmldoc: 'EnzymeMLDocument') -> dict[str, Measurement]:
+    def _getData(self, model: libsbml.Model, enzmldoc: 'EnzymeMLDocument') -> Dict[str, Measurement]:
         """Retrieves all available measurements found in the EnzymeML document.
 
         Args:
             model (libsbml.Model): The SBML model from which the measurements are feteched,
 
         Returns:
-            dict[str, Measurement]: Mapping from measurement ID to the associated object.
+            Dict[str, Measurement]: Mapping from measurement ID to the associated object.
         """
 
         # Parse EnzymeML:format annotation
@@ -754,14 +754,14 @@ class EnzymeMLReader:
 
         return measurement_dict
 
-    def _parseListOfFiles(self, data_annotation: ET.Element) -> dict[str, dict[str, str]]:
+    def _parseListOfFiles(self, data_annotation: ET.Element) -> Dict[str, Dict[str, str]]:
         """Extracts the list of files that are present in the annotation enzymeml:files.
 
         Args:
             data_annotation (ET.Element): ElementTree object containing the enzymeml:files annotation.
 
         Returns:
-            dict[str, dict[str, str]]: Dictionary of all files present in the annotation.
+            Dict[str, Dict[str, str]]: Dictionary of all files present in the annotation.
         """
 
         return {
@@ -774,14 +774,14 @@ class EnzymeMLReader:
             } for file in self._get_element(data_annotation, "files")
         }
 
-    def _parseListOfFormats(self, data_annotation: ET.Element) -> dict[str, list[dict]]:
+    def _parseListOfFormats(self, data_annotation: ET.Element) -> Dict[str, List[dict]]:
         """Extracts the list of formats that areb present in the annotation enzymeml:formats.
 
         Args:
             data_annotation (ET.Element): ElementTree object containing the enzymeml:files annotation.
 
         Returns:
-            dict[str, list[dict]]: Dictionary of all the formats present in the annotation.
+            Dict[str, List[dict]]: Dictionary of all the formats present in the annotation.
         """
 
         return {
@@ -792,14 +792,14 @@ class EnzymeMLReader:
             for format in self._get_element(data_annotation, "formats")
         }
 
-    def _parseListOfMeasurements(self, data_annotation: ET.Element, enzmldoc: 'EnzymeMLDocument') -> tuple[dict[str, Measurement], dict]:
+    def _parseListOfMeasurements(self, data_annotation: ET.Element, enzmldoc: 'EnzymeMLDocument') -> Tuple[Dict[str, Measurement], dict]:
         """Extracts teh list of measurements that are present in the annotation enzymeml:measurements.
 
         Args:
             data_annotation (ET.Element): ElementTree object containing the enzymeml:measurements annotation.
 
         Returns:
-            tuple[dict[str, dict], dict[str, Measurement]]: Two dictionaries returning the measurement objects and files.
+            tuple[Dict[str, dict], Dict[str, Measurement]]: Two dictionaries returning the measurement objects and files.
         """
 
         measurements = self._get_element(data_annotation, "listOfMeasurements")

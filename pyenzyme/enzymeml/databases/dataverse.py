@@ -14,7 +14,7 @@ import json
 import os
 import pydantic
 
-from typing import Any, Optional
+from typing import Dict, Any, Optional
 from pyDaRUS import EnzymeMl, Citation, Dataset
 from pyDaRUS.metadatablocks.enzymeML import Constant
 from pyDaRUS.metadatablocks.citation import SubjectEnum
@@ -135,7 +135,7 @@ def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":  
 
     for reaction in enzmldoc.reaction_dict.values():
 
-        params: dict[str, Any] = {
+        params: Dict[str, Any] = {
             reaction_mapping.get(key): item
             for key, item in reaction.dict().items()
             if reaction_mapping.get(key) and repr(item) != "nan" and item
@@ -215,7 +215,7 @@ def add_object(json_data, mapping, add_fun):
         raise e
 
 
-def kinetic_law_params(reaction: "EnzymeReaction") -> dict[str, str]:  # noqa: F821
+def kinetic_law_params(reaction: "EnzymeReaction") -> Dict[str, str]:  # noqa: F821
     """Retrieves the arguments to add a kinetic law to an EnzymeML Metadatablock"""
 
     kinetic_law_mapping = {

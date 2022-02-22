@@ -14,7 +14,7 @@ import logging
 import re
 import ast
 
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Dict, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 from pydantic import (
     BaseModel,
@@ -258,7 +258,7 @@ class EnzymeReaction(EnzymeMLBase):
     def _getReactionElement(
         self,
         id: str,
-        element_list: list[ReactionElement],
+        element_list: List[ReactionElement],
         element_type: str,
     ) -> ReactionElement:
 
@@ -377,7 +377,7 @@ class EnzymeReaction(EnzymeMLBase):
         species_id: str,
         stoichiometry: PositiveFloat,
         constant: bool,
-        element_list: list[ReactionElement],
+        element_list: List[ReactionElement],
         ontology: SBOTerm,
         list_name: str,
         enzmldoc
@@ -410,7 +410,7 @@ class EnzymeReaction(EnzymeMLBase):
             f"Added {type(element).__name__} '{element.species_id}' to reaction '{self.name}' {list_name}"
         )
 
-    def setModel(self, model: KineticModel, enzmldoc, mapping: dict[str, str] = {}, log: bool = True) -> None:
+    def setModel(self, model: KineticModel, enzmldoc, mapping: Dict[str, str] = {}, log: bool = True) -> None:
         """Sets the kinetic model of the reaction and in addition converts all units to UnitDefs.
 
         Args:
@@ -512,13 +512,13 @@ class EnzymeReaction(EnzymeMLBase):
 
         return equation
 
-    def getStoichiometricCoefficients(self) -> dict[str, float]:
+    def getStoichiometricCoefficients(self) -> Dict[str, float]:
         """Returns the approprate stoichiometric coefficients of all educts and products.
 
         This function is intended to be used for modeling, where data should be easily accessible.
 
         Returns:
-            dict[str, float]: Mapping from identifier to stiochiometric coefficient.
+            Dict[str, float]: Mapping from identifier to stiochiometric coefficient.
         """
 
         return {
@@ -526,11 +526,11 @@ class EnzymeReaction(EnzymeMLBase):
             **{element.species_id: (-1) * element.stoichiometry for element in self.products}
         }
 
-    def apply_initial_values(self, config: dict[str, dict], to_values: bool = False) -> None:
+    def apply_initial_values(self, config: Dict[str, dict], to_values: bool = False) -> None:
         """Applies the initial values for all given parameters to the underlying model.
 
         Args:
-            kwargs (dict[str, float]): Mapping from the parameter name to the given initial value.
+            kwargs (Dict[str, float]): Mapping from the parameter name to the given initial value.
         """
 
         if not self.model:

@@ -15,7 +15,7 @@ import json
 import itertools
 import numpy as np
 
-from typing import Optional
+from typing import Dict, List, Tuple, Optional
 
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.measurement import Measurement
@@ -113,7 +113,7 @@ class ThinLayerStrendaML(object):
             ph=ph
         )
 
-    def _get_assay_conditions(self, key: str, dataset: dict) -> tuple[Optional[float], Optional[str]]:
+    def _get_assay_conditions(self, key: str, dataset: dict) -> Tuple[Optional[float], Optional[str]]:
         """Returns miscellaneous parameters from the 'value' element found in the assayConditions."""
 
         for obj in dataset["assayConditions"]["value"]:
@@ -122,7 +122,7 @@ class ThinLayerStrendaML(object):
 
         return None, None
 
-    def _parse_small_compounds(self, small_compounds: list[dict]):
+    def _parse_small_compounds(self, small_compounds: List[dict]):
         """Parses small compounds to Reactant objects"""
 
         # Keep track of range measurements and the references
@@ -203,7 +203,7 @@ class ThinLayerStrendaML(object):
             )
         )
 
-    def _setup_measurements(self, init_conc: list[tuple[str, float, str]]):
+    def _setup_measurements(self, init_conc: List[Tuple[str, float, str]]):
         """Sets up individual measurements by permuting given initial concentrations, if multiples of """
 
         # Permute all initial concentrations
@@ -242,7 +242,7 @@ class ThinLayerStrendaML(object):
             # Finally, add the measurement to the document
             self.enzmldoc.addMeasurement(measurement)
 
-    def _get_kinetic_model(self, reactant_ref: dict[str, str]):
+    def _get_kinetic_model(self, reactant_ref: Dict[str, str]):
         """Extracts the kinetic model from the dataset"""
 
         # Get parameters and species ID from data structure

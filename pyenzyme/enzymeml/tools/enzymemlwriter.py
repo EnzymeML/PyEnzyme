@@ -27,7 +27,7 @@ from libsbml import (
     SBMLWriter
 )
 
-from typing import Callable, Optional
+from typing import Dict, List, Callable, Optional
 from libcombine import CombineArchive, OmexDescription, KnownFormats, VCard
 
 from pyenzyme.enzymeml.core.unitdef import UnitDef
@@ -408,12 +408,12 @@ class EnzymeMLWriter:
         if referenceAnnotation.getNumChildren() > 0:
             model.appendAnnotation(referenceAnnotation)
 
-    def _addUnits(self, model: libsbml.Model, unit_dict: dict[str, UnitDef]) -> None:
+    def _addUnits(self, model: libsbml.Model, unit_dict: Dict[str, UnitDef]) -> None:
         """Converts EnzymeMLDocument units to SBML.
 
         Args:
             model (libsbml.Model): The SBML model the units are added to.
-            unit_dict (dict[str, UnitDef]): The EnzymeMLDocument units to be added to the SBML model.
+            unit_dict (Dict[str, UnitDef]): The EnzymeMLDocument units to be added to the SBML model.
         """
 
         for unit_id, unit_def in unit_dict.items():
@@ -451,7 +451,7 @@ class EnzymeMLWriter:
                 baseUnitDef.setScale(scale)
                 baseUnitDef.setMultiplier(multiplier)
 
-    def _addVessel(self, model, vessel_dict: dict[str, Vessel]) -> None:
+    def _addVessel(self, model, vessel_dict: Dict[str, Vessel]) -> None:
         """Converts EnzymeMLDocument vessel to SBML.
 
         Args:
@@ -470,12 +470,12 @@ class EnzymeMLWriter:
                 compartment.setSize(vessel.volume)
                 compartment.setUnits(vessel._unit_id)
 
-    def _addProteins(self, model: libsbml.Model, protein_dict: dict[str, Protein]) -> None:
+    def _addProteins(self, model: libsbml.Model, protein_dict: Dict[str, Protein]) -> None:
         """Converts EnzymeMLDocument proteins to SBML.
 
         Args:
             model (libsbml.Model): The SBML model the proteins are added to.
-            protein_dict (dict[str, Protein]): The EnzymeMLDocument proteins to be added to the SBML model.
+            protein_dict (Dict[str, Protein]): The EnzymeMLDocument proteins to be added to the SBML model.
         """
 
         # EnzymeML attributes
@@ -494,12 +494,12 @@ class EnzymeMLWriter:
                 optional_attributes=proteinAttributes
             )
 
-    def _addComplex(self, model: libsbml.Model, complex_dict: dict[str, Protein]) -> None:
+    def _addComplex(self, model: libsbml.Model, complex_dict: Dict[str, Protein]) -> None:
         """Converts EnzymeMLDocument proteins to SBML.
 
         Args:
             model (libsbml.Model): The SBML model the proteins are added to.
-            complex_dict (dict[str, Protein]): The EnzymeMLDocument complex to be added to the SBML model.
+            complex_dict (Dict[str, Protein]): The EnzymeMLDocument complex to be added to the SBML model.
         """
 
         complexAttributes = {
@@ -514,12 +514,12 @@ class EnzymeMLWriter:
                 optional_attributes=complexAttributes
             )
 
-    def _addReactants(self, model: libsbml.Model, reactant_dict: dict[str, Reactant]):
+    def _addReactants(self, model: libsbml.Model, reactant_dict: Dict[str, Reactant]):
         """Converts EnzymeMLDocument reactants to SBML.
 
         Args:
             model (libsbml.Model): The SBML model the reactants are added to.
-            reactant_dict (dict[str, Reactant]): The EnzymeMLDocument reactants to be added to the SBML model.
+            reactant_dict (Dict[str, Reactant]): The EnzymeMLDocument reactants to be added to the SBML model.
         """
 
         # EnzymeML attributes
@@ -536,12 +536,12 @@ class EnzymeMLWriter:
                 optional_attributes=reactantAttributes
             )
 
-    def _addGlobalParameters(self, model: libsbml.Model, global_parameters: dict[str, KineticParameter]):
+    def _addGlobalParameters(self, model: libsbml.Model, global_parameters: Dict[str, KineticParameter]):
         """Writes global parameters to the SBML document.
 
         Args:
             model (libsbml.Model): SBML model the global parameters are added to.
-            global_parameters (dict[str, KineticParameter]): Global parameters that will be added to the SBML document.
+            global_parameters (Dict[str, KineticParameter]): Global parameters that will be added to the SBML document.
         """
 
         for parameter in global_parameters.values():
@@ -594,7 +594,7 @@ class EnzymeMLWriter:
         obj: AbstractSpecies,
         annotation_name: str,
         model: libsbml.Model,
-        optional_attributes: dict[str, str],
+        optional_attributes: Dict[str, str],
     ) -> None:
         """Helper function to create any EnzymeML species from
 
@@ -652,12 +652,12 @@ class EnzymeMLWriter:
         if objAnnotation.getNumChildren() > 0:
             species.appendAnnotation(objAnnotation)
 
-    def _addReactions(self, model: libsbml.Model, reaction_dict: dict[str, EnzymeReaction]):
+    def _addReactions(self, model: libsbml.Model, reaction_dict: Dict[str, EnzymeReaction]):
         """Converts EnzymeMLDocument reactions to SBML.
 
         Args:
             model (libsbml.Model): The SBML model the reactions are added to.
-            reaction_dict (dict[str, EnzymeReaction]): The EnzymeMLDocument reactions to be added to the SBML model.
+            reaction_dict (Dict[str, EnzymeReaction]): The EnzymeMLDocument reactions to be added to the SBML model.
         """
 
         for reaction_id, enzyme_reaction in reaction_dict.items():
@@ -797,13 +797,13 @@ class EnzymeMLWriter:
 
     def writeElements(
         self,
-        reaction_elements: list[ReactionElement],
+        reaction_elements: List[ReactionElement],
         createFunction: Callable
     ):
         """Writes SpeciesReference elements to the SBML document.
 
         Args:
-            reaction_elements (list[ReactionElement]): List of reaction elements containing information on stoichiometry, species_id and ontology.
+            reaction_elements (List[ReactionElement]): List of reaction elements containing information on stoichiometry, species_id and ontology.
             createFunction (Callable): Function that creates either an educt, product or modifier list to the SBML document.
         """
 
@@ -851,16 +851,16 @@ class EnzymeMLWriter:
     def _addData(
         self,
         model: libsbml.Model,
-        measurement_dict: dict[str, Measurement]
-    ) -> dict[str, str]:
+        measurement_dict: Dict[str, Measurement]
+    ) -> Dict[str, str]:
         """Adds measurement data to the SBML document and writes time course data to DataFrames/CSV.
 
         Args:
             model (libsbml.Model): The SBML model to which the measurements are added.
-            measurement_dict (dict[str, Measurement]): The EnzymeMLDocument measurement data.
+            measurement_dict (Dict[str, Measurement]): The EnzymeMLDocument measurement data.
 
         Returns:
-            dict[str, str]: Mapping from actual CSV paths to the ones added to the OMEX
+            Dict[str, str]: Mapping from actual CSV paths to the ones added to the OMEX
         """
 
         # Initialize data lists
@@ -998,7 +998,7 @@ class EnzymeMLWriter:
         measurement: Measurement,
         measurement_annot: XMLNode,
         format_annot: XMLNode,
-        data_columns: dict[str, list[float]]
+        data_columns: Dict[str, List[float]]
     ) -> None:
         """Writes measurement metadata as columns to the SBML document annotation enzymeml:column.
 
@@ -1008,7 +1008,7 @@ class EnzymeMLWriter:
             format_annot (XMLNode): The SBML XMLNode the column information is written to.
 
         Returns:
-            list[list[float]]: The time course data from the replicate objects.
+            List[List[float]]: The time course data from the replicate objects.
         """
 
         species_dict = measurement.species_dict
@@ -1039,14 +1039,14 @@ class EnzymeMLWriter:
     def appendInitConcData(
         self,
         measurement_annot: XMLNode,
-        measurement_data_dict: dict[str, MeasurementData],
+        measurement_data_dict: Dict[str, MeasurementData],
         species_type: str
     ):
         """Adds individual intial concentration data to the enzymeml:measurement annotation.
 
         Args:
             measurement_annot (XMLNode): The SBML XMLNode for the measurement annotation.
-            measurement_data_dict (dict[str, MeasurementData]): The EnzymeMLDocument measurement data.
+            measurement_data_dict (Dict[str, MeasurementData]): The EnzymeMLDocument measurement data.
             species_type (str): The type of species in the measurement_data_dict.
         """
 
@@ -1065,18 +1065,18 @@ class EnzymeMLWriter:
 
     def appendReplicateData(
         self,
-        species: dict[str, MeasurementData],
+        species: Dict[str, MeasurementData],
         format_annot: XMLNode,
-        data_columns: dict[str, list[float]]
-    ) -> dict[str, list[float]]:
+        data_columns: Dict[str, List[float]]
+    ) -> Dict[str, List[float]]:
         """Extracts all time course data from the replicate objects and adds them to the the enzymeml:format annotation.
 
         Args:
-            species (dict[str, MeasurementData]): Reactant/Protein measurement data.
+            species (Dict[str, MeasurementData]): Reactant/Protein measurement data.
             format_annot (XMLNode): The SBML XMLNode representing the format annotation.
 
         Returns:
-            list[list[float]]: The time course data from the replicate objects.
+            List[List[float]]: The time course data from the replicate objects.
         """
 
         # Collect all replicates
