@@ -35,6 +35,7 @@ class UnitParser(object):
 
         # reformat string
         exp_string = self.__exponentString(exp_string)
+
         # split by exponents
         regex = r"([a-zA-Z]*)([-+][\d]*)"
         regex = regex.replace(' ', '')
@@ -44,7 +45,10 @@ class UnitParser(object):
             self.__getPrefix(
                 tup[0],
                 tup[-1]
-            ) for tup in unit_tup]
+            )
+            for tup in unit_tup
+            if tup[0]
+        ]
 
     def getExponentString(self, string):
 
@@ -64,9 +68,8 @@ class UnitParser(object):
         )
 
     def __reformatString(self, string, pre):
-        regex = r"([a-zA-z]*)([-+]?\d*)"
+        regex = r"(\w*)[-+|\^]?(\d*)"
         groups = re.findall(regex, string)
-
         exp_string = ""
 
         for unit, exponent in groups:
@@ -85,7 +88,7 @@ class UnitParser(object):
         return exp_string
 
     def __exponentString(self, string):
-
+        
         string = [st.strip() for st in string.split('/')]
 
         if len(string) == 2:

@@ -37,6 +37,7 @@ class UnitCreator:
             "second": self.__Seconds,
             "seconds": self.__Seconds,
             "min": self.__Minutes,
+            "mins": self.__Minutes,
             "minute": self.__Minutes,
             "minutes": self.__Minutes,
             "h": self.__Hours,
@@ -74,19 +75,22 @@ class UnitCreator:
             if float(exponent) > 0:
                 if abs(float(exponent)) > 1:
                     nominator.append(
-                        pre_unit + f"**{exponent}"
+                        pre_unit + f"^{exponent[1::]}"
                     )
                 if abs(float(exponent)) == 1:
                     nominator.append(pre_unit)
             else:
                 if abs(float(exponent)) > 1:
                     denominator.append(
-                        pre_unit + f"**{exponent}"
+                        pre_unit + f"^{exponent[1::]}"
                     )
                 if abs(float(exponent)) == 1:
                     denominator.append(pre_unit)
 
         # Reformat unit string to a convenient format
+        if not nominator:
+            nominator = ["1"]
+
         if denominator:
             name = " / ".join([
                 " ".join(nominator),
