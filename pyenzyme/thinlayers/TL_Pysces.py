@@ -10,13 +10,20 @@ Copyright (c) 2021 Stellenbosch University
 import numpy as np
 import pandas as pd
 import os
-import pysces
-import lmfit
-import copy
 
 from typing import Union, Optional
 from pyenzyme.thinlayers.TL_Base import BaseThinLayer
 
+_PYSCES_IMPORT_ERROR = None
+try:
+    import pysces
+    import lmfit
+except ModuleNotFoundError as e:
+    _PYSCES_IMPORT_ERROR = """
+    ThinLayerPysces is not available. 
+    To use it, please install the following dependencies:
+    {}
+    """.format(e)
 
 class ThinLayerPysces(BaseThinLayer):
 
@@ -27,6 +34,10 @@ class ThinLayerPysces(BaseThinLayer):
         measurement_ids: Union[str, list] = "all",
         init_file: Optional[str] = None
     ):
+
+        # check dependencies
+        if _PYSCES_IMPORT_ERROR:
+            raise RuntimeError(_PYSCES_IMPORT_ERROR)
 
         super().__init__(path, measurement_ids, init_file)
 
@@ -187,7 +198,7 @@ class ThinLayerPysces(BaseThinLayer):
         # Finally, load the PSC model
         self.model = pysces.model(sbmlfile_name, dir=model_dir)
 
-    def _calculate_residual(self, parameters: lmfit.Parameters) -> np.ndarray:
+    def _calculate_residual(self, parameters) -> np.ndarray:
         """Function that will be optimized"""
 
         simulated_data = self._simulate_experiment(parameters)
@@ -197,7 +208,7 @@ class ThinLayerPysces(BaseThinLayer):
 
         return np.array(self.experimental_data - simulated_data)
 
-    def _simulate_experiment(self, parameters: lmfit.Parameters):
+    def _simulate_experiment(self, parameters):
         """Performs simulation based on the PySCeS model"""
 
         self.model.SetQuiet()

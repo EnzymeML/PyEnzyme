@@ -16,11 +16,18 @@ from typing import Union, Optional
 from pyenzyme import EnzymeMLDocument
 from pyenzyme.thinlayers import BaseThinLayer
 import os
-
-import COPASI
 import pandas as pd
 from builtins import enumerate
 
+_COPASI_IMPORT_ERROR = None
+try:
+    import COPASI
+except ModuleNotFoundError as e:
+    _COPASI_IMPORT_ERROR = """
+    ThinLayerCopasi is not available. 
+    To use it, please install the following dependencies:
+    {}
+    """.format(e)
 
 class ThinLayerCopasi(BaseThinLayer):
 
@@ -36,6 +43,9 @@ class ThinLayerCopasi(BaseThinLayer):
         :param measurement_ids: the measurement ids or all
         :param init_file: optional initialization file for fit items
         """
+        # check dependencies
+        if _COPASI_IMPORT_ERROR:
+            raise RuntimeError(_COPASI_IMPORT_ERROR)
 
         # initialize base class, let it do the reading
         BaseThinLayer.__init__(
