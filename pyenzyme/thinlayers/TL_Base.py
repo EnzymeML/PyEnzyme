@@ -1,7 +1,4 @@
-import os
-
 from abc import ABC, abstractmethod
-from tkinter.messagebox import NO
 from typing import Union, Optional
 
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
