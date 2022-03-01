@@ -635,23 +635,24 @@ class EnzymeMLReader:
         value = parameter.getValue()
         unit_id = parameter.getUnits()
 
+        annotation = parameter.getAnnotationString()
+        param_dict = self._parseSpeciesAnnotation(annotation)
+
+        if unit_id:
+            param_dict["unit"] = enzmldoc.getUnitString(unit_id)
+
         if parameter.__class__.__name__ == "LocalParameter":
             constant = False
         else:
             constant = parameter.getConstant()
 
         if repr(parameter.getValue()) == "nan":
-            value, unit_id, unit = None, None, None
-        else:
-            unit = enzmldoc.getUnitString(unit_id)
-
-        annotation = parameter.getAnnotationString()
-        param_dict = self._parseSpeciesAnnotation(annotation)
+            value = None
 
         nu_param = KineticParameter(
             name=parameter.getId(),
             value=value,
-            unit=unit,
+            unit=param_dict.get("unit"),
             ontology=self._sboterm_to_enum(parameter.getSBOTerm()),
             initial_value=param_dict.get("initialvalue"),
             upper=param_dict.get("upperbound"),
@@ -659,7 +660,7 @@ class EnzymeMLReader:
             constant=constant
         )
 
-        if unit:
+        if unit_id:
             nu_param._unit_id = parameter.getUnits()
 
         return nu_param

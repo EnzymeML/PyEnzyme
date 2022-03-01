@@ -672,7 +672,7 @@ class EnzymeMLWriter:
             # Add kinetic model
             if enzyme_reaction.model:
                 self._addModelToReaction(
-                    reaction=reaction, kinetic_model=enzyme_reaction.model, sbml_model=model
+                    reaction=reaction, kinetic_model=enzyme_reaction.model
                 )
 
             # Enzymeml attributes
@@ -727,7 +727,6 @@ class EnzymeMLWriter:
         self,
         reaction: libsbml.Reaction,
         kinetic_model: KineticModel,
-        sbml_model: libsbml.Model
     ) -> None:
         '''
         Adds kinetic law to SBML reaction.
