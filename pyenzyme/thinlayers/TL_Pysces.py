@@ -7,12 +7,14 @@ License: BSD-2 clause
 Copyright (c) 2021 Stellenbosch University
 """
 
+import copy
 import numpy as np
 import pandas as pd
 import os
 
 from typing import Union, Optional
 from pyenzyme.thinlayers.TL_Base import BaseThinLayer
+from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
 
 _PYSCES_IMPORT_ERROR = None
 try:
@@ -24,6 +26,7 @@ except ModuleNotFoundError as e:
     To use it, please install the following dependencies:
     {}
     """.format(e)
+
 
 class ThinLayerPysces(BaseThinLayer):
 
@@ -54,12 +57,15 @@ class ThinLayerPysces(BaseThinLayer):
         """
 
         # Initialize the model parameters
-        self._initialize_parameters()
+        parameters = self._initialize_parameters()
 
         # Perform optimization
         self.minimizer = lmfit.Minimizer(
-            self._calculate_residual, self.parameters
+            self._calculate_residual, parameters
         )
+
+        # Set estiomated parameters to self
+        self.parameters = parameters
 
         return self.minimizer.minimize(method=method)
 
@@ -67,9 +73,9 @@ class ThinLayerPysces(BaseThinLayer):
         """Writes the estimated parameters to a copy of the EnzymeMLDocument"""
 
         nu_enzmldoc = self.enzmldoc.copy(deep=True)
-        parameters = self.parameters.valuesdict()
+        results = self.minimizer.result.params.valuesdict()
 
-        for name, value in parameters.items():
+        for name, value in results.items():
             # names contain information about reaction and parameter
             # Pattern: rX_name
 
@@ -78,7 +84,12 @@ class ThinLayerPysces(BaseThinLayer):
             parameter_id = "_".join(splitted[1::])
 
             # Fetch reaction and parameter
-            reaction = nu_enzmldoc.getReaction(reaction_id)
+            try:
+                reaction = nu_enzmldoc.getReaction(reaction_id)
+            except SpeciesNotFoundError:
+                global_param = nu_enzmldoc.global_parameters.get(name)
+                global_param.value = value
+                continue
 
             if reaction.model:
                 parameter = reaction.model.getParameter(parameter_id)
@@ -91,7 +102,7 @@ class ThinLayerPysces(BaseThinLayer):
         return nu_enzmldoc
 
     # ! Helper methods
-    def _initialize_parameters(self) -> None:
+    def _initialize_parameters(self):
         """Adds all parameters to an lmfit Parameters instance.
 
         Raises:
@@ -99,19 +110,19 @@ class ThinLayerPysces(BaseThinLayer):
         """
 
         # Initialize lmfit parameters
-        self.parameters = lmfit.Parameters()
+        parameters = lmfit.Parameters()
 
         # Add global parameters
         for global_param in self.global_parameters.values():
 
             if global_param.value:
-                self.parameters.add(
+                parameters.add(
                     f"{global_param.name}", global_param.value, vary=not global_param.constant,
                     min=global_param.lower, max=global_param.upper
                 )
 
             elif global_param.initial_value:
-                self.parameters.add(
+                parameters.add(
                     f"{global_param.name}", global_param.initial_value, vary=not global_param.constant,
                     min=global_param.lower, max=global_param.upper
                 )
@@ -131,12 +142,12 @@ class ThinLayerPysces(BaseThinLayer):
                     continue
 
                 if parameter.value:
-                    self.parameters.add(
+                    parameters.add(
                         f"{reaction_id}_{parameter.name}", parameter.value, vary=not parameter.constant,
                         min=parameter.lower, max=parameter.upper
                     )
                 elif parameter.initial_value:
-                    self.parameters.add(
+                    parameters.add(
                         f"{reaction_id}_{parameter.name}", parameter.initial_value, vary=not parameter.constant,
                         min=parameter.lower, max=parameter.upper
                     )
@@ -144,6 +155,8 @@ class ThinLayerPysces(BaseThinLayer):
                     raise ValueError(
                         f"Neither initial_value nor value given for parameter {parameter.name} in reaction {reaction_id}"
                     )
+
+        return parameters
 
     def _get_experimental_data(self):
         """Extract measurement data from the EnzymeML document"""
