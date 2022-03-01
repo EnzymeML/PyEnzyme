@@ -585,6 +585,32 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return replicate_data
 
+    def exportKineticParameters(self) -> pd.DataFrame:
+        """Exports all kinetic parameters found in the EnzymeMLDocument
+
+        Args:
+            reactions (List[str]): Reactions from which the parameters are to be exported.
+
+        Returns:
+            Dict: Mapping from parameter name to estimated value
+        """
+
+        # Export local parameters
+        params = [
+            {"reaction": reaction.id, **param.dict(exclude={"ontology"})}
+            for reaction in self.reaction_dict.values()
+            for param in reaction.model.parameters
+            if reaction.model and not param.is_global
+        ]
+
+        # Global parameters
+        params += [
+            {"reaction": "global", **param.dict(exclude={"ontology"})}
+            for param in self.global_parameters.values()
+        ]
+
+        return pd.DataFrame(params).set_index("reaction", inplace=False)
+
     @ staticmethod
     def _generateID(prefix: str, dictionary: dict) -> str:
         """Generates IDs complying to the [s|p|r|m|u|c]?[digit]+ schema.
