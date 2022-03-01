@@ -13,7 +13,6 @@ Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgar
 import logging
 from typing import Union, Optional
 
-from pyenzyme import EnzymeMLDocument
 from pyenzyme.thinlayers import BaseThinLayer
 import os
 import pandas as pd
@@ -28,6 +27,7 @@ except ModuleNotFoundError as e:
     To use it, please install the following dependencies:
     {}
     """.format(e)
+
 
 class ThinLayerCopasi(BaseThinLayer):
 
