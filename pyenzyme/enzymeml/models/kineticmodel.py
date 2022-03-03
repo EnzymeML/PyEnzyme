@@ -314,6 +314,10 @@ class ModelFactory:
             stdev = options.get("stdev")
             upper = options.get("upper")
             lower = options.get("lower")
+            constant = options.get("constant")
+
+            # Convert constant to bool if not set
+            if not constant: constant = False
 
             parameter = KineticParameter(
                 name=name,
@@ -325,7 +329,7 @@ class ModelFactory:
                 upper=upper,
                 lower=lower,
                 is_global=False,
-                constant=False
+                constant=constant 
             )
 
             self.model.parameters.append(parameter)
