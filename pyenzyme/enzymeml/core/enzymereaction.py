@@ -547,6 +547,7 @@ class EnzymeReaction(EnzymeMLBase):
             param.initial_value = options.get("initial_value")
             param.upper = options.get("upper")
             param.lower = options.get("lower")
+            param.constant = options.get("constant")
 
     # ! Initializers
 
