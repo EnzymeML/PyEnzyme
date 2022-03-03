@@ -4,13 +4,13 @@ import sys
 from io import StringIO
 
 
-def setup_custom_logger(name, log_stream: StringIO):
+def setup_custom_logger(name, log_stream: StringIO, level = logging.DEBUG):
 
     formatter = logging.Formatter(
         fmt='%(levelname)s - %(message)s'
     )
 
-    handler = logging.StreamHandler(stream=sys.stdout)
+    handler = logging.StreamHandler(stream=sys.stderr)
     handler.setFormatter(formatter)
     handler.setLevel(logging.INFO)
 
@@ -23,9 +23,10 @@ def setup_custom_logger(name, log_stream: StringIO):
     string_handler.setLevel(logging.NOTSET)
 
     logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(level)
     logger.addHandler(handler)
     logger.addHandler(string_handler)
+
 
     return logger
 
