@@ -585,7 +585,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return replicate_data
 
-    def exportKineticParameters(self) -> pd.DataFrame:
+    def exportKineticParameters(self, exclude_constant: bool = False) -> pd.DataFrame:
         """Exports all kinetic parameters found in the EnzymeMLDocument
 
         Args:
@@ -609,7 +609,13 @@ class EnzymeMLDocument(EnzymeMLBase):
             for param in self.global_parameters.values()
         ]
 
-        return pd.DataFrame(params).set_index("reaction", inplace=False)
+        # Create param report
+        param_report = pd.DataFrame(params).set_index("reaction", inplace=False)
+
+        if exclude_constant:
+            return param_report[param_report.constant == False]
+
+        return param_report
 
     @ staticmethod
     def _generateID(prefix: str, dictionary: dict) -> str:
@@ -777,6 +783,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             "global": {
                 param.name: {
                     "initial_value": None,
+                    "constant": param.constant,
                     "upper": None,
                     "lower": None
                 }
@@ -792,6 +799,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             parameters = {
                 param.name: {
                     "initial_value": None,
+                    "constant": param.constant,
                     "upper": None,
                     "lower": None
                 }
@@ -838,10 +846,10 @@ class EnzymeMLDocument(EnzymeMLBase):
                         self.global_parameters[name].value = options.get(
                             "initial_value")
 
-                    self.global_parameters[name].initial_value = options.get(
-                        "initial_value")
+                    self.global_parameters[name].initial_value = options.get("initial_value")
                     self.global_parameters[name].upper = options.get("upper")
                     self.global_parameters[name].lower = options.get("lower")
+                    self.global_parameters[name].constant = options.get("constant")
 
             else:
                 # Get the reaction
