@@ -1,4 +1,4 @@
-'''
+"""
 File: functionalities.py
 Project: core
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Tuesday June 15th 2021 6:43:34 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 
 from deprecation import deprecated

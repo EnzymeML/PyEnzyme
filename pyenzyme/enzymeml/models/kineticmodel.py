@@ -1,4 +1,4 @@
-'''
+"""
 File: kineticmodel.py
 Project: models
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Tuesday June 22nd 2021 9:55:38 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 import ast
 import re
@@ -22,10 +22,7 @@ from pydantic.fields import PrivateAttr
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.ontology import SBOTerm
-from pyenzyme.enzymeml.core.utils import (
-    type_checking,
-    deprecated_getter
-)
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
 
 if TYPE_CHECKING:  # pragma: no cover
     static_check_init_args = dataclass
@@ -52,34 +49,26 @@ class KineticParameter(EnzymeMLBase):
     )
 
     initial_value: Optional[float] = Field(
-        None,
-        description="Initial value that was used for the parameter estimation."
+        None, description="Initial value that was used for the parameter estimation."
     )
 
     upper: Optional[float] = Field(
-        None,
-        description="Upper bound of the estimated parameter."
+        None, description="Upper bound of the estimated parameter."
     )
 
     lower: Optional[float] = Field(
-        None,
-        description="Lower bound of the estimated parameter."
+        None, description="Lower bound of the estimated parameter."
     )
 
     is_global: bool = Field(
-        False,
-        description="Specifies if this parameter is a global parameter."
+        False, description="Specifies if this parameter is a global parameter."
     )
 
     stdev: Optional[float] = Field(
-        None,
-        description="Standard deviation of the estimated parameter."
+        None, description="Standard deviation of the estimated parameter."
     )
 
-    constant: bool = Field(
-        False,
-        description="Specifies if this parameter is constant"
-    )
+    constant: bool = Field(False, description="Specifies if this parameter is constant")
 
     ontology: Optional[SBOTerm] = Field(
         None,
@@ -134,7 +123,7 @@ class KineticModel(EnzymeMLBase):
         is_global: bool = False,
         stdev: Optional[float] = None,
         constant: bool = False,
-        ontology: Optional[SBOTerm] = None
+        ontology: Optional[SBOTerm] = None,
     ):
         """Adds a parameter to the KineticModel object
 
@@ -153,8 +142,16 @@ class KineticModel(EnzymeMLBase):
 
         self.parameters.append(
             KineticParameter(
-                name=name, value=value, unit=unit, initial_value=initial_value, upper=upper, lower=lower,
-                is_global=is_global, stdev=stdev, constant=constant, ontology=ontology
+                name=name,
+                value=value,
+                unit=unit,
+                initial_value=initial_value,
+                upper=upper,
+                lower=lower,
+                is_global=is_global,
+                stdev=stdev,
+                constant=constant,
+                ontology=ontology,
             )
         )
 
@@ -173,11 +170,7 @@ class KineticModel(EnzymeMLBase):
             [type]: [description]
         """
 
-        return ModelFactory(
-            name=name,
-            equation=equation,
-            **parameters
-        )
+        return ModelFactory(name=name, equation=equation, **parameters)
 
     @classmethod
     def fromEquation(cls, name: str, equation: str):
@@ -228,9 +221,7 @@ class KineticModel(EnzymeMLBase):
         # Get the values for the parameters
         for parameter in self.parameters:
             if parameter.value:
-                params.update({
-                    parameter.name: parameter.value
-                })
+                params.update({parameter.name: parameter.value})
 
         # Now replace the strings in the equation to evaluate it using numexpr
         eval_string = self.equation
@@ -256,13 +247,9 @@ class KineticModel(EnzymeMLBase):
         """
 
         try:
-            return next(filter(
-                lambda parm: parm.name == name, self.parameters
-            ))
+            return next(filter(lambda parm: parm.name == name, self.parameters))
         except StopIteration:
-            raise KeyError(
-                f"Parameter {name} not found in the model."
-            )
+            raise KeyError(f"Parameter {name} not found in the model.")
 
     @deprecated_getter("equation")
     def getEquation(self):
@@ -284,22 +271,14 @@ class ModelFactory:
     name: str
 
     def __init__(
-        self,
-        name: str,
-        equation: str,
-        ontology: Optional[SBOTerm] = None,
-        **parameters
+        self, name: str, equation: str, ontology: Optional[SBOTerm] = None, **parameters
     ) -> None:
 
         # Parse the eqation and get all names and variables
         self.variables = self.parse_equation(equation)
 
         # Initialize the model
-        self.model = KineticModel(
-            name=name,
-            equation=equation,
-            ontology=None
-        )
+        self.model = KineticModel(name=name, equation=equation, ontology=None)
 
         for name, options in parameters.items():
 
@@ -317,7 +296,8 @@ class ModelFactory:
             constant = options.get("constant")
 
             # Convert constant to bool if not set
-            if not constant: constant = False
+            if not constant:
+                constant = False
 
             parameter = KineticParameter(
                 name=name,
@@ -329,14 +309,13 @@ class ModelFactory:
                 upper=upper,
                 lower=lower,
                 is_global=False,
-                constant=constant 
+                constant=constant,
             )
 
             self.model.parameters.append(parameter)
 
     def __call__(self, mapping: dict = {}, **variables) -> KineticModel:
-        """Returns a KineticModel that is suited for the given parameters.
-        """
+        """Returns a KineticModel that is suited for the given parameters."""
 
         # Copy the internal object and modify it to the needs
         model = KineticModel(**self.model.dict())
@@ -354,9 +333,7 @@ class ModelFactory:
                 else:
                     identifier = repr(identifier)
 
-                model.equation = model.equation.replace(
-                    stock_variable, identifier
-                )
+                model.equation = model.equation.replace(stock_variable, identifier)
 
             except KeyError:
                 raise KeyError(
@@ -393,13 +370,12 @@ class ModelFactory:
                     continue
 
             if not found:
-                raise KeyError(
-                    f"Parameter {param_old} is not part of the model."
-                )
+                raise KeyError(f"Parameter {param_old} is not part of the model.")
 
     @staticmethod
     def parse_equation(equation: str):
         return [
-            node.id for node in ast.walk(ast.parse(equation))
+            node.id
+            for node in ast.walk(ast.parse(equation))
             if isinstance(node, ast.Name)
         ]

@@ -1,4 +1,4 @@
-'''
+"""
 File: measurementData.py
 Project: core
 Author: Jan Range
@@ -8,15 +8,9 @@ Last Modified: Thursday July 15th 2021 1:19:51 am
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
-from pydantic import (
-    PositiveFloat,
-    validate_arguments,
-    validator,
-    Field,
-    PrivateAttr
-)
+from pydantic import PositiveFloat, validate_arguments, validator, Field, PrivateAttr
 from dataclasses import dataclass
 from typing import List, Optional, TYPE_CHECKING
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -24,10 +18,7 @@ from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.exceptions import MeasurementDataSpeciesIdentifierError
 from pyenzyme.enzymeml.core.unitdef import UnitDef
-from pyenzyme.enzymeml.core.utils import (
-    type_checking,
-    deprecated_getter
-)
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
 
 if TYPE_CHECKING:  # pragma: no cover
     static_check_init_args = dataclass
@@ -82,8 +73,7 @@ class MeasurementData(EnzymeMLBase):
             raise MeasurementDataSpeciesIdentifierError()
 
         elif reactant_id and protein_id:
-            raise MeasurementDataSpeciesIdentifierError(
-                both=[reactant_id, protein_id])
+            raise MeasurementDataSpeciesIdentifierError(both=[reactant_id, protein_id])
 
         return protein_id
 
@@ -102,16 +92,15 @@ class MeasurementData(EnzymeMLBase):
 
         for replicate in self.replicates:
             unit_id = self._rescaleReplicateUnits(
-                replicate=replicate,
-                kind=kind,
-                scale=scale,
-                enzmldoc=enzmldoc
+                replicate=replicate, kind=kind, scale=scale, enzmldoc=enzmldoc
             )
 
         if unit_id:
             return unit_id
 
-    def _rescaleReplicateUnits(self, replicate: Replicate, kind: str, scale: int, enzmldoc) -> None:
+    def _rescaleReplicateUnits(
+        self, replicate: Replicate, kind: str, scale: int, enzmldoc
+    ) -> None:
         """Rescales a replicates data_unit to match the desired scale.
 
         Args:
@@ -125,15 +114,10 @@ class MeasurementData(EnzymeMLBase):
         unitdef: UnitDef = enzmldoc.unit_dict[data_unit_id].copy()
 
         # Calculate the scale to transform the unit
-        transform_value = unitdef.calculateTransformValue(
-            kind=kind, scale=scale
-        )
+        transform_value = unitdef.calculateTransformValue(kind=kind, scale=scale)
 
         # Re-scale and assign the data of the replicate
-        replicate.data = [
-            data_point * transform_value
-            for data_point in replicate.data
-        ]
+        replicate.data = [data_point * transform_value for data_point in replicate.data]
 
         # Create a new unit that matches the new scale
         new_unitdef = UnitDef(**unitdef.dict())
@@ -153,11 +137,11 @@ class MeasurementData(EnzymeMLBase):
         self.__setattr__("unit", new_unit_name)
         self.__setattr__("_unit_id", unit_id)
 
-    @ validate_arguments
+    @validate_arguments
     def addReplicate(self, replicate: Replicate) -> None:
         self.replicates.append(replicate)
 
-    @ validate_arguments
+    @validate_arguments
     def setMeasurementIDs(self, id: str) -> None:
         for replicate in self.replicates:
             replicate.measurement_id = id
@@ -172,22 +156,22 @@ class MeasurementData(EnzymeMLBase):
         else:
             raise AttributeError("Neither reactant nor protein ID are given.")
 
-    @ deprecated_getter("reactant_id")
+    @deprecated_getter("reactant_id")
     def getReactantID(self) -> Optional[str]:
         return self.reactant_id
 
-    @ deprecated_getter("protein_id")
+    @deprecated_getter("protein_id")
     def getProteinID(self) -> Optional[str]:
         return self.protein_id
 
-    @ deprecated_getter("init_conc")
+    @deprecated_getter("init_conc")
     def getInitConc(self) -> PositiveFloat:
         return self.init_conc
 
-    @ deprecated_getter("unit")
+    @deprecated_getter("unit")
     def getUnit(self) -> str:
         return self.unit
 
-    @ deprecated_getter("replicates")
+    @deprecated_getter("replicates")
     def getReplicates(self) -> List[Replicate]:
         return self.replicates

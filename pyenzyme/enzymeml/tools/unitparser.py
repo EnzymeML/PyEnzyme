@@ -1,4 +1,4 @@
-'''
+"""
 File: unitparser.py
 Project: tools
 Author: Jan Range
@@ -8,17 +8,15 @@ Last Modified: Tuesday June 22nd 2021 10:15:07 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 import re
 
 
 class UnitParser(object):
-
     def __init__(self):
 
         self.__prefixDict = {
-
             "femto": "f",
             "pico": "p",
             "nano": "n",
@@ -27,8 +25,7 @@ class UnitParser(object):
             "mili": "m",
             "centi": "c",
             "deci": "d",
-            "kilo": "k"
-
+            "kilo": "k",
         }
 
     def parse(self, exp_string):
@@ -38,33 +35,26 @@ class UnitParser(object):
 
         # split by exponents
         regex = r"([a-zA-Z]*)([-+][\d]*)"
-        regex = regex.replace(' ', '')
+        regex = regex.replace(" ", "")
 
         unit_tup = re.findall(regex, exp_string)
-        return [
-            self.__getPrefix(
-                tup[0],
-                tup[-1]
-            )
-            for tup in unit_tup
-            if tup[0]
-        ]
+        return [self.__getPrefix(tup[0], tup[-1]) for tup in unit_tup if tup[0]]
 
     def getExponentString(self, string):
 
-        string = string.split('/')
+        string = string.split("/")
 
         if len(string) == 2:
-            nom = string[0].split(' ')[0:-1]
-            den = string[1].split(' ')[1::]
+            nom = string[0].split(" ")[0:-1]
+            den = string[1].split(" ")[1::]
 
         elif len(string) == 1:
             nom = string
             den = []
 
         return "".join(
-            [self.__reformatString(unit, "+") for unit in nom] +
-            [self.__reformatString(unit, "-") for unit in den]
+            [self.__reformatString(unit, "+") for unit in nom]
+            + [self.__reformatString(unit, "-") for unit in den]
         )
 
     def __reformatString(self, string, pre):
@@ -88,20 +78,20 @@ class UnitParser(object):
         return exp_string
 
     def __exponentString(self, string):
-        
-        string = [st.strip() for st in string.split('/')]
+
+        string = [st.strip() for st in string.split("/")]
 
         if len(string) == 2:
-            nom = string[0].split(' ')
-            den = string[1].split(' ')
+            nom = string[0].split(" ")
+            den = string[1].split(" ")
 
         elif len(string) == 1:
             nom = string
             den = []
 
         return "".join(
-            [self.__reformatString(unit, "+") for unit in nom] +
-            [self.__reformatString(unit, "-") for unit in den]
+            [self.__reformatString(unit, "+") for unit in nom]
+            + [self.__reformatString(unit, "-") for unit in den]
         )
 
     def __getPrefix(self, string, exponent):
@@ -117,21 +107,13 @@ class UnitParser(object):
 
             unit = re.findall(regex, string)[0][1]
 
-            return (
-                prefix,
-                unit,
-                exponent
-            )
+            return (prefix, unit, exponent)
 
         except IndexError:
 
             try:
                 unit = re.findall(regex, string)[0][0]
-                return (
-                    "NONE",
-                    unit,
-                    exponent
-                )
+                return ("NONE", unit, exponent)
             except IndexError:
                 supportedUnits = regex.split()
                 raise KeyError(
@@ -142,7 +124,7 @@ class UnitParser(object):
     def __getSupportUnitString(regex):
         prefixes, units = tuple(regex.split(")("))
 
-        units = units.replace("[s]?", "s").replace(")$", "").split('|')
-        prefixes = prefixes.replace("^([", "").replace("]?", "").split('|')
+        units = units.replace("[s]?", "s").replace(")$", "").split("|")
+        prefixes = prefixes.replace("^([", "").replace("]?", "").split("|")
 
         return f"prefixes [{', '.join(prefixes)}] and units [{', '.join(units)}]"

@@ -1,4 +1,4 @@
-'''
+"""
 File: complex.py
 Project: core
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Tuesday June 22nd 2021 9:53:42 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 import re
 
@@ -46,13 +46,11 @@ class Complex(EnzymeMLBase, AbstractSpecies):
     vessel_id: str = Field(
         ...,
         description="Identifier of the vessel in which the protein was stored.",
-        regex=r"v[\d]+"
+        regex=r"v[\d]+",
     )
 
     init_conc: Optional[float] = Field(
-        None,
-        description="Initial concentration of the protein.",
-        inclusiveMinimum=0.0
+        None, description="Initial concentration of the protein.", inclusiveMinimum=0.0
     )
 
     unit: Optional[str] = Field(
@@ -71,9 +69,7 @@ class Complex(EnzymeMLBase, AbstractSpecies):
     )
 
     id: Optional[str] = Field(
-        None,
-        description="Unique identifier of the protein.",
-        regex=r"c[\d]+"
+        None, description="Unique identifier of the protein.", regex=r"c[\d]+"
     )
 
     boundary: bool = Field(

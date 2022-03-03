@@ -1,4 +1,4 @@
-'''
+"""
 File: creator.py
 Project: core
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Tuesday June 15th 2021 6:28:16 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 from pydantic import BaseModel, PrivateAttr, validator
 from typing import Optional
@@ -58,7 +58,5 @@ class AbstractSpeciesFactory(ABC):
     enzymeml_part: str
 
     @abstractmethod
-    def get_species(
-        self, **kwargs
-    ) -> AbstractSpecies:
+    def get_species(self, **kwargs) -> AbstractSpecies:
         """Return a new species object"""

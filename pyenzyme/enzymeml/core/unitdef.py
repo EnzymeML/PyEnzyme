@@ -1,4 +1,4 @@
-'''
+"""
 File: unitdef.py
 Project: core
 Author: Jan Range
@@ -8,17 +8,14 @@ Last Modified: Tuesday June 15th 2021 7:48:57 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 from pydantic import Field, validator, validate_arguments
 from typing import List, TYPE_CHECKING, Optional
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-from pyenzyme.enzymeml.core.utils import (
-    type_checking,
-    deprecated_getter
-)
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -116,7 +113,9 @@ class UnitDef(EnzymeMLBase):
         return None
 
     @validate_arguments
-    def addBaseUnit(self, kind: str, exponent: float, scale: int, multiplier: float) -> None:
+    def addBaseUnit(
+        self, kind: str, exponent: float, scale: int, multiplier: float
+    ) -> None:
         """Adds a base unit to the units element and sort the units.
 
         Args:
@@ -127,15 +126,13 @@ class UnitDef(EnzymeMLBase):
         """
 
         # Create baseunit
-        baseunit = BaseUnit(kind=kind, exponent=exponent,
-                            scale=scale, multiplier=multiplier)
+        baseunit = BaseUnit(
+            kind=kind, exponent=exponent, scale=scale, multiplier=multiplier
+        )
 
         # Merge both and sort them via kind
         self.units.append(baseunit)
-        self.units = sorted(
-            self.units,
-            key=lambda unit: unit.kind
-        )
+        self.units = sorted(self.units, key=lambda unit: unit.kind)
 
     # ! Utilities
     def calculateTransformValue(self, kind: str, scale: int):
@@ -159,14 +156,10 @@ class UnitDef(EnzymeMLBase):
                 coorrection_factor = -1 if base_unit.scale == 1 else 0
 
                 return 10 ** (
-                    base_unit.exponent * (
-                        base_unit.scale - scale + coorrection_factor
-                    )
+                    base_unit.exponent * (base_unit.scale - scale + coorrection_factor)
                 )
 
-        raise ValueError(
-            f"Unit kind of {kind} is not part of the unit definition"
-        )
+        raise ValueError(f"Unit kind of {kind} is not part of the unit definition")
 
     def _getNewName(self) -> str:
         """Internal function used to derive a units new name. Will be assigned using enzmldoc._convertTounitDef.
@@ -192,27 +185,23 @@ class UnitDef(EnzymeMLBase):
             -2: "c",
             -1: "d",
             1: "",
-            3: "k"
+            3: "k",
         }
 
-        nominator = list(filter(
-            lambda base_unit: base_unit.exponent > 0,
-            self.units
-        ))
+        nominator = list(filter(lambda base_unit: base_unit.exponent > 0, self.units))
 
-        denominator = list(filter(
-            lambda base_unit: base_unit.exponent < 0,
-            self.units
-        ))
+        denominator = list(filter(lambda base_unit: base_unit.exponent < 0, self.units))
 
         # Create new unit name
         def constructName(base_unit: BaseUnit) -> str:
             return f"{prefix_mapping[base_unit.scale]}{kind_mapping[base_unit.kind]}"
 
-        nominator_string = " ".join([constructName(base_unit)
-                                     for base_unit in nominator])
-        denominator_string = " ".join([constructName(base_unit)
-                                       for base_unit in denominator])
+        nominator_string = " ".join(
+            [constructName(base_unit) for base_unit in nominator]
+        )
+        denominator_string = " ".join(
+            [constructName(base_unit) for base_unit in denominator]
+        )
 
         return " / ".join([nominator_string, denominator_string])
 
@@ -239,7 +228,4 @@ class UnitDef(EnzymeMLBase):
 
     def getFootprint(self):
         sorted_units = [base_unit.dict() for base_unit in self.units]
-        return sorted(
-            sorted_units,
-            key=lambda unit: unit["kind"]
-        )
+        return sorted(sorted_units, key=lambda unit: unit["kind"])

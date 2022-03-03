@@ -1,4 +1,4 @@
-'''
+"""
 File: dataverse.py
 Project: core
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Thursday September 16th 2021 6:43:34 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 import json
 import os
@@ -20,7 +20,12 @@ from pyDaRUS.metadatablocks.enzymeML import Constant
 from pyDaRUS.metadatablocks.citation import SubjectEnum
 
 
-def uploadToDataverse(enzmldoc, dataverse_name: str, base_url: Optional[str] = None, api_token: Optional[str] = None) -> None:
+def uploadToDataverse(
+    enzmldoc,
+    dataverse_name: str,
+    base_url: Optional[str] = None,
+    api_token: Optional[str] = None,
+) -> None:
     """Uploads a givene EnzymeMLDocument object to a dataverse installation.
 
     It should be noted, that the environment variables 'DATAVERSE_URL' and 'DATAVERSE_API_TOKEN'
@@ -53,7 +58,7 @@ def uploadToDataverse(enzmldoc, dataverse_name: str, base_url: Optional[str] = N
             dataverse_name=dataverse_name,
             filenames=[f"{archive_name}.omex"],
             DATAVERSE_URL=base_url,
-            API_TOKEN=api_token
+            API_TOKEN=api_token,
         )
     except Exception as e:
         os.remove(f"{archive_name}.omex")
@@ -63,7 +68,9 @@ def uploadToDataverse(enzmldoc, dataverse_name: str, base_url: Optional[str] = N
     os.remove(f"{archive_name}.omex")
 
 
-def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":   # noqa: F821
+def create_enzymeml_metadatablock(
+    enzmldoc: "EnzymeMLDocument",
+) -> "EnzymeMl":  # noqa: F821
 
     # Initialize the EnzymeML metadatablock
     enzml_meta = EnzymeMl()
@@ -73,14 +80,18 @@ def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":  
         "name": "name",
         "volume": "size",
         "unit": "unit",
-        "constant": "constant"
+        "constant": "constant",
     }
 
     for vessel in enzmldoc.vessel_dict.values():
         json_data = json.loads(vessel.json())
 
         # Apply corrections to match controlled vocabs
-        json_data["constant"] = Constant.constant.value if json_data["constant"] else Constant.not_constant.value
+        json_data["constant"] = (
+            Constant.constant.value
+            if json_data["constant"]
+            else Constant.not_constant.value
+        )
 
         add_object(json_data, vessel_mapping, enzml_meta.add_vessels)
 
@@ -95,14 +106,18 @@ def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":  
         "organism": "organism",
         "uniprotid": "uniprotid",
         "ecnumber": "ecnumber",
-        "ontology": "sbo_term"
+        "ontology": "sbo_term",
     }
 
     for protein in enzmldoc.protein_dict.values():
         json_data = json.loads(protein.json())
 
         # Apply corrections to match controlled vocabs
-        json_data["constant"] = Constant.constant.value if json_data["constant"] else Constant.not_constant.value
+        json_data["constant"] = (
+            Constant.constant.value
+            if json_data["constant"]
+            else Constant.not_constant.value
+        )
 
         add_object(json_data, protein_mapping, enzml_meta.add_proteins)
 
@@ -115,14 +130,18 @@ def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":  
         "constant": "constant",
         "inchi": "inchicode",
         "smiles": "smilescode",
-        "ontology": "sbo_term"
+        "ontology": "sbo_term",
     }
 
     for reactant in enzmldoc.reactant_dict.values():
         json_data = json.loads(reactant.json())
 
         # Apply corrections to match controlled vocabs
-        json_data["constant"] = Constant.constant.value if json_data["constant"] else Constant.not_constant.value
+        json_data["constant"] = (
+            Constant.constant.value
+            if json_data["constant"]
+            else Constant.not_constant.value
+        )
 
         add_object(json_data, reactant_mapping, enzml_meta.add_reactants)
 
@@ -130,7 +149,7 @@ def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":  
         "name": "name",
         "temperature": "temperature_value",
         "temperature_unit": "temperature_unit",
-        "ph": "ph_value"
+        "ph": "ph_value",
     }
 
     for reaction in enzmldoc.reaction_dict.values():
@@ -143,22 +162,21 @@ def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":  
 
         # Apply corrections
         if params.get("temperature_unit"):
-            params["temperature_unit"] = "Kelvin" if params["temperature_unit"] == "K" else "Celsius"
+            params["temperature_unit"] = (
+                "Kelvin" if params["temperature_unit"] == "K" else "Celsius"
+            )
 
         # Extract al elements present in the reaction
         educts = [
-            enzmldoc.getAny(element.species_id).name
-            for element in reaction.educts
+            enzmldoc.getAny(element.species_id).name for element in reaction.educts
         ]
 
         products = [
-            enzmldoc.getAny(element.species_id).name
-            for element in reaction.products
+            enzmldoc.getAny(element.species_id).name for element in reaction.products
         ]
 
         modifiers = [
-            enzmldoc.getAny(element.species_id).name
-            for element in reaction.products
+            enzmldoc.getAny(element.species_id).name for element in reaction.products
         ]
 
         # Create corresponding string representations
@@ -181,7 +199,7 @@ def create_enzymeml_metadatablock(enzmldoc: "EnzymeMLDocument") -> "EnzymeMl":  
                     name=f"{json_data['name']}_{reaction.id}",
                     value=json_data["value"],
                     unit=json_data["unit"],
-                    sbo_term=json_data.get("ontology")
+                    sbo_term=json_data.get("ontology"),
                 )
 
     return enzml_meta
@@ -218,10 +236,7 @@ def add_object(json_data, mapping, add_fun):
 def kinetic_law_params(reaction: "EnzymeReaction") -> Dict[str, str]:  # noqa: F821
     """Retrieves the arguments to add a kinetic law to an EnzymeML Metadatablock"""
 
-    kinetic_law_mapping = {
-        "name": "name",
-        "equation": "kinetic_model"
-    }
+    kinetic_law_mapping = {"name": "name", "equation": "kinetic_model"}
 
     # Get the model
     model = reaction.model
@@ -244,8 +259,8 @@ def create_citation_metadatablock(enzmldoc: "EnzymeMLDocument"):  # noqa: F821
         title=enzmldoc.name,
         subject=[
             SubjectEnum.chemistry,
-            SubjectEnum.medicine___health_and__life__sciences
-        ]
+            SubjectEnum.medicine___health_and__life__sciences,
+        ],
     )
 
     # Add author information

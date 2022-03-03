@@ -1,4 +1,4 @@
-'''
+"""
 File: reactant.py
 Project: core
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Tuesday June 15th 2021 8:40:52 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 from pydantic import Field
 from typing import Dict, TYPE_CHECKING, Optional, Union, Any
@@ -18,10 +18,7 @@ from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
 from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.exceptions import ChEBIIdentifierError
-from pyenzyme.enzymeml.core.utils import (
-    type_checking,
-    deprecated_getter
-)
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
 
 if TYPE_CHECKING:  # pragma: no cover
     static_check_init_args = dataclass
@@ -33,15 +30,13 @@ else:
 class Reactant(EnzymeMLBase, AbstractSpecies):
 
     name: Optional[str] = Field(
-        None,
-        description="Name of the reactant.",
-        template_alias="Name"
+        None, description="Name of the reactant.", template_alias="Name"
     )
 
     vessel_id: str = Field(
         ...,
         description="Identifier of the vessel in which the reactant was stored.",
-        template_alias="Vessel"
+        template_alias="Vessel",
     )
 
     init_conc: Optional[float] = Field(
@@ -57,14 +52,14 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
     constant: bool = Field(
         False,
         description="Whether the reactants concentration remains constant or not.",
-        template_alias="Constant"
+        template_alias="Constant",
     )
 
     id: Optional[str] = Field(
         None,
         description="Unique identifier of the protein.",
         template_alias="ID",
-        regex=r"s[\d]+"
+        regex=r"s[\d]+",
     )
 
     meta_id: Optional[str] = Field(
@@ -75,13 +70,13 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
     smiles: Optional[str] = Field(
         None,
         description="Simplified Molecular Input Line Entry System (SMILES) encoding of the reactant.",
-        template_alias="SMILES"
+        template_alias="SMILES",
     )
 
     inchi: Optional[str] = Field(
         None,
         description="International Chemical Identifier (InChI) encoding of the reactant.",
-        template_alias="InCHI"
+        template_alias="InCHI",
     )
 
     boundary: bool = Field(
@@ -118,7 +113,7 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
         constant: bool = False,
         init_conc: Optional[float] = None,
         unit: Optional[str] = None,
-    ) -> 'Reactant':
+    ) -> "Reactant":
         """Initializes a reactant based
 
         Raises:
@@ -137,7 +132,7 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
             vessel_id=vessel_id,
             constant=constant,
             chebi_id=chebi_id,
-            **parameters
+            **parameters,
         )
 
     @staticmethod
@@ -177,46 +172,46 @@ class Reactant(EnzymeMLBase, AbstractSpecies):
 
     # ! Getters
 
-    @ deprecated_getter("inchi")
+    @deprecated_getter("inchi")
     def getInchi(self):
         return self.inchi
 
-    @ deprecated_getter("smiles")
+    @deprecated_getter("smiles")
     def getSmiles(self):
         return self.smiles
 
-    @ deprecated_getter("init_conc")
+    @deprecated_getter("init_conc")
     def getInitConc(self):
         return self.init_conc
 
-    @ deprecated_getter("name")
+    @deprecated_getter("name")
     def getName(self):
         return self.name
 
-    @ deprecated_getter("id")
+    @deprecated_getter("id")
     def getId(self):
         return self.id
 
-    @ deprecated_getter("meta_id")
+    @deprecated_getter("meta_id")
     def getMetaid(self):
         return self.meta_id
 
-    @ deprecated_getter("ontology")
+    @deprecated_getter("ontology")
     def getSboterm(self):
         return self.ontology
 
-    @ deprecated_getter("vessel_id")
+    @deprecated_getter("vessel_id")
     def getVessel(self):
         return self.vessel_id
 
-    @ deprecated_getter("unit")
+    @deprecated_getter("unit")
     def getSubstanceUnits(self):
         return self.unit
 
-    @ deprecated_getter("boundary")
+    @deprecated_getter("boundary")
     def getBoundary(self):
         return self.boundary
 
-    @ deprecated_getter("constant")
+    @deprecated_getter("constant")
     def getConstant(self):
         return self.constant

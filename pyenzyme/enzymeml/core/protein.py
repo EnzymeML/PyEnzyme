@@ -1,4 +1,4 @@
-'''
+"""
 File: protein.py
 Project: core
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Tuesday June 22nd 2021 9:53:42 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 import re
 
@@ -20,10 +20,7 @@ from pyenzyme.enzymeml.core.ontology import SBOTerm
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.exceptions import UniProtIdentifierError
 from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
-from pyenzyme.enzymeml.core.utils import (
-    type_checking,
-    deprecated_getter
-)
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
 
 if TYPE_CHECKING:  # pragma: no cover
     static_check_init_args = dataclass
@@ -35,22 +32,20 @@ else:
 class Protein(EnzymeMLBase, AbstractSpecies):
 
     name: Optional[str] = Field(
-        None,
-        description="Name of the protein",
-        template_alias="Name"
+        None, description="Name of the protein", template_alias="Name"
     )
 
     sequence: Optional[str] = Field(
         None,
         description="Amino acid sequence of the protein",
-        template_alias="Sequence"
+        template_alias="Sequence",
     )
 
     vessel_id: str = Field(
         ...,
         description="Identifier of the vessel in which the protein was stored.",
         template_alias="Vessel",
-        regex=r"v[\d.]+"
+        regex=r"v[\d.]+",
     )
 
     init_conc: Optional[float] = Field(
@@ -66,14 +61,14 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     constant: bool = Field(
         True,
         description="Whether the proteins concentration remains constant or not.",
-        template_alias="Constant"
+        template_alias="Constant",
     )
 
     id: Optional[str] = Field(
         None,
         description="Unique identifier of the protein.",
         template_alias="ID",
-        regex=r"p[\d]+"
+        regex=r"p[\d]+",
     )
 
     meta_id: Optional[str] = Field(
@@ -85,13 +80,13 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         None,
         description="EC number of the protein.",
         template_alias="EC Number",
-        regex=r"(\d+.)(\d+.)(\d+.)(\d+)"
+        regex=r"(\d+.)(\d+.)(\d+.)(\d+)",
     )
 
     organism: Optional[str] = Field(
         None,
         description="Organism the protein was expressed in.",
-        template_alias="Source organism"
+        template_alias="Source organism",
     )
 
     organism_tax_id: Optional[str] = Field(
@@ -122,7 +117,7 @@ class Protein(EnzymeMLBase, AbstractSpecies):
     uniprotid: Optional[str] = Field(
         None,
         description="Unique identifier referencing a protein entry at UniProt. Use this identifier to initialize the object from the UniProt database.",
-        template_alias="UniProt ID"
+        template_alias="UniProt ID",
     )
 
     # ! Validators
@@ -153,8 +148,8 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         vessel_id: str,
         init_conc: Optional[float] = None,
         unit: Optional[str] = None,
-        constant: bool = False
-    ) -> 'Protein':
+        constant: bool = False,
+    ) -> "Protein":
         """Initializes a protein based on the UniProt database.
 
         Raises:
@@ -173,7 +168,7 @@ class Protein(EnzymeMLBase, AbstractSpecies):
             vessel_id=vessel_id,
             constant=constant,
             uniprotid=uniprotid,
-            **parameters
+            **parameters,
         )
 
     @staticmethod
@@ -213,58 +208,58 @@ class Protein(EnzymeMLBase, AbstractSpecies):
         return parameters
 
     # ! Getters
-    @ deprecated_getter("organism_tax_id")
+    @deprecated_getter("organism_tax_id")
     def getOrganismTaxId(self):
         return self.organism_tax_id
 
-    @ deprecated_getter("ecnumber")
+    @deprecated_getter("ecnumber")
     def getEcnumber(self):
         return self.ecnumber
 
-    @ deprecated_getter("uniprotid")
+    @deprecated_getter("uniprotid")
     def getUniprotID(self):
         return self.uniprotid
 
-    @ deprecated_getter("organism")
+    @deprecated_getter("organism")
     def getOrganism(self):
         return self.organism
 
-    @ deprecated_getter("init_conc")
+    @deprecated_getter("init_conc")
     def getInitConc(self):
         return self.init_conc
 
-    @ deprecated_getter("name")
+    @deprecated_getter("name")
     def getName(self):
         return self.name
 
-    @ deprecated_getter("id")
+    @deprecated_getter("id")
     def getId(self):
         return self.id
 
-    @ deprecated_getter("meta_id")
+    @deprecated_getter("meta_id")
     def getMetaid(self):
         return self.meta_id
 
-    @ deprecated_getter("sequence")
+    @deprecated_getter("sequence")
     def getSequence(self):
         return self.sequence
 
-    @ deprecated_getter("ontology")
+    @deprecated_getter("ontology")
     def getSboterm(self):
         return self.ontology
 
-    @ deprecated_getter("vessel_id")
+    @deprecated_getter("vessel_id")
     def getVessel(self):
         return self.vessel_id
 
-    @ deprecated_getter("unit")
+    @deprecated_getter("unit")
     def getSubstanceUnits(self):
         return self.unit
 
-    @ deprecated_getter("boundary")
+    @deprecated_getter("boundary")
     def getBoundary(self):
         return self.boundary
 
-    @ deprecated_getter("constant")
+    @deprecated_getter("constant")
     def getConstant(self):
         return self.constant

@@ -25,17 +25,18 @@ except ModuleNotFoundError as e:
     ThinLayerPysces is not available. 
     To use it, please install the following dependencies:
     {}
-    """.format(e)
+    """.format(
+        e
+    )
 
 
 class ThinLayerPysces(BaseThinLayer):
-
     def __init__(
         self,
         path,
         model_dir: str,
         measurement_ids: Union[str, list] = "all",
-        init_file: Optional[str] = None
+        init_file: Optional[str] = None,
     ):
 
         # check dependencies
@@ -49,7 +50,7 @@ class ThinLayerPysces(BaseThinLayer):
         self._get_experimental_data()
 
     # ! Interface
-    def optimize(self, method='leastsq'):
+    def optimize(self, method="leastsq"):
         """Performs optimization of the given parameters
 
         Args:
@@ -60,9 +61,7 @@ class ThinLayerPysces(BaseThinLayer):
         parameters = self._initialize_parameters()
 
         # Perform optimization
-        self.minimizer = lmfit.Minimizer(
-            self._calculate_residual, parameters
-        )
+        self.minimizer = lmfit.Minimizer(self._calculate_residual, parameters)
 
         # Set estiomated parameters to self
         self.parameters = parameters
@@ -95,9 +94,7 @@ class ThinLayerPysces(BaseThinLayer):
                 parameter = reaction.model.getParameter(parameter_id)
                 parameter.value = value
             else:
-                raise TypeError(
-                    f"Reaction {reaction_id} has no model to add values to"
-                )
+                raise TypeError(f"Reaction {reaction_id} has no model to add values to")
 
         return nu_enzmldoc
 
@@ -117,14 +114,20 @@ class ThinLayerPysces(BaseThinLayer):
 
             if global_param.value:
                 parameters.add(
-                    f"{global_param.name}", global_param.value, vary=not global_param.constant,
-                    min=global_param.lower, max=global_param.upper
+                    f"{global_param.name}",
+                    global_param.value,
+                    vary=not global_param.constant,
+                    min=global_param.lower,
+                    max=global_param.upper,
                 )
 
             elif global_param.initial_value:
                 parameters.add(
-                    f"{global_param.name}", global_param.initial_value, vary=not global_param.constant,
-                    min=global_param.lower, max=global_param.upper
+                    f"{global_param.name}",
+                    global_param.initial_value,
+                    vary=not global_param.constant,
+                    min=global_param.lower,
+                    max=global_param.upper,
                 )
 
             else:  # parameter is
@@ -143,13 +146,19 @@ class ThinLayerPysces(BaseThinLayer):
 
                 if parameter.value:
                     parameters.add(
-                        f"{reaction_id}_{parameter.name}", parameter.value, vary=not parameter.constant,
-                        min=parameter.lower, max=parameter.upper
+                        f"{reaction_id}_{parameter.name}",
+                        parameter.value,
+                        vary=not parameter.constant,
+                        min=parameter.lower,
+                        max=parameter.upper,
                     )
                 elif parameter.initial_value:
                     parameters.add(
-                        f"{reaction_id}_{parameter.name}", parameter.initial_value, vary=not parameter.constant,
-                        min=parameter.lower, max=parameter.upper
+                        f"{reaction_id}_{parameter.name}",
+                        parameter.initial_value,
+                        vary=not parameter.constant,
+                        min=parameter.lower,
+                        max=parameter.upper,
                     )
                 else:  # parameter is
                     raise ValueError(
@@ -176,9 +185,7 @@ class ThinLayerPysces(BaseThinLayer):
             # Collect initial concentrations for simulation
             init_mapping = {
                 "time": data.time,
-                **{species_id: value
-                   for species_id, (value, _) in init_concs.items()
-                   }
+                **{species_id: value for species_id, (value, _) in init_concs.items()},
             }
 
             self.inits.append(init_mapping)
@@ -203,9 +210,7 @@ class ThinLayerPysces(BaseThinLayer):
 
         # First, convert the EnzymeML model to a PySCeS model
         pysces.interface.convertSBML2PSC(
-            sbmlfile_name,
-            sbmldir=model_dir,
-            pscdir=model_dir
+            sbmlfile_name, sbmldir=model_dir, pscdir=model_dir
         )
 
         # Finally, load the PSC model
@@ -250,8 +255,7 @@ class ThinLayerPysces(BaseThinLayer):
             # Simulate the experiment and save results
             self.model.Simulate(userinit=1)
             output.append(
-                [getattr(self.model.sim, species)
-                 for species in self.model.species]
+                [getattr(self.model.sim, species) for species in self.model.species]
             )
 
         return pd.DataFrame(np.hstack(output).T, columns=self.model.species)

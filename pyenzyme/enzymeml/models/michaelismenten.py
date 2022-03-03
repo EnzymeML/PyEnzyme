@@ -1,4 +1,4 @@
-'''
+"""
 File: michaelismenten.py
 Project: models
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Wednesday June 23rd 2021 10:30:15 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 from typing import Any, Dict
 from pyenzyme.enzymeml.core.ontology import SBOTerm
@@ -40,14 +40,12 @@ def MichaelisMentenKCat(
     # Check if the given IDs are part of the EnzymeML document already
     if substrate not in enzmldoc.getSpeciesIDs():
         raise SpeciesNotFoundError(
-            species_id=substrate,
-            enzymeml_part="Reactants/Proteins"
+            species_id=substrate, enzymeml_part="Reactants/Proteins"
         )
 
     if protein not in enzmldoc.getSpeciesIDs():
         raise SpeciesNotFoundError(
-            species_id=protein,
-            enzymeml_part="Reactants/Proteins"
+            species_id=protein, enzymeml_part="Reactants/Proteins"
         )
 
     # Check if ontologies are added, if not add them
@@ -63,7 +61,7 @@ def MichaelisMentenKCat(
         equation="k_cat * protein * substrate / (k_m + substrate)",
         k_cat=k_cat,
         k_m=k_m,
-        ontology=SBOTerm.MICHAELIS_MENTEN
+        ontology=SBOTerm.MICHAELIS_MENTEN,
     )
 
     return model(protein=protein, substrate=substrate)
@@ -93,8 +91,7 @@ def MichaelisMentenVMax(
     # Check if the given IDs are part of the EnzymeML document already
     if substrate not in enzmldoc.getSpeciesIDs():
         raise SpeciesNotFoundError(
-            species_id=substrate,
-            enzymeml_part="Reactants/Proteins"
+            species_id=substrate, enzymeml_part="Reactants/Proteins"
         )
 
     # Check if ontologies are added, if not add them
@@ -110,7 +107,7 @@ def MichaelisMentenVMax(
         equation="vmax * substrate / (k_m + substrate)",
         vmax=vmax,
         k_m=k_m,
-        ontology=SBOTerm.MICHAELIS_MENTEN
+        ontology=SBOTerm.MICHAELIS_MENTEN,
     )
 
     return model(substrate=substrate)

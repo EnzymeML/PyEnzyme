@@ -1,4 +1,4 @@
-'''
+"""
 File: unitcreator.py
 Project: tools
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Tuesday June 22nd 2021 10:12:25 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 import libsbml
 
@@ -19,11 +19,9 @@ from pyenzyme.enzymeml.tools.unitparser import UnitParser
 
 
 class UnitCreator:
-
     def __init__(self):
 
         self.__functionDict = {
-
             "M": self.__Molar,
             "m": self.__Mole,
             "mole": self.__Mole,
@@ -50,14 +48,14 @@ class UnitCreator:
             "K": self.__Kelvin,
             "kelvin": self.__Kelvin,
             "Kelvin": self.__Kelvin,
-            "dimensionless": self.__Dimensionless
+            "dimensionless": self.__Dimensionless,
         }
 
     def getUnit(self, unit_string, enzmldoc) -> str:
-        '''
+        """
         Args:
             String unit_string: Standard short form of unit
-        '''
+        """
         if unit_string.count("/") > 1:
             splitted = unit_string.split("/")
             corrected = splitted[0] + "/" + "".join(splitted[1::])
@@ -80,16 +78,12 @@ class UnitCreator:
 
             if float(exponent) > 0:
                 if abs(float(exponent)) > 1:
-                    nominator.append(
-                        pre_unit + f"^{exponent[1::]}"
-                    )
+                    nominator.append(pre_unit + f"^{exponent[1::]}")
                 if abs(float(exponent)) == 1:
                     nominator.append(pre_unit)
             else:
                 if abs(float(exponent)) > 1:
-                    denominator.append(
-                        pre_unit + f"^{exponent[1::]}"
-                    )
+                    denominator.append(pre_unit + f"^{exponent[1::]}")
                 if abs(float(exponent)) == 1:
                     denominator.append(pre_unit)
 
@@ -98,26 +92,19 @@ class UnitCreator:
             nominator = ["1"]
 
         if denominator:
-            name = " / ".join([
-                " ".join(nominator),
-                " ".join(denominator)
-            ])
+            name = " / ".join([" ".join(nominator), " ".join(denominator)])
         if not denominator:
             name = " ".join(nominator)
 
         # Convert Celsius to Kelvin - No SBML kind for C!
-        if name.lower() == 'c':
-            name = 'K'
+        if name.lower() == "c":
+            name = "K"
 
         # Initialize UnitDef object
         unitdef = UnitDef(name=name, id=id)
 
         for prefix, baseunit, exponent in units:
-            self.__functionDict[baseunit](
-                unitdef,
-                prefix,
-                exponent
-            )
+            self.__functionDict[baseunit](unitdef, prefix, exponent)
 
         # Check if there is already a similar unit defined
         if self.__checkFootprints(enzmldoc, unitdef.getFootprint()) != "NEW":
@@ -141,12 +128,7 @@ class UnitCreator:
         scale = self.__getPrefix(prefix)
         multiplier = 1
 
-        unitdef.addBaseUnit(
-            kind,
-            exponent,
-            scale,
-            multiplier
-        )
+        unitdef.addBaseUnit(kind, exponent, scale, multiplier)
 
     def __Molar(self, unitdef, prefix, exponent):
 
@@ -156,27 +138,15 @@ class UnitCreator:
         scale = 1
         multiplier = 1
 
-        unitdef.addBaseUnit(
-            kind,
-            -1,
-            scale,
-            multiplier
-        )
+        unitdef.addBaseUnit(kind, -1, scale, multiplier)
 
     def __Volume(self, unitdef, prefix, exponent):
 
-        kind = libsbml.UnitKind_toString(
-            libsbml.UNIT_KIND_LITRE
-        )
+        kind = libsbml.UnitKind_toString(libsbml.UNIT_KIND_LITRE)
         scale = self.__getPrefix(prefix)
         multiplier = 1
 
-        unitdef.addBaseUnit(
-            kind,
-            exponent,
-            scale,
-            multiplier
-        )
+        unitdef.addBaseUnit(kind, exponent, scale, multiplier)
 
     def __Amount(self, unitdef, prefix, exponent):
 
@@ -184,12 +154,7 @@ class UnitCreator:
         scale = self.__getPrefix(prefix)
         multiplier = 1
 
-        unitdef.addBaseUnit(
-            kind,
-            exponent,
-            scale,
-            multiplier
-        )
+        unitdef.addBaseUnit(kind, exponent, scale, multiplier)
 
     def __Seconds(self, unitdef, prefix, exponent):
 
@@ -197,12 +162,7 @@ class UnitCreator:
         scale = 1
         multiplier = 1
 
-        unitdef.addBaseUnit(
-            kind,
-            exponent,
-            scale,
-            multiplier
-        )
+        unitdef.addBaseUnit(kind, exponent, scale, multiplier)
 
     def __Minutes(self, unitdef, prefix=None, exponent=1):
 
@@ -210,12 +170,7 @@ class UnitCreator:
         scale = 1
         multiplier = 60
 
-        unitdef.addBaseUnit(
-            kind,
-            exponent,
-            scale,
-            multiplier
-        )
+        unitdef.addBaseUnit(kind, exponent, scale, multiplier)
 
     def __Hours(self, unitdef, prefix=None, exponent=1):
 
@@ -223,12 +178,7 @@ class UnitCreator:
         scale = 1
         multiplier = 60 * 60
 
-        unitdef.addBaseUnit(
-            kind,
-            exponent,
-            scale,
-            multiplier
-        )
+        unitdef.addBaseUnit(kind, exponent, scale, multiplier)
 
     def __Celsius(self, unitdef, prefix=None, exponent=1):
 
@@ -236,12 +186,7 @@ class UnitCreator:
         scale = 1
         multiplier = 1
 
-        unitdef.addBaseUnit(
-            kind,
-            exponent,
-            scale,
-            multiplier
-        )
+        unitdef.addBaseUnit(kind, exponent, scale, multiplier)
 
     def __Kelvin(self, unitdef, prefix=None, exponent=1):
 
@@ -249,12 +194,7 @@ class UnitCreator:
         scale = 1
         multiplier = 1
 
-        unitdef.addBaseUnit(
-            kind,
-            exponent,
-            scale,
-            multiplier
-        )
+        unitdef.addBaseUnit(kind, exponent, scale, multiplier)
 
     def __Dimensionless(self, unitdef, prefix=None, exponent=1):
 
@@ -263,12 +203,7 @@ class UnitCreator:
         multiplier = 1
         exponent = 1
 
-        unitdef.addBaseUnit(
-            kind,
-            exponent,
-            scale,
-            multiplier
-        )
+        unitdef.addBaseUnit(kind, exponent, scale, multiplier)
 
     def __getPrefix(self, prefix):
 
@@ -291,6 +226,4 @@ class UnitCreator:
         elif len(prefix) == 0:
             return 1
         else:
-            raise KeyError(
-                f"Prefix {prefix} is unknown. Please define unit manually"
-            )
+            raise KeyError(f"Prefix {prefix} is unknown. Please define unit manually")

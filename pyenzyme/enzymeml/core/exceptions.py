@@ -1,4 +1,4 @@
-'''
+"""
 File: functionalities.py
 Project: core
 Author: Jan Range
@@ -8,7 +8,9 @@ Last Modified: Tuesday June 15th 2021 6:43:34 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
+
+import yaml
 
 from typing import Union, Optional
 
@@ -16,14 +18,19 @@ from typing import Union, Optional
 class SpeciesNotFoundError(Exception):
     """Raised when a species hasnt been found in a specific element"""
 
-    def __init__(self, species_id: str, enzymeml_part: str, message: str = "Species ID has not been found"):
+    def __init__(
+        self,
+        species_id: str,
+        enzymeml_part: str,
+        message: str = "Species ID has not been found",
+    ):
         self.species_id = species_id
         self.enzymeml_part = enzymeml_part
         self.message = message
         super().__init__(self.message)
 
     def __str__(self) -> str:
-        return f'{self.species_id} in {self.enzymeml_part} -> {self.message}'
+        return f"{self.species_id} in {self.enzymeml_part} -> {self.message}"
 
 
 class MeasurementDataSpeciesIdentifierError(Exception):
@@ -34,7 +41,9 @@ class MeasurementDataSpeciesIdentifierError(Exception):
         if both:
             self.message = f"Both reactant ({both[0]}) and protein ({both[1]}) have been ID assigned to a measurement. Please specifiy either one of those."
         else:
-            self.message = "Neither a reactant not protein has been ID assigned to measurement."
+            self.message = (
+                "Neither a reactant not protein has been ID assigned to measurement."
+            )
 
         super().__init__(self.message)
 
@@ -65,6 +74,7 @@ class ECNumberError(Exception):
 
 class DataError(Exception):
     """Raised when incomplete data has been assigned to a replicate"""
+
     pass
 
 
@@ -75,9 +85,7 @@ class ChEBIIdentifierError(Exception):
         self.chebi_id = chebi_id
 
     def __str__(self) -> str:
-        return (
-            f"ChEBI ID {self.chebi_id} is invalid. Please provide a valid ChEBI ID."
-        )
+        return f"ChEBI ID {self.chebi_id} is invalid. Please provide a valid ChEBI ID."
 
 
 class UniProtIdentifierError(Exception):
@@ -87,6 +95,4 @@ class UniProtIdentifierError(Exception):
         self.uniprotid = uniprotid
 
     def __str__(self) -> str:
-        return (
-            f"UniProt ID {self.uniprotid} is invalid. Please provide a valid UniProt ID."
-        )
+        return f"UniProt ID {self.uniprotid} is invalid. Please provide a valid UniProt ID."

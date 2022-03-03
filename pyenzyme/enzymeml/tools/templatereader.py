@@ -23,30 +23,29 @@ def read_template(path: str, enzmldoc):
         EnzymeMLDocument: The resulting EnzymeML document.
     """
 
-    general_info = pd.read_excel(
-        path, sheet_name="General Information", skiprows=1
-    )
+    general_info = pd.read_excel(path, sheet_name="General Information", skiprows=1)
 
     params = dict(
         name=general_info.iloc[0, 1],
         created=str(general_info.iloc[1, 1].date()),
         doi=None,
         pubmedid=general_info.iloc[3, 1],
-        url=general_info.iloc[4, 1]
+        url=general_info.iloc[4, 1],
     )
 
     enzmldoc = enzmldoc(**params)
 
     # User information
-    user_infos = pd.read_excel(path,
-                               sheet_name="General Information", skiprows=9).dropna()
+    user_infos = pd.read_excel(
+        path, sheet_name="General Information", skiprows=9
+    ).dropna()
 
     for record in user_infos.to_dict(orient="records"):
         enzmldoc.addCreator(
             Creator(
                 family_name=record["Family Name"],
                 given_name=record["Given Name"],
-                mail=record["Mail"]
+                mail=record["Mail"],
             )
         )
 
@@ -78,8 +77,7 @@ def read_template(path: str, enzmldoc):
     nu_mods = [
         merge_protein_modifier(protein, modifier)
         for modifier, protein in zip(
-            reactions.Modifiers.values.tolist(),
-            reactions.Proteins.values.tolist()
+            reactions.Modifiers.values.tolist(), reactions.Proteins.values.tolist()
         )
     ]
 
@@ -144,27 +142,23 @@ def read_template(path: str, enzmldoc):
             measurement.addData(
                 init_conc=protein_conc,
                 unit=protein_unit,
-                protein_id=enzmldoc.getProtein(
-                    protein_name.strip()).id
+                protein_id=enzmldoc.getProtein(protein_name.strip()).id,
             )
 
             reactant_name = row_meta["Reactant Name"]
             reactant_conc = row_meta["Reactant Initial concentration"]
             reactant_unit = row_meta["Reactant Unit"]
-            reactant_id = enzmldoc.getReactant(
-                reactant_name.strip()).id
+            reactant_id = enzmldoc.getReactant(reactant_name.strip()).id
 
             # Get the type of the measurement
             type_mapping = {
                 "Concentration": DataTypes.CONCENTRATION,
-                "Absorption": DataTypes.ABSORPTION
+                "Absorption": DataTypes.ABSORPTION,
             }
 
             if reactant_id not in measurement.species_dict["reactants"]:
                 measurement.addData(
-                    init_conc=reactant_conc,
-                    unit=reactant_unit,
-                    reactant_id=reactant_id
+                    init_conc=reactant_conc, unit=reactant_unit, reactant_id=reactant_id
                 )
 
             replicates = None
@@ -177,7 +171,7 @@ def read_template(path: str, enzmldoc):
                     data_unit=reactant_unit,
                     time_unit=time_unit,
                     time=time_values,
-                    data=row_values
+                    data=row_values,
                 )
 
                 replicate_index += 1
@@ -194,10 +188,7 @@ def get_instances(sheet: pd.DataFrame, obj, enzmldoc) -> list:
     mapping = get_template_map(obj)
     instances = extract_values(sheet, mapping)
 
-    return [
-        clean_instance(instance, enzmldoc)
-        for instance in instances
-    ]
+    return [clean_instance(instance, enzmldoc) for instance in instances]
 
 
 def get_template_map(obj) -> dict:
@@ -225,7 +216,6 @@ def extract_values(sheet: pd.DataFrame, mapping: Dict[str, str]) -> list:
 
 
 def clean_instance(instance: dict, enzmldoc) -> dict:
-
     def get_vessel_name(name: str, enzmldoc):
         return enzmldoc.getVessel(name).id
 
@@ -255,7 +245,7 @@ def clean_instance(instance: dict, enzmldoc) -> dict:
         "constant": get_constant,
         "temperature_unit": clean_temp_unit,
         "reversible": get_reversible,
-        "uniprotid": clean_uniprotid
+        "uniprotid": clean_uniprotid,
     }
 
     for key, item in instance.items():
@@ -270,10 +260,9 @@ def merge_protein_modifier(protein, modifier):
     modifier = repr(modifier).split(",")
     entities = proteins + modifier
 
-    return ",".join([
-        entity.replace("'", "").strip() for entity in entities
-        if entity != "nan"
-    ])
+    return ",".join(
+        [entity.replace("'", "").strip() for entity in entities if entity != "nan"]
+    )
 
 
 def rename_columns(columns: List[str]) -> List[str]:
@@ -283,13 +272,10 @@ def rename_columns(columns: List[str]) -> List[str]:
         "Unnamed: 7": "Reactant Initial concentration",
         "Unnamed: 8": "Reactant Unit",
         "Protein": "Protein Name",
-        "Reactant": "Reactant Name"
+        "Reactant": "Reactant Name",
     }
 
-    return [
-        mapping[col] if mapping.get(col) else col
-        for col in columns
-    ]
+    return [mapping[col] if mapping.get(col) else col for col in columns]
 
 
 def get_split_index(df: pd.DataFrame):
@@ -332,5 +318,5 @@ def add_instances(fun, elements, enzmldoc) -> None:
             species_id=enzmldoc.getAny(element.strip()).id,
             stoichiometry=1.0,
             constant=False,
-            enzmldoc=enzmldoc
+            enzmldoc=enzmldoc,
         )

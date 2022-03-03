@@ -1,4 +1,4 @@
-'''
+"""
 File: creator.py
 Project: core
 Author: Jan Range
@@ -8,17 +8,14 @@ Last Modified: Tuesday June 15th 2021 6:28:16 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 from pydantic import Field, validator, ValidationError
 from typing import TYPE_CHECKING, Optional
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-from pyenzyme.enzymeml.core.utils import (
-    type_checking,
-    deprecated_getter
-)
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
 
 if TYPE_CHECKING:  # pragma: no cover
     static_check_init_args = dataclass
@@ -31,23 +28,21 @@ class Creator(EnzymeMLBase):
 
     given_name: str = Field(
         ...,
-        description='Given name of the author or contributor.',
+        description="Given name of the author or contributor.",
     )
 
     family_name: str = Field(
         ...,
-        description='Family name of the author or contributor.',
+        description="Family name of the author or contributor.",
     )
 
     mail: str = Field(
         ...,
-        description='Email address of the author or contributor.',
+        description="Email address of the author or contributor.",
     )
 
     id: Optional[str] = Field(
-        None,
-        description="Unique identifier of the protein.",
-        regex=r"a[\d]+"
+        None, description="Unique identifier of the protein.", regex=r"a[\d]+"
     )
 
     @validator("given_name", "family_name", "mail", pre=True)
@@ -62,9 +57,7 @@ class Creator(EnzymeMLBase):
     @validator("mail")
     def check_mail_consistency(cls, mail):
         if len(mail.split("@")) != 2:
-            raise ValueError(
-                f"{mail} is not a valid mail adress."
-            )
+            raise ValueError(f"{mail} is not a valid mail adress.")
 
         return mail
 

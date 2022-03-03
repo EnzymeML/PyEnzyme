@@ -1,4 +1,4 @@
-'''
+"""
 File: measurement.py
 Project: core
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Thursday July 15th 2021 1:19:51 am
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 import copy
 import logging
@@ -23,10 +23,7 @@ from pyenzyme.enzymeml.core.measurementData import MeasurementData
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
 from pyenzyme.utils.log import log_object
-from pyenzyme.enzymeml.core.utils import (
-    type_checking,
-    deprecated_getter
-)
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
 
 if TYPE_CHECKING:  # pragma: no cover
     static_check_init_args = dataclass
@@ -48,20 +45,20 @@ class Measurement(EnzymeMLBase):
     temperature: Optional[float] = Field(
         None,
         description="Numeric value of the temperature of the reaction.",
-        template_alias="Temperature value"
+        template_alias="Temperature value",
     )
 
     temperature_unit: Optional[str] = Field(
         None,
         description="Unit of the temperature of the reaction.",
-        regex=r"kelvin|Kelvin|k|K|celsius|Celsius|C|c"
+        regex=r"kelvin|Kelvin|k|K|celsius|Celsius|C|c",
     )
 
     ph: Optional[float] = Field(
         None,
         description="PH value of the reaction.",
         inclusiveMinimum=0,
-        inclusiveMaximum=14
+        inclusiveMaximum=14,
     )
 
     species_dict: Dict[str, Dict[str, MeasurementData]] = Field(
@@ -80,9 +77,7 @@ class Measurement(EnzymeMLBase):
     )
 
     id: Optional[str] = Field(
-        None,
-        description="Unique identifier of the measurement.",
-        regex=r"m[\d]+"
+        None, description="Unique identifier of the measurement.", regex=r"m[\d]+"
     )
 
     uri: Optional[str] = Field(
@@ -103,7 +98,9 @@ class Measurement(EnzymeMLBase):
     def __repr__(self):
         return self.printMeasurementScheme(stdout=False)
 
-    def printMeasurementScheme(self, species_type: str = "all", stdout: bool = True) -> Optional[str]:
+    def printMeasurementScheme(
+        self, species_type: str = "all", stdout: bool = True
+    ) -> Optional[str]:
         """Prints the scheme of the measurement and as such an overview of what has been done.
 
         Args:
@@ -141,7 +138,9 @@ class Measurement(EnzymeMLBase):
         else:
             return output
 
-    def exportData(self, species_ids: Union[str, List[str]] = "all") -> Dict[str, Dict[str, Union[Dict[str, Tuple[float, str]], pd.DataFrame]]]:
+    def exportData(
+        self, species_ids: Union[str, List[str]] = "all"
+    ) -> Dict[str, Dict[str, Union[Dict[str, Tuple[float, str]], pd.DataFrame]]]:
         """Returns data stored in the measurement object as DataFrames nested in dictionaries. These are sorted hierarchially by reactions where each holds a DataFrame each for proteins and reactants.
 
         Returns:
@@ -151,23 +150,18 @@ class Measurement(EnzymeMLBase):
 
         # Combine Replicate objects for each reaction
         proteins = self._combineReplicates(
-            measurement_species=self.species_dict['proteins'],
-            species_ids=species_ids
+            measurement_species=self.species_dict["proteins"], species_ids=species_ids
         )
         reactants = self._combineReplicates(
-            measurement_species=self.species_dict['reactants'],
-            species_ids=species_ids
+            measurement_species=self.species_dict["reactants"], species_ids=species_ids
         )
 
-        return {
-            "proteins": proteins,
-            "reactants": reactants
-        }
+        return {"proteins": proteins, "reactants": reactants}
 
     def _combineReplicates(
         self,
         measurement_species: Dict[str, MeasurementData],
-        species_ids: Union[str, List[str]] = "all"
+        species_ids: Union[str, List[str]] = "all",
     ) -> Dict[str, Union[Dict[str, Tuple[float, str]], pd.DataFrame]]:
         """Combines replicates of a certain species to a dataframe.
 
@@ -191,9 +185,7 @@ class Measurement(EnzymeMLBase):
             if species_id in species_ids or species_ids == ["all"]:
 
                 # Fetch initial concentration
-                initial_concentration[species_id] = (
-                    data.init_conc, data.unit
-                )
+                initial_concentration[species_id] = (data.init_conc, data.unit)
 
                 # Fetch replicate data
                 if len(data.replicates) > num_replicates:
@@ -210,14 +202,14 @@ class Measurement(EnzymeMLBase):
         columns["time"] = self.global_time * num_replicates
 
         return {
-            "data": pd.DataFrame(columns)
-            if len(columns) > 1
-            else pd.DataFrame(),
+            "data": pd.DataFrame(columns) if len(columns) > 1 else pd.DataFrame(),
             "initConc": initial_concentration,
         }
 
     @validate_arguments
-    def addReplicates(self, replicates: Union[List[Replicate], Replicate], enzmldoc, log: bool = True) -> None:
+    def addReplicates(
+        self, replicates: Union[List[Replicate], Replicate], enzmldoc, log: bool = True
+    ) -> None:
         """Adds a replicate to the corresponding measurementData object. This method is meant to be called if the measurement metadata of a reaction/species has already been done and replicate data has to be added afterwards. If not, use addData instead to introduce the species metadata.
 
         Args:
@@ -240,9 +232,11 @@ class Measurement(EnzymeMLBase):
                 data = speciesData[species_id]
 
                 replicate._data_unit_id = enzmldoc._convertToUnitDef(
-                    replicate.data_unit)
+                    replicate.data_unit
+                )
                 replicate._time_unit_id = enzmldoc._convertToUnitDef(
-                    replicate.time_unit)
+                    replicate.time_unit
+                )
 
                 data.addReplicate(replicate)
 
@@ -291,7 +285,7 @@ class Measurement(EnzymeMLBase):
             init_conc=init_conc,
             unit=unit,
             replicates=replicates,
-            log=log
+            log=log,
         )
 
     def _appendReactantData(
@@ -301,7 +295,7 @@ class Measurement(EnzymeMLBase):
         init_conc: float,
         unit: str,
         replicates: List[Replicate],
-        log: bool = True
+        log: bool = True,
     ) -> None:
 
         # Create measurement data class before sorting
@@ -311,13 +305,13 @@ class Measurement(EnzymeMLBase):
             init_conc=init_conc,
             unit=unit,
             replicates=replicates,
-            measurement_id=self.id
+            measurement_id=self.id,
         )
 
         if reactant_id:
-            self.species_dict['reactants'][reactant_id] = measData
+            self.species_dict["reactants"][reactant_id] = measData
         elif protein_id:
-            self.species_dict['proteins'][protein_id] = measData
+            self.species_dict["proteins"][protein_id] = measData
         else:
             raise ValueError(
                 "Please enter a reactant or protein ID to add measurement data"
@@ -337,10 +331,10 @@ class Measurement(EnzymeMLBase):
 
     def _setReplicateMeasIDs(self) -> None:
         """Sets the measurement IDs for the replicates."""
-        for measData in self.species_dict['proteins'].values():
+        for measData in self.species_dict["proteins"].values():
             measData.measurement_id = self.id
 
-        for measData in self.species_dict['reactants'].values():
+        for measData in self.species_dict["reactants"].values():
             measData.measurement_id = self.id
 
     def unifyUnits(self, kind: str, scale: int, enzmldoc) -> None:
@@ -366,9 +360,7 @@ class Measurement(EnzymeMLBase):
                 )
 
         for measurement_data in {**self.getProteins(), **self.getReactants()}.values():
-            measurement_data.unifyUnits(
-                kind=kind, scale=scale, enzmldoc=enzmldoc
-            )
+            measurement_data.unifyUnits(kind=kind, scale=scale, enzmldoc=enzmldoc)
 
     def _has_replicates(self) -> bool:
         """Checks whether replicates are present in the measurement.
@@ -381,7 +373,7 @@ class Measurement(EnzymeMLBase):
 
         all_species = {
             **self.species_dict["proteins"],
-            **self.species_dict["reactants"]
+            **self.species_dict["reactants"],
         }
 
         for obj in all_species.values():
@@ -392,7 +384,7 @@ class Measurement(EnzymeMLBase):
 
     # ! Getters
 
-    @ validate_arguments
+    @validate_arguments
     def getReactant(self, reactant_id: str) -> MeasurementData:
         """Returns a single MeasurementData object for the given reactant_id.
 
@@ -431,19 +423,18 @@ class Measurement(EnzymeMLBase):
         """
         return self.species_dict["proteins"]
 
-    @ validate_arguments
+    @validate_arguments
     def _getSpecies(self, species_id: str) -> MeasurementData:
         all_species = {
             **self.species_dict["proteins"],
-            **self.species_dict["reactants"]
+            **self.species_dict["reactants"],
         }
 
         try:
             return all_species[species_id]
         except KeyError:
             raise SpeciesNotFoundError(
-                species_id=species_id,
-                enzymeml_part="Measurement"
+                species_id=species_id, enzymeml_part="Measurement"
             )
 
     @deprecated_getter("id")

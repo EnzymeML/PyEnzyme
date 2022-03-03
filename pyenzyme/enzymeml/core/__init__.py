@@ -1,4 +1,4 @@
-'''
+"""
 File: __init__.py
 Project: core
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Tuesday June 15th 2021 7:32:36 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 from pyenzyme.enzymeml.core.creator import Creator
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument

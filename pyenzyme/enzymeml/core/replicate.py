@@ -1,4 +1,4 @@
-'''
+"""
 File: replicate.py
 Project: core
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Thursday July 15th 2021 1:00:51 am
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 from pydantic import Field, validator, PrivateAttr
 from typing import List, TYPE_CHECKING, Optional
@@ -17,10 +17,7 @@ from dataclasses import dataclass
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.ontology import DataTypes
 from pyenzyme.enzymeml.core.exceptions import DataError
-from pyenzyme.enzymeml.core.utils import (
-    type_checking,
-    deprecated_getter
-)
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
 
 if TYPE_CHECKING:  # pragma: no cover
     static_check_init_args = dataclass
@@ -39,13 +36,13 @@ class Replicate(EnzymeMLBase):
     species_id: str = Field(
         ...,
         description="Unique identifier of the species that has been measured.",
-        regex=r"[s|r|p][\d]+"
+        regex=r"[s|r|p][\d]+",
     )
 
     measurement_id: Optional[str] = Field(
         None,
         description="Unique identifier of the measurement that the replicate is part of.",
-        regex=r"m[\d]+"
+        regex=r"m[\d]+",
     )
 
     data_type: DataTypes = Field(

@@ -1,4 +1,4 @@
-'''
+"""
 File: TL_Strenda.py
 Project: ThinLayers
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Wednesday June 23rd 2021 7:18:29 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 import xmltodict
 import json
@@ -62,8 +62,7 @@ class ThinLayerStrendaML(object):
 
         # Get small compounds and build reaction
         small_compounds = assay_conditions["smallCompound"]
-        init_conc, reactant_ref = cls._parse_small_compounds(
-            small_compounds)
+        init_conc, reactant_ref = cls._parse_small_compounds(small_compounds)
 
         # Get the protein
         protein = metadata["protein"]
@@ -86,8 +85,7 @@ class ThinLayerStrendaML(object):
         # Parse XML string and clean faulty line
         xml_string = open(path).read()
         xml_string = xml_string.replace(
-            '<sequenceModifiations value="yes"/>',
-            '<sequenceModifiations value="yes">'
+            '<sequenceModifiations value="yes"/>', '<sequenceModifiations value="yes">'
         )
 
         # Parse XML to JSON and dict
@@ -101,19 +99,19 @@ class ThinLayerStrendaML(object):
 
         # Get the assay conditions, if given
         ph, _ = self._get_assay_conditions("pH", self.dataset)
-        temp_val, temp_unit = self._get_assay_conditions(
-            "temperature", self.dataset
-        )
+        temp_val, temp_unit = self._get_assay_conditions("temperature", self.dataset)
 
         self.reaction = EnzymeReaction(
             name=self.dataset.get("name"),
             reversible=True,
             temperature=temp_val,
             temperature_unit=temp_unit,
-            ph=ph
+            ph=ph,
         )
 
-    def _get_assay_conditions(self, key: str, dataset: dict) -> Tuple[Optional[float], Optional[str]]:
+    def _get_assay_conditions(
+        self, key: str, dataset: dict
+    ) -> Tuple[Optional[float], Optional[str]]:
         """Returns miscellaneous parameters from the 'value' element found in the assayConditions."""
 
         for obj in dataset["assayConditions"]["value"]:
@@ -132,7 +130,7 @@ class ThinLayerStrendaML(object):
         # Keep a mapping for the different roles to be added to the reaction
         role_mapping = {
             "Substrate": self.reaction.addEduct,
-            "Product": self.reaction.addProduct
+            "Product": self.reaction.addProduct,
         }
 
         for small_compound in small_compounds:
@@ -143,7 +141,7 @@ class ThinLayerStrendaML(object):
                     name=small_compound.get("iupac"),
                     smiles=small_compound.get("smiles"),
                     inchi=small_compound.get("inchi"),
-                    vessel_id=self.vessel_id
+                    vessel_id=self.vessel_id,
                 )
             )
 
@@ -157,7 +155,7 @@ class ThinLayerStrendaML(object):
             role_mapping[role](
                 species_id=reactant_id,
                 stoichiometry=stoichiometry,
-                enzmldoc=self.enzmldoc
+                enzmldoc=self.enzmldoc,
             )
 
             init_conc = small_compound["value"]
@@ -165,9 +163,7 @@ class ThinLayerStrendaML(object):
 
             if init_conc["type"] == "Concentration":
                 value = float(init_conc["value"])
-                initial_concentrations.append(
-                    [(reactant_id, value, unit)]
-                )
+                initial_concentrations.append([(reactant_id, value, unit)])
 
             elif init_conc["type"] == "ConcentrationRange":
                 start_value = float(init_conc["startValue"])
@@ -175,8 +171,7 @@ class ThinLayerStrendaML(object):
                 val_range = np.arange(start_value, end_value, 0.1)
 
                 initial_concentrations.append(
-                    [(reactant_id, val, unit)
-                     for val in val_range]
+                    [(reactant_id, val, unit) for val in val_range]
                 )
 
         return initial_concentrations, reactant_ref
@@ -199,12 +194,12 @@ class ThinLayerStrendaML(object):
                 organism=protein.get("organism"),
                 sequence=sequence,
                 organism_tax_id=protein.get("texonId"),
-                uniprotid=uniprotid
+                uniprotid=uniprotid,
             )
         )
 
     def _setup_measurements(self, init_conc: List[Tuple[str, float, str]]):
-        """Sets up individual measurements by permuting given initial concentrations, if multiples of """
+        """Sets up individual measurements by permuting given initial concentrations, if multiples of"""
 
         # Permute all initial concentrations
         for index, init_conc_set in enumerate(itertools.product(*init_conc)):
@@ -220,7 +215,7 @@ class ThinLayerStrendaML(object):
             measurement.addData(
                 protein_id="p0",
                 init_conc=protein_conc,
-                unit=protein_unit.replace("micro", "u")
+                unit=protein_unit.replace("micro", "u"),
             )
 
             for species_id, value, unit in init_conc_set:
@@ -235,8 +230,10 @@ class ThinLayerStrendaML(object):
 
                 # Add the data to the measurement
                 measurement.addData(
-                    unit=unit, init_conc=value,
-                    reactant_id=reactant_id, protein_id=protein_id
+                    unit=unit,
+                    init_conc=value,
+                    reactant_id=reactant_id,
+                    protein_id=protein_id,
                 )
 
             # Finally, add the measurement to the document
@@ -252,14 +249,11 @@ class ThinLayerStrendaML(object):
 
         for parameter in parameters:
             if parameter["name"] == "kcat":
-                kcat = {
-                    "unit": "1 / s",
-                    "value": float(parameter["value"])
-                }
+                kcat = {"unit": "1 / s", "value": float(parameter["value"])}
             elif parameter["name"] == "km":
                 km = {
                     "unit": parameter["unit"].replace("micro", "u"),
-                    "value": float(parameter["value"])
+                    "value": float(parameter["value"]),
                 }
 
         # Create the model and add it to the reaction
@@ -268,7 +262,7 @@ class ThinLayerStrendaML(object):
             protein="p0",
             enzmldoc=self.enzmldoc,
             k_m=km,
-            k_cat=kcat
+            k_cat=kcat,
         )
 
         self.reaction.setModel(model, self.enzmldoc)

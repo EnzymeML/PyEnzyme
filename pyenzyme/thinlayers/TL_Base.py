@@ -5,18 +5,15 @@ from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 
 
 class BaseThinLayer(ABC):
-
     def __init__(
         self,
         path,
         measurement_ids: Union[str, list] = "all",
-        init_file: Optional[str] = None
+        init_file: Optional[str] = None,
     ):
 
         if isinstance(measurement_ids, str) and measurement_ids != "all":
-            raise TypeError(
-                "Measurements must either be a list of IDs or 'all'"
-            )
+            raise TypeError("Measurements must either be a list of IDs or 'all'")
 
         # Load the EnzymeML document to gather data
         self.enzmldoc = EnzymeMLDocument.fromFile(path)
@@ -27,14 +24,11 @@ class BaseThinLayer(ABC):
 
         # The following will extract the tim course data found in all measurements
         self.sbml_xml = self.enzmldoc.toXMLString()
-        self.data = self.enzmldoc.exportMeasurementData(
-            measurement_ids=measurement_ids
-        )
+        self.data = self.enzmldoc.exportMeasurementData(measurement_ids=measurement_ids)
 
         # Get all rate laws and store them in a dictionary
         self.reaction_data = {
-            reaction.id: (reaction.model,
-                          reaction.getStoichiometricCoefficients())
+            reaction.id: (reaction.model, reaction.getStoichiometricCoefficients())
             for reaction in self.enzmldoc.reaction_dict.values()
             if reaction.model
         }

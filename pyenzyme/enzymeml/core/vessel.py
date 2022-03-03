@@ -1,4 +1,4 @@
-'''
+"""
 File: vessel.py
 Project: core
 Author: Jan Range
@@ -8,17 +8,14 @@ Last Modified: Tuesday June 15th 2021 8:26:08 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 from pydantic import Field, PositiveFloat, validator, PrivateAttr, BaseModel
 from typing import TYPE_CHECKING, Optional
 from dataclasses import dataclass
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-from pyenzyme.enzymeml.core.utils import (
-    type_checking,
-    deprecated_getter
-)
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
 
 if TYPE_CHECKING:  # pragma: no cover
     static_check_init_args = dataclass
@@ -30,21 +27,17 @@ else:
 class Vessel(EnzymeMLBase):
 
     name: str = Field(
-        ...,
-        description="Name of the used vessel.",
-        template_alias="Name"
+        ..., description="Name of the used vessel.", template_alias="Name"
     )
 
     volume: Optional[PositiveFloat] = Field(
         None,
         description="Volumetric value of the vessel.",
-        template_alias="Volume value"
+        template_alias="Volume value",
     )
 
     unit: Optional[str] = Field(
-        None,
-        description="Volumetric unit of the vessel.",
-        template_alias="Volume unit"
+        None, description="Volumetric unit of the vessel.", template_alias="Volume unit"
     )
 
     constant: bool = Field(
@@ -61,7 +54,7 @@ class Vessel(EnzymeMLBase):
         None,
         description="Unique identifier of the vessel.",
         template_alias="ID",
-        regex=r"v[\d]+"
+        regex=r"v[\d]+",
     )
 
     uri: Optional[str] = Field(

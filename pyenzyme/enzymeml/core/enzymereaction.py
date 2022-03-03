@@ -1,4 +1,4 @@
-'''
+"""
 File: enzymereaction.py
 Project: core
 Author: Jan Range
@@ -8,7 +8,7 @@ Last Modified: Wednesday June 23rd 2021 9:06:54 pm
 Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
 -----
 Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+"""
 
 import logging
 import re
@@ -22,7 +22,7 @@ from pydantic import (
     validate_arguments,
     Field,
     PrivateAttr,
-    validator
+    validator,
 )
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
@@ -33,10 +33,7 @@ from pyenzyme.enzymeml.core.exceptions import (
 )
 
 from pyenzyme.utils.log import log_object
-from pyenzyme.enzymeml.core.utils import (
-    type_checking,
-    deprecated_getter
-)
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
 
 if TYPE_CHECKING:  # pragma: no cover
     static_check_init_args = dataclass
@@ -83,36 +80,32 @@ class ReactionElement(BaseModel):
 @static_check_init_args
 class EnzymeReaction(EnzymeMLBase):
     """
-        Describes an enzyme reaction by combining already defined
-        reactants/proteins of an EnzymeML document. In addition,
-        this class provides ways to integrate reaction conditions
-        as well. It is also possible to add a kinetic law to this
-        object by using the KineticModel class.
+    Describes an enzyme reaction by combining already defined
+    reactants/proteins of an EnzymeML document. In addition,
+    this class provides ways to integrate reaction conditions
+    as well. It is also possible to add a kinetic law to this
+    object by using the KineticModel class.
     """
 
-    name: str = Field(
-        ...,
-        description="Name of the reaction.",
-        template_alias="Name"
-    )
+    name: str = Field(..., description="Name of the reaction.", template_alias="Name")
 
     reversible: bool = Field(
         ...,
         description="Whether the reaction is reversible or irreversible",
-        template_alias="Reversible"
+        template_alias="Reversible",
     )
 
     temperature: Optional[float] = Field(
         None,
         description="Numeric value of the temperature of the reaction.",
-        template_alias="Temperature value"
+        template_alias="Temperature value",
     )
 
     temperature_unit: Optional[str] = Field(
         None,
         description="Unit of the temperature of the reaction.",
         regex=r"kelvin|Kelvin|k|K|celsius|Celsius|C|c",
-        template_alias="Temperature unit"
+        template_alias="Temperature unit",
     )
 
     ph: Optional[float] = Field(
@@ -120,7 +113,7 @@ class EnzymeReaction(EnzymeMLBase):
         description="PH value of the reaction.",
         template_alias="pH value",
         inclusiveMinimum=0,
-        inclusiveMaximum=14
+        inclusiveMaximum=14,
     )
 
     ontology: SBOTerm = Field(
@@ -137,7 +130,7 @@ class EnzymeReaction(EnzymeMLBase):
         None,
         description="Unique identifier of the reaction.",
         template_alias="ID",
-        regex=r"r[\d]+"
+        regex=r"r[\d]+",
     )
 
     uri: Optional[str] = Field(
@@ -158,19 +151,19 @@ class EnzymeReaction(EnzymeMLBase):
     educts: List[ReactionElement] = Field(
         default_factory=list,
         description="List of educts containing ReactionElement objects.",
-        template_alias="Educts"
+        template_alias="Educts",
     )
 
     products: List[ReactionElement] = Field(
         default_factory=list,
         description="List of products containing ReactionElement objects.",
-        template_alias="Products"
+        template_alias="Products",
     )
 
     modifiers: List[ReactionElement] = Field(
         default_factory=list,
         description="List of modifiers (Proteins, snhibitors, stimulators) containing ReactionElement objects.",
-        template_alias="Modifiers"
+        template_alias="Modifiers",
     )
 
     # * Private attributes
@@ -263,14 +256,9 @@ class EnzymeReaction(EnzymeMLBase):
     ) -> ReactionElement:
 
         try:
-            return next(filter(
-                lambda element: element.species_id == id,
-                element_list
-            ))
+            return next(filter(lambda element: element.species_id == id, element_list))
         except StopIteration:
-            raise SpeciesNotFoundError(
-                species_id=id, enzymeml_part=element_type
-            )
+            raise SpeciesNotFoundError(species_id=id, enzymeml_part=element_type)
 
     # ! Adders
     @validate_arguments
@@ -303,7 +291,7 @@ class EnzymeReaction(EnzymeMLBase):
             element_list=self.educts,
             ontology=ontology,
             list_name="educts",
-            enzmldoc=enzmldoc
+            enzmldoc=enzmldoc,
         )
 
     @validate_arguments
@@ -313,7 +301,7 @@ class EnzymeReaction(EnzymeMLBase):
         stoichiometry: PositiveFloat,
         enzmldoc,
         constant: bool = False,
-        ontology: SBOTerm = SBOTerm.PRODUCT
+        ontology: SBOTerm = SBOTerm.PRODUCT,
     ) -> None:
         """
         Adds element to EnzymeReaction object. Replicates as well
@@ -336,7 +324,7 @@ class EnzymeReaction(EnzymeMLBase):
             element_list=self.products,
             ontology=ontology,
             list_name="products",
-            enzmldoc=enzmldoc
+            enzmldoc=enzmldoc,
         )
 
     @validate_arguments
@@ -346,7 +334,7 @@ class EnzymeReaction(EnzymeMLBase):
         stoichiometry: PositiveFloat,
         enzmldoc,
         constant: bool,
-        ontology: SBOTerm = SBOTerm.CATALYST
+        ontology: SBOTerm = SBOTerm.CATALYST,
     ) -> None:
         """
         Adds element to EnzymeReaction object. Replicates as well
@@ -369,7 +357,7 @@ class EnzymeReaction(EnzymeMLBase):
             element_list=self.modifiers,
             ontology=ontology,
             list_name="modifiers",
-            enzmldoc=enzmldoc
+            enzmldoc=enzmldoc,
         )
 
     def _addElement(
@@ -380,14 +368,14 @@ class EnzymeReaction(EnzymeMLBase):
         element_list: List[ReactionElement],
         ontology: SBOTerm,
         list_name: str,
-        enzmldoc
+        enzmldoc,
     ) -> None:
 
         # Check if species is part of document already
         all_species = [
             *list(enzmldoc.protein_dict.keys()),
             *list(enzmldoc.reactant_dict.keys()),
-            *list(enzmldoc.complex_dict.keys())
+            *list(enzmldoc.complex_dict.keys()),
         ]
 
         if species_id not in all_species:
@@ -400,7 +388,7 @@ class EnzymeReaction(EnzymeMLBase):
             species_id=species_id,
             stoichiometry=stoichiometry,
             constant=constant,
-            ontology=ontology
+            ontology=ontology,
         )
         element_list.append(element)
 
@@ -410,7 +398,13 @@ class EnzymeReaction(EnzymeMLBase):
             f"Added {type(element).__name__} '{element.species_id}' to reaction '{self.name}' {list_name}"
         )
 
-    def setModel(self, model: KineticModel, enzmldoc, mapping: Dict[str, str] = {}, log: bool = True) -> None:
+    def setModel(
+        self,
+        model: KineticModel,
+        enzmldoc,
+        mapping: Dict[str, str] = {},
+        log: bool = True,
+    ) -> None:
         """Sets the kinetic model of the reaction and in addition converts all units to UnitDefs.
 
         Args:
@@ -424,10 +418,7 @@ class EnzymeReaction(EnzymeMLBase):
         )
 
         # Unit conversion
-        enzmldoc._convert_kinetic_model_units(
-            model.parameters,
-            enzmldoc=enzmldoc
-        )
+        enzmldoc._convert_kinetic_model_units(model.parameters, enzmldoc=enzmldoc)
 
         # Replace kinetic parameter names to customize names if specified
         for param_old, param_new in mapping.items():
@@ -439,9 +430,7 @@ class EnzymeReaction(EnzymeMLBase):
                 if enzmldoc.global_parameters.get(param_new):
                     # Set a global parameter if specified
                     model.parameters.remove(parameter)
-                    model.parameters.append(
-                        enzmldoc.global_parameters[param_new]
-                    )
+                    model.parameters.append(enzmldoc.global_parameters[param_new])
                 else:
                     # If still local, just change the name
                     parameter.name = param_new
@@ -460,20 +449,26 @@ class EnzymeReaction(EnzymeMLBase):
 
         if by_name and enzmldoc is None:
             raise ValueError(
-                "Please provide an EnzymeMLDocument if the reaction schem should include names")
+                "Please provide an EnzymeMLDocument if the reaction schem should include names"
+            )
 
         # Determine the appropriate arrow
         direction = "<=>" if self.reversible else "->"
 
         educts = self._summarize_elements(self.educts, by_name, enzmldoc)
         products = self._summarize_elements(self.products, by_name, enzmldoc)
-        modifiers = self._summarize_elements(
-            self.modifiers, by_name, enzmldoc).replace(" + ", ", ")
+        modifiers = self._summarize_elements(self.modifiers, by_name, enzmldoc).replace(
+            " + ", ", "
+        )
 
         if self.model:
-            equation = "v = " + self._convert_equation_ids_to_names(
-                self.model.equation, by_name, enzmldoc
-            ) + "\n"
+            equation = (
+                "v = "
+                + self._convert_equation_ids_to_names(
+                    self.model.equation, by_name, enzmldoc
+                )
+                + "\n"
+            )
         else:
             equation = ""
 
@@ -486,17 +481,23 @@ class EnzymeReaction(EnzymeMLBase):
         """Parses all reaction elements of a list to a string"""
 
         if by_name is False:
-            return " + ".join([
-                f"{element.stoichiometry} {element.species_id}"
-                for element in elements
-            ])
+            return " + ".join(
+                [
+                    f"{element.stoichiometry} {element.species_id}"
+                    for element in elements
+                ]
+            )
         else:
-            return " + ".join([
-                f"{element.stoichiometry} {enzmldoc.getAny(element.species_id).name}"
-                for element in elements
-            ])
+            return " + ".join(
+                [
+                    f"{element.stoichiometry} {enzmldoc.getAny(element.species_id).name}"
+                    for element in elements
+                ]
+            )
 
-    def _convert_equation_ids_to_names(self, equation: str, by_name: bool, enzmldoc) -> str:
+    def _convert_equation_ids_to_names(
+        self, equation: str, by_name: bool, enzmldoc
+    ) -> str:
         """Converts species IDs to names for readable elements when printing reaction schemes"""
 
         if by_name is False:
@@ -523,10 +524,15 @@ class EnzymeReaction(EnzymeMLBase):
 
         return {
             **{element.species_id: element.stoichiometry for element in self.educts},
-            **{element.species_id: (-1) * element.stoichiometry for element in self.products}
+            **{
+                element.species_id: (-1) * element.stoichiometry
+                for element in self.products
+            },
         }
 
-    def apply_initial_values(self, config: Dict[str, dict], to_values: bool = False) -> None:
+    def apply_initial_values(
+        self, config: Dict[str, dict], to_values: bool = False
+    ) -> None:
         """Applies the initial values for all given parameters to the underlying model.
 
         Args:
@@ -589,8 +595,11 @@ class EnzymeReaction(EnzymeMLBase):
 
         # Initialize reaction object
         reaction = cls(
-            name=name, reversible=reversible, temperature=temperature,
-            temperature_unit=temperature_unit, ph=ph
+            name=name,
+            reversible=reversible,
+            temperature=temperature,
+            temperature_unit=temperature_unit,
+            ph=ph,
         )
 
         # Parse the reaction equation
@@ -649,54 +658,48 @@ class EnzymeReaction(EnzymeMLBase):
                 species_id=species_id,
                 stoichiometry=float(stoichiometry),
                 enzmldoc=enzmldoc,
-                constant=False
+                constant=False,
             )
 
     # ! Getters (old)
 
     def getTemperature(self) -> float:
-        raise NotImplementedError(
-            "Temperature is now part of measurements."
-        )
+        raise NotImplementedError("Temperature is now part of measurements.")
 
     def getTempunit(self) -> str:
-        raise NotImplementedError(
-            "Temperature unit is now part of measurements."
-        )
+        raise NotImplementedError("Temperature unit is now part of measurements.")
 
     def getPh(self) -> PositiveFloat:
-        raise NotImplementedError(
-            "Ph is now part of measurements."
-        )
+        raise NotImplementedError("Ph is now part of measurements.")
 
-    @ deprecated_getter("name instead")
+    @deprecated_getter("name instead")
     def getName(self) -> str:
         return self.name
 
-    @ deprecated_getter("reveserible")
+    @deprecated_getter("reveserible")
     def getReversible(self) -> bool:
         return self.reversible
 
-    @ deprecated_getter("id")
+    @deprecated_getter("id")
     def getId(self) -> Optional[str]:
         return self.id
 
-    @ deprecated_getter("meta_id")
+    @deprecated_getter("meta_id")
     def getMetaid(self) -> Optional[str]:
         return self.meta_id
 
-    @ deprecated_getter("model")
+    @deprecated_getter("model")
     def getModel(self) -> Optional[KineticModel]:
         return self.model
 
-    @ deprecated_getter("educts")
+    @deprecated_getter("educts")
     def getEducts(self):
         return self.educts
 
-    @ deprecated_getter("products")
+    @deprecated_getter("products")
     def getProducts(self):
         return self.products
 
-    @ deprecated_getter("modifier")
+    @deprecated_getter("modifier")
     def getModifiers(self):
         return self.modifiers
