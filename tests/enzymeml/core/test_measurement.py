@@ -4,13 +4,19 @@ from pyenzyme.enzymeml.core.measurement import Measurement
 
 
 class TestMeasurement:
-
     def test_content(self):
         """Tests consistency of content"""
 
         measurement = Measurement(
-            name="SomeMeasurement", temperature=100.0, temperature_unit="C", ph=7.0,
-            global_time=[1, 2, 3, 4], global_time_unit="s", id="m0", uri="URI", creator_id="a0"
+            name="SomeMeasurement",
+            temperature=100.0,
+            temperature_unit="C",
+            ph=7.0,
+            global_time=[1, 2, 3, 4],
+            global_time_unit="s",
+            id="m0",
+            uri="URI",
+            creator_id="a0",
         )
 
         assert measurement.name == "SomeMeasurement"
@@ -29,9 +35,7 @@ class TestMeasurement:
     def test_defaults(self):
         """Test default values"""
 
-        measurement = Measurement(
-            name="SomeMeasurement"
-        )
+        measurement = Measurement(name="SomeMeasurement")
 
         assert not measurement.temperature
         assert not measurement.temperature_unit
@@ -62,12 +66,12 @@ class TestMeasurement:
 
         # Construct expected DataFrame
         expected_protein = {
-            'p0': {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
-            'time': {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0},
+            "p0": {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
+            "time": {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0},
         }
         expected_reactant = {
-            's0': {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
-            'time': {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0},
+            "s0": {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
+            "time": {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0},
         }
 
         assert data["reactants"]["data"].to_dict() == expected_reactant
@@ -99,8 +103,8 @@ class TestMeasurement:
         # Test case with list as argument
         data = measurement.exportData(species_ids=["s0"])
         expected_reactant = {
-            's0': {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
-            'time': {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0}
+            "s0": {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
+            "time": {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0},
         }
 
         assert data["reactants"]["initConc"] == {"s0": (10.0, "mmole / l")}
@@ -113,8 +117,8 @@ class TestMeasurement:
         data = measurement.exportData(species_ids="s0")
         init_conc = data["reactants"]["initConc"]
         expected_reactant = {
-            's0': {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
-            'time': {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0}
+            "s0": {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
+            "time": {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0},
         }
 
         assert data["reactants"]["initConc"] == {"s0": (10.0, "mmole / l")}
@@ -143,7 +147,9 @@ class TestMeasurement:
         measurement.addReplicates([replicate, replicate2], enzmldoc)
 
         assert measurement.species_dict["reactants"]["s0"].replicates == [
-            replicate, replicate2]
+            replicate,
+            replicate2,
+        ]
 
     def test_add_data(self, measurement, replicate):
         """Tests the addition of data"""
