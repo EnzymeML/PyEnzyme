@@ -58,6 +58,12 @@ class UnitCreator:
         Args:
             String unit_string: Standard short form of unit
         '''
+        if unit_string.count("/") > 1:
+            splitted = unit_string.split("/")
+            corrected = splitted[0] + "/" + "".join(splitted[1::])
+            raise ValueError(
+                f"Unit '{unit_string}' contains multiple backlashes. Please stick to using a single backslash instead for units involving two or more base units per side. Use the following to enter your unit '{corrected}'"
+            )
 
         # Generate ID
         id = enzmldoc._generateID(prefix="u", dictionary=enzmldoc.unit_dict)
