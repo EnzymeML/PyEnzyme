@@ -50,28 +50,21 @@ class EnzymeMLBase(BaseModel):
     def __setattr__(self, name, value):
         """Modified attribute setter to document changes in the EnzymeML document"""
         old_value = getattr(self, name)
+
         if isinstance(old_value, list) is False and name.startswith("_") is False and name != "id" and old_value:
 
             if type(self).__name__ != "EnzymeMLDocument":
 
                 try:
                     log_change(
-                        logger,
-                        type(self).__name__,
-                        getattr(self, 'id'),
-                        name,
-                        old_value,
-                        value
+                        logger, type(self).__name__, getattr(self, 'id'),
+                        name, old_value, value
                     )
 
                 except AttributeError:
                     log_change(
-                        logger,
-                        type(self).__name__,
-                        self.get_id(),
-                        name,
-                        old_value,
-                        value
+                        logger, type(self).__name__, self.get_id(),
+                        name, old_value, value
                     )
 
         super().__setattr__(name, value)
