@@ -16,7 +16,7 @@ import pandas as pd
 
 from typing import List, Dict, Tuple, Optional, TYPE_CHECKING, Union
 from dataclasses import dataclass
-from pydantic import validate_arguments, Field, PrivateAttr
+from pydantic import validate_arguments, Field, PrivateAttr, validator
 
 from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
@@ -93,6 +93,18 @@ class Measurement(EnzymeMLBase):
     # * Private attributes
     _temperature_unit_id: str = PrivateAttr(None)
     _global_time_unit_id: str = PrivateAttr(None)
+
+    # ! Validators
+    @validator("temperature_unit")
+    def convert_temperature_unit(cls, unit, values):
+        """Converts celsius to kelvin due to SBML limitations"""
+
+        if unit:
+            if unit.lower() in ["celsius", "c"]:
+                values["temperature"] = values["temperature"] + 273.15
+                return "K"
+
+        return unit
 
     # ! Utility methods
     def __repr__(self):

@@ -71,10 +71,10 @@ class EnzymeMLDocument(EnzymeMLBase):
         3,
         description="SBML evel of the EnzymeML XML.",
         inclusiveMinimum=1,
-        exclusiveMaximum=3,
+        inclusiveMaximum=3,
     )
 
-    version: str = Field(
+    version: int = Field(
         2,
         description="SBML version of the EnzymeML XML.",
     )
@@ -1094,7 +1094,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             # Reset temperature for SBML compliance to Kelvin
             reaction.temperature = (
                 reaction.temperature + 273.15
-                if re.match(r"^K|kelvin", reaction.temperature_unit)
+                if re.match(r"^c|celsius", reaction.temperature_unit.lower())
                 else reaction.temperature
             )
 
@@ -1345,6 +1345,7 @@ class EnzymeMLDocument(EnzymeMLBase):
     ):
         """Updates the measurement IDs of replicates."""
         for measurement_data in measurement_data_dict.values():
+            measurement_data.measurement_id = measurement_id
             replicates = measurement_data.replicates
             for replicate in replicates:
                 replicate.measurement_id = measurement_id

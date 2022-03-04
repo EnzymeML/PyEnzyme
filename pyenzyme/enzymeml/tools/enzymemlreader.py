@@ -36,9 +36,8 @@ from pyenzyme.enzymeml.core.abstract_classes import (
 )
 
 from libsbml import SBMLReader
-from enum import Enum
 from libcombine import CombineArchive
-from io import StringIO, BytesIO
+from io import StringIO
 
 # ! Factories
 
@@ -104,6 +103,11 @@ class EnzymeMLReader:
             path (str): Path to .omex container or
                          folder destination for plain .xml
         """
+
+        if not path.endswith(".omex"):
+            raise TypeError(
+                f"File {os.path.basename(path)} is not a valid OMEX archive"
+            )
 
         # Read omex archive
         self.path = path
@@ -253,7 +257,7 @@ class EnzymeMLReader:
             name = unit.name
             id = unit.id
             meta_id = unit.meta_id
-            ontology = "NONE"  # TODO get unit ontology
+            ontology = None  # TODO get unit ontology
 
             # Create unit definition
             unitdef = UnitDef(name=name, id=id, ontology=ontology, meta_id=meta_id)
@@ -344,6 +348,10 @@ class EnzymeMLReader:
                     "init_conc": init_conc,
                     "_unit_id": unit_id,
                     "unit": unit,
+                    # Some attributes need special care
+                    "ecnumber": param_dict.get("e_cnumber"),
+                    "uniprotid": param_dict.get("uniprot_id"),
+                    "participants": param_dict.get("participant"),
                 }
             )
 
@@ -399,10 +407,18 @@ class EnzymeMLReader:
         param_dict = {}
 
         for enzymeMLAnnot in speciesAnnot:
-            key = enzymeMLAnnot.tag.split("}")[-1].lower()
+            key = enzymeMLAnnot.tag.split("}")[-1]
             key = camel_to_snake(key)
-
             attribute = enzymeMLAnnot.text
+
+            if key in param_dict:
+                # Take care of list attributes
+                try:
+                    param_dict[key].append(attribute)
+                except AttributeError:
+                    param_dict[key] = [param_dict[key], attribute]
+
+                continue
 
             param_dict[key] = attribute
 
@@ -623,9 +639,10 @@ class EnzymeMLReader:
             value=value,
             unit=param_dict.get("unit"),
             ontology=self._sboterm_to_enum(parameter.getSBOTerm()),
-            initial_value=param_dict.get("initialvalue"),
+            initial_value=param_dict.get("initial_value"),
             upper=param_dict.get("upperbound"),
             lower=param_dict.get("lowerbound"),
+            stdev=param_dict.get("stdev"),
             constant=constant,
         )
 

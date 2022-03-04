@@ -23,7 +23,6 @@ class UnitCreator:
 
         self.__functionDict = {
             "M": self.__Molar,
-            "m": self.__Mole,
             "mole": self.__Mole,
             "l": self.__Volume,
             "liter": self.__Volume,
@@ -36,13 +35,11 @@ class UnitCreator:
             "seconds": self.__Seconds,
             "min": self.__Minutes,
             "mins": self.__Minutes,
-            "minute": self.__Minutes,
             "minutes": self.__Minutes,
             "h": self.__Hours,
             "hour": self.__Hours,
             "hours": self.__Hours,
             "C": self.__Celsius,
-            "c": self.__Celsius,
             "celsius": self.__Celsius,
             "Celsius": self.__Celsius,
             "K": self.__Kelvin,

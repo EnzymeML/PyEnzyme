@@ -113,7 +113,7 @@ class UnitParser(object):
 
             try:
                 unit = re.findall(regex, string)[0][0]
-                return ("NONE", unit, exponent)
+                return (None, unit, exponent)
             except IndexError:
                 supportedUnits = regex.split()
                 raise KeyError(

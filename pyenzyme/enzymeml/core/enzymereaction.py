@@ -180,6 +180,17 @@ class EnzymeReaction(EnzymeMLBase):
 
         return id
 
+    @validator("temperature_unit")
+    def convert_temperature_unit(cls, unit, values):
+        """Converts celsius to kelvin due to SBML limitations"""
+
+        if unit:
+            if unit.lower() in ["celsius", "c"]:
+                values["temperature"] = values["temperature"] + 273.15
+                return "K"
+
+        return unit
+
     # ! Getters
     def getEduct(self, id: str) -> ReactionElement:
         """

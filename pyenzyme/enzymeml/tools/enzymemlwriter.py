@@ -308,6 +308,7 @@ class EnzymeMLWriter:
         for key, value in objectMapping.items():
             # "value" --> 10.00
             if hasattr(object, value):
+
                 attribute = getattr(object, value)
                 if attribute:
                     node.addAttr(key, str(attribute))
@@ -432,6 +433,7 @@ class EnzymeMLWriter:
             "enzymeml:ECnumber": "ecnumber",
             "enzymeml:uniprotID": "uniprotid",
             "enzymeml:organism": "organism",
+            "enzymeml:organismTaxID": "organism_tax_id",
         }
 
         for protein in protein_dict.values():
@@ -473,7 +475,11 @@ class EnzymeMLWriter:
         """
 
         # EnzymeML attributes
-        reactantAttributes = {"enzymeml:inchi": "inchi", "enzymeml:smiles": "smiles"}
+        reactantAttributes = {
+            "enzymeml:inchi": "inchi",
+            "enzymeml:smiles": "smiles",
+            "enzymeml:chebiID": "chebi_id",
+        }
 
         for reactant in reactant_dict.values():
             self._addSpecies(
@@ -645,6 +651,9 @@ class EnzymeMLWriter:
                     annotationNode=conditionsAnnotation,
                 )
 
+            if conditionsAnnotation.getNumChildren() > 0:
+                reactionAnnotation.addChild(conditionsAnnotation)
+
             if reactionAnnotation.getNumChildren() > 0:
                 reaction.appendAnnotation(reactionAnnotation)
 
@@ -696,6 +705,7 @@ class EnzymeMLWriter:
                 "enzymeml:initialValue": "initial_value",
                 "enzymeml:upperBound": "upper",
                 "enzymeml:lowerBound": "lower",
+                "enzymeml:stdev": "stdev",
             }
 
             for attributeName, objectName in optional_parameters.items():
