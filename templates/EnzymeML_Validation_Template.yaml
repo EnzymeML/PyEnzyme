@@ -1,0 +1,823 @@
+name:
+  mandatory: true
+  description: Title of the EnzymeML Document.
+  range:
+    min: null
+    max: null
+  enum:
+    - null
+pubmedid:
+  mandatory: true
+  description: Pubmed ID reference.
+  range:
+    min: null
+    max: null
+  enum:
+    - null
+url:
+  mandatory: true
+  description: Arbitrary type of URL that is related to the EnzymeML document.
+  range:
+    min: null
+    max: null
+  enum:
+    - null
+doi:
+  mandatory: true
+  description: Digital Object Identifier of the referenced publication or the EnzymeML
+    document.
+  range:
+    min: null
+    max: null
+  enum:
+    - null
+created:
+  mandatory: true
+  description: Date the EnzymeML document was created.
+  range:
+    min: null
+    max: null
+  enum:
+    - null
+modified:
+  mandatory: true
+  description: Date the EnzymeML document was modified.
+  range:
+    min: null
+    max: null
+  enum:
+    - null
+creator_dict:
+  given_name:
+    mandatory: true
+    description: Given name of the author or contributor.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  family_name:
+    mandatory: true
+    description: Family name of the author or contributor.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  mail:
+    mandatory: true
+    description: Email address of the author or contributor.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+vessel_dict:
+  name:
+    mandatory: true
+    description: Name of the used vessel.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  volume:
+    mandatory: true
+    description: Volumetric value of the vessel.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  unit:
+    mandatory: true
+    description: Volumetric unit of the vessel.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  constant:
+    mandatory: true
+    description: Whether the volume of the vessel is constant or not.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+protein_dict:
+  name:
+    mandatory: true
+    description: Name of the protein
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  sequence:
+    mandatory: true
+    description: Amino acid sequence of the protein
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  vessel_id:
+    mandatory: true
+    description: Identifier of the vessel in which the protein was stored.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  init_conc:
+    mandatory: true
+    description: Initial concentration of the protein.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  unit:
+    mandatory: true
+    description: Unit of the proteins intial concentration.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  constant:
+    mandatory: true
+    description: Whether the proteins concentration remains constant or not.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  ecnumber:
+    mandatory: true
+    description: EC number of the protein.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  organism:
+    mandatory: true
+    description: Organism the protein was expressed in.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  organism_tax_id:
+    mandatory: true
+    description: Taxonomy identifier of the expression host.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  ontology:
+    mandatory: true
+    description: Ontology describing the characteristic of the protein.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  uniprotid:
+    mandatory: true
+    description: Unique identifier referencing a protein entry at UniProt. Use this
+      identifier to initialize the object from the UniProt database.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+complex_dict:
+  name:
+    mandatory: true
+    description: Name of the complex
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  participants:
+    mandatory: true
+    description: Array of IDs the complex contains
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  vessel_id:
+    mandatory: true
+    description: Identifier of the vessel in which the protein was stored.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  init_conc:
+    mandatory: true
+    description: Initial concentration of the protein.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  unit:
+    mandatory: true
+    description: Unit of the proteins intial concentration.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  constant:
+    mandatory: true
+    description: Whether the proteins concentration remains constant or not.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  ontology:
+    mandatory: true
+    description: Ontology describing the characteristic of the protein.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+reactant_dict:
+  name:
+    mandatory: true
+    description: Name of the reactant.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  vessel_id:
+    mandatory: true
+    description: Identifier of the vessel in which the reactant was stored.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  init_conc:
+    mandatory: true
+    description: Initial concentration of the reactant.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  unit:
+    mandatory: true
+    description: Unit of the reactant intial concentration.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  constant:
+    mandatory: true
+    description: Whether the reactants concentration remains constant or not.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  smiles:
+    mandatory: true
+    description: Simplified Molecular Input Line Entry System (SMILES) encoding of
+      the reactant.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  inchi:
+    mandatory: true
+    description: International Chemical Identifier (InChI) encoding of the reactant.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  ontology:
+    mandatory: true
+    description: Ontology describing the characteristic of the reactant.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  chebi_id:
+    mandatory: true
+    description: Unique identifier of the CHEBI database. Use this identifier to initialize
+      the object from the CHEBI database.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+reaction_dict:
+  name:
+    mandatory: true
+    description: Name of the reaction.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  reversible:
+    mandatory: true
+    description: Whether the reaction is reversible or irreversible
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  temperature:
+    mandatory: true
+    description: Numeric value of the temperature of the reaction.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  temperature_unit:
+    mandatory: true
+    description: Unit of the temperature of the reaction.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  ph:
+    mandatory: true
+    description: PH value of the reaction.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  ontology:
+    mandatory: true
+    description: Ontology defining the role of the given species.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  model:
+    name:
+      mandatory: true
+      description: Name of the kinetic law.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    equation:
+      mandatory: true
+      description: Equation for the kinetic law.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    parameters:
+      name:
+        mandatory: true
+        description: Name of the estimated parameter.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      value:
+        mandatory: true
+        description: Numerical value of the estimated parameter.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      unit:
+        mandatory: true
+        description: Unit of the estimated parameter.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      initial_value:
+        mandatory: true
+        description: Initial value that was used for the parameter estimation.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      upper:
+        mandatory: true
+        description: Upper bound of the estimated parameter.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      lower:
+        mandatory: true
+        description: Lower bound of the estimated parameter.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      is_global:
+        mandatory: true
+        description: Specifies if this parameter is a global parameter.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      stdev:
+        mandatory: true
+        description: Standard deviation of the estimated parameter.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      constant:
+        mandatory: true
+        description: Specifies if this parameter is constant
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      ontology:
+        mandatory: true
+        description: Type of the estimated parameter.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+    ontology:
+      mandatory: true
+      description: Type of the estimated parameter.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+  educts:
+    species_id:
+      mandatory: true
+      description: Internal identifier to either a protein or reactant defined in
+        the EnzymeMLDocument.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    stoichiometry:
+      mandatory: true
+      description: Positive float number representing the associated stoichiometry.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    constant:
+      mandatory: true
+      description: Whether or not the concentration of this species remains constant.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    ontology:
+      mandatory: true
+      description: Ontology defining the role of the given species.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+  products:
+    species_id:
+      mandatory: true
+      description: Internal identifier to either a protein or reactant defined in
+        the EnzymeMLDocument.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    stoichiometry:
+      mandatory: true
+      description: Positive float number representing the associated stoichiometry.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    constant:
+      mandatory: true
+      description: Whether or not the concentration of this species remains constant.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    ontology:
+      mandatory: true
+      description: Ontology defining the role of the given species.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+  modifiers:
+    species_id:
+      mandatory: true
+      description: Internal identifier to either a protein or reactant defined in
+        the EnzymeMLDocument.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    stoichiometry:
+      mandatory: true
+      description: Positive float number representing the associated stoichiometry.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    constant:
+      mandatory: true
+      description: Whether or not the concentration of this species remains constant.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    ontology:
+      mandatory: true
+      description: Ontology defining the role of the given species.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+measurement_dict:
+  name:
+    mandatory: true
+    description: Name of the measurement
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  temperature:
+    mandatory: true
+    description: Numeric value of the temperature of the reaction.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  temperature_unit:
+    mandatory: true
+    description: Unit of the temperature of the reaction.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  ph:
+    mandatory: true
+    description: PH value of the reaction.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  global_time:
+    mandatory: true
+    description: Global time of the measurement all replicates agree on.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  global_time_unit:
+    mandatory: true
+    description: Unit of the global time.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  species_dict:
+    init_conc:
+      mandatory: true
+      description: Initial concentration of the measurement data.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    unit:
+      mandatory: true
+      description: The unit of the measurement data.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    measurement_id:
+      mandatory: true
+      description: Unique measurement identifier this dataset belongs to.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    reactant_id:
+      mandatory: true
+      description: The identifier for the described reactant.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    protein_id:
+      mandatory: true
+      description: The identifier for the described protein.
+      range:
+        min: null
+        max: null
+      enum:
+        - null
+    replicates:
+      species_id:
+        mandatory: true
+        description: Unique identifier of the species that has been measured.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      measurement_id:
+        mandatory: true
+        description: Unique identifier of the measurement that the replicate is part
+          of.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      data_type:
+        mandatory: true
+        description: Type of data that was measured (e.g. concentration)
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      data_unit:
+        mandatory: true
+        description: SI unit of the data that was measured.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      time_unit:
+        mandatory: true
+        description: Time unit of the replicate.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      time:
+        mandatory: true
+        description: Time steps of the replicate.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      data:
+        mandatory: true
+        description: Data that was measured.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+      is_calculated:
+        mandatory: true
+        description: Whether or not the data has been generated by simulation.
+        range:
+          min: null
+          max: null
+        enum:
+          - null
+global_parameters:
+  name:
+    mandatory: true
+    description: Name of the estimated parameter.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  value:
+    mandatory: true
+    description: Numerical value of the estimated parameter.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  unit:
+    mandatory: true
+    description: Unit of the estimated parameter.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  initial_value:
+    mandatory: true
+    description: Initial value that was used for the parameter estimation.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  upper:
+    mandatory: true
+    description: Upper bound of the estimated parameter.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  lower:
+    mandatory: true
+    description: Lower bound of the estimated parameter.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  is_global:
+    mandatory: true
+    description: Specifies if this parameter is a global parameter.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  stdev:
+    mandatory: true
+    description: Standard deviation of the estimated parameter.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  constant:
+    mandatory: true
+    description: Specifies if this parameter is constant
+    range:
+      min: null
+      max: null
+    enum:
+      - null
+  ontology:
+    mandatory: true
+    description: Type of the estimated parameter.
+    range:
+      min: null
+      max: null
+    enum:
+      - null
