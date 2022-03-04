@@ -69,8 +69,8 @@ def uploadToDataverse(
 
 
 def create_enzymeml_metadatablock(
-    enzmldoc: "EnzymeMLDocument",
-) -> "EnzymeMl":  # noqa: F821
+    enzmldoc,
+):
 
     # Initialize the EnzymeML metadatablock
     enzml_meta = EnzymeMl()
