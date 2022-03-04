@@ -169,6 +169,9 @@ class EnzymeMLValidator:
         requirements given in said database.
         """
 
+        # Prevent circular imports (Its dirty, I know, but it works)
+        from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
+
         # Get collection data
         cls = cls(scheme={})
         collection, _ = cls._get_cls_annotations(EnzymeMLDocument, level="document")
