@@ -20,8 +20,8 @@ class TestMeasurement:
         )
 
         assert measurement.name == "SomeMeasurement"
-        assert measurement.temperature == 100.0
-        assert measurement.temperature_unit == "C"
+        assert measurement.temperature == 100.0 + 273.15
+        assert measurement.temperature_unit == "K"
         assert measurement.ph == 7.0
         assert measurement.global_time == [1, 2, 3, 4]
         assert measurement.global_time_unit == "s"

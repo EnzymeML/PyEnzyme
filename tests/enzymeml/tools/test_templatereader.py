@@ -12,4 +12,4 @@ class TestTemplateReader:
             "./tests/fixtures/EnzymeML_Template_Example.xlsm"
         )
 
-        assert json.loads(enzmldoc.json()) == template_example
+        assert enzmldoc.dict(exclude={"log"}) == template_example.dict(exclude={"log"})

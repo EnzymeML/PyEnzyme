@@ -7,6 +7,7 @@ from pyenzyme.enzymeml.core.measurement import Measurement
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
+from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.models.kineticmodel import KineticModel, KineticParameter
 
 
@@ -63,4 +64,14 @@ def should_fail():
 
 @pytest.fixture
 def template_example():
-    return json.loads(open("tests/fixtures/template_result.json").read())
+    return EnzymeMLDocument.fromJSON(open("tests/fixtures/template_result.json").read())
+
+
+@pytest.fixture
+def creator():
+    return UnitCreator()
+
+
+@pytest.fixture
+def blank_enzmldoc():
+    return EnzymeMLDocument(name="Test")

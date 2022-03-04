@@ -6,20 +6,27 @@ from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
 
 
 class TestEnzymeReactionBasic:
-
     def test_content(self):
         """Test consistency of inputs"""
 
         reaction = EnzymeReaction(
-            name="SomeReaction", reversible=True, temperature=100.0, temperature_unit="C",
-            ph=7.0, ontology=SBOTerm.BIOCHEMICAL_REACTION, id="r0", meta_id="undefined",
-            creator_id="a0", uri="URI", model=None
+            name="SomeReaction",
+            reversible=True,
+            temperature=100.0,
+            temperature_unit="C",
+            ph=7.0,
+            ontology=SBOTerm.BIOCHEMICAL_REACTION,
+            id="r0",
+            meta_id="undefined",
+            creator_id="a0",
+            uri="URI",
+            model=None,
         )
 
         assert reaction.name == "SomeReaction"
         assert reaction.reversible
-        assert reaction.temperature == 100.0
-        assert reaction.temperature_unit == "C"
+        assert reaction.temperature == 100.0 + 273.15
+        assert reaction.temperature_unit == "K"
         assert reaction.ph == 7.0
         assert reaction.ontology == SBOTerm.BIOCHEMICAL_REACTION
         assert reaction.id == "r0"
@@ -34,9 +41,7 @@ class TestEnzymeReactionBasic:
     def test_defaults(self):
         """Test if the defaults are the same"""
 
-        reaction = EnzymeReaction(
-            name="SomeReaction", reversible=True
-        )
+        reaction = EnzymeReaction(name="SomeReaction", reversible=True)
 
         assert not reaction.temperature
         assert not reaction.temperature_unit
@@ -92,8 +97,7 @@ class TestEnzymeReactionBasic:
 
         # Test educt addition
         reaction.addEduct(
-            species_id="s0", stoichiometry=1.0, constant=False,
-            enzmldoc=enzmldoc
+            species_id="s0", stoichiometry=1.0, constant=False, enzmldoc=enzmldoc
         )
 
         # Fetch the educt
@@ -105,8 +109,7 @@ class TestEnzymeReactionBasic:
 
         # Test product addition
         reaction.addProduct(
-            species_id="s1", stoichiometry=1.0, constant=False,
-            enzmldoc=enzmldoc
+            species_id="s1", stoichiometry=1.0, constant=False, enzmldoc=enzmldoc
         )
 
         # Fetch the educt
@@ -118,8 +121,7 @@ class TestEnzymeReactionBasic:
 
         # Test product addition
         reaction.addModifier(
-            species_id="p0", stoichiometry=1.0, constant=False,
-            enzmldoc=enzmldoc
+            species_id="p0", stoichiometry=1.0, constant=False, enzmldoc=enzmldoc
         )
 
         # Fetch the educt
@@ -132,20 +134,17 @@ class TestEnzymeReactionBasic:
         # Test case, ID not in document
         with pytest.raises(SpeciesNotFoundError):
             reaction.addEduct(
-                species_id="s100", stoichiometry=1.0, constant=False,
-                enzmldoc=enzmldoc
+                species_id="s100", stoichiometry=1.0, constant=False, enzmldoc=enzmldoc
             )
 
         with pytest.raises(SpeciesNotFoundError):
             reaction.addProduct(
-                species_id="s100", stoichiometry=1.0, constant=False,
-                enzmldoc=enzmldoc
+                species_id="s100", stoichiometry=1.0, constant=False, enzmldoc=enzmldoc
             )
 
         with pytest.raises(SpeciesNotFoundError):
             reaction.addModifier(
-                species_id="s100", stoichiometry=1.0, constant=False,
-                enzmldoc=enzmldoc
+                species_id="s100", stoichiometry=1.0, constant=False, enzmldoc=enzmldoc
             )
 
     def test_from_equation_with_names(self, enzmldoc):
@@ -153,13 +152,17 @@ class TestEnzymeReactionBasic:
 
         # Test for irreversible case
         reaction = EnzymeReaction.fromEquation(
-            "2.0 Reactant + Protein -> Complex", "SomeReaction", enzmldoc,
-            temperature=100.0, temperature_unit="C", ph=7.0
+            "2.0 Reactant + Protein -> Complex",
+            "SomeReaction",
+            enzmldoc,
+            temperature=100.0,
+            temperature_unit="C",
+            ph=7.0,
         )
 
         assert reaction.name == "SomeReaction"
-        assert reaction.temperature == 100
-        assert reaction.temperature_unit == "C"
+        assert reaction.temperature == 100 + 273.15
+        assert reaction.temperature_unit == "K"
         assert reaction.ph == 7.0
         assert reaction.reversible is False
 
@@ -186,13 +189,17 @@ class TestEnzymeReactionBasic:
 
         # Test for irreversible case
         reaction = EnzymeReaction.fromEquation(
-            "2.0 Reactant + Protein = Complex", "SomeReaction", enzmldoc,
-            temperature=100.0, temperature_unit="C", ph=7.0
+            "2.0 Reactant + Protein = Complex",
+            "SomeReaction",
+            enzmldoc,
+            temperature=100.0,
+            temperature_unit="C",
+            ph=7.0,
         )
 
         assert reaction.name == "SomeReaction"
-        assert reaction.temperature == 100
-        assert reaction.temperature_unit == "C"
+        assert reaction.temperature == 100 + 273.15
+        assert reaction.temperature_unit == "K"
         assert reaction.ph == 7.0
         assert reaction.reversible is True
 
@@ -222,13 +229,17 @@ class TestEnzymeReactionBasic:
 
         # Test for irreversible case
         reaction = EnzymeReaction.fromEquation(
-            "2.0 s0 + p0 -> c0", "SomeReaction", enzmldoc,
-            temperature=100.0, temperature_unit="C", ph=7.0
+            "2.0 s0 + p0 -> c0",
+            "SomeReaction",
+            enzmldoc,
+            temperature=100.0,
+            temperature_unit="C",
+            ph=7.0,
         )
 
         assert reaction.name == "SomeReaction"
-        assert reaction.temperature == 100
-        assert reaction.temperature_unit == "C"
+        assert reaction.temperature == 100 + 273.15
+        assert reaction.temperature_unit == "K"
         assert reaction.ph == 7.0
         assert reaction.reversible is False
 
@@ -255,13 +266,17 @@ class TestEnzymeReactionBasic:
 
         # Test for irreversible case
         reaction = EnzymeReaction.fromEquation(
-            "2.0 s0 + p0 = c0", "SomeReaction", enzmldoc,
-            temperature=100.0, temperature_unit="C", ph=7.0
+            "2.0 s0 + p0 = c0",
+            "SomeReaction",
+            enzmldoc,
+            temperature=100.0,
+            temperature_unit="C",
+            ph=7.0,
         )
 
         assert reaction.name == "SomeReaction"
-        assert reaction.temperature == 100
-        assert reaction.temperature_unit == "C"
+        assert reaction.temperature == 100 + 273.15
+        assert reaction.temperature_unit == "K"
         assert reaction.ph == 7.0
         assert reaction.reversible is True
 
@@ -291,9 +306,7 @@ class TestEnzymeReactionBasic:
 
         # No arrow
         with pytest.raises(ValueError):
-            EnzymeReaction.fromEquation(
-                "1.0 s0 + 2.0 p0", "FaultyReaction", enzmldoc
-            )
+            EnzymeReaction.fromEquation("1.0 s0 + 2.0 p0", "FaultyReaction", enzmldoc)
 
         # No right side (irrev)
         with pytest.raises(ValueError):
@@ -315,9 +328,7 @@ class TestEnzymeReactionBasic:
 
         # No right side (rev)
         with pytest.raises(ValueError):
-            EnzymeReaction.fromEquation(
-                "= 1.0 s0 + 2.0 p0", "FaultyReaction", enzmldoc
-            )
+            EnzymeReaction.fromEquation("= 1.0 s0 + 2.0 p0", "FaultyReaction", enzmldoc)
 
     def test_set_model(self, enzmldoc, correct_model, faulty_model):
         """Tests if the model is set correctly."""
@@ -358,12 +369,9 @@ class TestEnzymeReactionBasic:
 
         # Correct test case
         # Set up initial values and get reaction
-        init_values = {"x": {
-            "initial_value": 100.0,
-            "upper": 200.0,
-            "lower": 0,
-            "constant": False
-        }}
+        init_values = {
+            "x": {"initial_value": 100.0, "upper": 200.0, "lower": 0, "constant": False}
+        }
         reaction = enzmldoc.getReaction("r0")
 
         # Apply method and assert
@@ -382,13 +390,11 @@ class TestEnzymeReactionBasic:
 
 
 class TestReactionElement:
-
     def test_content(self):
         """Tests consistency of content"""
 
         element = ReactionElement(
-            species_id="s0", stoichiometry=1.0, constant=False,
-            ontology=SBOTerm.PRODUCT
+            species_id="s0", stoichiometry=1.0, constant=False, ontology=SBOTerm.PRODUCT
         )
 
         assert element.species_id == "s0"

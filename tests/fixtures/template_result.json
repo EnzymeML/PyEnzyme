@@ -77,8 +77,8 @@
     "r0": {
       "name": "Pyruvate decarboxylation",
       "reversible": true,
-      "temperature": 36.0,
-      "temperature_unit": "C",
+      "temperature": 309.15,
+      "temperature_unit": "K",
       "ph": 6.5,
       "ontology": "SBO:0000176",
       "meta_id": "METAID_R0",
