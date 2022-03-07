@@ -312,6 +312,8 @@ class EnzymeMLWriter:
                 attribute = getattr(object, value)
                 if attribute:
                     node.addAttr(key, str(attribute))
+                else:
+                    return 0
             else:
                 return 0
 
@@ -653,8 +655,6 @@ class EnzymeMLWriter:
 
             if conditionsAnnotation.getNumChildren() > 0:
                 reactionAnnotation.addChild(conditionsAnnotation)
-
-            if reactionAnnotation.getNumChildren() > 0:
                 reaction.appendAnnotation(reactionAnnotation)
 
             # Write educts
