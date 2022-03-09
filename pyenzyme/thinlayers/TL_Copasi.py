@@ -28,6 +28,8 @@ except ModuleNotFoundError as e:
     {}
     """.format(e)
 
+log = logging.getLogger(__name__)
+
 
 class ThinLayerCopasi(BaseThinLayer):
 
@@ -61,7 +63,7 @@ class ThinLayerCopasi(BaseThinLayer):
         try:
             self.dm.importSBMLFromString(self.sbml_xml)
         except COPASI.CCopasiException:
-            logging.error(COPASI.CCopasiMessage.getAllMessageText())
+            log.error(COPASI.CCopasiMessage.getAllMessageText())
 
         # maps
         self._init_maps()
@@ -138,6 +140,13 @@ class ThinLayerCopasi(BaseThinLayer):
             for k, v in measurement_dict['initConc'].items():
                 data = data.join(pd.DataFrame({'init_{0}'.format(k): [v[0]]}))
                 sbml_ids.append('init_{0}'.format(k))
+                # validate value
+                if k in data.columns:
+                    initial_value = data[data['time'] == 0.0][k]
+                    if not initial_value.empty and float(initial_value) != v[0]:
+                        log.warning(f'The initial value of "{k}" in experiment "{measurement_id}" '
+                                        f'is inconsistent with the specified initial concentration: '
+                                        f'{float(initial_value)} != {v[0]}')
 
             exp_filename = os.path.abspath(os.path.join(
                 self.working_dir, measurement_id + '.tsv'))
@@ -221,7 +230,7 @@ class ThinLayerCopasi(BaseThinLayer):
         :param fit_parameters: list of dictionaries of the same form as returned by get_fit_parameters
         :return: None
         """
-        assert(isinstance(self.problem, COPASI.CFitProblem))
+        assert (isinstance(self.problem, COPASI.CFitProblem))
         assert (isinstance(self.task, COPASI.CFitTask))
         assert (isinstance(self.dm, COPASI.CDataModel))
 
@@ -250,8 +259,10 @@ class ThinLayerCopasi(BaseThinLayer):
         :return: None
         """
         # run optimization
-        self.task.initialize(COPASI.CCopasiTask.OUTPUT_UI)
-        self.task.process(True)
+        if not self.task.initializeRaw(COPASI.CCopasiTask.OUTPUT_UI):
+            log.error(COPASI.CCopasiMessage.getFirstMessage().getAllMessageText())
+        if not self.task.processRaw(True):
+            log.error(COPASI.CCopasiMessage.getFirstMessage().getAllMessageText())
         self.task.restore()
 
     def write(self):
@@ -262,8 +273,8 @@ class ThinLayerCopasi(BaseThinLayer):
         assert (isinstance(self.problem, COPASI.CFitProblem))
         results = self.problem.getSolutionVariables()
 
-        logging.debug('OBJ: {0}'.format(self.problem.getSolutionValue()))
-        logging.debug('RMS: {0}'.format(self.problem.getRMS()))
+        log.debug('OBJ: {0}'.format(self.problem.getSolutionValue()))
+        log.debug('RMS: {0}'.format(self.problem.getRMS()))
 
         for i in range(self.problem.getOptItemSize()):
             item = self.problem.getOptItem(i)
@@ -274,7 +285,6 @@ class ThinLayerCopasi(BaseThinLayer):
             name = obj.getObjectName() if obj.getObjectType(
             ) != 'Reference' else obj.getObjectParent().getObjectName()
             value = results.get(i)
-            logging.debug(name, value)
 
             reaction = obj.getObjectAncestor('Reaction')
             if reaction is not None:
@@ -296,8 +306,8 @@ class ThinLayerCopasi(BaseThinLayer):
         assert (isinstance(self.problem, COPASI.CFitProblem))
         results = self.problem.getSolutionVariables()
 
-        logging.debug('OBJ: {0}'.format(self.problem.getSolutionValue()))
-        logging.debug('RMS: {0}'.format(self.problem.getRMS()))
+        log.debug('OBJ: {0}'.format(self.problem.getSolutionValue()))
+        log.debug('RMS: {0}'.format(self.problem.getRMS()))
 
         for i in range(self.problem.getOptItemSize()):
             item = self.problem.getOptItem(i)
@@ -308,7 +318,6 @@ class ThinLayerCopasi(BaseThinLayer):
             name = obj.getObjectName() if obj.getObjectType(
             ) != 'Reference' else obj.getObjectParent().getObjectName()
             value = results.get(i)
-            logging.debug(name, value)
 
             reaction = obj.getObjectAncestor('Reaction')
             if reaction is not None:
@@ -356,7 +365,7 @@ class ThinLayerCopasi(BaseThinLayer):
 
             mv = self.dm.getModel().getModelValue(global_param.name)
             if not mv:
-                logging.warning(
+                log.warning(
                     "No global parameter {0} in the model".format(global_param.name))
                 continue
 
