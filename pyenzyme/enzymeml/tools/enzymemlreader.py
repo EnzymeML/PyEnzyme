@@ -328,9 +328,14 @@ class EnzymeMLReader:
             unit_id = species.getSubstanceUnits()
 
             if repr(init_conc) == "nan":
-                init_conc, unit_id, unit = None, None, None
-            else:
+                # Handle not existent init concs
+                init_conc = None
+
+            if unit_id:
+                # Get unit string if given
                 unit = enzmldoc.getUnitString(unit_id)
+            else:
+                unit = None
 
             # Get SBOTerm, but if there is none, give default
             ontology = self._sboterm_to_enum(species.getSBOTerm())

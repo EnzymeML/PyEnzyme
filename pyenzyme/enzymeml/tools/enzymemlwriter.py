@@ -572,6 +572,13 @@ class EnzymeMLWriter:
         if obj.unit and not obj._unit_id:
             obj._unit_id = self.enzmldoc._convertToUnitDef(obj.unit)
 
+        # TODO REFACTOR: Check consistency of unit
+        if obj.unit:
+            unit_id_check = self.enzmldoc._convertToUnitDef(obj.unit)
+
+            if unit_id_check != obj._unit_id:
+                obj._unit_id = unit_id_check
+
         if obj.init_conc is not None and obj._unit_id:
             species.setSubstanceUnits(obj._unit_id)
             species.setInitialConcentration(obj.init_conc)
