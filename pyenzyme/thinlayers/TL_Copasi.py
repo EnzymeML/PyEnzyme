@@ -318,7 +318,6 @@ class ThinLayerCopasi(BaseThinLayer):
             name = obj.getObjectName() if obj.getObjectType(
             ) != 'Reference' else obj.getObjectParent().getObjectName()
             value = results.get(i)
-            log.debug(name, value)
 
             reaction = obj.getObjectAncestor('Reaction')
             if reaction is not None:
