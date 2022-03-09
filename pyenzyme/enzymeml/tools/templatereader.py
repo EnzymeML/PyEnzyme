@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import re
 
 from typing import List, Dict
@@ -27,7 +28,7 @@ def read_template(path: str, enzmldoc):
 
     params = dict(
         name=general_info.iloc[0, 1],
-        created=str(general_info.iloc[1, 1].date()),
+        created=str(general_info.iloc[1, 1]),
         doi=None,
         pubmedid=general_info.iloc[3, 1],
         url=general_info.iloc[4, 1],
@@ -65,7 +66,6 @@ def read_template(path: str, enzmldoc):
 
     # Reactants
     reactants = pd.read_excel(path, sheet_name="Reactants", skiprows=2)
-
     instances = get_instances(reactants, Reactant, enzmldoc)
 
     for instance in instances:
@@ -202,6 +202,7 @@ def get_template_map(obj) -> dict:
 
 
 def extract_values(sheet: pd.DataFrame, mapping: Dict[str, str]) -> list:
+    sheet = sheet.replace(r"^\s*$", np.nan, regex=True)
     sheet = sheet.dropna(thresh=len(mapping))
     records = sheet.to_dict(orient="records")
 
@@ -308,7 +309,7 @@ def parse_reaction_element(elements):
     if repr(elements) == "nan":
         return []
 
-    return elements.split(",")
+    return elements.split(";")
 
 
 def add_instances(fun, elements, enzmldoc) -> None:
