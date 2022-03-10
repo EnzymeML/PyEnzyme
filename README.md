@@ -1,6 +1,7 @@
-# PyEnzyme
-
-PyEnzyme is the interface to the data model <b>EnzymeML</b> and offers a convenient way to document and model research data. Lightweight syntax for rapid development of data management solution in enzymology and biocatalysis.
+<h1 align="center">
+  PyEnzyme
+</h1>
+<p align="center">PyEnzyme is the interface to the data model <b>EnzymeML</b> and offers a convenient way to document and model research data. Lightweight syntax for rapid development of data management solution in enzymology and biocatalysis.</p>
 
 ### 🧬 Features
 
