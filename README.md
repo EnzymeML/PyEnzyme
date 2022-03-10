@@ -57,7 +57,7 @@ See the [API documentation](https://enzymeml.sloppy.zone) for details on our end
 
 ## 📖 Project Wiki
 
-Explore all the features of **PyEnzyme** in our [documentation](https://github.com/create-go-app/cli/wiki) and take part in [Discussions](https://github.com/create-go-app/cli/discussions) and/or [Issues](https://github.com/create-go-app/cli/issues). 
+Explore all the features of **PyEnzyme** in our [documentation](https://pyenzyme.readthedocs.io/en/refactoring/) and take part in [Discussions](https://github.com/EnzymeML/PyEnzyme/discussions) and/or [Issues](https://github.com/EnzymeML/PyEnzyme/issues). 
 ## ⚙️ Example code
 
 This example will demonstrate how to create a simple EnzymeML document using PyEnzyme and how to use initializers from official databases **Chebi** and **UniProt** to gather metadata. For more examples, please visit our [documentation](https://pyenzyme.readthedocs.io/en/refactoring/) (Work in progress)
