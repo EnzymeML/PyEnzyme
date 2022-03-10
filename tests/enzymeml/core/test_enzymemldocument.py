@@ -1,4 +1,5 @@
 import os
+import pytest
 
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.abstract_classes import AbstractSpecies
@@ -152,3 +153,72 @@ class TestEnzymeMLDocument:
 
         assert "p0" in enzmldoc.protein_dict
         assert species == enzmldoc.protein_dict["p0"]
+
+    def test_unit_change(self, enzmldoc):
+        """Tests whether units remain consistent when changed at run-time and are reloaded"""
+
+        # Change an arbitrary unit
+        species = enzmldoc.getReactant("s0")
+        species.unit = "umole / l"
+
+        # Write to file
+        enzmldoc.toFile("./tests/tmp/", name="Test_Unit_Change")
+
+        # Read file and check if the unit change is consistent
+        nu_enzmldoc = EnzymeMLDocument.fromFile("./tests/tmp/Test_Unit_Change.omex")
+        unit = enzmldoc.getReactant("s0").unit
+
+        assert unit == "umole / l"
+
+    def test_full_data_export(self, enzmldoc):
+        """Tests whether data is exported correctly"""
+
+        # Test all export of reactant/protein
+        data = enzmldoc.exportMeasurementData()
+
+        expected_conc = {"s0": (10.0, "mmole / l"), "p0": (10.0, "mmole / l")}
+        expected_data = {
+            "s0": {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
+            "time": {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0},
+            "p0": {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
+        }
+
+        assert "m0" in data
+        assert data["m0"]["data"].to_dict() == expected_data
+        assert data["m0"]["initConc"] == expected_conc
+
+        # Test case of no specification
+        with pytest.raises(ValueError) as exc_info:
+            enzmldoc.exportMeasurementData(proteins=False, reactants=False)
+
+    def test_protein_data_export(self, enzmldoc):
+        """Tests whether data is exported correctly"""
+
+        # Test all export of reactant/protein
+        data = enzmldoc.exportMeasurementData(reactants=False)
+
+        expected_conc = {"p0": (10.0, "mmole / l")}
+        expected_data = {
+            "time": {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0},
+            "p0": {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
+        }
+
+        assert "m0" in data
+        assert data["m0"]["data"].to_dict() == expected_data
+        assert data["m0"]["initConc"] == expected_conc
+
+    def test_reactant_data_export(self, enzmldoc):
+        """Tests whether data is exported correctly"""
+
+        # Test all export of reactant/protein
+        data = enzmldoc.exportMeasurementData(proteins=False)
+
+        expected_conc = {"s0": (10.0, "mmole / l")}
+        expected_data = {
+            "time": {0: 1.0, 1: 2.0, 2: 3.0, 3: 4.0},
+            "s0": {0: 1.0, 1: 1.0, 2: 1.0, 3: 1.0},
+        }
+
+        assert "m0" in data
+        assert data["m0"]["data"].to_dict() == expected_data
+        assert data["m0"]["initConc"] == expected_conc

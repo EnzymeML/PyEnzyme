@@ -14,6 +14,7 @@ import os
 import re
 import ast
 import json
+from tkinter import TRUE
 import yaml
 import logging
 import pandas as pd
@@ -551,7 +552,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         self,
         measurement_ids: Union[str, List[str]] = "all",
         species_ids: Union[str, List[str]] = "all",
-        proteins: bool = False,
+        proteins: bool = True,
         reactants: bool = True,
     ) -> Dict[str, Dict[str, Union[Tuple, pd.DataFrame]]]:
         """Exports either all replicates present in any measurement or the ones specified via 'species_ids' or 'measurement_ids'
@@ -563,6 +564,11 @@ class EnzymeMLDocument(EnzymeMLBase):
         Returns:
             Dict[str, Dict[str, Union[tuple, pd.DataFrame]]]: The data corresponding to the specified options. The dictionary will still distinguish between meassuremnts.
         """
+
+        if proteins is False and reactants is False:
+            raise ValueError(
+                "Export of data needs at least one of 'protein' and 'reactants' specified. Otherwise no data can be exported."
+            )
 
         if isinstance(measurement_ids, str):
             measurement_ids = [measurement_ids]
@@ -577,15 +583,20 @@ class EnzymeMLDocument(EnzymeMLBase):
                 data = measurement.exportData(species_ids=species_ids)
 
                 # Initialize the data dict that will be returned
-                measurement_data = {}
+                df = {}
+                init_conc = {}
 
                 if reactants:
-                    measurement_data.update(data["reactants"])
+                    df.update(data["reactants"]["data"].to_dict())
+                    init_conc.update(data["reactants"]["initConc"])
                 if proteins:
-                    measurement_data.update(data["proteins"])
+                    df.update(data["proteins"]["data"].to_dict())
+                    init_conc.update(data["proteins"]["initConc"])
 
-                if measurement_data["data"] is not None:
-                    replicate_data[measurement_id] = measurement_data
+                replicate_data[measurement_id] = {
+                    "data": pd.DataFrame(df),
+                    "initConc": init_conc,
+                }
 
         return replicate_data
 
