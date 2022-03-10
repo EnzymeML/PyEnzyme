@@ -90,13 +90,41 @@ class MeasurementData(EnzymeMLBase):
 
         unit_id = None
 
+        # Transform initial concentration
+        unitdef: UnitDef = enzmldoc.unit_dict[self._unit_id].copy()
+        transform_value, new_unit_name, unit_id = self._getTransformation(
+            unitdef, kind, scale, enzmldoc
+        )
+
+        self.init_conc *= transform_value
+        self._unit_id = unit_id
+        self.unit = new_unit_name
+
+        # Apply to replicates
         for replicate in self.replicates:
-            unit_id = self._rescaleReplicateUnits(
+            self._rescaleReplicateUnits(
                 replicate=replicate, kind=kind, scale=scale, enzmldoc=enzmldoc
             )
 
-        if unit_id:
-            return unit_id
+    @staticmethod
+    def _getTransformation(unitdef: UnitDef, kind: str, scale: int, enzmldoc):
+        """Calculates the new transformation value and returns new UnitDef"""
+
+        # Calculate transformation value
+        transform_value = unitdef.calculateTransformValue(kind=kind, scale=scale)
+
+        # Create a new unit that matches the new scale
+        new_unitdef = UnitDef(**unitdef.dict())
+        correction_factor = 1 if scale == 0 else 0
+
+        for base_unit in new_unitdef.units:
+            if base_unit.kind == kind:
+                base_unit.scale = scale + correction_factor
+
+        new_unit_name = new_unitdef._getNewName()
+        unit_id = enzmldoc._convertToUnitDef(new_unit_name)
+
+        return transform_value, new_unit_name, unit_id
 
     def _rescaleReplicateUnits(
         self, replicate: Replicate, kind: str, scale: int, enzmldoc
@@ -114,28 +142,14 @@ class MeasurementData(EnzymeMLBase):
         unitdef: UnitDef = enzmldoc.unit_dict[data_unit_id].copy()
 
         # Calculate the scale to transform the unit
-        transform_value = unitdef.calculateTransformValue(kind=kind, scale=scale)
+        transform_value, new_unit_name, unit_id = self._getTransformation(
+            unitdef, kind, scale, enzmldoc
+        )
 
-        # Re-scale and assign the data of the replicate
+        # Re-scale and assign the new data of the replicate
         replicate.data = [data_point * transform_value for data_point in replicate.data]
-
-        # Create a new unit that matches the new scale
-        new_unitdef = UnitDef(**unitdef.dict())
-        correction_factor = 1 if scale == 0 else 0
-
-        for base_unit in new_unitdef.units:
-            if base_unit.kind == kind:
-                base_unit.scale = scale + correction_factor
-
-        # Add it to the enzymeml document and replicate
-        new_unit_name = new_unitdef._getNewName()
-        unit_id = enzmldoc._convertToUnitDef(new_unit_name)
         replicate._data_unit_id = unit_id
         replicate.data_unit = new_unit_name
-
-        # Reset unit id and unit string
-        self.__setattr__("unit", new_unit_name)
-        self.__setattr__("_unit_id", unit_id)
 
     @validate_arguments
     def addReplicate(self, replicate: Replicate) -> None:

@@ -5,14 +5,12 @@ from pyenzyme.enzymeml.core.exceptions import MeasurementDataSpeciesIdentifierEr
 
 
 class TestMeasurementData:
-
     def test_content(self):
         """Tests data consistency"""
 
         # Check for reactant input
         data = MeasurementData(
-            init_conc=10.0, unit="mmole / l", measurement_id="m0",
-            reactant_id="s0"
+            init_conc=10.0, unit="mmole / l", measurement_id="m0", reactant_id="s0"
         )
 
         assert data.init_conc == 10.0
@@ -24,8 +22,7 @@ class TestMeasurementData:
 
         # Check for protein input
         data = MeasurementData(
-            init_conc=10.0, unit="mmole / l", measurement_id="m0",
-            protein_id="p0"
+            init_conc=10.0, unit="mmole / l", measurement_id="m0", protein_id="p0"
         )
 
         assert data.init_conc == 10.0
@@ -40,15 +37,16 @@ class TestMeasurementData:
 
         # Check when both are not given
         with pytest.raises(MeasurementDataSpeciesIdentifierError):
-            MeasurementData(
-                init_conc=10.0, unit="mmole / l", measurement_id="m0"
-            )
+            MeasurementData(init_conc=10.0, unit="mmole / l", measurement_id="m0")
 
         # Check when both are given at same time
         with pytest.raises(MeasurementDataSpeciesIdentifierError):
             MeasurementData(
-                init_conc=10.0, unit="mmole / l", measurement_id="m0",
-                reactant_id="s0", protein_id="p0"
+                init_conc=10.0,
+                unit="mmole / l",
+                measurement_id="m0",
+                reactant_id="s0",
+                protein_id="p0",
             )
 
     def test_unify_units(self, enzmldoc):
@@ -65,6 +63,9 @@ class TestMeasurementData:
         assert replicate.data == [1000.0, 1000.0, 1000.0, 1000.0]
         assert replicate.data_unit == "umole / l"
         assert enzmldoc.unit_dict[replicate._data_unit_id].name == "umole / l"
+
+        assert data.init_conc == 10000.0
+        assert data.unit == "umole / l"
 
     def test_add_replicate(self, measurement, replicate):
         """Tests if the added replicate is correct"""
