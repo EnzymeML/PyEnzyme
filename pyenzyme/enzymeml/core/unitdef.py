@@ -153,10 +153,10 @@ class UnitDef(EnzymeMLBase):
             if base_unit.kind == kind:
 
                 # correction factor used for the case of scale=1
-                coorrection_factor = -1 if base_unit.scale == 1 else 0
+                correction_factor = -1 if base_unit.scale == 1 else 0
 
                 return 10 ** (
-                    base_unit.exponent * (base_unit.scale - scale + coorrection_factor)
+                    base_unit.exponent * (base_unit.scale - scale + correction_factor)
                 )
 
         raise ValueError(f"Unit kind of {kind} is not part of the unit definition")
