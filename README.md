@@ -74,28 +74,37 @@ vessel_id = enzmldoc.addVessel(vessel)
 
 # Set up reactants and proteins from databases
 protein = pe.Protein.fromUniProtID(
-	uniprotid="P07327", vessel_id=vessel_id,
-	init_conc=10.0, unit="fmole / l"
+    uniprotid="P07327", vessel_id=vessel_id,
+    init_conc=10.0, unit="fmole / l"
 )
 
 substrate = pe.Reactant.fromChebiID(
-	chebi_id="CHEBI:16236", vessel_id=vessel_id,
-	init_conc=200.0, unit="mmole / l"
+    chebi_id="CHEBI:16236", vessel_id=vessel_id,
+    init_conc=200.0, unit="mmole / l"
 ) 
 
 product = pe.Reactant.fromChebiID(
-	chebi_id="CHEBI:15343", vessel_id=vessel_id,
-	init_conc=0.0, unit="mmole / l"
+    chebi_id="CHEBI:15343", vessel_id=vessel_id,
+    init_conc=0.0, unit="mmole / l"
 )
 
-# Finally, build a reaction from it
+# ... and add each to the document
+protein_id = enzmldoc.addProtein(protein)
+substrate_id = enzmldoc.addReactant(substrate)
+product_id = enzmldoc.addReactant(product)
+
+# Build the reaction
 reaction = pe.EnzymeReaction.fromEquation(
-	equation="ethanol -> acetaldehyde",
-	name="Alocohol dehydrogenation", vessel_id=vessel_id,
-	enzmldoc=enzmldoc
+    equation="ethanol -> acetaldehyde",
+    modifiers=[protein_id],
+    name="Alocohol dehydrogenation",
+    enzmldoc=enzmldoc
 )
 
-# Save to EnzymeML
+# ... and add it to the document
+reaction_id = enzmldoc.addReaction(reaction)
+
+# Finally, save the document to an OMEX archive
 enzmldoc.toFile(".", name="ADH Experiment")
 ```
 <sub>(Code should run as it is)</sup>
