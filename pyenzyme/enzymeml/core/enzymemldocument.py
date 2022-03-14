@@ -379,9 +379,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             measurement_ids = [measurement_ids]
 
         # Allow for custom templates if specified
-        if interactive and "template" in kwargs:
-            template = kwargs["template"]
-        else:
+        if interactive:
             kwargs["template"] = "plotly_white"
 
         df = self.toDataFrame(use_names=use_names, measurement_ids=measurement_ids)
