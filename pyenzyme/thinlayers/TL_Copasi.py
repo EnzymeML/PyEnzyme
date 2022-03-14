@@ -272,9 +272,13 @@ class ThinLayerCopasi(BaseThinLayer):
 
         assert (isinstance(self.problem, COPASI.CFitProblem))
         results = self.problem.getSolutionVariables()
+        if self.problem.getOptItemSize() != results.size():
+            log.error('The optimization was not run yet, no update can be made')
+            return nu_enzmldoc
 
         log.debug('OBJ: {0}'.format(self.problem.getSolutionValue()))
         log.debug('RMS: {0}'.format(self.problem.getRMS()))
+
 
         for i in range(self.problem.getOptItemSize()):
             item = self.problem.getOptItem(i)
@@ -284,6 +288,7 @@ class ThinLayerCopasi(BaseThinLayer):
 
             name = obj.getObjectName() if obj.getObjectType(
             ) != 'Reference' else obj.getObjectParent().getObjectName()
+
             value = results.get(i)
 
             reaction = obj.getObjectAncestor('Reaction')
