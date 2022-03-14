@@ -1,10 +1,10 @@
 {
   "name": "Pyruvate Decarboxylation",
   "level": 3,
-  "version": "2",
+  "version": 2,
   "pubmedid": "https://identifiers.org/pubmed:pmid1234",
   "url": "http://www.someurl.com",
-  "created": "2021-03-17",
+  "created": "2021-03-17 00:00:00",
   "creators": {
     "a0": {
       "given_name": "Jan",
@@ -69,7 +69,7 @@
       "constant": false,
       "boundary": false,
       "ontology": "SBO:0000247",
-      "smiles": " ",
+      "smiles": "nan",
       "inchi": "InChI=1S/CO2/c2-1-3"
     }
   },
@@ -105,7 +105,20 @@
           "ontology": "SBO:0000011"
         }
       ],
-      "modifiers": []
+      "modifiers": [
+        {
+          "species_id": "p0",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000013"
+        },
+        {
+          "species_id": "s0",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000013"
+        }
+      ]
     }
   },
   "measurements": {
@@ -116,6 +129,7 @@
           "p0": {
             "init_conc": 100.0,
             "unit": "umole / l",
+            "measurement_id": "m0",
             "protein_id": "p0",
             "replicates": []
           }
@@ -124,6 +138,7 @@
           "s0": {
             "init_conc": 1000.0,
             "unit": "mmole / l",
+            "measurement_id": "m0",
             "reactant_id": "s0",
             "replicates": [
               {
@@ -197,12 +212,14 @@
           "s2": {
             "init_conc": 0.0,
             "unit": "mmole / l",
+            "measurement_id": "m0",
             "reactant_id": "s2",
             "replicates": []
           },
           "s1": {
             "init_conc": 0.0,
             "unit": "mmole / l",
+            "measurement_id": "m0",
             "reactant_id": "s1",
             "replicates": []
           }
@@ -230,6 +247,7 @@
           "p0": {
             "init_conc": 100.0,
             "unit": "umole / l",
+            "measurement_id": "m1",
             "protein_id": "p0",
             "replicates": []
           }
@@ -238,6 +256,7 @@
           "s0": {
             "init_conc": 1000.0,
             "unit": "mmole / l",
+            "measurement_id": "m1",
             "reactant_id": "s0",
             "replicates": [
               {
@@ -311,12 +330,14 @@
           "s2": {
             "init_conc": 0.0,
             "unit": "mmole / l",
+            "measurement_id": "m1",
             "reactant_id": "s2",
             "replicates": []
           },
           "s1": {
             "init_conc": 0.0,
             "unit": "mmole / l",
+            "measurement_id": "m1",
             "reactant_id": "s1",
             "replicates": []
           }
@@ -344,6 +365,7 @@
           "p0": {
             "init_conc": 1.0,
             "unit": "umole / l",
+            "measurement_id": "m2",
             "protein_id": "p0",
             "replicates": []
           }
@@ -352,6 +374,7 @@
           "s0": {
             "init_conc": 1000.0,
             "unit": "mmole / l",
+            "measurement_id": "m2",
             "reactant_id": "s0",
             "replicates": [
               {
@@ -425,12 +448,14 @@
           "s2": {
             "init_conc": 0.0,
             "unit": "mmole / l",
+            "measurement_id": "m2",
             "reactant_id": "s2",
             "replicates": []
           },
           "s1": {
             "init_conc": 0.0,
             "unit": "mmole / l",
+            "measurement_id": "m2",
             "reactant_id": "s1",
             "replicates": []
           }

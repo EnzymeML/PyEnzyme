@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import re
 
@@ -27,7 +28,7 @@ def read_template(path: str, enzmldoc):
 
     params = dict(
         name=general_info.iloc[0, 1],
-        created=str(general_info.iloc[1, 1].date()),
+        created=str(general_info.iloc[1, 1]),
         doi=None,
         pubmedid=general_info.iloc[3, 1],
         url=general_info.iloc[4, 1],
@@ -74,12 +75,16 @@ def read_template(path: str, enzmldoc):
     # Reactions
     reactions = pd.read_excel(path, sheet_name="Reactions", skiprows=2)
 
+    # Merge proteins and modifiers
     nu_mods = [
         merge_protein_modifier(protein, modifier)
         for modifier, protein in zip(
             reactions.Modifiers.values.tolist(), reactions.Proteins.values.tolist()
         )
     ]
+
+    # Replace merged modifiers with modifier tag
+    reactions.Modifiers = nu_mods
 
     instances = get_instances(reactions, EnzymeReaction, enzmldoc)
 
@@ -202,7 +207,9 @@ def get_template_map(obj) -> dict:
 
 
 def extract_values(sheet: pd.DataFrame, mapping: Dict[str, str]) -> list:
-    sheet = sheet.dropna(thresh=len(mapping))
+
+    sheet = sheet.replace(r"^\s*$", np.nan, regex=True)
+    sheet = sheet.dropna(thresh=len(mapping) - 1)
     records = sheet.to_dict(orient="records")
 
     return [
@@ -308,15 +315,17 @@ def parse_reaction_element(elements):
     if repr(elements) == "nan":
         return []
 
-    return elements.split(",")
+    return elements
 
 
 def add_instances(fun, elements, enzmldoc) -> None:
+    all_species = {**enzmldoc.protein_dict, **enzmldoc.reactant_dict}
+    for id, species in all_species.items():
 
-    for element in elements:
-        fun(
-            species_id=enzmldoc.getAny(element.strip()).id,
-            stoichiometry=1.0,
-            constant=False,
-            enzmldoc=enzmldoc,
-        )
+        if species.name in elements:
+            fun(
+                species_id=id,
+                stoichiometry=1.0,
+                constant=False,
+                enzmldoc=enzmldoc,
+            )
