@@ -946,7 +946,7 @@ class EnzymeMLWriter:
         # Extract measurementData objects
         proteins = species_dict["proteins"]
         reactants = species_dict["reactants"]
-
+        
         # Append initConc data to measurement
         self.appendInitConcData(
             measurement_annot=measurement_annot,
@@ -988,6 +988,14 @@ class EnzymeMLWriter:
 
             initConcAnnot.addAttr(f"{species_type}", species_id)
             initConcAnnot.addAttr("value", str(measurement_data.init_conc))
+
+            # TODO Check if the unit given in the unit attribute is compliant
+            # TODO Handle this in the base class by assigning a 'None' to the _unit_id
+            unit_id_check = self.enzmldoc._convertToUnitDef(measurement_data.unit)
+
+            if measurement_data._unit_id != unit_id_check:
+                measurement_data._unit_id = unit_id_check
+
             initConcAnnot.addAttr("unit", measurement_data._unit_id)
 
             measurement_annot.addChild(initConcAnnot)
