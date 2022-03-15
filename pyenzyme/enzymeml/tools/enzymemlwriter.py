@@ -175,16 +175,19 @@ class EnzymeMLWriter:
 
         # add logs to teh Archive
         history_path = f"{self.path}/history.log"
-        with open(history_path, "w") as f:
-            f.write(enzmldoc.log.getvalue())
+        try:
+            with open(history_path, "wb") as f:
+                f.write(enzmldoc.log.getvalue().encode('utf-8', 'replace'))
 
-        self.addFileToArchive(
-            archive=archive,
-            file_path=history_path,
-            target_path="./history.log",
-            format=KnownFormats.lookupFormat("txt"),
-            description="History of the EnzymeML document",
-        )
+                self.addFileToArchive(
+                    archive=archive,
+                    file_path=history_path,
+                    target_path="./history.log",
+                    format=KnownFormats.lookupFormat("txt"),
+                    description="History of the EnzymeML document",
+                )
+        except Exception as e:
+            logging.error("couldn't write history")
 
         # add metadata to the experiment file
         location = "./experiment.xml"
