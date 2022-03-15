@@ -24,6 +24,7 @@ def setup_custom_logger(name, log_stream: StringIO, level = logging.DEBUG):
 
     logger = logging.getLogger(name)
     logger.setLevel(level)
+    logger.propagate = False
     logger.addHandler(handler)
     logger.addHandler(string_handler)
 
