@@ -1,15 +1,47 @@
-'''
-File: TL_Copasi.py
-Project: ThinLayers
-Author: Jan Range
-Author: Frank Bergmann
-License: BSD-2 clause
------
-Last Modified: Wednesday June 23rd 2021 10:25:11 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+# """
+# File: TL_Copasi.py
+# Project: ThinLayers
+# Author: Jan Range
+# Author: Frank Bergmann
+# License: BSD-2 clause
+# -----
+# Last Modified: Wednesday June 23rd 2021 10:25:11 pm
+# Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
+# -----
+# Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
+# """
+
+"""
+This module contains the COPASI ThinLayer:
+
+To use it, simply instantiate it using an EnzymeML Document. This will estimate all parameters of the enzyme ml
+document (all temporary data will be stored in working_dir).
+
+    >>> tl = ThinLayerCopasi(path='Model4.omex', outdir='./working_dir')
+    >>> tl.optimize()
+
+    This would return a pandas dataframe with the fit found, to write it into a new document you'd use:
+
+    >>> new_doc = tl.write()
+
+
+In order to change the settings of the parameter estimation, or to change the loaded model we recommend to use
+`basico <https://basico.readthedocs.io/>`_. so after initializing the thinlayer, you'd load the model into basico.
+For example here is how you'd switch the method to particle swarm:
+
+    >>> from basico import *
+    >>> tl = ThinLayerCopasi(path='Model4.omex', outdir='./working_dir')
+    >>> set_current_model(tl.dm)
+    >>> set_task_settings(T.PARAMETER_ESTIMATION,
+    ...              {
+    ...                  'method': {'name': PE.PARTICLE_SWARM }
+    ...              })
+
+If the modle is loaded into basico, you can easily plot the results as well. The COPASI file (.cps) in the working
+directory can also be directly used from the COPASI Graphical User Interface.
+
+"""
+
 import logging
 from typing import Union, Optional
 
@@ -44,6 +76,7 @@ class ThinLayerCopasi(BaseThinLayer):
         :param outdir: the output dir
         :param measurement_ids: the measurement ids or all
         :param init_file: optional initialization file for fit items
+
         """
         # check dependencies
         if _COPASI_IMPORT_ERROR:
@@ -72,10 +105,10 @@ class ThinLayerCopasi(BaseThinLayer):
         self.model = self.dm.getModel()
         self.task = self.dm.getTask('Parameter Estimation')
         self.task.setScheduled(True)
-        self.task.setUpdateModel(True)
+        self.task.setUpdateModel(False)
         self.task.setMethodType(COPASI.CTaskEnum.Method_LevenbergMarquardt)
         self.problem = self.task.getProblem()
-        self.problem.setCalculateStatistics(False)
+        self.problem.setCalculateStatistics(True)
         self.exp_set = self.problem.getExperimentSet()
 
         # read in experiments
@@ -145,8 +178,8 @@ class ThinLayerCopasi(BaseThinLayer):
                     initial_value = data[data['time'] == 0.0][k]
                     if not initial_value.empty and float(initial_value) != v[0]:
                         log.warning(f'The initial value of "{k}" in experiment "{measurement_id}" '
-                                        f'is inconsistent with the specified initial concentration: '
-                                        f'{float(initial_value)} != {v[0]}')
+                                    f'is inconsistent with the specified initial concentration: '
+                                    f'{float(initial_value)} != {v[0]}')
 
             exp_filename = os.path.abspath(os.path.join(
                 self.working_dir, measurement_id + '.tsv'))
@@ -254,16 +287,45 @@ class ThinLayerCopasi(BaseThinLayer):
             if 'start' in item:
                 fit_item.setStartValue(float(item['start']))
 
-    def optimize(self):
+    def _get_result(self):
+        """Utility function adding a value column to the fit items
+
+        :return: pandas dataframe with the result of the fit
+        :rtype: pandas.DataFrame
+        """
+        fit_items = self.get_fit_parameters()
+        new_values = [val for val in self.problem.getSolutionVariables()]
+        sd_values = [val for val in self.problem.getVariableStdDeviations()]
+        if len(fit_items) != len(new_values):
+            logging.error('No results available yet, run `optimize` first.')
+            return None
+
+        for i, vals in enumerate(fit_items):
+            vals['value'] = new_values[i]
+            vals['std_deviation'] = sd_values[i]
+
+        df = pd.DataFrame(data=fit_items).set_index('name')
+        return df
+
+    def optimize(self, update_model=False):
         """ Carries out the Parameter estimation
-        :return: None
+
+        :param update_model: optional argument, indicating whether to
+               update the model, so another optimization run would start
+               with the solution found from the first run.
+
+        :return: Pandas DataFrame with the results
+
         """
         # run optimization
+        self.task.setUpdateModel(update_model)
         if not self.task.initializeRaw(COPASI.CCopasiTask.OUTPUT_UI):
             log.error(COPASI.CCopasiMessage.getFirstMessage().getAllMessageText())
         if not self.task.processRaw(True):
             log.error(COPASI.CCopasiMessage.getFirstMessage().getAllMessageText())
         self.task.restore()
+
+        return self._get_result()
 
     def write(self):
         """Writes the estimated parameters to a copy of the EnzymeMLDocument"""
@@ -302,35 +364,6 @@ class ThinLayerCopasi(BaseThinLayer):
 
         return nu_enzmldoc
 
-    def update_enzymeml_doc(self):
-        """ Updates the enzyme ml document with the values from last optimization run
-
-        :return: None
-        """
-        assert (isinstance(self.problem, COPASI.CFitProblem))
-        results = self.problem.getSolutionVariables()
-
-        log.debug('OBJ: {0}'.format(self.problem.getSolutionValue()))
-        log.debug('RMS: {0}'.format(self.problem.getRMS()))
-
-        for i in range(self.problem.getOptItemSize()):
-            item = self.problem.getOptItem(i)
-            obj = self.dm.getObject(item.getObjectCN())
-            if obj is None:
-                continue
-
-            name = obj.getObjectName() if obj.getObjectType(
-            ) != 'Reference' else obj.getObjectParent().getObjectName()
-            value = results.get(i)
-
-            reaction = obj.getObjectAncestor('Reaction')
-            if reaction is not None:
-                model = self.reaction_data[reaction.getSBMLId()][0]
-                for p in model.parameters:
-                    if p.name == name:
-                        p.value = value
-                        break
-
     def _set_default_items(self):
         """ Initializes fit items from the local parameters specified in the reaction_data
 
@@ -351,7 +384,7 @@ class ThinLayerCopasi(BaseThinLayer):
 
     def _set_default_items_from_init_file(self):
         """ Use this to create a default template, when an init file was passed to the thin layer
-            and it has been already appied
+            and it has been already applied
 
         :return: None
         """
@@ -427,4 +460,4 @@ if __name__ == '__main__':
     )
 
     thin_layer.optimize()
-    thin_layer.update_enzymeml_doc()
+    thin_layer.write()
