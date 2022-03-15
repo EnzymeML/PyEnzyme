@@ -73,7 +73,7 @@ class ThinLayerCopasi(BaseThinLayer):
         self.task = self.dm.getTask('Parameter Estimation')
         self.task.setScheduled(True)
         self.task.setUpdateModel(True)
-        self.task.setMethodType(COPASI.CTaskEnum.Method_HookeJeeves)
+        self.task.setMethodType(COPASI.CTaskEnum.Method_LevenbergMarquardt)
         self.problem = self.task.getProblem()
         self.problem.setCalculateStatistics(False)
         self.exp_set = self.problem.getExperimentSet()
@@ -104,7 +104,7 @@ class ThinLayerCopasi(BaseThinLayer):
     def _get_cn_for_item(self, item):
         """Resolves the given item to CN or None
 
-        :param item: dictionary with 'name' and optinally 'reaction_id'
+        :param item: dictionary with 'name' and optionally 'reaction_id'
         :type item: dict
         :return: the CN if found, or None
         :rtype: COPASI.CCommonName
@@ -278,7 +278,6 @@ class ThinLayerCopasi(BaseThinLayer):
 
         log.debug('OBJ: {0}'.format(self.problem.getSolutionValue()))
         log.debug('RMS: {0}'.format(self.problem.getRMS()))
-
 
         for i in range(self.problem.getOptItemSize()):
             item = self.problem.getOptItem(i)
