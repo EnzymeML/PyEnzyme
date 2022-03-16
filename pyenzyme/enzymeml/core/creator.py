@@ -1,14 +1,8 @@
-"""
-File: creator.py
-Project: core
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Tuesday June 15th 2021 6:28:16 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-"""
+# File: creator.py
+# Project: core
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 from pydantic import Field, validator, ValidationError
 from typing import TYPE_CHECKING, Optional

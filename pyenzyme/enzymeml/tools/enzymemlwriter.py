@@ -1,14 +1,8 @@
-"""
-File: enzymemlwriter.py
-Project: tools
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Wednesday June 23rd 2021 9:09:19 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-"""
+# File: enzymemlwriter.py
+# Project: tools
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 import pandas as pd
 import os
@@ -949,7 +943,7 @@ class EnzymeMLWriter:
         # Extract measurementData objects
         proteins = species_dict["proteins"]
         reactants = species_dict["reactants"]
-        
+
         # Append initConc data to measurement
         self.appendInitConcData(
             measurement_annot=measurement_annot,

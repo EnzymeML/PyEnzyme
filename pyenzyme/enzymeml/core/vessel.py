@@ -1,14 +1,8 @@
-"""
-File: vessel.py
-Project: core
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Tuesday June 15th 2021 8:26:08 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-"""
+# File: vessel.py
+# Project: core
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 from pydantic import Field, PositiveFloat, validator, PrivateAttr, BaseModel
 from typing import TYPE_CHECKING, Optional

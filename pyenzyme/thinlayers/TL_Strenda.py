@@ -1,14 +1,8 @@
-"""
-File: TL_Strenda.py
-Project: ThinLayers
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Wednesday June 23rd 2021 7:18:29 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-"""
+# File: TL_Strenda.py
+# Project: ThinLayers
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 import xmltodict
 import json

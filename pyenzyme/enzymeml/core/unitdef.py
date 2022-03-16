@@ -1,14 +1,8 @@
-"""
-File: unitdef.py
-Project: core
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Tuesday June 15th 2021 7:48:57 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-"""
+# File: unitdef.py
+# Project: core
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 from pydantic import Field, validator, validate_arguments
 from typing import List, TYPE_CHECKING, Optional

@@ -1,3 +1,9 @@
+# File: validator.py
+# Project: core
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
+
 import importlib
 import re
 import yaml

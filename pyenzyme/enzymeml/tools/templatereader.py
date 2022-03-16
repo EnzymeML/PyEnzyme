@@ -1,3 +1,9 @@
+# File: templatereader.py
+# Project: tools
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
+
 import numpy as np
 import pandas as pd
 import re

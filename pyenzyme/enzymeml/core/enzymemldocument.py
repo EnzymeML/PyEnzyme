@@ -1,20 +1,13 @@
-"""
-File: enzymemldocument.py
-Project: core
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Thursday July 15th 2021 1:00:05 am
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-"""
+# File: enzymemldocument.py
+# Project: core
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 import os
 import re
 import ast
 import json
-from tkinter import TRUE
 import yaml
 import logging
 import pandas as pd

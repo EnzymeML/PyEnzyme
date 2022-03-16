@@ -1,14 +1,8 @@
-"""
-File: michaelismenten.py
-Project: models
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Wednesday June 23rd 2021 10:30:15 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-"""
+# File: michaelismenten.py
+# Project: models
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 from typing import Any, Dict
 from pyenzyme.enzymeml.core.ontology import SBOTerm

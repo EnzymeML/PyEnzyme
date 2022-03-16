@@ -1,14 +1,8 @@
-"""
-File: unitparser.py
-Project: tools
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Tuesday June 22nd 2021 10:15:07 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-"""
+# File: unitparser.py
+# Project: tools
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 import re
 

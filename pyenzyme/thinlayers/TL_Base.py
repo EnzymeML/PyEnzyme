@@ -1,3 +1,9 @@
+# File: measurementData.py
+# Project: thinlayers
+# Author: Jan Range, Dr. Frank Bergmann, Prof. Dr. Johann Rohwer
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
+
 from abc import ABC, abstractmethod
 from typing import Union, Optional
 

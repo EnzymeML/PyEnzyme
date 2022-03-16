@@ -1,20 +1,14 @@
-"""
-File: enzymereaction.py
-Project: core
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Wednesday June 23rd 2021 9:06:54 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-"""
+# File: enzymereaction.py
+# Project: core
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 import logging
 import re
 import ast
 
-from typing import List, Dict, Optional, TYPE_CHECKING
+from typing import List, Dict, Union, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 from pydantic import (
     BaseModel,
@@ -574,6 +568,7 @@ class EnzymeReaction(EnzymeMLBase):
         equation: str,
         name: str,
         enzmldoc,
+        modifiers: Union[List[str], str] = [],
         temperature: Optional[float] = None,
         temperature_unit: Optional[str] = None,
         ph: Optional[float] = None,
@@ -595,6 +590,10 @@ class EnzymeReaction(EnzymeMLBase):
             enzmldoc ([type]): Used to validate species IDs.
         """
 
+        if isinstance(modifiers, str):
+            # Catch single modifiers
+            modifiers = [modifiers]
+
         if "=" in equation:
             reversible = True
         elif "->" in equation:
@@ -612,6 +611,15 @@ class EnzymeReaction(EnzymeMLBase):
             temperature_unit=temperature_unit,
             ph=ph,
         )
+
+        for modifier in modifiers:
+            # Add modifiers
+            reaction.addModifier(
+                species_id=enzmldoc.getAny(modifier).id,
+                constant=True,
+                stoichiometry=1.0,
+                enzmldoc=enzmldoc,
+            )
 
         # Parse the reaction equation
         reaction._addFromEquation(equation, enzmldoc)

@@ -1,14 +1,8 @@
-"""
-File: enzymemlreader.py
-Project: tools
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Wednesday June 23rd 2021 7:18:49 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-"""
+# File: enzymemlreader.py
+# Project: tools
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 import os
 import re

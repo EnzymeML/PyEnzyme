@@ -1,11 +1,8 @@
-"""
-File: TL_Pysces.py
-Project: ThinLayers
-Author: Johann Rohwer (j.m.rohwer@gmail.com)
-License: BSD-2 clause
------
-Copyright (c) 2021 Stellenbosch University
-"""
+# File: TL_Pysces.py
+# Project: ThinLayers
+# Author: Johann Rohwer (j.m.rohwer@gmail.com)
+# License: BSD-2 clause
+# Copyright (c) 2022 Stellenbosch University
 
 import copy
 import numpy as np

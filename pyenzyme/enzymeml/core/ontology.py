@@ -1,3 +1,10 @@
+# File: ontology.py
+# Project: core
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
+
+
 from enum import Enum
 
 
