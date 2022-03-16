@@ -56,7 +56,7 @@ class MeasurementData(EnzymeMLBase):
 
     # * Private
     _unit_id: Optional[str] = PrivateAttr(default=None)
-    _enzmldoc: Optional["EnzymeMLDocument"] = PrivateAttr(default=None)
+    _enzmldoc = PrivateAttr(default=None)
 
     # ! Validators
 

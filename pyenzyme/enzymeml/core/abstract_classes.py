@@ -28,7 +28,7 @@ class AbstractSpeciesDataclass(BaseModel):
 
     # * Private attributes
     _unit_id: Optional[str] = PrivateAttr(default=None)
-    _enzmldoc: Optional["EnzymeMLDocument"] = PrivateAttr(default=None)
+    _enzmldoc = PrivateAttr(default=None)
 
 
 class AbstractSpecies(ABC, AbstractSpeciesDataclass):

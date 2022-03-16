@@ -63,7 +63,7 @@ class Vessel(EnzymeMLBase):
 
     # * Private
     _unit_id: Optional[str] = PrivateAttr(None)
-    _enzmldoc: Optional["EnzymeMLDocument"] = PrivateAttr(default=None)
+    _enzmldoc = PrivateAttr(default=None)
 
     # ! Validators
     @validator("id")

@@ -82,7 +82,7 @@ class Replicate(EnzymeMLBase):
     # * Private
     _time_unit_id: Optional[str] = PrivateAttr(None)
     _data_unit_id: Optional[str] = PrivateAttr(None)
-    _enzmldoc: Optional["EnzymeMLDocument"] = PrivateAttr(default=None)
+    _enzmldoc = PrivateAttr(default=None)
 
     @validator("data")
     def check_data_completeness(cls, data: List[float], values: dict):
