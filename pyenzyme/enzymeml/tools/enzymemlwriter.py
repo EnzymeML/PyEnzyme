@@ -562,7 +562,7 @@ class EnzymeMLWriter:
         species.setCompartment(obj.vessel_id)
         species.setBoundaryCondition(obj.boundary)
         species.setConstant(obj.constant)
-        species.setHasOnlySubstanceUnits(True)
+        species.setHasOnlySubstanceUnits(False)
 
         if obj.init_conc is not None and obj._unit_id:
             species.setSubstanceUnits(obj._unit_id)
