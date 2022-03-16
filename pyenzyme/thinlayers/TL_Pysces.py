@@ -13,9 +13,14 @@ from typing import Union, Optional
 from pyenzyme.thinlayers.TL_Base import BaseThinLayer
 from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
 
+import io
+from contextlib import redirect_stdout
+
 _PYSCES_IMPORT_ERROR = None
+_PYSCES_IMPORT_STREAM = io.StringIO()
 try:
-    import pysces
+    with redirect_stdout(_PYSCES_IMPORT_STREAM):
+        import pysces
     import lmfit
 except ModuleNotFoundError as e:
     _PYSCES_IMPORT_ERROR = """
@@ -35,7 +40,12 @@ class ThinLayerPysces(BaseThinLayer):
         measurement_ids: Union[str, list] = "all",
         init_file: Optional[str] = None,
     ):
-
+        # first time a pysces thinlayer is created, print the import messages
+        global _PYSCES_IMPORT_STREAM
+        if _PYSCES_IMPORT_STREAM is not None:
+            print(_PYSCES_IMPORT_STREAM.getvalue())
+            _PYSCES_IMPORT_STREAM = None
+        
         # check dependencies
         if _PYSCES_IMPORT_ERROR:
             raise RuntimeError(_PYSCES_IMPORT_ERROR)
