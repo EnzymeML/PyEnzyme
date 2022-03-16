@@ -121,18 +121,18 @@ class EnzymeMLReader:
         model = document.getModel()
 
         # Initialize EnzymeMLDocument object
-        enzmldoc = EnzymeMLDocument(
+        self.enzmldoc = EnzymeMLDocument(
             name=model.getName(), level=model.getLevel(), version=model.getVersion()
         )
 
         # Add logs to the document
-        enzmldoc.log = log
+        self.enzmldoc.log = log
 
         # Fetch references
-        self._getRefs(model, enzmldoc)
+        self._getRefs(model, self.enzmldoc)
 
         # Fetch Creators
-        self._getCreators(omex_desc=desc, enzmldoc=enzmldoc)
+        self._getCreators(omex_desc=desc, enzmldoc=self.enzmldoc)
 
         # try:
         #     # TODO extract VCard
@@ -147,36 +147,38 @@ class EnzymeMLReader:
 
         # Fetch units
         unitDict = self._getUnits(model)
-        enzmldoc.unit_dict = unitDict
+        self.enzmldoc.unit_dict = unitDict
 
         # Fetch Vessel
-        vessel = self._getVessel(model, enzmldoc)
-        enzmldoc.vessel_dict = vessel
+        vessel = self._getVessel(model, self.enzmldoc)
+        self.enzmldoc.vessel_dict = vessel
 
         # Fetch Species
-        protein_dict, reactant_dict, complex_dict = self._getSpecies(model, enzmldoc)
+        protein_dict, reactant_dict, complex_dict = self._getSpecies(
+            model, self.enzmldoc
+        )
 
-        enzmldoc.reactant_dict = reactant_dict
-        enzmldoc.protein_dict = protein_dict
-        enzmldoc.complex_dict = complex_dict
+        self.enzmldoc.reactant_dict = reactant_dict
+        self.enzmldoc.protein_dict = protein_dict
+        self.enzmldoc.complex_dict = complex_dict
 
         # fetch global parameters
-        self._getGlobalParameters(model, enzmldoc)
+        self._getGlobalParameters(model, self.enzmldoc)
 
         # fetch reaction
-        reaction_dict = self._getReactions(model, enzmldoc)
-        enzmldoc.reaction_dict = reaction_dict
+        reaction_dict = self._getReactions(model, self.enzmldoc)
+        self.enzmldoc.reaction_dict = reaction_dict
 
         # fetch Measurements
-        measurement_dict = self._getData(model, enzmldoc)
-        enzmldoc.measurement_dict = measurement_dict
+        measurement_dict = self._getData(model, self.enzmldoc)
+        self.enzmldoc.measurement_dict = measurement_dict
 
         # fetch added files
-        self._getFiles(enzmldoc)
+        self._getFiles(self.enzmldoc)
 
         del self.path
 
-        return enzmldoc
+        return self.enzmldoc
 
     @staticmethod
     def _sboterm_to_enum(sbo_term: int) -> Optional[SBOTerm]:
@@ -300,6 +302,7 @@ class EnzymeMLReader:
             vessel = Vessel(name=name, id=id, **params)
 
             vessel._unit_id = params.get("_unit_id")
+            vessel._enzmldoc = self.enzmldoc
 
             vessel_dict[vessel.id] = vessel
 
@@ -380,6 +383,7 @@ class EnzymeMLReader:
 
             # Use factory to get the species class
             species = species_factory.get_species(**param_dict)
+            species._enzmldoc = self.enzmldoc
 
             if species_factory.enzymeml_part == "protein_dict":
                 protein_dict[species.id] = species
@@ -431,6 +435,7 @@ class EnzymeMLReader:
         for parameter in parameters:
             parameter = self._parse_parameter(parameter, enzmldoc)
             parameter.is_global = True
+            parameter._enzmldoc = self.enzmldoc
 
             enzmldoc.global_parameters[parameter.name] = parameter
 
@@ -500,6 +505,7 @@ class EnzymeMLReader:
                         enzyme_reaction.model.parameters.append(global_parameter)
 
             # Add reaction to reaction_dict
+            enzyme_reaction._enzmldoc = self.enzmldoc
             reaction_dict[enzyme_reaction.id] = enzyme_reaction
 
         return reaction_dict
@@ -645,6 +651,8 @@ class EnzymeMLReader:
             constant=constant,
         )
 
+        nu_param._enzmldoc = self.enzmldoc
+
         if unit_id:
             nu_param._unit_id = parameter.getUnits()
 
@@ -729,6 +737,7 @@ class EnzymeMLReader:
 
                     replicate._data_unit_id = data_unit_id
                     replicate._time_unit_id = time_unit_id
+                    replicate._enzmldoc = self.enzmldoc
 
                     measurement_dict[measurement_id].addReplicates(
                         replicate, log=False, enzmldoc=enzmldoc
@@ -836,6 +845,7 @@ class EnzymeMLReader:
         measurement_object.id = measurement.attrib["id"]
         temperature_unit_id = measurement.attrib.get("temperature_unit")
         measurement_object._temperature_unit_id = temperature_unit_id
+        measurement_object._enzmldoc = self.enzmldoc
 
         for init_conc_element in measurement:
 
@@ -850,6 +860,7 @@ class EnzymeMLReader:
                 raise ValueError("Neither 'reactant_id' nor 'protein_id' are defined")
 
             meas_data._unit_id = unit_id
+            meas_data._enzmldoc = self.enzmldoc
 
         return measurement_object
 

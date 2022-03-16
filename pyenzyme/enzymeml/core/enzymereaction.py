@@ -162,6 +162,7 @@ class EnzymeReaction(EnzymeMLBase):
 
     # * Private attributes
     _temperature_unit_id: str = PrivateAttr(None)
+    _enzmldoc: Optional["EnzymeMLDocument"] = PrivateAttr(default=None)
 
     # ! Validators
     @validator("id")

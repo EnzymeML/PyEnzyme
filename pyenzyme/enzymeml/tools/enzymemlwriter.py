@@ -171,7 +171,7 @@ class EnzymeMLWriter:
         history_path = f"{self.path}/history.log"
         try:
             with open(history_path, "wb") as f:
-                f.write(enzmldoc.log.getvalue().encode('utf-8', 'replace'))
+                f.write(enzmldoc.log.getvalue().encode("utf-8", "replace"))
 
                 self.addFileToArchive(
                     archive=archive,
@@ -562,19 +562,7 @@ class EnzymeMLWriter:
         species.setCompartment(obj.vessel_id)
         species.setBoundaryCondition(obj.boundary)
         species.setConstant(obj.constant)
-        species.setHasOnlySubstanceUnits(False)
-
-        # Check if the unit is already part of the enzymeml document
-        # Otherwise add it
-        if obj.unit and not obj._unit_id:
-            obj._unit_id = self.enzmldoc._convertToUnitDef(obj.unit)
-
-        # TODO REFACTOR: Check consistency of unit
-        if obj.unit:
-            unit_id_check = self.enzmldoc._convertToUnitDef(obj.unit)
-
-            if unit_id_check != obj._unit_id:
-                obj._unit_id = unit_id_check
+        species.setHasOnlySubstanceUnits(True)
 
         if obj.init_conc is not None and obj._unit_id:
             species.setSubstanceUnits(obj._unit_id)

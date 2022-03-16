@@ -71,6 +71,7 @@ class KineticParameter(EnzymeMLBase):
 
     # * Private attributes
     _unit_id: Optional[str] = PrivateAttr(None)
+    _enzmldoc: Optional["EnzymeMLDocument"] = PrivateAttr(default=None)
 
     def get_id(self):
         """For logging. Dont bother."""

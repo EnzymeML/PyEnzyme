@@ -895,6 +895,10 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         if param.unit:
             param._unit_id = self._convertToUnitDef(param.unit)
+            param.unit = self.unit_dict[param._unit_id]._get_unit_name()
+
+        # Assign the current EnzymeMLDocument
+        param._enzmldoc = self
 
         # Add the parameter to the parameter_dict
         self.global_parameters[param.name] = param
@@ -1054,12 +1058,19 @@ class EnzymeMLDocument(EnzymeMLBase):
         if species.unit and use_parser:
             unit_id = self._convertToUnitDef(species.unit)
             species._unit_id = unit_id
+            species.unit = self.unit_dict[species._unit_id]._get_unit_name()
+
         elif species.unit and use_parser is False:
             species._unit_id = species.unit
             species.unit = self.getUnitString(species._unit_id)
+            species.unit = self.unit_dict[species._unit_id]._get_unit_name()
 
         # Log creation of the object
         log_object(logger, species)
+
+        # Finally, set the current document to the
+        # object attribute _enzmldoc to allow unit changes
+        species._enzmldoc = self
 
         # Add species to dictionary
         dictionary[species.id] = species
@@ -1120,7 +1131,8 @@ class EnzymeMLDocument(EnzymeMLBase):
             # Unit conversion
             self._convert_kinetic_model_units(reaction.model.parameters, enzmldoc=self)
 
-        # Finally add the reaction to the document
+        # Finally add the reaction to the document and assign the doc
+        reaction._enzmldoc = self
         self.reaction_dict[reaction.id] = reaction
 
         # Log the object
@@ -1202,6 +1214,8 @@ class EnzymeMLDocument(EnzymeMLBase):
         for parameter in parameters:
             if parameter.unit:
                 parameter._unit_id = enzmldoc._convertToUnitDef(parameter.unit)
+                parameter.unit = enzmldoc.unit_dict[parameter._unit_id]._get_unit_name()
+                parameter._enzmldoc = enzmldoc
 
     def addReactions(self, reactions: List[EnzymeReaction]):
         """Adds multiple reactions to an EnzymeML document.
@@ -1252,6 +1266,12 @@ class EnzymeMLDocument(EnzymeMLBase):
             measurement_id (String): Assigned measurement identifier.
         """
 
+        # Assign the current EnzymeMLDocument to
+        # propagate towards sub-elements such
+        # that unit changes can be done comliant
+        # to UnitDefinitions
+        measurement._enzmldoc = self
+
         # Check consistency
         self._checkMeasurementConsistency(measurement)
 
@@ -1292,17 +1312,31 @@ class EnzymeMLDocument(EnzymeMLBase):
                 measurement.global_time_unit
             )
 
+            # Set correct string
+            measurement.global_time_unit = self.unit_dict[
+                measurement._global_time_unit_id
+            ]._get_unit_name()
+
         # Update temperature unit of the measurement
         if measurement.temperature_unit:
             measurement._temperature_unit_id = self._convertToUnitDef(
                 measurement.temperature_unit
             )
 
+            # Set correct string
+            measurement.temperature_unit = self.unit_dict[
+                measurement._temperature_unit_id
+            ]._get_unit_name()
+
         def update_dict_units(
-            measurement_data_dict: Dict[str, MeasurementData]
+            measurement_data_dict: Dict[str, MeasurementData], measurement: Measurement
         ) -> None:
-            """Helper function to update units"""
+            """Helper function to update units and assignment of the coupled EnzymeMLDocument"""
             for measurement_data in measurement_data_dict.values():
+
+                # Assign the measurements enzmldoc
+                measurement_data._enzmldoc = measurement._enzmldoc
+
                 measurement_data._unit_id = self._convertToUnitDef(
                     measurement_data.unit
                 )
@@ -1313,8 +1347,8 @@ class EnzymeMLDocument(EnzymeMLBase):
                     measurement.global_time = global_time
 
         # Perform update
-        update_dict_units(measurement.species_dict["proteins"])
-        update_dict_units(measurement.species_dict["reactants"])
+        update_dict_units(measurement.species_dict["proteins"], measurement)
+        update_dict_units(measurement.species_dict["reactants"], measurement)
 
     def _convertReplicateUnits(
         self, measurement_data: MeasurementData
@@ -1329,6 +1363,10 @@ class EnzymeMLDocument(EnzymeMLBase):
         global_time = None
 
         for replicate in measurement_data.replicates:
+
+            # Assign the EnzymeML document for compliant changes
+            # of units when already added to the document
+            replicate._enzmldoc = measurement_data._enzmldoc
 
             # Convert unit
             time_unit_id = self._convertToUnitDef(replicate.time_unit)

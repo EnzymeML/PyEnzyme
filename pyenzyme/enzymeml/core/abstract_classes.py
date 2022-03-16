@@ -23,9 +23,12 @@ class AbstractSpeciesDataclass(BaseModel):
     boundary: bool
     unit: Optional[str] = None
     ontology: SBOTerm
-    _unit_id: Optional[str] = PrivateAttr(default=None)
     uri: Optional[str]
     creator_id: Optional[str]
+
+    # * Private attributes
+    _unit_id: Optional[str] = PrivateAttr(default=None)
+    _enzmldoc: Optional["EnzymeMLDocument"] = PrivateAttr(default=None)
 
 
 class AbstractSpecies(ABC, AbstractSpeciesDataclass):

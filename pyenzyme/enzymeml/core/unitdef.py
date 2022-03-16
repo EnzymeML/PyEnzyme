@@ -50,18 +50,63 @@ class BaseUnit(EnzymeMLBase):
         else:
             raise AttributeError("No species ID given.")
 
-    # @validator("kind")
-    # def check_sbml_unit_enum(cls, kind_int: int):
-    #     kind_string: str = libsbml.UnitKind_toString(kind_int)
+    def get_name(self) -> str:
+        """Returns the appropriate name of the unit"""
 
-    #     if "Invalid UnitKind" in kind_string:
-    #         raise UnitKindError()
+        # Get mappings
+        prefix_mapping, kind_mapping = self._setup_mappings()
+
+        # Retrieve values to generate the name
+        prefix = prefix_mapping[self.scale]
+        unit = kind_mapping[self.kind]
+
+        # Special case for time
+        if unit == "s":
+            if self.multiplier == 60:
+                unit = "min"
+            if self.multiplier == 60 * 60:
+                unit = "hours"
+
+        if abs(self.exponent) != 1:
+            exponent = f"^{abs(int(self.exponent))}"
+        else:
+            exponent = ""
+
+        return f"{prefix}{unit}{exponent}"
+
+    @staticmethod
+    def _setup_mappings():
+        # TODO integrate this to unitcreator
+        # Create a mappings
+        prefix_mapping = {
+            -15: "f",
+            -12: "p",
+            -9: "n",
+            -6: "u",
+            -3: "m",
+            -2: "c",
+            -1: "d",
+            1: "",
+            3: "k",
+        }
+
+        kind_mapping = {
+            "litre": "l",
+            "gram": "g",
+            "second": "s",
+            "kelvin": "K",
+            "dimensionless": "dimensionless",
+            "mole": "mole",
+        }
+
+        return prefix_mapping, kind_mapping
 
 
 @static_check_init_args
 class UnitDef(EnzymeMLBase):
 
-    name: str = Field(
+    name: Optional[str] = Field(
+        None,
         description="Name of the SI unit.",
     )
 
@@ -106,6 +151,30 @@ class UnitDef(EnzymeMLBase):
 
         return None
 
+    def _get_unit_name(self):
+        """Generates the unit name based of the given baseunits"""
+
+        nominator, denominator = [], []
+        for unit in self.units:
+            if unit.exponent > 0:
+                nominator.append(unit.get_name())
+            elif unit.exponent < 0:
+                denominator.append(unit.get_name())
+
+        # Catch empty nominators
+        if not nominator:
+            nominator = "1"
+
+        # Combine each side and construct the SI string
+        nominator = " ".join(nominator)
+        denominator = " ".join(denominator)
+
+        if denominator:
+            return " / ".join([nominator, denominator])
+        else:
+            return nominator
+
+    # ! Adders
     @validate_arguments
     def addBaseUnit(
         self, kind: str, exponent: float, scale: int, multiplier: float
@@ -125,8 +194,9 @@ class UnitDef(EnzymeMLBase):
         )
 
         # Merge both and sort them via kind
-        self.units.append(baseunit)
-        self.units = sorted(self.units, key=lambda unit: unit.kind)
+        if baseunit not in self.units:
+            self.units.append(baseunit)
+            self.units = sorted(self.units, key=lambda unit: unit.kind)
 
     # ! Utilities
     def calculateTransformValue(self, kind: str, scale: int):
@@ -222,4 +292,4 @@ class UnitDef(EnzymeMLBase):
 
     def getFootprint(self):
         sorted_units = [base_unit.dict() for base_unit in self.units]
-        return sorted(sorted_units, key=lambda unit: unit["kind"])
+        return list(sorted(sorted_units, key=lambda unit: unit["kind"]))

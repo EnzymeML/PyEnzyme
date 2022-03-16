@@ -165,7 +165,6 @@ class TestEnzymeMLDocument:
         enzmldoc.toFile("./tests/tmp/", name="Test_Unit_Change")
 
         # Read file and check if the unit change is consistent
-        nu_enzmldoc = EnzymeMLDocument.fromFile("./tests/tmp/Test_Unit_Change.omex")
         unit = enzmldoc.getReactant("s0").unit
 
         assert unit == "umole / l"
@@ -222,3 +221,57 @@ class TestEnzymeMLDocument:
         assert "m0" in data
         assert data["m0"]["data"].to_dict() == expected_data
         assert data["m0"]["initConc"] == expected_conc
+
+    def test_unit_attribute_change(self, enzmldoc):
+        """Tests whether unit changes in the 'unit' attribute are refelected towards unit dict and unit_id"""
+
+        def check_consistency(unit, unit_id, kind):
+            # Helper function
+            assert (
+                enzmldoc.unit_dict[unit_id].name == unit
+            ), f"Unit change for {kind} inconsistent"
+
+        # Test unit change vessel
+        vessel = enzmldoc.getVessel("v0")
+        vessel.unit = "l"
+
+        check_consistency("l", vessel._unit_id, "vessel")
+
+        # Test unit change protein
+        protein = enzmldoc.getProtein("p0")
+        protein.unit = "mole / l"
+
+        check_consistency("mole / l", protein._unit_id, "protein")
+
+        # Test unit change reactant
+        reactant = enzmldoc.getReactant("s0")
+        reactant.unit = "mole / l"
+
+        check_consistency("mole / l", reactant._unit_id, "reactant")
+
+        # Test unit change measurement
+        measurement = enzmldoc.getMeasurement("m0")
+        measurement.temperature_unit = "K"
+
+        check_consistency("K", measurement._temperature_unit_id, "measurement")
+
+        # Test measurement data
+        meas_data = measurement.getReactants()["s0"]
+        meas_data.unit = "mole / l"
+
+        check_consistency("mole / l", meas_data._unit_id, "measurement data")
+
+        # Test Replicates
+        replicate = meas_data.replicates[0]
+        replicate.data_unit = "mole / l"
+        replicate.time_unit = "hours"
+
+        check_consistency("mole / l", replicate._data_unit_id, "replicate data")
+        check_consistency("hours", replicate._time_unit_id, "replicate time")
+
+        # Test Kinetic parameters
+        reaction = enzmldoc.getReaction("r0")
+        param = reaction.model.parameters[0]
+        param.unit = "mole / l"
+
+        check_consistency("mole / l", param._unit_id, "kinetic parameter")
