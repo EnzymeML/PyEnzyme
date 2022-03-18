@@ -1,0 +1,12 @@
+global: {}
+r0:
+  k_cat:
+    initial_value: 0.015
+    constant: false
+    upper: 1.0
+    lower: 0.00005
+  k_m:
+    initial_value: 0.01
+    constant: false
+    upper: 1.0
+    lower: 0.00005

@@ -1,0 +1,351 @@
+{
+  "name": "Experiment",
+  "level": 3,
+  "version": 2,
+  "creators": {
+    "a0": {
+      "given_name": "Max",
+      "family_name": "Mustermann",
+      "mail": "max@mustermann.de",
+      "id": "a0"
+    }
+  },
+  "vessels": {
+    "v0": {
+      "name": "Eppendorf Tube",
+      "volume": 10.0,
+      "unit": "ml",
+      "constant": true,
+      "meta_id": "METAID_V0",
+      "id": "v0"
+    }
+  },
+  "proteins": {
+    "p0": {
+      "name": "Enzyme",
+      "meta_id": "METAID_P0",
+      "id": "p0",
+      "vessel_id": "v0",
+      "constant": false,
+      "boundary": false,
+      "ontology": "SBO:0000252",
+      "sequence": "MAVKLT"
+    }
+  },
+  "complexes": {
+    "c0": {
+      "name": "ES",
+      "meta_id": "METAID_C0",
+      "id": "c0",
+      "vessel_id": "v0",
+      "constant": false,
+      "boundary": false,
+      "ontology": "SBO:0000296",
+      "participants": [
+        "p0",
+        "s0"
+      ]
+    },
+    "c1": {
+      "name": "EP",
+      "meta_id": "METAID_C1",
+      "id": "c1",
+      "vessel_id": "v0",
+      "constant": false,
+      "boundary": false,
+      "ontology": "SBO:0000296",
+      "participants": [
+        "p0",
+        "s1"
+      ]
+    }
+  },
+  "reactants": {
+    "s0": {
+      "name": "Substrate",
+      "meta_id": "METAID_S0",
+      "id": "s0",
+      "vessel_id": "v0",
+      "constant": false,
+      "boundary": false,
+      "ontology": "SBO:0000247"
+    },
+    "s1": {
+      "name": "Product",
+      "meta_id": "METAID_S1",
+      "id": "s1",
+      "vessel_id": "v0",
+      "constant": false,
+      "boundary": false,
+      "ontology": "SBO:0000247"
+    }
+  },
+  "reactions": {
+    "r0": {
+      "name": "reaction-1",
+      "reversible": true,
+      "ontology": "SBO:0000176",
+      "meta_id": "METAID_R0",
+      "id": "r0",
+      "educts": [
+        {
+          "species_id": "s0",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000015"
+        },
+        {
+          "species_id": "p0",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000015"
+        },
+        {
+          "species_id": "s1",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000015"
+        }
+      ],
+      "products": [],
+      "modifiers": []
+    },
+    "r1": {
+      "name": "reaction-2",
+      "reversible": true,
+      "ontology": "SBO:0000176",
+      "meta_id": "METAID_R1",
+      "id": "r1",
+      "educts": [
+        {
+          "species_id": "c0",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000015"
+        }
+      ],
+      "products": [
+        {
+          "species_id": "c1",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000011"
+        }
+      ],
+      "modifiers": []
+    },
+    "r2": {
+      "name": "reaction-3",
+      "reversible": true,
+      "ontology": "SBO:0000176",
+      "meta_id": "METAID_R2",
+      "id": "r2",
+      "educts": [
+        {
+          "species_id": "c1",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000015"
+        }
+      ],
+      "products": [
+        {
+          "species_id": "s1",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000011"
+        }
+      ],
+      "modifiers": []
+    }
+  },
+  "measurements": {
+    "m0": {
+      "name": "Run 1",
+      "temperature": 310.15,
+      "temperature_unit": "K",
+      "ph": 7.4,
+      "species_dict": {
+        "proteins": {
+          "p0": {
+            "init_conc": 20.0,
+            "unit": "fmole / l",
+            "measurement_id": "m0",
+            "protein_id": "p0",
+            "replicates": []
+          }
+        },
+        "reactants": {
+          "s0": {
+            "init_conc": 10.0,
+            "unit": "mmole / l",
+            "measurement_id": "m0",
+            "reactant_id": "s0",
+            "replicates": [
+              {
+                "id": "repl_substrate_1",
+                "species_id": "s0",
+                "data_type": "conc",
+                "data_unit": "mmole / l",
+                "time_unit": "min",
+                "time": [
+                  1.0,
+                  2.0,
+                  3.0,
+                  4.0,
+                  5.0,
+                  6.0
+                ],
+                "data": [
+                  5.0,
+                  4.0,
+                  3.0,
+                  2.0,
+                  1.0,
+                  0.0
+                ],
+                "is_calculated": false
+              }
+            ]
+          },
+          "s1": {
+            "init_conc": 0.0,
+            "unit": "mmole / l",
+            "measurement_id": "m0",
+            "reactant_id": "s1",
+            "replicates": [
+              {
+                "id": "repl_product_1",
+                "species_id": "s1",
+                "data_type": "conc",
+                "data_unit": "mmole / l",
+                "time_unit": "min",
+                "time": [
+                  1.0,
+                  2.0,
+                  3.0,
+                  4.0,
+                  5.0,
+                  6.0
+                ],
+                "data": [
+                  0.0,
+                  1.0,
+                  2.0,
+                  3.0,
+                  4.0,
+                  5.0
+                ],
+                "is_calculated": false
+              }
+            ]
+          }
+        }
+      },
+      "global_time": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0
+      ],
+      "global_time_unit": "min",
+      "id": "m0"
+    },
+    "m1": {
+      "name": "Run 2",
+      "temperature": 312.15,
+      "temperature_unit": "K",
+      "ph": 7.4,
+      "species_dict": {
+        "proteins": {
+          "p0": {
+            "init_conc": 40.0,
+            "unit": "fmole / l",
+            "measurement_id": "m1",
+            "protein_id": "p0",
+            "replicates": []
+          }
+        },
+        "reactants": {
+          "s0": {
+            "init_conc": 100.0,
+            "unit": "mmole / l",
+            "measurement_id": "m1",
+            "reactant_id": "s0",
+            "replicates": [
+              {
+                "id": "repl_substrate_2",
+                "species_id": "s0",
+                "data_type": "conc",
+                "data_unit": "mmole / l",
+                "time_unit": "min",
+                "time": [
+                  1.0,
+                  2.0,
+                  3.0,
+                  4.0,
+                  5.0,
+                  6.0
+                ],
+                "data": [
+                  50.0,
+                  40.0,
+                  30.0,
+                  20.0,
+                  10.0,
+                  0.0
+                ],
+                "is_calculated": false
+              }
+            ]
+          },
+          "s1": {
+            "init_conc": 0.0,
+            "unit": "mmole / l",
+            "measurement_id": "m1",
+            "reactant_id": "s1",
+            "replicates": [
+              {
+                "id": "repl_product_2",
+                "species_id": "s1",
+                "data_type": "conc",
+                "data_unit": "mmole / l",
+                "time_unit": "min",
+                "time": [
+                  1.0,
+                  2.0,
+                  3.0,
+                  4.0,
+                  5.0,
+                  6.0
+                ],
+                "data": [
+                  0.0,
+                  10.0,
+                  20.0,
+                  30.0,
+                  40.0,
+                  50.0
+                ],
+                "is_calculated": false
+              }
+            ]
+          }
+        }
+      },
+      "global_time": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0
+      ],
+      "global_time_unit": "min",
+      "id": "m1"
+    }
+  },
+  "global_parameters": {}
+}
