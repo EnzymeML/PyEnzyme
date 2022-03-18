@@ -41,6 +41,7 @@ setup(
         "numexpr",
         "seaborn",
         "plotly",
+        "pyyaml==5.4.1",
     ],
     extras_require={
         "test": ["pytest-cov"],
