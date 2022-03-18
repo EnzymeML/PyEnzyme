@@ -102,6 +102,23 @@ class Replicate(EnzymeMLBase):
 
         return data
 
+    # ! Getters
+    def data_unitdef(self):
+        """Returns the appropriate unitdef if an enzmldoc is given"""
+
+        if not self._enzmldoc:
+            return None
+
+        return self._enzmldoc.unit_dict[self._data_unit_id]
+
+    def time_unitdef(self):
+        """Returns the appropriate unitdef if an enzmldoc is given"""
+
+        if not self._enzmldoc:
+            return None
+
+        return self._enzmldoc.unit_dict[self._time_unit_id]
+
     @deprecated_getter("measurement_id")
     def getMeasurement(self):
         return self.measurement_id

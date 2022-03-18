@@ -165,6 +165,15 @@ class MeasurementData(EnzymeMLBase):
         else:
             raise AttributeError("Neither reactant nor protein ID are given.")
 
+    # ! Getters
+    def unitdef(self):
+        """Returns the appropriate unitdef if an enzmldoc is given"""
+
+        if not self._enzmldoc:
+            return None
+
+        return self._enzmldoc.unit_dict[self._unit_id]
+
     @deprecated_getter("reactant_id")
     def getReactantID(self) -> Optional[str]:
         return self.reactant_id

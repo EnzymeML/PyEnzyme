@@ -82,6 +82,15 @@ class KineticParameter(EnzymeMLBase):
         """Adds attributes to this parameter based in kwargs"""
         self.__dict__.update(kwargs)
 
+    # ! Getters
+    def unitdef(self):
+        """Returns the appropriate unitdef if an enzmldoc is given"""
+
+        if not self._enzmldoc:
+            return None
+
+        return self._enzmldoc.unit_dict[self._unit_id]
+
 
 @static_check_init_args
 class KineticModel(EnzymeMLBase):

@@ -112,6 +112,9 @@ class EnzymeMLValidator:
         val_min = valid["range"]["min"]
         val_max = valid["range"]["max"]
 
+        if all(val is None for val in enum):
+            enum = None
+
         # Check mandatory
         if value is None and valid["mandatory"] is True:
             check = False
@@ -168,7 +171,7 @@ class EnzymeMLValidator:
         validator._generate_spreadsheet(data, path)
 
     @classmethod
-    def generateValidationYAML(cls) -> str:
+    def generateValidationYAML(cls, path: Optional[str] = None) -> str:
         """Generates an EnzymeML validation YAML file based on the current implementation.
 
         The Validation YAML can be used by PyEnzyme to validate if a given document fits the minimal
@@ -181,6 +184,11 @@ class EnzymeMLValidator:
         # Get collection data
         cls = cls(scheme={})
         collection, _ = cls._get_cls_annotations(EnzymeMLDocument, level="document")
+
+        if path:
+            path = os.path.join(path, "EnzymeML_Validation_Template.yaml")
+            with open(path, "w") as f:
+                f.write(cls._dump_validation_template_yaml(collection))
 
         return cls._dump_validation_template_yaml(collection)
 

@@ -76,7 +76,15 @@ class Vessel(EnzymeMLBase):
 
         return id
 
-    # ! Getters (old)
+    # ! Getters
+    def unitdef(self):
+        """Returns the appropriate unitdef if an enzmldoc is given"""
+
+        if not self._enzmldoc:
+            return None
+
+        return self._enzmldoc.unit_dict[self._unit_id]
+
     @deprecated_getter("name")
     def getName(self):
         return self.name

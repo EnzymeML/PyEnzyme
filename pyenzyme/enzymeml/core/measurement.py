@@ -390,6 +390,13 @@ class Measurement(EnzymeMLBase):
         return False
 
     # ! Getters
+    def temperature_unitdef(self):
+        """Returns the appropriate unitdef if an enzmldoc is given"""
+
+        if not self._enzmldoc:
+            return None
+
+        return self._enzmldoc.unit_dict[self._temperature_unit_id]
 
     @validate_arguments
     def getReactant(self, reactant_id: str) -> MeasurementData:
@@ -415,20 +422,23 @@ class Measurement(EnzymeMLBase):
         return self._getSpecies(protein_id)
 
     def getReactants(self) -> Dict[str, MeasurementData]:
-        """Returns a list of all participating reactants in the measurement.
+        """Returns a dict of all participating reactants in the measurement.
 
         Returns:
-            list: List of MeasurementData objects representing data
+            dict: Dict of MeasurementData objects representing data
         """
         return self.species_dict["reactants"]
 
     def getProteins(self) -> Dict[str, MeasurementData]:
-        """Returns a list of all participating proteins in the measurement.
+        """Returns a dict of all participating proteins in the measurement.
 
         Returns:
-            list: List of MeasurementData objects representing data
+            dict: Dict of MeasurementData objects representing data
         """
         return self.species_dict["proteins"]
+
+    def _getAllSpecies(self):
+        return {**self.species_dict["proteins"], **self.species_dict["reactants"]}
 
     @validate_arguments
     def _getSpecies(self, species_id: str) -> MeasurementData:
