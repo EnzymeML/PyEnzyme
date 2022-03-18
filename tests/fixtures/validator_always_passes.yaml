@@ -1,21 +1,24 @@
 name:
   mandatory: false
   description: Title of the EnzymeML Document.
-  enum: null
+  enum:
+    - null
   range:
     min: null
     max: null
 pubmedid:
   mandatory: false
   description: Pubmed ID reference.
-  enum: null
+  enum:
+    - null
   range:
     min: null
     max: null
 url:
   mandatory: false
   description: Arbitrary type of URL that is related to the EnzymeML document.
-  enum: null
+  enum:
+    - null
   range:
     min: null
     max: null
@@ -23,21 +26,24 @@ doi:
   mandatory: false
   description: Digital Object Identifier of the referenced publication or the EnzymeML
     document.
-  enum: null
+  enum:
+    - null
   range:
     min: null
     max: null
 created:
   mandatory: false
   description: Date the EnzymeML document was created.
-  enum: null
+  enum:
+    - null
   range:
     min: null
     max: null
 modified:
   mandatory: false
   description: Date the EnzymeML document was modified.
-  enum: null
+  enum:
+    - null
   range:
     min: null
     max: null
@@ -45,21 +51,24 @@ creator_dict:
   given_name:
     mandatory: false
     description: Given name of the author or contributor.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   family_name:
     mandatory: false
     description: Family name of the author or contributor.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   mail:
     mandatory: false
     description: Email address of the author or contributor.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -67,28 +76,32 @@ vessel_dict:
   name:
     mandatory: false
     description: Name of the used vessel.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   volume:
     mandatory: false
     description: Volumetric value of the vessel.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   unit:
     mandatory: false
     description: Volumetric unit of the vessel.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   constant:
     mandatory: false
     description: Whether the volume of the vessel is constant or not.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -96,21 +109,24 @@ protein_dict:
   name:
     mandatory: false
     description: Name of the protein
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   sequence:
     mandatory: false
     description: Amino acid sequence of the protein
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   vessel_id:
     mandatory: false
     description: Identifier of the vessel in which the protein was stored.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -120,46 +136,53 @@ protein_dict:
     range:
       min: null
       max: null
-    enum: null
+    enum:
+      - null
   unit:
     mandatory: false
     description: Unit of the proteins intial concentration.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   constant:
     mandatory: false
     description: Whether the proteins concentration remains constant or not.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   ecnumber:
     mandatory: false
     description: EC number of the protein.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   organism:
     mandatory: false
     description: Organism the protein was expressed in.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   organism_tax_id:
     mandatory: false
     description: Taxonomy identifier of the expression host.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   ontology:
     mandatory: false
     description: Ontology describing the characteristic of the protein.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -167,7 +190,8 @@ protein_dict:
     mandatory: false
     description: Unique identifier referencing a protein entry at UniProt. Use this
       identifier to initialize the object from the UniProt database.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -175,21 +199,24 @@ complex_dict:
   name:
     mandatory: false
     description: Name of the complex
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   participants:
     mandatory: false
     description: Array of IDs the complex contains
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   vessel_id:
     mandatory: false
     description: Identifier of the vessel in which the protein was stored.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -199,25 +226,29 @@ complex_dict:
     range:
       min: null
       max: null
-    enum: null
+    enum:
+      - null
   unit:
     mandatory: false
     description: Unit of the proteins intial concentration.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   constant:
     mandatory: false
     description: Whether the proteins concentration remains constant or not.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   ontology:
     mandatory: false
     description: Ontology describing the characteristic of the protein.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -225,14 +256,16 @@ reactant_dict:
   name:
     mandatory: false
     description: Name of the reactant.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   vessel_id:
     mandatory: false
     description: Identifier of the vessel in which the reactant was stored.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -242,18 +275,21 @@ reactant_dict:
     range:
       min: null
       max: null
-    enum: null
+    enum:
+      - null
   unit:
     mandatory: false
     description: Unit of the reactant intial concentration.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   constant:
     mandatory: false
     description: Whether the reactants concentration remains constant or not.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -261,21 +297,24 @@ reactant_dict:
     mandatory: false
     description: Simplified Molecular Input Line Entry System (SMILES) encoding of
       the reactant.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   inchi:
     mandatory: false
     description: International Chemical Identifier (InChI) encoding of the reactant.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   ontology:
     mandatory: false
     description: Ontology describing the characteristic of the reactant.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -283,7 +322,8 @@ reactant_dict:
     mandatory: false
     description: Unique identifier of the CHEBI database. Use this identifier to initialize
       the object from the CHEBI database.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -291,14 +331,16 @@ reaction_dict:
   name:
     mandatory: false
     description: Name of the reaction.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
   reversible:
     mandatory: false
     description: Whether the reaction is reversible or irreversible
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -308,11 +350,13 @@ reaction_dict:
     range:
       min: null
       max: null
-    enum: null
+    enum:
+      - null
   temperature_unit:
     mandatory: false
     description: Unit of the temperature of the reaction.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -322,11 +366,13 @@ reaction_dict:
     range:
       min: null
       max: null
-    enum: null
+    enum:
+      - null
   ontology:
     mandatory: false
     description: Ontology defining the role of the given species.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -334,14 +380,16 @@ reaction_dict:
     name:
       mandatory: false
       description: Name of the kinetic law.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     equation:
       mandatory: false
       description: Equation for the kinetic law.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
@@ -349,7 +397,8 @@ reaction_dict:
       name:
         mandatory: false
         description: Name of the estimated parameter.
-        enum: null
+        enum:
+          - null
         range:
           min: null
           max: null
@@ -359,11 +408,13 @@ reaction_dict:
         range:
           min: null
           max: null
-        enum: null
+        enum:
+          - null
       unit:
         mandatory: false
         description: Unit of the estimated parameter.
-        enum: null
+        enum:
+          - null
         range:
           min: null
           max: null
@@ -373,25 +424,29 @@ reaction_dict:
         range:
           min: null
           max: null
-        enum: null
+        enum:
+          - null
       initial_value:
         mandatory: false
         description: Initial value that was used for the parameter estimation.
         range:
           min: null
           max: null
-        enum: null
+        enum:
+          - null
       ontology:
         mandatory: false
         description: Type of the estimated parameter.
-        enum: null
+        enum:
+          - null
         range:
           min: null
           max: null
     ontology:
       mandatory: false
       description: Type of the estimated parameter.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
@@ -400,28 +455,32 @@ reaction_dict:
       mandatory: false
       description: Internal identifier to either a protein or reactant defined in
         the EnzymeMLDocument.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     stoichiometry:
       mandatory: false
       description: Positive float number representing the associated stoichiometry.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     constant:
       mandatory: false
       description: Whether or not the concentration of this species remains constant.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     ontology:
       mandatory: false
       description: Ontology defining the role of the given species.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
@@ -430,28 +489,32 @@ reaction_dict:
       mandatory: false
       description: Internal identifier to either a protein or reactant defined in
         the EnzymeMLDocument.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     stoichiometry:
       mandatory: false
       description: Positive float number representing the associated stoichiometry.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     constant:
       mandatory: false
       description: Whether or not the concentration of this species remains constant.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     ontology:
       mandatory: false
       description: Ontology defining the role of the given species.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
@@ -460,28 +523,32 @@ reaction_dict:
       mandatory: false
       description: Internal identifier to either a protein or reactant defined in
         the EnzymeMLDocument.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     stoichiometry:
       mandatory: false
       description: Positive float number representing the associated stoichiometry.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     constant:
       mandatory: false
       description: Whether or not the concentration of this species remains constant.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     ontology:
       mandatory: false
       description: Ontology defining the role of the given species.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
@@ -489,7 +556,8 @@ measurement_dict:
   name:
     mandatory: false
     description: Name of the measurement
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -499,11 +567,13 @@ measurement_dict:
     range:
       min: null
       max: null
-    enum: null
+    enum:
+      - null
   temperature_unit:
     mandatory: false
     description: Unit of the temperature of the reaction.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -513,18 +583,21 @@ measurement_dict:
     range:
       min: null
       max: null
-    enum: null
+    enum:
+      - null
   global_time:
     mandatory: false
     description: Global time of the measurement all replicates agree on.
     range:
       min: null
       max: null
-    enum: null
+    enum:
+      - null
   global_time_unit:
     mandatory: false
     description: Unit of the global time.
-    enum: null
+    enum:
+      - null
     range:
       min: null
       max: null
@@ -535,32 +608,37 @@ measurement_dict:
       range:
         min: null
         max: null
-      enum: null
+      enum:
+        - null
     unit:
       mandatory: false
       description: The unit of the measurement data.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     measurement_id:
       mandatory: false
       description: Unique measurement identifier this dataset belongs to.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     reactant_id:
       mandatory: false
       description: The identifier for the described reactant.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
     protein_id:
       mandatory: false
       description: The identifier for the described protein.
-      enum: null
+      enum:
+        - null
       range:
         min: null
         max: null
@@ -568,7 +646,8 @@ measurement_dict:
       species_id:
         mandatory: false
         description: Unique identifier of the species that has been measured.
-        enum: null
+        enum:
+          - null
         range:
           min: null
           max: null
@@ -576,28 +655,32 @@ measurement_dict:
         mandatory: false
         description: Unique identifier of the measurement that the replicate is part
           of.
-        enum: null
+        enum:
+          - null
         range:
           min: null
           max: null
       data_type:
         mandatory: false
         description: Type of data that was measured (e.g. concentration)
-        enum: null
+        enum:
+          - null
         range:
           min: null
           max: null
       data_unit:
         mandatory: false
         description: SI unit of the data that was measured.
-        enum: null
+        enum:
+          - null
         range:
           min: null
           max: null
       time_unit:
         mandatory: false
         description: Time unit of the replicate.
-        enum: null
+        enum:
+          - null
         range:
           min: null
           max: null
@@ -607,18 +690,21 @@ measurement_dict:
         range:
           min: null
           max: null
-        enum: null
+        enum:
+          - null
       data:
         mandatory: false
         description: Data that was measured.
         range:
           min: null
           max: null
-        enum: null
+        enum:
+          - null
       is_calculated:
         mandatory: false
         description: Whether or not the data has been generated by simulation.
-        enum: null
+        enum:
+          - null
         range:
           min: null
           max: null
