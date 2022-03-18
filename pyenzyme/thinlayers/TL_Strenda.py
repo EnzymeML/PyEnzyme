@@ -97,7 +97,7 @@ class ThinLayerStrendaML(object):
 
         self.reaction = EnzymeReaction(
             name=self.dataset.get("name"),
-            reversible=True,
+            reversible=False,
             temperature=temp_val,
             temperature_unit=temp_unit,
             ph=ph,
@@ -162,10 +162,10 @@ class ThinLayerStrendaML(object):
             elif init_conc["type"] == "ConcentrationRange":
                 start_value = float(init_conc["startValue"])
                 end_value = float(init_conc["endValue"]) + 0.1
-                val_range = np.arange(start_value, end_value, 0.1)
+                val_range = np.linspace(start_value, end_value, 10)
 
                 initial_concentrations.append(
-                    [(reactant_id, val, unit) for val in val_range]
+                    [(reactant_id, round(val, 4), unit) for val in val_range if val > 0]
                 )
 
         return initial_concentrations, reactant_ref
@@ -190,6 +190,13 @@ class ThinLayerStrendaML(object):
                 organism_tax_id=protein.get("texonId"),
                 uniprotid=uniprotid,
             )
+        )
+
+        self.reaction.addModifier(
+            species_id=self.protein_id,
+            stoichiometry=1.0,
+            constant=True,
+            enzmldoc=self.enzmldoc,
         )
 
     def _setup_measurements(self, init_conc: List[Tuple[str, float, str]]):

@@ -48,9 +48,11 @@ def uploadToDataverse(
     enzmldoc.toFile(".", name=archive_name)
 
     try:
+        dataset.add_file(
+            dv_path=f"{archive_name}.omex", local_path=f"{archive_name}.omex"
+        )
         dataset.upload(
             dataverse_name=dataverse_name,
-            filenames=[f"{archive_name}.omex"],
             DATAVERSE_URL=base_url,
             API_TOKEN=api_token,
         )

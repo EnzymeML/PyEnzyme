@@ -36,6 +36,7 @@ from pyenzyme.enzymeml.models.kineticmodel import KineticParameter
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
 from pyenzyme.enzymeml.tools.templatereader import read_template
+from pyenzyme.enzymeml.tools.validator import EnzymeMLValidator
 from pyenzyme.enzymeml.databases.dataverse import uploadToDataverse
 
 from pyenzyme.enzymeml.core.ontology import EnzymeMLPart, SBOTerm
@@ -589,9 +590,15 @@ class EnzymeMLDocument(EnzymeMLBase):
                     "initConc": init_conc,
                 }
 
+        if len(measurement_ids) == 1 and measurement_ids[0] != "all":
+            # If its only a single measurement, return it directly
+            return replicate_data[measurement_ids[0]]
+
         return replicate_data
 
-    def exportKineticParameters(self, exclude_constant: bool = False) -> pd.DataFrame:
+    def exportKineticParameters(
+        self, exclude_constant: bool = False, as_dataframe: bool = True
+    ):
         """Exports all kinetic parameters found in the EnzymeMLDocument
 
         Args:
@@ -642,9 +649,25 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return prefix + str(0)
 
-    def validateEnzymeML(self) -> None:
-        # TODO rework validation
-        raise NotImplementedError("Function not refactored yet.")
+    def validate(self, yaml_path: str) -> Tuple[Dict, bool]:
+        """Validates an EnzymeML based on a given YAML file.
+
+        The YAML file should be compliant with PyEnzymes template found on Github
+        or generated via the EnzymeMLValidator instance. Ultimately, it can also
+        be derived from a spreadsheet template, which can also be generated via
+        the EnzymeMLValidator instance.
+
+        Args:
+            yaml_path (str): Path to the Validation YAML file
+
+        Returns:
+            Dict: Report on which fields are incompatible
+            Bool: Whether or not the document is valid to the given YAML
+        """
+
+        validator = EnzymeMLValidator(scheme=yaml.safe_load(open(yaml_path)))
+
+        return validator.validate(self)
 
     def __repr__(self):
         """
@@ -688,7 +711,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         if measurements:
             fin_string.append(">>> Measurements")
-            fin_string.append(self.printMeasurements())
+            fin_string.append(self.printMeasurements(stdout=False))
 
         output = "\n".join(fin_string)
 
@@ -697,36 +720,15 @@ class EnzymeMLDocument(EnzymeMLBase):
         else:
             return output
 
-    def printMeasurements(self) -> str:
-        """Prints all measurements as a human readable table"""
+    def printMeasurements(self, stdout: bool = True):
+        """Prints an overview of all measurements"""
 
-        table = Texttable()
-        table.set_deco(Texttable.HEADER)
-        table.set_cols_align(["l", "l", "l", "l"])
+        schemes = []
+        for measurement in self.measurement_dict.values():
+            schemes.append(measurement.printMeasurementScheme(stdout=stdout))
 
-        # Initialize rows
-        rows = [["ID", "Species", "Conc", "Unit"]]
-
-        # Generate and append rows
-        for measurement_id, measurement in self.measurement_dict.items():
-
-            speciesDict = measurement.species_dict
-            proteins = speciesDict["proteins"]
-            reactants = speciesDict["reactants"]
-
-            # succesively add rows with schema
-            # [ measID, speciesID, initConc, unit ]
-
-            for species_id, species in {**proteins, **reactants}.items():
-                rows.append(
-                    [measurement_id, species_id, str(species.init_conc), species.unit]
-                )
-
-        # Add empty row for better readablity
-        rows.append([" "] * 4)
-        table.add_rows(rows)
-
-        return f"\n{table.draw()}\n"
+        if not stdout:
+            return "\n".join(schemes)
 
     def printReactionSchemes(self, by_name: bool = True):
         """Prints all reaction equations to inspect the content"""

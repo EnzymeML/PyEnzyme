@@ -14,3 +14,5 @@ from pyenzyme.enzymeml.core import EnzymeReaction
 from pyenzyme.enzymeml.core import Measurement
 from pyenzyme.enzymeml.core import Replicate
 from pyenzyme.enzymeml.core import SBOTerm, DataTypes
+
+from pyenzyme.enzymeml import models
