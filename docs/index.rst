@@ -11,9 +11,6 @@ Welcome to PyEnzyme's documentation!
    :caption: First Steps
 
    _getstarted/01_BasicUsage
-   _getstarted/02_Validation
-   _getstarted/03_Visualisation
-   _getstarted/04_UploadToDataverse
 
 .. toctree:: 
    :maxdepth: 2
