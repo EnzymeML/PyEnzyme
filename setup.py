@@ -15,7 +15,7 @@ from setuptools import setup
 
 setup(
     name="PyEnzyme",
-    version="1.2.1",
+    version="1.1.3",
     description="Handling of EnzymeML files",
     url="https://github.com/EnzymeML/PyEnzyme",
     author="Range, Jan",
