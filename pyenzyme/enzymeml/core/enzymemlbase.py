@@ -42,7 +42,7 @@ class EnzymeMLBase(BaseModel):
 
         # Check for changing units and assign a new one
         if "unit" in name and not name.startswith("_") and hasattr(self, "_enzmldoc"):
-            if self._enzmldoc:
+            if self._enzmldoc and value:
                 # When the object has already been assigned to a document
                 # use this to set and add the new unit
 

@@ -51,6 +51,8 @@ class AbstractSpecies(ABC, AbstractSpeciesDataclass):
 
         if not self._enzmldoc:
             return None
+        if not self.unit:
+            return None
 
         return self._enzmldoc.unit_dict[self._unit_id]
 
