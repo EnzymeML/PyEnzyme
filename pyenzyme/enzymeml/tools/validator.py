@@ -5,13 +5,32 @@
 # Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 import importlib
+import logging
 import re
 import yaml
 import os
 import pandas as pd
+import warnings
 
 from itertools import cycle
 from typing import Optional, Dict, Tuple, List
+
+# Set up a logger for validation
+logger = logging.getLogger("validator")
+logger.setLevel(logging.WARNING)
+
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.WARNING)
+
+# create formatter
+formatter = logging.Formatter("ValidationWarning: %(message)s")
+
+# add formatter to ch
+ch.setFormatter(formatter)
+
+# add ch to logger
+logger.addHandler(ch)
 
 
 class EnzymeMLValidator:
@@ -471,3 +490,195 @@ class EnzymeMLValidator:
                     return result
 
         return None
+
+    # ! Unit checker
+    @classmethod
+    def check_unit_consistency(cls, enzmldoc, strict: bool = False):
+        """Validates unit consistency in an EnzymeMLDocument.
+
+        This method will check whether all (initial) concentration units of a species
+        are consistent throughout the document. Default mode only requires measurements and
+        replicates to comply to the species unit.
+
+        This can also be set to 'strict', where any species, measurement,
+        replicate and parameter has to comply in a global fashion.
+        To summarise, strict mode checks on:
+
+            - Consistent usage of time
+            - Consistent concentration units for ALL concentrations
+            - Consistent volumetric unit including vessels
+
+        Strict mode is of greates importance for kinetic modeling, differing scales
+        can lead to wrong results. However, the code will still run and only warnings
+        will be given.
+
+        Args:
+            strict (bool, optional): _description_. Defaults to False.
+
+        Returns:
+            Dict: Report on which units are inconsistent
+            Bool: Whether the document is consistent in units
+        """
+
+        # Now create a data structure of units per species for
+        # Measurements and Replicates
+        used_units, used_time_units = {}, {}
+        report, is_consistent = {}, True
+
+        # Perform consistency check on parameters
+        cls._check_parameters(enzmldoc, used_time_units)
+
+        # Perform consistency check on species/replicates/measurements
+        cls._check_species(enzmldoc, report, used_time_units, used_units)
+
+        if strict:
+
+            if len(set(used_units.values())) != 1:
+                logger.warning(
+                    f"Inconsistent usage of concentration units. All units should be the same, but found {set(used_units.values())}"
+                )
+
+                # Append to report
+                report["conc_units"] = cls._reformat_strict_report(used_units)
+
+            if len(set(used_time_units.values())) != 1:
+                logger.warning(
+                    f"Inconsistent usage of time units. All units should be the same, but found {set(used_time_units.values())}"
+                )
+
+                # Append to report
+                report["time_units"] = cls._reformat_strict_report(used_time_units)
+
+        if report:
+            is_consistent = False
+
+        return is_consistent, report
+
+    @staticmethod
+    def _check_parameters(enzmldoc, used_time_units: Dict[str, str]) -> None:
+        """Checks time unit consistency of Parameters"""
+
+        # Get all the time units used in parameters
+        # Export local parameters
+        params = [
+            param
+            for reaction in enzmldoc.reaction_dict.values()
+            for param in reaction.model.parameters
+            if reaction.model and not param.is_global
+        ]
+
+        # Global parameters
+        params += [param for param in enzmldoc.global_parameters.values()]
+
+        for param in params:
+            if param.unit:
+
+                # Get the time unit, if given
+                time_part = list(
+                    filter(
+                        lambda baseunit: baseunit.kind == "second",
+                        param.unitdef().units,
+                    )
+                )
+
+                if time_part:
+                    # When there is a time unit, store it
+                    used_time_units[param.name] = time_part[0].get_name()
+
+    @staticmethod
+    def _check_species(enzmldoc, report, used_time_units, used_units):
+        """Checks consistency for species to measurements"""
+
+        all_species = {
+            **enzmldoc.protein_dict,
+            **enzmldoc.reactant_dict,
+            **enzmldoc.complex_dict,
+        }
+
+        for id, species in all_species.items():
+
+            # Get the unit expected from the species
+            unit = species.unitdef()
+
+            # If there is no unit at the species, take the
+            # first from a measurement
+            if unit:
+                unit_name = unit._get_unit_name()
+                used_units[id] = unit_name
+            else:
+                logger.warning(
+                    f"{species.__class__.__name__} {id} has no unit specified. Using measurement unit as reference now. Use 'strict' to force units at species.",
+                )
+                used_units[id] = "No Unit"
+                unit_name = None
+
+            # Initialize a dict to report on where units are inconsistent
+            log_dict = {"measurements": {}, "replicates": {}}
+
+            for measurement in enzmldoc.measurement_dict.values():
+                meas_species = measurement._getAllSpecies()
+                meas_data = meas_species.get(id)
+
+                if meas_data:
+
+                    # Get measurement unit
+                    meas_data = meas_species.get(id)
+                    meas_unit = meas_data.unitdef()
+                    meas_unit_name = meas_unit._get_unit_name()
+
+                    if unit is None:
+                        # Use meas unit as the expected one
+                        unit = meas_unit
+                        unit_name = meas_unit._get_unit_name()
+
+                    # Add to list of already used units
+                    location = f"{measurement.id}/{meas_data.get_id()}"
+                    used_units[location] = meas_unit_name
+                    used_time_units[location] = measurement.global_time_unit
+
+                    if unit_name != meas_unit_name:
+                        # Report if there are inconsistencies
+                        log_dict["measurements"][measurement.id] = {
+                            "expected": unit._get_unit_name(),
+                            "given": meas_unit_name,
+                        }
+
+                    # Check replicates
+                    for replicate in meas_data.replicates:
+
+                        # Get replicate units
+                        repl_unit = replicate.data_unitdef()
+                        repl_unit_name = repl_unit._get_unit_name()
+
+                        # Add to list of already used units
+                        location = (
+                            f"{measurement.id}/{meas_data.get_id()}/{replicate.id}"
+                        )
+                        used_units[location] = meas_unit_name
+                        used_time_units[location] = measurement.global_time_unit
+
+                        if unit_name != repl_unit_name:
+                            # Report if there are inconsistencies
+                            log_dict["replicates"][measurement.id] = {
+                                "expected": unit._get_unit_name(),
+                                "given": repl_unit_name,
+                            }
+
+            # Add to the overall report
+            if log_dict["measurements"] or log_dict["replicates"]:
+                report[id] = {key: report for key, report in log_dict.items() if report}
+
+    @staticmethod
+    def _reformat_strict_report(report: Dict[str, str]):
+        """Reformats a report for improved redability"""
+
+        # Get all values that occur
+        values = list(set(report.values()))
+        nu_report = {}
+
+        # Iterate over all those values and collect those entries that
+        # posses the said object
+        for value in values:
+            nu_report[value] = [loc for loc, unit in report.items() if unit == value]
+
+        return nu_report

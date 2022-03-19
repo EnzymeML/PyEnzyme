@@ -55,3 +55,129 @@ class TestValidation:
 
         # Remove everything
         os.remove(sheet_loc)
+
+    def test_check_unit_consistency_positive(self, enzmldoc):
+        """Checks whether unit consistency checkup behaves correctly - Positive case"""
+
+        # Test default mode - Positive outcome
+        is_consistent, report = EnzymeMLValidator.check_unit_consistency(enzmldoc)
+
+        assert is_consistent
+        assert not report
+
+        # Test strict mode - Positive outcome
+        is_consistent, report = EnzymeMLValidator.check_unit_consistency(
+            enzmldoc, strict=True
+        )
+
+        assert is_consistent
+        assert not report
+
+    def test_check_unit_consistency_strict_mode_conc(self, enzmldoc):
+        """Test strict mode and change units for all objects of a species (should fail, default works)"""
+
+        # Manipulate document to force inconsistency
+        # On species level
+        enzmldoc.reactant_dict["s0"].unit = "fmole / l"
+
+        # On measurement data level
+        meas_data = enzmldoc.measurement_dict["m0"].getProtein("s0")
+        meas_data.unit = "fmole / l"
+
+        # On replicate level
+        for replicate in meas_data.replicates:
+            replicate.data_unit = "fmole / l"
+
+        # Perform checkup in default - Should work
+        is_consistent, report = EnzymeMLValidator.check_unit_consistency(
+            enzmldoc, strict=False
+        )
+
+        assert is_consistent
+        assert not report
+
+        # Perform checkup in strict - Should fail
+        is_consistent, report = EnzymeMLValidator.check_unit_consistency(
+            enzmldoc, strict=True
+        )
+
+        assert not is_consistent
+        assert report == {
+            "conc_units": {
+                "fmole / l": ["s0", "m0/s0", "m0/s0/repl_s0_0"],
+                "mmole / l": ["p0", "m0/p0", "m0/p0/repl_p0_0", "s1", "c0"],
+            }
+        }
+
+    def test_check_unit_consistency_strict_mode_time(self, enzmldoc):
+        """Test strict mode and change units for a parameter (should fail, default works)"""
+
+        # Change time unit of a parameter
+        param = enzmldoc.reaction_dict["r0"].model.parameters[0]
+        param.unit = "1 / min"
+
+        # Perform checkup in default - Should work
+        is_consistent, report = EnzymeMLValidator.check_unit_consistency(
+            enzmldoc, strict=False
+        )
+
+        assert is_consistent
+        assert not report
+
+        # Perform checkup in strict - Should fail
+        is_consistent, report = EnzymeMLValidator.check_unit_consistency(
+            enzmldoc, strict=True
+        )
+
+        assert not is_consistent
+        assert report == {
+            "time_units": {
+                "min": ["x"],
+                "s": ["m0/p0", "m0/p0/repl_p0_0", "m0/s0", "m0/s0/repl_s0_0"],
+            }
+        }
+
+    def test_check_unit_consistency_default_mode_negative(self, enzmldoc):
+        """Test default mode and change units for a single species (both should fail)"""
+
+        # Change the unit of a reactant
+        reactant = enzmldoc.reactant_dict["s0"]
+        reactant.unit = "fmole / l"
+
+        # Perform checkup in default - Should work
+        is_consistent, report = EnzymeMLValidator.check_unit_consistency(
+            enzmldoc, strict=False
+        )
+
+        assert not is_consistent
+        assert report == {
+            "s0": {
+                "measurements": {"m0": {"expected": "fmole / l", "given": "mmole / l"}},
+                "replicates": {"m0": {"expected": "fmole / l", "given": "mmole / l"}},
+            }
+        }
+
+        # Perform checkup in strict - Should fail
+        is_consistent, report = EnzymeMLValidator.check_unit_consistency(
+            enzmldoc, strict=True
+        )
+
+        assert not is_consistent
+        assert report == {
+            "s0": {
+                "measurements": {"m0": {"expected": "fmole / l", "given": "mmole / l"}},
+                "replicates": {"m0": {"expected": "fmole / l", "given": "mmole / l"}},
+            },
+            "conc_units": {
+                "fmole / l": ["s0"],
+                "mmole / l": [
+                    "p0",
+                    "m0/p0",
+                    "m0/p0/repl_p0_0",
+                    "m0/s0",
+                    "m0/s0/repl_s0_0",
+                    "s1",
+                    "c0",
+                ],
+            },
+        }

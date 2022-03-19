@@ -16,7 +16,6 @@ import plotly.express as px
 
 from pydantic import Field, validator, validate_arguments
 from typing import Dict, List, Tuple, TYPE_CHECKING, Optional, Union
-from texttable import Texttable
 from dataclasses import dataclass
 from io import StringIO
 
@@ -668,6 +667,41 @@ class EnzymeMLDocument(EnzymeMLBase):
         validator = EnzymeMLValidator(scheme=yaml.safe_load(open(yaml_path)))
 
         return validator.validate(self)
+
+    def checkUnitConsistency(self, strict: bool = False, return_report: bool = True):
+        """Validates unit consistency in an EnzymeMLDocument.
+
+        This method will check whether all (initial) concentration units of a species
+        are consistent throughout the document. Default mode only requires measurements and
+        replicates to comply to the species unit.
+
+        This can also be set to 'strict', where any species, measurement,
+        replicate and parameter has to comply in a global fashion.
+        To summarise, strict mode checks on:
+
+            - Consistent usage of time
+            - Consistent concentration units for ALL concentrations
+            - Consistent volumetric unit including vessels
+
+        Strict mode is of greates importance for kinetic modeling, differing scales
+        can lead to wrong results. However, the code will still run and only warnings
+        will be given.
+
+        Args:
+            strict (bool, optional): Enables strict mode. Defaults to False.
+            return_report (bool, optional): Whether a report should be returned. Defaults to False.
+
+        Returns:
+            Dict: Report on which units are inconsistent
+            Bool: Whether the document is consistent in units
+        """
+
+        is_consistent, report = EnzymeMLValidator.check_unit_consistency(self, strict)
+
+        if return_report:
+            return is_consistent, report
+        else:
+            return is_consistent
 
     def __repr__(self):
         """
