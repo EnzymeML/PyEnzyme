@@ -1,939 +1,732 @@
-'''
-File: enzymereaction.py
-Project: core
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Wednesday June 23rd 2021 9:06:54 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+# File: enzymereaction.py
+# Project: core
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
-from pyenzyme.enzymeml.core.functionalities import TypeChecker
-from pyenzyme.enzymeml.models.kineticmodel import KineticModel
-from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
-from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
-
-import pandas as pd
-import json
+import logging
 import re
+import ast
 
-from copy import deepcopy
+from typing import List, Dict, Union, Optional, TYPE_CHECKING
+from dataclasses import dataclass
+from pydantic import (
+    BaseModel,
+    PositiveFloat,
+    validate_arguments,
+    Field,
+    PrivateAttr,
+    validator,
+)
+
+from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
+from pyenzyme.enzymeml.models.kineticmodel import KineticModel
+from pyenzyme.enzymeml.core.ontology import SBOTerm
+from pyenzyme.enzymeml.core.exceptions import (
+    SpeciesNotFoundError,
+)
+
+from pyenzyme.utils.log import log_object
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
+
+if TYPE_CHECKING:  # pragma: no cover
+    static_check_init_args = dataclass
+else:
+    static_check_init_args = type_checking
+
+# Initialize the logger
+logger = logging.getLogger("pyenzyme")
 
 
+@static_check_init_args
+class ReactionElement(BaseModel):
+    """Describes an element of a chemical reaction."""
+
+    species_id: str = Field(
+        ...,
+        description="Internal identifier to either a protein or reactant defined in the EnzymeMLDocument.",
+    )
+
+    stoichiometry: PositiveFloat = Field(
+        ...,
+        description="Positive float number representing the associated stoichiometry.",
+    )
+
+    constant: bool = Field(
+        ...,
+        description="Whether or not the concentration of this species remains constant.",
+    )
+
+    ontology: SBOTerm = Field(
+        ...,
+        description="Ontology defining the role of the given species.",
+    )
+
+    def get_id(self) -> str:
+        """Internal usage to get IDs from objects without ID attribute"""
+
+        if self.species_id:
+            return self.species_id
+        else:
+            raise AttributeError("No species ID given.")
+
+
+@static_check_init_args
 class EnzymeReaction(EnzymeMLBase):
+    """
+    Describes an enzyme reaction by combining already defined
+    reactants/proteins of an EnzymeML document. In addition,
+    this class provides ways to integrate reaction conditions
+    as well. It is also possible to add a kinetic law to this
+    object by using the KineticModel class.
+    """
 
-    def __init__(
-        self,
-        temperature,
-        tempunit,
-        ph,
-        name,
-        reversible,
-        educts=None,
-        products=None,
-        modifiers=None,
-        uri=None,
-        creatorId=None
-    ):
+    name: str = Field(..., description="Name of the reaction.", template_alias="Name")
 
+    reversible: bool = Field(
+        ...,
+        description="Whether the reaction is reversible or irreversible",
+        template_alias="Reversible",
+    )
+
+    temperature: Optional[float] = Field(
+        None,
+        description="Numeric value of the temperature of the reaction.",
+        template_alias="Temperature value",
+    )
+
+    temperature_unit: Optional[str] = Field(
+        None,
+        description="Unit of the temperature of the reaction.",
+        regex=r"kelvin|Kelvin|k|K|celsius|Celsius|C|c",
+        template_alias="Temperature unit",
+    )
+
+    ph: Optional[float] = Field(
+        None,
+        description="PH value of the reaction.",
+        template_alias="pH value",
+        inclusiveMinimum=0,
+        inclusiveMaximum=14,
+    )
+
+    ontology: SBOTerm = Field(
+        SBOTerm.BIOCHEMICAL_REACTION,
+        description="Ontology defining the role of the given species.",
+    )
+
+    meta_id: Optional[str] = Field(
+        None,
+        description="Unique meta identifier for the reaction.",
+    )
+
+    id: Optional[str] = Field(
+        None,
+        description="Unique identifier of the reaction.",
+        template_alias="ID",
+        regex=r"r[\d]+",
+    )
+
+    uri: Optional[str] = Field(
+        None,
+        description="URI of the reaction.",
+    )
+
+    creator_id: Optional[str] = Field(
+        None,
+        description="Unique identifier of the author.",
+    )
+
+    model: Optional[KineticModel] = Field(
+        None,
+        description="Kinetic model decribing the reaction.",
+    )
+
+    educts: List[ReactionElement] = Field(
+        default_factory=list,
+        description="List of educts containing ReactionElement objects.",
+        template_alias="Educts",
+    )
+
+    products: List[ReactionElement] = Field(
+        default_factory=list,
+        description="List of products containing ReactionElement objects.",
+        template_alias="Products",
+    )
+
+    modifiers: List[ReactionElement] = Field(
+        default_factory=list,
+        description="List of modifiers (Proteins, snhibitors, stimulators) containing ReactionElement objects.",
+        template_alias="Modifiers",
+    )
+
+    # * Private attributes
+    _temperature_unit_id: str = PrivateAttr(None)
+    _enzmldoc = PrivateAttr(default=None)
+
+    # ! Validators
+    @validator("id")
+    def set_meta_id(cls, id: Optional[str], values: dict):
+        """Sets the meta ID when an ID is provided"""
+
+        if id:
+            # Set Meta ID with ID
+            values["meta_id"] = f"METAID_{id.upper()}"
+
+        return id
+
+    @validator("temperature_unit")
+    def convert_temperature_unit(cls, unit, values):
+        """Converts celsius to kelvin due to SBML limitations"""
+
+        if unit:
+            if unit.lower() in ["celsius", "c"]:
+                values["temperature"] = values["temperature"] + 273.15
+                return "K"
+
+        return unit
+
+    # ! Getters
+    def getEduct(self, id: str) -> ReactionElement:
         """
-        Class describing an enzymatic reaction, including
-        assay conditions as well as equation
+        Returns a ReactionElement including information about the following properties:
+
+            - Reactant/Protein Identifier
+            - Stoichiometry of the element
+            - Whether or not the element's concentration is constant
 
         Args:
-            temperature (float): Temperature reaction was executed at
-            tempunit (string): Temperature unit
-            ph (float): pH value [0,14]
-            name (string): Name of reaction
-            reversible (bool): Whether or not reaction is reversible
-            educts (list<(id, stoich, constant, replicates, initiConcs)>, optional):
-                List of tuples describing participant. Defaults to None.
-            products (list<(id, stoich, constant, replicates, initiConcs)>, optional):
-                List of tuples describing participant. Defaults to None.
-            modifiers (list<(id, stoich, constant, replicates, initiConcs)>, optional):
-                List of tuples describing participant. Defaults to None.
-            String uri: Custom unique identifier
-            String creatorId: Identifier to credit Creator
+            id (string): Reactant/Protein ID
+
+        Raises:
+            SpeciesNotFoundError: If species ID is unfindable
+
+        Returns:
+            ReactionElement: Object including species ID, stoichiometry, constant)
         """
 
-        # Initialize base attributes
-        super().__init__(
-            uri,
-            creatorId
+        return self._getReactionElement(
+            id=id, element_list=self.educts, element_type="Educts"
         )
 
-        self.setTemperature(temperature)
-        self.setTempunit(tempunit)
-        self.setPh(ph)
-        self.setName(name)
-        self.setReversible(reversible)
-        self.setEducts(educts)
-        self.setProducts(products)
-        self.setModifiers(modifiers)
-
-    def toJSON(self, d=False, enzmldoc=False):
+    def getProduct(self, id: str) -> ReactionElement:
         """
-        Converts complete EnzymeMLDocument to a
-        JSON-formatted string or dictionary.
+        Returns a ReactionElement including information about the following properties:
+
+            - Reactant/Protein Identifier
+            - Stoichiometry of the element
+            - Whether or not the element's concentration is constant
 
         Args:
-            only_reactions (bool, optional): Returns only reactions including
-                                             Reactant/Protein info. Defaults
-                                             to False.
-            d (bool, optional): Returns dictionary instead of JSON.
-                                Defaults to False.
-        Returns:
-            string: JSON-formatted string
-            dict: Object serialized as dictionary
-        """
-
-        def transformAttr(self):
-            """
-            Serialization function
-
-            Returns:
-                dict: Object serialized as dictionary
-            """
-
-            d = dict()
-            for key, item in self.__dict__.items():
-
-                if 'KineticModel' not in key:
-
-                    if 'model' in key:
-                        d['model'] = item.toJSON(d=True, enzmldoc=enzmldoc)
-
-                    elif type(item) == list:
-
-                        def getInitConc(elementTuple):
-                            return [
-                                (val, enzmldoc.getUnitDict()[unit].getName())
-                                if enzmldoc else
-                                (val, unit)
-                                for val, unit in elementTuple[4]
-                                ]
-
-                        nu_lst = [
-
-                            {
-                                'species': elementTuple[0],
-                                'stoich': elementTuple[1],
-                                'constant': elementTuple[2],
-                                'replicates': [
-                                    repl.toJSON(d=True, enzmldoc=enzmldoc)
-                                    for repl in elementTuple[3]
-                                    ],
-                                'init_conc': getInitConc(elementTuple)
-
-                            }
-                            for elementTuple in item
-                        ]
-
-                        d[key.split('__')[-1]] = nu_lst
-
-                    elif 'unit' in key and enzmldoc is not False and item:
-                        unitDef = enzmldoc.getUnitDict()[item]
-                        d[key.split('__')[-1]] = unitDef.getName()
-
-                    else:
-                        d[key.split('__')[-1]] = item
-
-            return d
-
-        if d:
-            return transformAttr(self)
-
-        return json.dumps(
-            self,
-            default=transformAttr,
-            indent=4
-            )
-
-    def __str__(self):
-        """
-        Returns object as JSON-formatted string
-
-        Returns:
-            string: JSON-formatted string
-        """
-
-        return self.toJSON()
-
-    def __setInitConc(self, concValue, concUnit, enzmldoc):
-        """
-        INTERNAL. Sets initial concentrations of reactant.
-
-        Args:
-            conc (float): Concentration value
-            reactant (string): Reactant ID
-            enzmldoc (EnzymeMLDocument): To add and check IDs
-            conc_unit (boolean): If none, uses the reactants unit
-
-        Returns:
-            string: initConc ID
-        """
-
-        # check if unit is an ID
-        regex = r"u[\d]+"
-        regex = re.compile(regex)
-
-        if regex.search(concUnit) is None:
-            # Create new ID for unit
-            concUnit = UnitCreator().getUnit(concUnit, enzmldoc)
-
-        # Check if initConc already defined
-        concTuple = (concValue, concUnit)
-
-        if concTuple not in enzmldoc.getConcDict().values():
-
-            index = 0
-            while True:
-                concID = f"c{index}"
-                if concID not in enzmldoc.getConcDict().keys():
-                    enzmldoc.getConcDict()[concID] = concTuple
-                    return concTuple
-                index += 1
-
-        else:
-            return [
-                item for key, item in enzmldoc.getConcDict().items()
-                if concTuple == item
-                ][0]
-
-    def exportReplicates(self, ids):
-        """
-        Exports replicated data for given IDs as Pandas.Dataframe objec
-
-        Args:
-            ids (string or list<string>): Single or multiple IDs to retrieve
-                                          replicate data
-
-        Returns:
-            Pandas.DataFrame: Raw replicate data
-        """
-
-        ids = deepcopy(ids)
-        if type(ids) == str:
-            ids = [ids]
-
-        repls = []
-        all_tups = self.__educts + self.__products + self.__modifiers
-
-        for tup in all_tups:
-            if tup[0].split('_')[0] in ids:
-
-                repls += [repl.getData() for repl in tup[3]]
-                ids.remove(tup[0].split('_')[0])
-
-        if len(ids) > 0:
-
-            print('\nCould not find ', ids, '\n')
-
-        return pd.DataFrame(repls).T
-
-    def getEduct(self, id_, index=False):
-        """
-        Returns tuple describing reaction element.
-
-        Args:
-            id_ (string): Reactant/Modifier ID
-            index (bool, optional): If set True, returns index of internal
-                                    list of elements. Defaults to False.
+            id (string): Reactant/Protein ID
 
         Raises:
-            KeyError: If reactant ID unfindable
+            SpeciesNotFoundError: If species ID is unfindable
 
         Returns:
-            Tuple: (ID, stoich, constant, replicated, initConcs)
+            ReactionElement: Object including species ID, stoichiometry, constant)
         """
 
-        for i, tup in enumerate(self.__educts):
-            if tup[0] == id_:
-                if index:
-                    return i
-                else:
-                    return tup
-
-        raise KeyError("Reactant %s not defined in educts" % id_)
-
-    def getProduct(self, id_, index=False):
-        """
-
-        Args:
-            id_ (string): Reactant/Modifier ID
-            index (bool, optional): If set True, returns index of internal
-                                    list of elements. Defaults to False.
-
-        Raises:
-            KeyError: If reactant ID unfindable
-
-        Returns:
-            Tuple: (ID, stoich, constant, replicated, initConcs)
-        """
-
-        for i, tup in enumerate(self.__products):
-            if tup[0] == id_:
-                if index:
-                    return i
-                else:
-                    return tup
-
-        raise KeyError("Reactant %s not defined in products" % id_)
-
-    def getModifier(self, id_, index=False):
-        """
-
-        Args:
-            id_ (string): Reactant/Modifier ID
-            index (bool, optional): If set True, returns index of internal
-                                    list of elements. Defaults to False.
-
-        Raises:
-            KeyError: If reactant ID unfindable
-
-        Returns:
-            Tuple: (ID, stoich, constant, replicated, initConcs)
-        """
-
-        for i, tup in enumerate(self.__modifiers):
-            if tup[0] == id_:
-                if index:
-                    return i
-                else:
-                    return tup
-
-        raise KeyError("Reactant/Protein %s not defined in modifiers" % id_)
-
-    def addInitConc(self, elem_id, conc_val, conc_unit, enzmldoc):
-
-        def __parseAdd(fun, d, elem_id, conc_val, conc_unit, enzmldoc):
-
-            try:
-                tup_id = fun(elem_id, index=True)
-                elem, stoich, constant, replicates, initConc = d[tup_id]
-
-                nu_initConc = list(set(
-                    initConc + [
-                        self.__setInitConc(
-                            concValue=conc_val,
-                            concUnit=conc_unit,
-                            enzmldoc=enzmldoc
-                            )
-                        ]
-                    )
-                )
-
-                d[tup_id] = (elem, stoich, constant, replicates, nu_initConc)
-
-                return 1
-
-            except KeyError:
-
-                return 0
-
-        # check for all elements
-        if __parseAdd(
-            self.getEduct,
-            self.__educts,
-            elem_id,
-            conc_val,
-            conc_unit,
-            enzmldoc
-        ):
-            return 1
-
-        elif __parseAdd(
-            self.getProduct,
-            self.__products,
-            elem_id,
-            conc_val,
-            conc_unit,
-            enzmldoc
-        ):
-            return 1
-
-        elif __parseAdd(
-            self.getModifier,
-            self.__modifiers,
-            elem_id,
-            conc_val,
-            conc_unit,
-            enzmldoc
-        ):
-            return 1
-
-        else:
-            raise KeyError(
-                f"Reactant/Protein {elem_id} not defined in reaction!"
-                )
-
-    def addReplicate(self, replicate, enzmldoc, by_id=True):
-        """
-        Adds Replicate object to EnzymeReaction object.
-        Destination is inherited automatically based on ID.
-
-        Args:
-            replicate (Replicate): Replicate object describing
-                                   experimental data
-            enzmldoc (EnzymeMLDocument): Checks and adds IDs
-
-        Raises:
-            AttributeError: If no experimental data has been added
-            AttributeError: If reactant/protein ID unfindable in reaction
-
-        Returns:
-            int: 1 for success
-        """
-
-        # Helper functions BEGIN
-
-        def getName(name, by_id):
-            if by_id:
-                return enzmldoc.getReactant(name, by_id).getId()
-            else:
-                return enzmldoc.getReactant(name, by_id).getName()
-
-        def checkUnits(replicate, enzmldoc):
-            # Checks if units are given as ID or need to be added
-            # to the document
-
-            time_unit = replicate.getTimeUnit()
-            data_unit = replicate.getDataUnit()
-
-            # Check if units are already given as an ID
-            def isID(string):
-                if string[0] == "u":
-                    try:
-                        int(string[1::])
-                        return 1
-                    except ValueError:
-                        return 0
-                else:
-                    return 0
-
-            # perform checks
-            if isID(time_unit):
-                unitID = enzmldoc.getUnitDict()[time_unit].getId()
-                replicate.setTimeUnit(unitID)
-            else:
-                unitID = UnitCreator().getUnit(time_unit, enzmldoc)
-                replicate.setTimeUnit(unitID)
-
-            if isID(data_unit):
-                unitID = enzmldoc.getUnitDict()[data_unit].getId()
-                replicate.setDataUnit(unitID)
-            else:
-                unitID = UnitCreator().getUnit(data_unit, enzmldoc)
-                replicate.setDataUnit(unitID)
-
-            return replicate
-
-        def checkExistingReactant(elementList):
-
-            reactantID = replicate.getReactant()
-
-            for elementIndex in range(len(elementList)):
-
-                if getName(elementList[elementIndex][0], by_id) == reactantID:
-
-                    # Add replicate object
-                    elementList[elementIndex][3].append(
-                        checkUnits(replicate, enzmldoc)
-                    )
-
-                    # Add initial concentration
-                    initConcTuple = enzmldoc.getConcDict()[
-                            replicate.getInitConc()
-                        ]
-
-                    if initConcTuple not in elementList[elementIndex][4]:
-                        elementList[elementIndex][4].append(
-                            initConcTuple
-                        )
-
-                    return 1
-
-        # Helper functions END
-
-        # Add Replicates section
-        # Turn initial cocncentrations to IDs
-
-        try:
-            if replicate.getDataUnit() in enzmldoc.getUnitDict().keys():
-                # Check if the unit is already an index defined in teh document
-                init_conc_tup = (
-                    replicate.getInitConc(),
-                    replicate.getDataUnit()
-                )
-
-            else:
-                # If not, create a new one
-                init_conc_tup = (
-                    replicate.getInitConc(),
-                    UnitCreator().getUnit(replicate.getDataUnit(), enzmldoc)
-                )
-
-            inv_conc = {
-                item: key
-                for key, item in enzmldoc.getConcDict().items()
-            }
-
-            replicate.setInitConc(inv_conc[init_conc_tup])
-
-        except KeyError:
-            index = 0
-
-            init_conc_tup = (
-                replicate.getInitConc(),
-                UnitCreator().getUnit(replicate.getDataUnit(), enzmldoc)
-            )
-
-            while True:
-                id_ = "c%i" % index
-
-                if id_ not in enzmldoc.getConcDict().keys():
-                    enzmldoc.getConcDict()[id_] = init_conc_tup
-                    replicate.setInitConc(id_)
-                    break
-
-                else:
-                    index += 1
-
-        try:
-            replicate.getData()
-        except AttributeError:
-            raise AttributeError(
-                "Replicate has no series data. \
-                Add data via replicate.setData( pandas.Series )"
-                )
-
-        if checkExistingReactant(self.__educts):
-            return 1
-
-        elif checkExistingReactant(self.__products):
-            return 1
-
-        elif checkExistingReactant(self.__modifiers):
-            return 1
-
-        else:
-            raise AttributeError(
-                f"Replicate's reactant {replicate.getReactant()}\
-                     not defined in reaction"
-                )
-
-    def __addElement(
-        self,
-        speciesID,
-        stoichiometry,
-        isConstant,
-        elementList,
-        enzmldoc,
-        replicates=[],
-        initConcs=[]
-    ):
-
-        # Check if type of ID is correct
-        speciesID = TypeChecker(speciesID, str)
-        stoichiometry = TypeChecker(float(stoichiometry), float)
-        isConstant = TypeChecker(isConstant, bool)
-        replicates = TypeChecker(replicates, list)
-        initConcs = TypeChecker(initConcs, list)
-
-        # Check if species is part of document already
-        if speciesID not in enzmldoc.getReactantDict().keys():
-            if speciesID not in enzmldoc.getProteinDict().keys():
-                raise KeyError(
-                    f"Reactant/Protein with id {speciesID} is not defined yet"
-                )
-
-        # Add intial concentrations
-        initConcs = [
-            self.__setInitConc(
-                concValue=value,
-                concUnit=unit,
-                enzmldoc=enzmldoc
-            )
-            for value, unit in initConcs
-        ]
-
-        # Add altogether to the element list
-        elementList.append(
-            (
-                speciesID,
-                stoichiometry,
-                isConstant,
-                replicates,
-                initConcs
-            )
+        return self._getReactionElement(
+            id=id, element_list=self.products, element_type="Products"
         )
 
+    def getModifier(self, id: str) -> ReactionElement:
+        """
+        Returns a ReactionElement including information about the following properties:
+
+            - Reactant/Protein Identifier
+            - Stoichiometry of the element
+            - Whether or not the element's concentration is constant
+
+        Args:
+            id (string): Reactant/Protein ID
+
+        Raises:
+            SpeciesNotFoundError: If species ID is unfindable
+
+        Returns:
+            ReactionElement: Object including species ID, stoichiometry, constant)
+        """
+
+        return self._getReactionElement(
+            id=id, element_list=self.modifiers, element_type="Modifiers"
+        )
+
+    @validate_arguments
+    def _getReactionElement(
+        self,
+        id: str,
+        element_list: List[ReactionElement],
+        element_type: str,
+    ) -> ReactionElement:
+
+        try:
+            return next(filter(lambda element: element.species_id == id, element_list))
+        except StopIteration:
+            raise SpeciesNotFoundError(species_id=id, enzymeml_part=element_type)
+
+    # ! Adders
+    @validate_arguments
     def addEduct(
         self,
-        speciesID,
-        stoichiometry,
-        isConstant,
+        species_id: str,
+        stoichiometry: PositiveFloat,
         enzmldoc,
-        replicates=[],
-        initConcs=[]
-    ):
+        constant: bool = False,
+        ontology: SBOTerm = SBOTerm.SUBSTRATE,
+    ) -> None:
         """
         Adds element to EnzymeReaction object. Replicates as well
         as initial concentrations are optional.
 
         Args:
-            speciesID (string): Reactant/Protein ID - Needs to be pre-defined!
+            species_id: str (string): Reactant/Protein ID - Needs to be pre-defined!
             stoichiometry (float): Stoichiometric coefficient
-            isConstant (bool): Whether constant or not
+            constant:  (bool): Whether constant or not
             enzmldoc (EnzymeMLDocument): Checks and adds IDs
-            replicates (list, optional): Replicate object list. Defaults to [].
-            initConcs (list, optional): List of InitConcs. Defaults to [].
 
         Raises:
-            KeyError: If Reactant/Protein hasnt been defined yet
+            SpeciesNotFoundError: If Reactant/Protein hasnt been defined yet
         """
 
-        self.__addElement(
-            speciesID=speciesID,
+        self._addElement(
+            species_id=species_id,
             stoichiometry=stoichiometry,
-            isConstant=isConstant,
-            replicates=replicates,
-            initConcs=initConcs,
-            elementList=self.__educts,
-            enzmldoc=enzmldoc
+            constant=constant,
+            element_list=self.educts,
+            ontology=ontology,
+            list_name="educts",
+            enzmldoc=enzmldoc,
         )
 
+    @validate_arguments
     def addProduct(
         self,
-        speciesID,
-        stoichiometry,
-        isConstant,
+        species_id: str,
+        stoichiometry: PositiveFloat,
         enzmldoc,
-        replicates=[],
-        initConcs=[]
-    ):
+        constant: bool = False,
+        ontology: SBOTerm = SBOTerm.PRODUCT,
+    ) -> None:
         """
         Adds element to EnzymeReaction object. Replicates as well
         as initial concentrations are optional.
 
         Args:
-            speciesID (string): Reactant/Protein ID - Needs to be pre-defined!
+            species_id: str (string): Reactant/Protein ID - Needs to be pre-defined!
             stoichiometry (float): Stoichiometric coefficient
-            isConstant (bool): Whether constant or not
+            constant:  (bool): Whether constant or not
             enzmldoc (EnzymeMLDocument): Checks and adds IDs
-            replicates (list, optional): Replicate object list. Defaults to [].
-            initConcs (list, optional): List of InitConcs. Defaults to [].
 
         Raises:
-            KeyError: If Reactant/Protein hasnt been defined yet
+            SpeciesNotFoundError: If Reactant/Protein hasnt been defined yet
         """
 
-        self.__addElement(
-            speciesID=speciesID,
+        self._addElement(
+            species_id=species_id,
             stoichiometry=stoichiometry,
-            isConstant=isConstant,
-            replicates=replicates,
-            initConcs=initConcs,
-            elementList=self.__products,
-            enzmldoc=enzmldoc
+            constant=constant,
+            element_list=self.products,
+            ontology=ontology,
+            list_name="products",
+            enzmldoc=enzmldoc,
         )
 
+    @validate_arguments
     def addModifier(
         self,
-        speciesID,
-        stoichiometry,
-        isConstant,
+        species_id: str,
+        stoichiometry: PositiveFloat,
         enzmldoc,
-        replicates=[],
-        initConcs=[]
-    ):
+        constant: bool,
+        ontology: SBOTerm = SBOTerm.CATALYST,
+    ) -> None:
         """
         Adds element to EnzymeReaction object. Replicates as well
         as initial concentrations are optional.
 
         Args:
-            speciesID (string): Reactant/Protein ID - Needs to be pre-defined!
+            species_id: str (string): Reactant/Protein ID - Needs to be pre-defined!
             stoichiometry (float): Stoichiometric coefficient
-            isConstant (bool): Whether constant or not
+            constant:  (bool): Whether constant or not
             enzmldoc (EnzymeMLDocument): Checks and adds IDs
-            replicates (list, optional): Replicate object list. Defaults to [].
-            initConcs (list, optional): List of InitConcs. Defaults to [].
 
         Raises:
-            KeyError: If Reactant/Protein hasnt been defined yet
+            SpeciesNotFoundError: If Reactant/Protein hasnt been defined yet
         """
 
-        self.__addElement(
-            speciesID=speciesID,
+        self._addElement(
+            species_id=species_id,
             stoichiometry=stoichiometry,
-            isConstant=isConstant,
-            replicates=replicates,
-            initConcs=initConcs,
-            elementList=self.__modifiers,
-            enzmldoc=enzmldoc
+            constant=constant,
+            element_list=self.modifiers,
+            ontology=ontology,
+            list_name="modifiers",
+            enzmldoc=enzmldoc,
         )
 
-    def getTemperature(self):
-        """
-        Returns temperature value
+    def _addElement(
+        self,
+        species_id: str,
+        stoichiometry: PositiveFloat,
+        constant: bool,
+        element_list: List[ReactionElement],
+        ontology: SBOTerm,
+        list_name: str,
+        enzmldoc,
+    ) -> None:
 
-        Returns:
-            float: Temperature value
-        """
+        # Check if species is part of document already
+        all_species = [
+            *list(enzmldoc.protein_dict.keys()),
+            *list(enzmldoc.reactant_dict.keys()),
+            *list(enzmldoc.complex_dict.keys()),
+        ]
 
-        return self.__temperature
-
-    def getTempunit(self):
-        """
-        Returns temperature unit
-
-        Returns:
-            string: Temperature unit
-        """
-
-        return self.__tempunit
-
-    def getPh(self):
-        """
-        Returns pH value
-
-        Returns:
-            float: pH Value
-        """
-
-        return self.__ph
-
-    def getName(self):
-        """
-        Returns name of reaction
-
-        Returns:
-            string: Reaction name
-        """
-
-        return self.__name
-
-    def getReversible(self):
-        """
-        Returns if reaction is reversible or not
-
-        Returns:
-            bool: Is reversible
-        """
-
-        return self.__reversible
-
-    def getId(self):
-        """
-        Returns ID of reaction
-
-        Returns:
-            string: Reaction ID
-        """
-
-        return self.__id
-
-    def getMetaid(self):
-        """
-        Returns Meta-ID of reaction
-
-        Returns:
-            string: Meta-ID of reaction
-        """
-
-        return self.__metaid
-
-    def getModel(self):
-        """
-        Returns kinetic model of reaction
-
-        Returns:
-            KineticModel: Object describing a kinetic model
-        """
-
-        return self.__model
-
-    def getEducts(self):
-        """
-        Returns list of tuples (ID, stoich, constant, replicates, initCncs)
-
-        Returns:
-            list: List of tuples.
-        """
-
-        return self.__educts
-
-    def getProducts(self):
-        """
-        Returns list of tuples (ID, stoich, constant, replicates, initCncs)
-
-        Returns:
-            list: List of tuples.
-        """
-
-        return self.__products
-
-    def getModifiers(self):
-        """
-        Returns list of tuples (ID, stoich, constant, replicates, initCncs)
-
-        Returns:
-            list: List of tuples.
-        """
-
-        return self.__modifiers
-
-    def setTemperature(self, temperature):
-        """
-        Sets temperature value
-
-        Args:
-            temperature (float): temperature
-        """
-
-        self.__temperature = TypeChecker(float(temperature), float)
-
-    def setTempunit(self, tempunit):
-        """
-        Sets temperature unit
-
-        Args:
-            tempunit (string): temperature unit
-        """
-
-        self.__tempunit = TypeChecker(tempunit, str)
-
-    def setPh(self, ph):
-        """
-        Sets pH value of reaction
-
-        Args:
-            ph (float): pH value
-
-        Raises:
-            ValueError: If pH value out of bounds [0,14]
-        """
-
-        if 0 <= TypeChecker(float(ph), float) <= 14:
-            self.__ph = ph
-
-        else:
-            raise ValueError(
-                "pH out of bounds [0-14]"
+        if species_id not in all_species:
+            raise SpeciesNotFoundError(
+                species_id=species_id, enzymeml_part="EnzymeMLDocument"
             )
 
-    def setName(self, name):
-        """
-        Sets name of reaction
+        # Add element to the respecticve list
+        element = ReactionElement(
+            species_id=species_id,
+            stoichiometry=stoichiometry,
+            constant=constant,
+            ontology=ontology,
+        )
+        element_list.append(element)
+
+        # Log the addition
+        log_object(logger, element)
+        logger.debug(
+            f"Added {type(element).__name__} '{element.species_id}' to reaction '{self.name}' {list_name}"
+        )
+
+    def setModel(
+        self,
+        model: KineticModel,
+        enzmldoc,
+        mapping: Dict[str, str] = {},
+        log: bool = True,
+    ) -> None:
+        """Sets the kinetic model of the reaction and in addition converts all units to UnitDefs.
 
         Args:
-            name (string): Name of reaction
+            model (KineticModel): Kinetic model that has been derived.
+            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument that holds the reaction.
         """
 
-        self.__name = TypeChecker(name, str)
+        # ID consistency
+        enzmldoc._check_kinetic_model_ids(
+            model=model,
+        )
 
-    def setReversible(self, reversible):
-        """
-        Sets if reaction if reversible or not
+        # Unit conversion
+        enzmldoc._convert_kinetic_model_units(model.parameters, enzmldoc=enzmldoc)
 
-        Args:
-            reversible (bool): Is reversible
-        """
+        # Replace kinetic parameter names to customize names if specified
+        for param_old, param_new in mapping.items():
 
-        self.__reversible = TypeChecker(reversible, bool)
+            model.equation = model.equation.replace(param_old, param_new)
 
-    def setId(self, id_):
-        """
-        Sets internal ID
+            for parameter in model.parameters:
 
-        Args:
-            id_ (string): Internal ID
-        """
+                if enzmldoc.global_parameters.get(param_new):
+                    # Set a global parameter if specified
+                    model.parameters.remove(parameter)
+                    model.parameters.append(enzmldoc.global_parameters[param_new])
+                else:
+                    # If still local, just change the name
+                    parameter.name = param_new
 
-        self.__id = TypeChecker(id_, str)
-        self.setMetaid("METAID_" + id_.upper())
+        if log:
+            # Log creator object
+            log_object(logger, model)
+            logger.debug(
+                f"Added {type(model).__name__} '{model.name}' to reaction '{self.name}'"
+            )
 
-    def setMetaid(self, metaID):
-        """
-        Sets Meta-ID
+        self.model = model
 
-        Args:
-            metaID (string): Meta-ID
-        """
+    # ! Utilities
+    def get_reaction_scheme(self, by_name: bool = False, enzmldoc=None):
 
-        self.__metaid = TypeChecker(metaID, str)
+        if by_name and enzmldoc is None:
+            raise ValueError(
+                "Please provide an EnzymeMLDocument if the reaction schem should include names"
+            )
 
-    def setModel(self, model):
-        """
-        Sets model of reaction
+        # Determine the appropriate arrow
+        direction = "<=>" if self.reversible else "->"
 
-        Args:
-            model (string): KineticModel object describing kinetics of enzyme
-        """
+        educts = self._summarize_elements(self.educts, by_name, enzmldoc)
+        products = self._summarize_elements(self.products, by_name, enzmldoc)
+        modifiers = self._summarize_elements(self.modifiers, by_name, enzmldoc).replace(
+            " + ", ", "
+        )
 
-        self.__model = TypeChecker(model, KineticModel)
-
-    def setEducts(self, educts):
-        """
-        INTERNAL. USE addXXX instead!
-        """
-
-        if educts is None:
-            self.__educts = []
+        if self.model:
+            equation = (
+                "v = "
+                + self._convert_equation_ids_to_names(
+                    self.model.equation, by_name, enzmldoc
+                )
+                + "\n"
+            )
         else:
-            self.__educts = TypeChecker(educts, list)
+            equation = ""
 
-    def setProducts(self, products):
-        """
-        INTERNAL. USE addXXX instead!
-        """
-
-        if products is None:
-            self.__products = list()
+        if modifiers:
+            return f">{self.name}\nEquation: {educts} {direction} {products}\nModifiers: {modifiers}\n{equation}\n"
         else:
-            self.__products = TypeChecker(products, list)
+            return f">{self.name}\nEquation: {educts} {direction} {products}\nModel: {equation}\n"
 
-    def setModifiers(self, modifiers):
-        """
-        INTERNAL. USE addXXX instead!
-        """
+    def _summarize_elements(self, elements: list, by_name, enzmldoc) -> str:
+        """Parses all reaction elements of a list to a string"""
 
-        if modifiers is None:
-            self.__modifiers = list()
+        if by_name is False:
+            return " + ".join(
+                [
+                    f"{element.stoichiometry} {element.species_id}"
+                    for element in elements
+                ]
+            )
         else:
-            self.__modifiers = TypeChecker(modifiers, list)
+            return " + ".join(
+                [
+                    f"{element.stoichiometry} {enzmldoc.getAny(element.species_id).name}"
+                    for element in elements
+                ]
+            )
 
-    def delTemperature(self):
-        del self.__temperature
+    def _convert_equation_ids_to_names(
+        self, equation: str, by_name: bool, enzmldoc
+    ) -> str:
+        """Converts species IDs to names for readable elements when printing reaction schemes"""
 
-    def delTempunit(self):
-        del self.__tempunit
+        if by_name is False:
+            return equation
 
-    def delPh(self):
-        del self.__ph
+        for node in ast.walk(ast.parse(equation)):
+            if isinstance(node, ast.Name):
+                try:
+                    name = enzmldoc.getAny(node.id).name
+                    equation = equation.replace(node.id, name)
+                except SpeciesNotFoundError:
+                    pass
 
-    def delName(self):
-        del self.__name
+        return equation
 
-    def delReversible(self):
-        del self.__reversible
+    def getStoichiometricCoefficients(self) -> Dict[str, float]:
+        """Returns the approprate stoichiometric coefficients of all educts and products.
 
-    def delId(self):
-        del self.__id
+        This function is intended to be used for modeling, where data should be easily accessible.
 
-    def delMetaid(self):
-        del self.__metaid
+        Returns:
+            Dict[str, float]: Mapping from identifier to stiochiometric coefficient.
+        """
 
-    def delModel(self):
-        del self.__model
+        return {
+            **{element.species_id: element.stoichiometry for element in self.educts},
+            **{
+                element.species_id: (-1) * element.stoichiometry
+                for element in self.products
+            },
+        }
 
-    def delEducts(self):
-        del self.__educts
+    def apply_initial_values(
+        self, config: Dict[str, dict], to_values: bool = False
+    ) -> None:
+        """Applies the initial values for all given parameters to the underlying model.
 
-    def delProducts(self):
-        del self.__products
+        Args:
+            kwargs (Dict[str, float]): Mapping from the parameter name to the given initial value.
+        """
 
-    def delModifiers(self):
-        del self.__modifiers
+        if not self.model:
+            raise ValueError(
+                f"Reaction {self.name} ({self.id}) has no associated model. Please specify a model to add initial values."
+            )
+
+        for param_name, options in config.items():
+
+            param = self.model.getParameter(param_name)
+
+            if to_values:
+                param.value = options.get("initial_value")
+            param.initial_value = options.get("initial_value")
+            param.upper = options.get("upper")
+            param.lower = options.get("lower")
+            param.constant = options.get("constant")
+
+    # ! Initializers
+
+    @classmethod
+    def fromEquation(
+        cls,
+        equation: str,
+        name: str,
+        enzmldoc,
+        modifiers: Union[List[str], str] = [],
+        temperature: Optional[float] = None,
+        temperature_unit: Optional[str] = None,
+        ph: Optional[float] = None,
+    ):
+        """Creates an EnzymeReaction object from a reaction equation.
+
+        Please make sure that the equation follows either of the following patterns:
+
+            '1.0 Substrate -> 1.0 Product' (for irreversible)
+
+            or
+
+            '1.0 Substrate <=> 1.0 Product' (for reversible)
+
+        Args:
+            equation (str): Reaction equation with educt and product sides.
+            name (str): Name of the reaction.
+            reversible (bool): If the reaction is reversible or not. Defaults
+            enzmldoc ([type]): Used to validate species IDs.
+        """
+
+        if isinstance(modifiers, str):
+            # Catch single modifiers
+            modifiers = [modifiers]
+
+        if "=" in equation:
+            reversible = True
+        elif "->" in equation:
+            reversible = False
+        else:
+            raise ValueError(
+                "Neither '->' nor '<=>' were found in the reaction euqation, but are essential to distinguish educt from product side."
+            )
+
+        # Initialize reaction object
+        reaction = cls(
+            name=name,
+            reversible=reversible,
+            temperature=temperature,
+            temperature_unit=temperature_unit,
+            ph=ph,
+        )
+
+        for modifier in modifiers:
+            # Add modifiers
+            reaction.addModifier(
+                species_id=enzmldoc.getAny(modifier).id,
+                constant=True,
+                stoichiometry=1.0,
+                enzmldoc=enzmldoc,
+            )
+
+        # Parse the reaction equation
+        reaction._addFromEquation(equation, enzmldoc)
+
+        return reaction
+
+    def _addFromEquation(self, reaction_equation: str, enzmldoc) -> None:
+        """Parses a reaction equation string and adds it to the model.
+
+        Args:
+            reaction_equation (str): Strign representing th reaction equation, following the schem r''
+            enzmldoc ([type]): [description]
+        """
+
+        # Split reaction is educts and products
+        if "->" in reaction_equation:
+            educts, products = reaction_equation.split(" -> ")
+        elif "=" in reaction_equation:
+            educts, products = reaction_equation.split(" = ")
+        else:
+            raise ValueError(
+                "Neither '->' nor '<=>' were found in the reaction euqation, but are essential to distinguish educt from product side."
+            )
+
+        if not educts or not products:
+            raise ValueError(
+                "Reaction equation is incomplete. Please make sure both sides contain information."
+            )
+
+        # Parse each side of the reaction
+        self._parse_equation_side(educts, enzmldoc, self.addEduct)
+        self._parse_equation_side(products, enzmldoc, self.addProduct)
+
+    @staticmethod
+    def _parse_equation_side(elements: str, enzmldoc, fun):
+        """Parses a side from a reaction equation."""
+
+        # Setup Regex
+        regex = r"(^\d*[.,]\d*)?\s?(.*)"
+        regex = re.compile(regex)
+
+        for element in elements.split(" + "):
+            stoichiometry, species = regex.findall(element)[0]
+
+            if len(stoichiometry) == 0:
+                stoichiometry = 1.0
+
+            if re.match(r"^[p|s|c]\d*$", species):
+                species_id = species
+            else:
+                species_id = enzmldoc.getAny(species).id
+
+            # Add it to the reaction
+            fun(
+                species_id=species_id,
+                stoichiometry=float(stoichiometry),
+                enzmldoc=enzmldoc,
+                constant=False,
+            )
+
+    # ! Getters
+    def unitdef(self):
+        """Returns the appropriate unitdef if an enzmldoc is given"""
+
+        if not self._enzmldoc:
+            return None
+
+        return self._enzmldoc.unit_dict[self._temperature_unit_id]
+
+    def getTemperature(self) -> float:
+        raise NotImplementedError("Temperature is now part of measurements.")
+
+    def getTempunit(self) -> str:
+        raise NotImplementedError("Temperature unit is now part of measurements.")
+
+    def getPh(self) -> PositiveFloat:
+        raise NotImplementedError("Ph is now part of measurements.")
+
+    @deprecated_getter("name instead")
+    def getName(self) -> str:
+        return self.name
+
+    @deprecated_getter("reveserible")
+    def getReversible(self) -> bool:
+        return self.reversible
+
+    @deprecated_getter("id")
+    def getId(self) -> Optional[str]:
+        return self.id
+
+    @deprecated_getter("meta_id")
+    def getMetaid(self) -> Optional[str]:
+        return self.meta_id
+
+    @deprecated_getter("model")
+    def getModel(self) -> Optional[KineticModel]:
+        return self.model
+
+    @deprecated_getter("educts")
+    def getEducts(self):
+        return self.educts
+
+    @deprecated_getter("products")
+    def getProducts(self):
+        return self.products
+
+    @deprecated_getter("modifier")
+    def getModifiers(self):
+        return self.modifiers

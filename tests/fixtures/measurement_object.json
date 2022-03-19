@@ -1,0 +1,82 @@
+{
+  "name": "SomeMeasurement",
+  "temperature": 4.0,
+  "temperature_unit": "C",
+  "ph": 7.0,
+  "species_dict": {
+    "reactants": {
+      "s0": {
+        "init_conc": 10.0,
+        "unit": "mmole / l",
+        "measurement_id": "m0",
+        "reactant_id": "s0",
+        "replicates": [
+          {
+            "id": "repl_s0_0",
+            "species_id": "s0",
+            "data_type": "conc",
+            "data_unit": "mmole / l",
+            "time_unit": "s",
+            "time": [
+              1.0,
+              2.0,
+              3.0,
+              4.0
+            ],
+            "data": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "is_calculated": false,
+            "uri": "URI",
+            "creator_id": "a0"
+          }
+        ]
+      }
+    },
+    "proteins": {
+      "p0": {
+        "init_conc": 10.0,
+        "unit": "mmole / l",
+        "measurement_id": "m0",
+        "protein_id": "p0",
+        "replicates": [
+          {
+            "id": "repl_p0_0",
+            "species_id": "p0",
+            "data_type": "conc",
+            "data_unit": "mmole / l",
+            "time_unit": "s",
+            "time": [
+              1.0,
+              2.0,
+              3.0,
+              4.0
+            ],
+            "data": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "is_calculated": false,
+            "uri": "URI",
+            "creator_id": "a0"
+          }
+        ]
+      }
+    }
+  },
+  "global_time": [
+    1.0,
+    2.0,
+    3.0,
+    4.0
+  ],
+  "global_time_unit": "s",
+  "id": "m0",
+  "uri": "URI",
+  "creator_id": "a0"
+}

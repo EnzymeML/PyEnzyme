@@ -1,54 +1,118 @@
-'''
-File: enzymemlreader.py
-Project: tools
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Wednesday June 23rd 2021 7:18:49 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+# File: enzymemlreader.py
+# Project: tools
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
+
+import os
+import re
+from typing import Dict, List, Tuple, Union, Optional
+import libsbml
+import xml.etree.ElementTree as ET
+import pandas as pd
+import tempfile
 
 from pyenzyme.enzymeml.core.creator import Creator
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.protein import Protein
+from pyenzyme.enzymeml.core.complex import Complex
 from pyenzyme.enzymeml.core.reactant import Reactant
 from pyenzyme.enzymeml.core.replicate import Replicate
 from pyenzyme.enzymeml.core.unitdef import UnitDef
 from pyenzyme.enzymeml.core.vessel import Vessel
-from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
+from pyenzyme.enzymeml.core.measurement import Measurement
+from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction, ReactionElement
+from pyenzyme.enzymeml.models.kineticmodel import KineticModel, KineticParameter
+from pyenzyme.enzymeml.core.ontology import DataTypes, EnzymeMLPart, SBOTerm
+from pyenzyme.enzymeml.core.abstract_classes import (
+    AbstractSpeciesFactory,
+    AbstractSpecies,
+)
 
 from libsbml import SBMLReader
-import xml.etree.ElementTree as ET
-import pandas as pd
-from pyenzyme.enzymeml.models.kineticmodel import KineticModel
 from libcombine import CombineArchive
-from _io import StringIO
+from io import StringIO
+
+# ! Factories
 
 
-class EnzymeMLReader():
+class ReactantFactory(AbstractSpeciesFactory):
+    """Returns an un-initialized reactant species object"""
 
-    def readFromFile(
-        self,
-        path
-    ):
-        '''
+    enzymeml_part: str = "reactant_dict"
+
+    def get_species(self, **kwargs) -> AbstractSpecies:
+        reactant = Reactant(**kwargs)
+        reactant._unit_id = kwargs["_unit_id"]
+        return reactant
+
+
+class ProteinFactory(AbstractSpeciesFactory):
+    """Returns an un-initialized protein species object"""
+
+    enzymeml_part: str = "protein_dict"
+
+    def get_species(self, **kwargs) -> AbstractSpecies:
+        protein = Protein(**kwargs)
+        protein._unit_id = kwargs["_unit_id"]
+        return protein
+
+
+class ComplexFactory(AbstractSpeciesFactory):
+    """Returns an un-initialized complex species object"""
+
+    enzymeml_part: str = "complex_dict"
+
+    def get_species(self, **kwargs) -> AbstractSpecies:
+        complex = Complex(**kwargs)
+        complex._unit_id = kwargs["_unit_id"]
+        return complex
+
+
+def species_factory_mapping(sbo_term: str) -> AbstractSpeciesFactory:
+    """Maps from SBOTerms to the appropriate species using a factory"""
+
+    # Get the enum entity for the mapping
+    entity = EnzymeMLPart.entityFromSBOTerm(sbo_term)
+
+    factory_mapping = {
+        "PROTEIN": ProteinFactory(),
+        "SMALL_MOLECULE": ReactantFactory(),
+        "ION": ReactantFactory(),
+        "RADICAL": ReactantFactory(),
+        "MACROMOLECULAR_COMPLEX": ComplexFactory(),
+        "PROTEIN_COMPLEX": ComplexFactory(),
+        "DIMER": ComplexFactory(),
+    }
+
+    return factory_mapping[entity]
+
+
+class EnzymeMLReader:
+    def readFromFile(self, path: str) -> EnzymeMLDocument:
+        """
         Reads EnzymeML document to an object layer EnzymeMLDocument class.
 
         Args:
-            String path: Path to .omex container or
+            path (str): Path to .omex container or
                          folder destination for plain .xml
-        '''
+        """
+
+        if not path.endswith(".omex"):
+            raise TypeError(
+                f"File {os.path.basename(path)} is not a valid OMEX archive"
+            )
 
         # Read omex archive
-        self.__path = path
+        self.path = path
         self.archive = CombineArchive()
-        self.archive.initializeFromArchive(self.__path)
+        self.archive.initializeFromArchive(self.path)
 
-        sbmlfile = self.archive.getEntry(0)
-        content = self.archive.extractEntryToString(sbmlfile.getLocation())
-        desc = self.archive.getMetadataForLocation(sbmlfile.getLocation())
+        content = self.archive.extractEntryToString("./experiment.xml")
+        desc = self.archive.getMetadataForLocation("./experiment.xml")
+
+        # Get previous logs
+        log = self.archive.extractEntryToString("./history.log")
 
         # Read experiment file (sbml)
         reader = SBMLReader()
@@ -57,516 +121,819 @@ class EnzymeMLReader():
         model = document.getModel()
 
         # Initialize EnzymeMLDocument object
-        enzmldoc = EnzymeMLDocument(
-            model.getName(),
-            model.getLevel(),
-            model.getVersion()
+        self.enzmldoc = EnzymeMLDocument(
+            name=model.getName(), level=model.getLevel(), version=model.getVersion()
         )
 
+        # Add logs to the document
+        self.enzmldoc.log = log
+
         # Fetch references
-        self.__getRefs(model, enzmldoc)
+        self._getRefs(model, self.enzmldoc)
 
         # Fetch Creators
-        numCreators = desc.getNumCreators()
-        creators = list()
-        for i in range(numCreators):
-            creator = desc.getCreator(i)
-            creators.append(
-                Creator(
-                    creator.getFamilyName(),
-                    creator.getGivenName(),
-                    creator.getEmail()
-                )
-            )
+        self._getCreators(omex_desc=desc, enzmldoc=self.enzmldoc)
 
-        enzmldoc.setCreator(creators)
+        # try:
+        #     # TODO extract VCard
+        #     model_hist = model.getModelHistory()
+        #     enzmldoc.setCreated(
+        #         model_hist.getCreatedDate().getDateAsString()
+        #     )
 
-        try:
-            # TODO extract VCard
-            model_hist = model.getModelHistory()
-            enzmldoc.setCreated(
-                model_hist.getCreatedDate().getDateAsString()
-            )
-
-            enzmldoc.setModified(
-                model_hist.getModifiedDate().getDateAsString()
-            )
-
-        except AttributeError:
-            enzmldoc.setCreated("2020")
-            enzmldoc.setModified("2020")
+        #     enzmldoc.setModified(
+        #         model_hist.getModifiedDate().getDateAsString()
+        #     )
 
         # Fetch units
-        unitDict = self.__getUnits(model)
-        enzmldoc.setUnitDict(unitDict)
+        unitDict = self._getUnits(model)
+        self.enzmldoc.unit_dict = unitDict
 
         # Fetch Vessel
-        vessel = self.__getVessel(model)
-        enzmldoc.setVessel(vessel, use_parser=False)
+        vessel = self._getVessel(model, self.enzmldoc)
+        self.enzmldoc.vessel_dict = vessel
 
         # Fetch Species
-        proteinDict, reactantDict = self.__getSpecies(model)
-        enzmldoc.setReactantDict(reactantDict)
-        enzmldoc.setProteinDict(proteinDict)
+        protein_dict, reactant_dict, complex_dict = self._getSpecies(
+            model, self.enzmldoc
+        )
+
+        self.enzmldoc.reactant_dict = reactant_dict
+        self.enzmldoc.protein_dict = protein_dict
+        self.enzmldoc.complex_dict = complex_dict
+
+        # fetch global parameters
+        self._getGlobalParameters(model, self.enzmldoc)
 
         # fetch reaction
-        reactionDict = self.__getReactions(model, enzmldoc)
-        enzmldoc.setReactionDict(reactionDict)
+        reaction_dict = self._getReactions(model, self.enzmldoc)
+        self.enzmldoc.reaction_dict = reaction_dict
 
-        del self.__path
+        # fetch Measurements
+        measurement_dict = self._getData(model, self.enzmldoc)
+        self.enzmldoc.measurement_dict = measurement_dict
 
-        return enzmldoc
+        # fetch added files
+        self._getFiles(self.enzmldoc)
 
-    def __getRefs(self, model, enzmldoc):
+        del self.path
 
-        if len(model.getAnnotationString()) > 0:
-            root = ET.fromstring(
-                model.getAnnotationString()
-            )[0]
+        return self.enzmldoc
 
-            for elem in root:
-                if "doi" in elem.tag:
-                    enzmldoc.setDoi(elem.text)
-                elif 'pubmedID' in elem.tag:
-                    enzmldoc.setPubmedID(elem.text)
-                elif 'url' in elem.tag:
-                    enzmldoc.setUrl(elem.text)
+    @staticmethod
+    def _sboterm_to_enum(sbo_term: int) -> Optional[SBOTerm]:
+        try:
+            sbo_string: str = libsbml.SBO_intToString(sbo_term)
 
-    def __getCreators(self, model):
+            if len(sbo_string) == 0:
+                return None
 
-        model_hist = model.getModelHistory()
-        creator_list = model_hist.getListCreators()
-        creators = list()
+            return SBOTerm(sbo_string)
 
-        for creator in creator_list:
+        except ValueError:
+            return None
 
-            creators.append(
+    def _getRefs(self, model, enzmldoc):
 
+        if len(model.getAnnotationString()) == 0:
+            return
+
+        root = ET.fromstring(model.getAnnotationString())[0]
+
+        for element in root:
+            if "doi" in element.tag:
+                enzmldoc.doi = element.text
+            elif "pubmedID" in element.tag:
+                enzmldoc.pubmedid = element.text
+            elif "url" in element.tag:
+                enzmldoc.url = element.text
+
+    def _getCreators(self, omex_desc, enzmldoc) -> None:
+        """Fetches all creators from an Combine archive's metadata.
+
+        Args:
+            omex_desc (OMEX obj): Combine metadata description.
+
+        Returns:
+            List[Creator]: Fetched list of creator objects.
+        """
+
+        # Get the number of creators to iterate
+        numCreators = omex_desc.getNumCreators()
+
+        for i in range(numCreators):
+            # Fetch creator information
+            creator = omex_desc.getCreator(i)
+
+            enzmldoc.addCreator(
                 Creator(
-                    creator.getFamilyName(),
-                    creator.getGivenName(),
-                    creator.getEmail()
-                )
-
+                    family_name=creator.getFamilyName(),
+                    given_name=creator.getGivenName(),
+                    mail=creator.getEmail(),
+                ),
+                log=False,
             )
 
-        return creators
+    def _getUnits(self, model: libsbml.Model) -> Dict[str, UnitDef]:
+        """Fetches all the units present in the SBML model.^
 
-    def __getUnits(self, model):
+        Args:
+            model (libsbml.Model): The SBML model from which the units are fetched.
 
-        unitDict = dict()
+        Returns:
+            [type]: [description]
+        """
+
+        unitDict = {}
         unitdef_list = model.getListOfUnitDefinitions()
 
         for unit in unitdef_list:
 
-            name = unit.getName()
-            id_ = unit.getId()
-            metaid = unit.getMetaId()
-            ontology = unit.getCVTerms()[0].getResourceURI(0)
+            # Get infos from the SBML model
+            name = unit.name
+            id = unit.id
+            meta_id = unit.meta_id
+            ontology = None  # TODO get unit ontology
 
-            unitdef = UnitDef(name, id_, ontology)
-            unitdef.setMetaid(metaid)
+            # Create unit definition
+            unitdef = UnitDef(name=name, id=id, ontology=ontology, meta_id=meta_id)
 
             for baseunit in unit.getListOfUnits():
-
+                # Construct unit definition with base units
                 unitdef.addBaseUnit(
+                    kind=baseunit.toXMLNode().getAttrValue("kind"),
+                    exponent=baseunit.getExponentAsDouble(),
+                    scale=baseunit.getScale(),
+                    multiplier=baseunit.getMultiplier(),
+                )
 
-                    baseunit.toXMLNode().getAttrValue('kind'),
-                    baseunit.getExponentAsDouble(),
-                    baseunit.getScale(),
-                    baseunit.getMultiplier()
-
-                    )
-
-            unitDict[id_] = unitdef
+            # Finally add the unit definition
+            unitDict[id] = unitdef
 
         return unitDict
 
-    def __getVessel(self, model):
+    def _getVessel(
+        self, model: libsbml.Model, enzmldoc: "EnzymeMLDocument"
+    ) -> Dict[str, Vessel]:
+        """Fetches all the vessels/compartments present in the SBML model.
 
-        compartment = model.getListOfCompartments()[0]
+        Args:
+            model (libsbml.Model): The SBML model from which the vessels are fetched.
 
-        vessel = Vessel(
-            compartment.getName(),
-            compartment.getId(),
-            compartment.getSize(),
-            compartment.getUnits()
-        )
+        Returns:
+            Dict[str, Vessel]: Corresponding vessel dictionary that has been converted.
+        """
 
-        return vessel
+        vessel_dict = {}
+        compartments = model.getListOfCompartments()
+
+        for compartment in compartments:
+            name = compartment.getName()
+            id = compartment.getId()
+
+            # Set up dictionary for optional attributes
+            params = {}
+
+            if compartment.isSetVolume():
+                params["volume"] = compartment.getSize()
+                params["_unit_id"] = compartment.getUnits()
+                params["unit"] = enzmldoc.getUnitString(params["_unit_id"])
+
+            vessel = Vessel(name=name, id=id, **params)
+
+            vessel._unit_id = params.get("_unit_id")
+            vessel._enzmldoc = self.enzmldoc
+
+            vessel_dict[vessel.id] = vessel
+
+        return vessel_dict
+
+    def _getSpecies(
+        self, model: libsbml.Model, enzmldoc: "EnzymeMLDocument"
+    ) -> Tuple[Dict[str, Protein], Dict[str, Reactant], Dict[str, Complex]]:
+
+        # initialize dictionaries and get species
+        protein_dict = {}
+        reactant_dict = {}
+        complex_dict = {}
+        species_list = model.getListOfSpecies()
+
+        for species in species_list:
+
+            # Check if init conc is given
+            init_conc = species.getInitialConcentration()
+            unit_id = species.getSubstanceUnits()
+
+            if repr(init_conc) == "nan":
+                # Handle not existent init concs
+                init_conc = None
+
+            if unit_id:
+                # Get unit string if given
+                unit = enzmldoc.getUnitString(unit_id)
+            else:
+                unit = None
+
+            # Get SBOTerm, but if there is none, give default
+            ontology = self._sboterm_to_enum(species.getSBOTerm())
+
+            # Parse annotations and construct a kwargs dictionary
+            param_dict = self._parseSpeciesAnnotation(species.getAnnotationString())
+            param_dict.update(
+                {
+                    "id": species.getId(),
+                    "meta_id": species.getMetaId(),
+                    "vessel_id": species.getCompartment(),
+                    "name": species.getName(),
+                    "constant": species.getConstant(),
+                    "ontology": ontology,
+                    "init_conc": init_conc,
+                    "_unit_id": unit_id,
+                    "unit": unit,
+                    # Some attributes need special care
+                    "ecnumber": param_dict.get("e_cnumber"),
+                    "uniprotid": param_dict.get("uniprot_id"),
+                    "participants": param_dict.get("participant"),
+                }
+            )
+
+            # Get species factory from ontology
+            try:
+                # Current version uses SBOTerms to distinguish between entities
+                species_factory = species_factory_mapping(param_dict["ontology"])
+            except ValueError:
+                # Backwards compatibility to old documents that do not incorporate SBOTerms
+                if param_dict["id"].startswith("s"):
+                    species_factory = species_factory_mapping(
+                        SBOTerm.SMALL_MOLECULE.value
+                    )
+
+                    # Remove ontology to get the default
+                    param_dict.pop("ontology")
+
+                elif param_dict["id"].startswith("p"):
+                    species_factory = species_factory_mapping(SBOTerm.PROTEIN.value)
+
+                    # Remove ontology to get the default
+                    param_dict.pop("ontology")
+                else:
+                    raise ValueError(
+                        f"ID {param_dict['id']} is not supported. Please use either of these 'p|s|c'"
+                    )
+
+            # Use factory to get the species class
+            species = species_factory.get_species(**param_dict)
+            species._enzmldoc = self.enzmldoc
+
+            if species_factory.enzymeml_part == "protein_dict":
+                protein_dict[species.id] = species
+            elif species_factory.enzymeml_part == "reactant_dict":
+                reactant_dict[species.id] = species
+            elif species_factory.enzymeml_part == "complex_dict":
+                complex_dict[species.id] = species
+
+        return protein_dict, reactant_dict, complex_dict
 
     @staticmethod
-    def __parseAnnotation(annotationString):
-        # __getSpecies helper function
-        # extracts annotations to dict
-        speciesAnnot = ET.fromstring(
-            annotationString
-        )[0]
+    def _parseSpeciesAnnotation(annotationString):
+
+        if len(annotationString) == 0:
+            return dict()
+
+        def camel_to_snake(name):
+            name = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
+            return re.sub("([a-z0-9])([A-Z])", r"\1_\2", name).lower()
+
+        speciesAnnot = ET.fromstring(annotationString)[0]
 
         # Initialize annotation dictionary
-        annotDict = dict()
-
-        # fetch attributes from both types of species
-        speciesType = speciesAnnot.tag.split('}')[-1]
+        param_dict = {}
 
         for enzymeMLAnnot in speciesAnnot:
-            key = enzymeMLAnnot.tag.split('}')[-1].lower()
+            key = enzymeMLAnnot.tag.split("}")[-1]
+            key = camel_to_snake(key)
             attribute = enzymeMLAnnot.text
 
-            annotDict[key] = attribute
+            if key in param_dict:
+                # Take care of list attributes
+                try:
+                    param_dict[key].append(attribute)
+                except AttributeError:
+                    param_dict[key] = [param_dict[key], attribute]
 
-        return speciesType, annotDict
+                continue
 
-    def __getSpecies(self, model):
+            param_dict[key] = attribute
 
-        proteinDict = dict()
-        reactantDict = dict()
-        speciesList = model.getListOfSpecies()
+        return param_dict
 
-        for species in speciesList:
+    def _getGlobalParameters(self, model: libsbml.Model, enzmldoc):
+        """Fetches global parameters from the SBML model"""
 
-            # get Annotations
-            speciesType, annotDict = self.__parseAnnotation(
-                species.getAnnotationString()
-            )
+        parameters = model.getListOfParameters()
 
-            if speciesType == 'protein':
-                protein = Protein(
-                            name=species.getName(),
-                            vessel=species.getCompartment(),
-                            init_conc=species.getInitialConcentration(),
-                            substanceunits=species.getSubstanceUnits(),
-                            constant=species.getConstant(),
-                            **annotDict
-                        )
+        for parameter in parameters:
+            parameter = self._parse_parameter(parameter, enzmldoc)
+            parameter.is_global = True
+            parameter._enzmldoc = self.enzmldoc
 
-                # Set IDs manually
-                protein.setId(species.getId())
-                protein.setMetaid(species.getMetaId())
+            enzmldoc.global_parameters[parameter.name] = parameter
 
-                # Add to document
-                proteinDict[species.getId()] = protein
+    def _getReactions(
+        self, model: libsbml.Model, enzmldoc: "EnzymeMLDocument"
+    ) -> Dict[str, EnzymeReaction]:
 
-            elif speciesType == 'reactant':
-
-                reactant = Reactant(
-                            name=species.getName(),
-                            vessel=species.getCompartment(),
-                            init_conc=species.getInitialConcentration(),
-                            substanceunits=species.getSubstanceUnits(),
-                            constant=species.getConstant(),
-                            **annotDict
-                        )
-
-                # Set IDs manually
-                reactant.setMetaid(species.getMetaId())
-                reactant.setId(species.getId())
-
-                reactantDict[species.getId()] = reactant
-
-        return proteinDict, reactantDict
-
-    @staticmethod
-    def __getInitConcs(specref, enzmldoc):
-
-        if len(specref.getAnnotationString()) == 0:
-            # Check if there are any initConcs
-            return list()
-
-        initConcAnnot = ET.fromstring(specref.getAnnotationString())[0]
-        initConcs = list()
-
-        for initConc in initConcAnnot:
-
-            value = float(initConc.attrib['value'])
-            initConcID = initConc.attrib['id']
-            unit = initConc.attrib['unit']
-
-            enzmldoc.getConcDict()[initConcID] = (value, unit)
-            initConcs.append((value, unit))
-
-        return initConcs
-
-    @staticmethod
-    def __parseConditions(reactionAnnot):
-
-        conditions = reactionAnnot[0]
-        conditionDict = dict()
-
-        for condition in conditions:
-
-            if 'temperature' in condition.tag:
-                conditionDict['temperature'] = float(condition.attrib['value'])
-                conditionDict['tempunit'] = condition.attrib['unit']
-            elif 'ph' in condition.tag:
-                conditionDict['ph'] = float(condition.attrib['value'])
-
-        return conditionDict
-
-    @staticmethod
-    def __parseReactionReplicates(reactionAnnot, allReplicates):
-
-        try:
-            replicateAnnot = reactionAnnot[1]
-        except IndexError:
-            replicateAnnot = []
-
-        reactionReplicates = dict()
-
-        for replicate in replicateAnnot:
-
-            replicateID = replicate.attrib['replica']
-            replicate = allReplicates[replicateID]
-            speciesID = replicate.getReactant()
-
-            if speciesID in reactionReplicates.keys():
-                reactionReplicates[speciesID].append(
-                    replicate
-                )
-            else:
-                reactionReplicates[speciesID] = \
-                    [replicate]
-
-        return reactionReplicates
-
-    def __getElements(
-        self,
-        speciesRefs,
-        reactionReplicates,
-        enzmldoc,
-        modifiers=False
-    ):
-        elements = list()
-        for speciesRef in speciesRefs:
-
-            speciesID = speciesRef.getSpecies()
-            stoichiometry = 1.0 if modifiers else speciesRef.getStoichiometry()
-            constant = True if modifiers else speciesRef.getConstant()
-            initConcs = self.__getInitConcs(speciesRef, enzmldoc)
-
-            if speciesID in reactionReplicates.keys():
-                replicates = reactionReplicates[speciesID]
-            else:
-                replicates = list()
-
-            elements.append(
-                (
-                    speciesID,
-                    stoichiometry,
-                    constant,
-                    replicates,
-                    initConcs
-                )
-            )
-
-        return elements
-
-    @staticmethod
-    def __getKineticModel(kineticLaw, enzmldoc):
-
-        equation = kineticLaw.getFormula()
-        parameters = {
-            localParam.getId():
-            (
-                localParam.getValue(),
-                localParam.getUnits()
-                )
-            for localParam in
-            kineticLaw.getListOfLocalParameters()
-                }
-
-        return KineticModel(
-            equation=equation,
-            parameters=parameters,
-            enzmldoc=enzmldoc
-        )
-
-    def __getReactions(self, model, enzmldoc):
-
+        # Get SBML list of reactions
         reactionsList = model.getListOfReactions()
-        allReplicates = self.__getReplicates(reactionsList)
 
         # Initialize reaction dictionary
-        reactionDict = dict()
+        reaction_dict = {}
 
         # parse annotations and filter replicates
         for reaction in reactionsList:
 
-            reactionAnnot = ET.fromstring(reaction.getAnnotationString())[0]
-
             # Fetch conditions
-            conditions = self.__parseConditions(reactionAnnot)
-
-            # Fetch reaction replicates
-            reactionReplicates = self.__parseReactionReplicates(
-                reactionAnnot,
-                allReplicates
-            )
+            if reaction.getAnnotationString():
+                reactionAnnot = ET.fromstring(reaction.getAnnotationString())[0]
+                conditions = self._parseConditions(reactionAnnot, enzmldoc)
+            else:
+                conditions = {}
 
             # Fetch Elements in SpeciesReference
-            educts = self.__getElements(
-                reaction.getListOfReactants(),
-                reactionReplicates,
-                enzmldoc
+            educts = self._getElements(
+                reaction.getListOfReactants(), ontology=SBOTerm.SUBSTRATE
             )
 
-            products = self.__getElements(
-                reaction.getListOfProducts(),
-                reactionReplicates,
-                enzmldoc
+            products = self._getElements(
+                reaction.getListOfProducts(), ontology=SBOTerm.PRODUCT
             )
 
-            modifiers = self.__getElements(
-                reaction.getListOfModifiers(),
-                reactionReplicates,
-                enzmldoc,
-                modifiers=True
+            modifiers = self._getElements(
+                reaction.getListOfModifiers(), modifiers=True, ontology=SBOTerm.CATALYST
             )
+
+            # Get the ontology
+            ontology = self._sboterm_to_enum(reaction.getSBOTerm())
+
+            if ontology is None:
+                ontology = SBOTerm.BIOCHEMICAL_REACTION
 
             # Create object
-            enzymeReaction = EnzymeReaction(
-                name=reaction.getName(),
-                reversible=reaction.getReversible(),
+            enzyme_reaction = EnzymeReaction(
+                id=reaction.id,
+                meta_id="META_" + reaction.id.upper(),
+                name=reaction.name,
+                reversible=reaction.reversible,
                 educts=educts,
                 products=products,
                 modifiers=modifiers,
-                **conditions
+                ontology=ontology,
+                **conditions,
             )
 
             # Check for kinetic model
-            try:
+            if reaction.getKineticLaw():
                 # Check if model exists
-                kineticLaw = reaction.getKineticLaw()
-                kineticModel = self.__getKineticModel(kineticLaw, enzmldoc)
-                enzymeReaction.setModel(kineticModel)
-            except AttributeError:
-                pass
+                kinetic_law = reaction.getKineticLaw()
+                kinetic_model = self._getKineticModel(kinetic_law, enzmldoc)
+                enzyme_reaction.model = kinetic_model
 
-            # Add reaction to reactionDict
-            enzymeReaction.setId(reaction.getId())
-            enzymeReaction.setMetaid(
-                'META_' + reaction.getId().upper()
+                # Add global parameters
+                for name, global_parameter in enzmldoc.global_parameters.items():
+                    # Keep a reference to the global paremeter
+                    if name in enzyme_reaction.model.equation:
+                        enzyme_reaction.model.parameters.append(global_parameter)
+
+            # Add reaction to reaction_dict
+            enzyme_reaction._enzmldoc = self.enzmldoc
+            reaction_dict[enzyme_reaction.id] = enzyme_reaction
+
+        return reaction_dict
+
+    @staticmethod
+    def _parseConditions(
+        reactionAnnot: ET.Element, enzmldoc: "EnzymeMLDocument"
+    ) -> Dict[str, Union[str, float]]:
+        """Exracts the conditions present in the SBML reaction annotations.
+        Args:
+            reactionAnnot (ET.Element): The reaction annotation element.
+            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument against which the data will be validated.
+        Returns:
+            Dict[str, Union[str, float]]: Mapping for the conditions.
+        """
+
+        # Get the conditions element
+        conditions = reactionAnnot[0]
+        condition_dict = {}
+
+        for condition in conditions:
+            # Sort all the conditions
+            if "temperature" in condition.tag:
+
+                # Get temperature conditions
+                condition_dict["temperature"] = float(condition.attrib["value"])
+
+                # Parse unit ID to Unit string
+                condition_dict["_temperature_unit_id"] = condition.attrib["unit"]
+                condition_dict["temperature_unit"] = enzmldoc.getUnitString(
+                    condition_dict["_temperature_unit_id"]
+                )
+
+            elif "ph" in condition.tag:
+
+                # Get the pH value
+                condition_dict["ph"] = float(condition.attrib["value"])
+
+        return condition_dict
+
+    def _getElements(
+        self,
+        species_refs: List[libsbml.SpeciesReference],
+        ontology: SBOTerm,
+        modifiers: bool = False,
+    ) -> List[ReactionElement]:
+        """Extracts the speciesReference objects from the associated list and converts them to ReactionElements
+
+        Args:
+            species_refs (List[libsbml.SpeciesReference]): The species refrences for the reaction <-> Chemical reaction elements.
+            modifiers (bool, optional): Used to override missing stoichiometry and constant for modifiers. Defaults to False.
+
+        Returns:
+            List[ReactionElement]: The list of reaction elements.
+        """
+
+        reaction_elements = []
+        for species_ref in species_refs:
+
+            species_id = species_ref.getSpecies()
+            stoichiometry = 1.0 if modifiers else species_ref.getStoichiometry()
+            constant = True if modifiers else species_ref.getConstant()
+            sbo_term = libsbml.SBO_intToString(species_ref.getSBOTerm())
+
+            if sbo_term:
+                ontology = SBOTerm(sbo_term)
+
+            reaction_elements.append(
+                ReactionElement(
+                    species_id=species_id,
+                    stoichiometry=stoichiometry,
+                    constant=constant,
+                    ontology=ontology,
+                )
             )
-            reactionDict[enzymeReaction.getId()] = enzymeReaction
 
-        return reactionDict
+        return reaction_elements
 
-    @staticmethod
-    def __parseListOfFiles(dataAnnot):
-        # __getReplicates helper function
-        # reads file anntations to dict
-        fileAnnot = dataAnnot[1]
-        files = {
-            file.attrib['id']:
-            {
-                'file': file.attrib['file'],
-                'format': file.attrib['format'],
-                'id': file.attrib['id']
+    def _getKineticModel(
+        self, kineticLaw: libsbml.KineticLaw, enzmldoc: "EnzymeMLDocument"
+    ) -> KineticModel:
+        """Extracts a kinetic rate law from the SBML data model.
 
-                } for file in fileAnnot
-        }
+        Args:
+            kineticLaw (libsbml.KineticLaw): The kinetic law to be extracted.
+            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to which the kinetic law will be added.
 
-        return files
+        Returns:
+            KineticModel: Teh resulting kinetic model.
+        """
 
-    @staticmethod
-    def __parseListOfFormats(dataAnnot):
-        # __getReplicates helper function
-        # reads format anntations to dict
-        formatAnnot = dataAnnot[0]
-        formats = dict()
+        # Extract metadata
+        name = kineticLaw.getName()
+        equation = kineticLaw.getFormula()
+        ontology = self._sboterm_to_enum(kineticLaw.getSBOTerm())
 
-        for format in formatAnnot:
-            formatID = format.attrib['id']
-            format = [
-                column.attrib
-                for column in format
-            ]
+        # Get local parameters
+        parameters = []
+        for local_param in kineticLaw.getListOfLocalParameters():
 
-            formats[formatID] = format
+            parameter = self._parse_parameter(local_param, enzmldoc)
 
-        return formats
+            if parameter.name in enzmldoc.global_parameters:
+                parameters.append(enzmldoc.global_parameters[parameter.name])
+            else:
+                parameters.append(parameter)
 
-    @staticmethod
-    def __parseListOfMeasurements(dataAnnot):
-        # __getReplicates helper function
-        # reads measurement anntations to
-        # tuple list
-        measurementAnnot = dataAnnot[2]
-        measurements = [
-            (
-                measurement.attrib['id'],
-                measurement.attrib['file'],
-                measurement.attrib['name']
-            )
-            for measurement in measurementAnnot
-        ]
+        return KineticModel(
+            name=name, equation=equation, parameters=parameters, ontology=ontology
+        )
 
-        return measurements
+    def _parse_parameter(self, parameter, enzmldoc):
+        """Parses a paramater and converts it to a KineticParameter instance"""
 
-    def __getReplicates(self, reactions):
+        # TODO refactor here
+
+        value = parameter.getValue()
+        unit_id = parameter.getUnits()
+
+        annotation = parameter.getAnnotationString()
+        param_dict = self._parseSpeciesAnnotation(annotation)
+
+        if unit_id:
+            param_dict["unit"] = enzmldoc.getUnitString(unit_id)
+
+        if parameter.__class__.__name__ == "LocalParameter":
+            constant = False
+        else:
+            constant = parameter.getConstant()
+
+        if repr(parameter.getValue()) == "nan":
+            value = None
+
+        nu_param = KineticParameter(
+            name=parameter.getId(),
+            value=value,
+            unit=param_dict.get("unit"),
+            ontology=self._sboterm_to_enum(parameter.getSBOTerm()),
+            initial_value=param_dict.get("initial_value"),
+            upper=param_dict.get("upperbound"),
+            lower=param_dict.get("lowerbound"),
+            stdev=param_dict.get("stdev"),
+            constant=constant,
+        )
+
+        nu_param._enzmldoc = self.enzmldoc
+
+        if unit_id:
+            nu_param._unit_id = parameter.getUnits()
+
+        return nu_param
+
+    def _getData(
+        self, model: libsbml.Model, enzmldoc: "EnzymeMLDocument"
+    ) -> Dict[str, Measurement]:
+        """Retrieves all available measurements found in the EnzymeML document.
+
+        Args:
+            model (libsbml.Model): The SBML model from which the measurements are feteched,
+
+        Returns:
+            Dict[str, Measurement]: Mapping from measurement ID to the associated object.
+        """
 
         # Parse EnzymeML:format annotation
-        dataAnnot = ET.fromstring(reactions.getAnnotationString())[0]
+        reactions = model.getListOfReactions()
+        annotation_string = reactions.getAnnotationString()
 
-        # Fetch list of files
-        files = self.__parseListOfFiles(dataAnnot)
+        # Guard clause for when there is no data
+        if annotation_string == "":
+            return {}
 
-        # Fetch formats
-        formats = self.__parseListOfFormats(dataAnnot)
+        # Parse annotation to an ElementTree
+        data_annotation = ET.fromstring(annotation_string)[0]
 
         # Fetch measurements
-        measurements = self.__parseListOfMeasurements(dataAnnot)
-
-        # Initialize replicates dictionary
-        replicates = dict()
+        measurement_dict, measurement_files = self._parseListOfMeasurements(
+            data_annotation, enzmldoc=enzmldoc
+        )
 
         # Iterate over measurements and assign replicates
-        for measurementID, measurementFile, measurementName in measurements:
+        for measurement_id, measurement_file in measurement_files.items():
+
+            # Fetch list of files
+            files = self._parseListOfFiles(data_annotation)
+
+            # Fetch formats
+            formats = self._parseListOfFormats(data_annotation)
 
             # Get file content
-            fileInfo = files[measurementFile]
-            fileContent = self.archive.extractEntryToString(fileInfo['file'])
-            csvFile = pd.read_csv(
-                StringIO(fileContent),
-                header=None
-            )
+            fileInfo = files[measurement_file]
+            file_content = self.archive.extractEntryToString(fileInfo["file"])
+            csvFile = pd.read_csv(StringIO(file_content), header=None)
 
             # Get format data and extract time column
-            measurementFormat = formats[fileInfo['format']]
-            timeValues, timeUnitID = [
-                (
-                    csvFile.iloc[:, int(column['index'])],
-                    column['unit']
-                    )
-                for column in measurementFormat
-                if column['type'] == 'time'
+            measurement_format = formats[fileInfo["format"]]
+            time, time_unit_id = [
+                (csvFile.iloc[:, int(column["index"])].tolist(), column["unit"])
+                for column in measurement_format
+                if column["type"] == "time"
             ][0]
 
-            # Create replicate objects
-            for format in measurementFormat:
+            measurement_dict[measurement_id]._global_time_unit_id = time_unit_id
 
-                if format['type'] != 'time':
+            # Create replicate objects
+            for format in measurement_format:
+
+                if format["type"] != "time":
 
                     # Get time course data
-                    replicateValues = csvFile.iloc[:, int(format['index'])]
-                    replicateReactant = format['species']
-                    replicateID = format['replica']
-                    replicateType = format['type']
-                    replicateUnitID = format['unit']
-                    replicateInitConcID = format['initConcID']
+                    data = csvFile.iloc[:, int(format["index"])].tolist()
+                    reactant_id = format["species"]
+                    replicate_id = format["replica"]
+                    data_type = DataTypes(format["type"])
+                    data_unit_id = format["unit"]
+                    is_calculated = format["isCalculated"]
 
                     replicate = Replicate(
-                        replica=replicateID,
-                        reactant=replicateReactant,
-                        type_=replicateType,
-                        measurement=measurementID,
-                        data_unit=replicateUnitID,
-                        time_unit=timeUnitID,
-                        init_conc=replicateInitConcID,
-                        data=replicateValues.values.tolist(),
-                        time=timeValues
+                        id=replicate_id,
+                        species_id=reactant_id,
+                        data_type=data_type,
+                        measurement_id=measurement_id,
+                        data_unit=enzmldoc.unit_dict[data_unit_id].name,
+                        time_unit=enzmldoc.unit_dict[time_unit_id].name,
+                        data=data,
+                        time=time,
+                        is_calculated=is_calculated,
                     )
 
-                    replicates[replicateID] = replicate
+                    replicate._data_unit_id = data_unit_id
+                    replicate._time_unit_id = time_unit_id
+                    replicate._enzmldoc = self.enzmldoc
 
-        return replicates
+                    measurement_dict[measurement_id].addReplicates(
+                        replicate, log=False, enzmldoc=enzmldoc
+                    )
+
+        return measurement_dict
+
+    def _parseListOfFiles(
+        self, data_annotation: ET.Element
+    ) -> Dict[str, Dict[str, str]]:
+        """Extracts the list of files that are present in the annotation enzymeml:files.
+
+        Args:
+            data_annotation (ET.Element): ElementTree object containing the enzymeml:files annotation.
+
+        Returns:
+            Dict[str, Dict[str, str]]: Dictionary of all files present in the annotation.
+        """
+
+        return {
+            file.attrib["id"]: {
+                "file": file.attrib["file"],
+                "format": file.attrib["format"],
+                "id": file.attrib["id"],
+            }
+            for file in self._get_element(data_annotation, "files")
+        }
+
+    def _parseListOfFormats(self, data_annotation: ET.Element) -> Dict[str, List[dict]]:
+        """Extracts the list of formats that areb present in the annotation enzymeml:formats.
+
+        Args:
+            data_annotation (ET.Element): ElementTree object containing the enzymeml:files annotation.
+
+        Returns:
+            Dict[str, List[dict]]: Dictionary of all the formats present in the annotation.
+        """
+
+        return {
+            format.attrib["id"]: [column.attrib for column in format]
+            for format in self._get_element(data_annotation, "formats")
+        }
+
+    def _parseListOfMeasurements(
+        self, data_annotation: ET.Element, enzmldoc: "EnzymeMLDocument"
+    ) -> Tuple[Dict[str, Measurement], dict]:
+        """Extracts teh list of measurements that are present in the annotation enzymeml:measurements.
+
+        Args:
+            data_annotation (ET.Element): ElementTree object containing the enzymeml:measurements annotation.
+
+        Returns:
+            tuple[Dict[str, dict], Dict[str, Measurement]]: Two dictionaries returning the measurement objects and files.
+        """
+
+        measurements = self._get_element(data_annotation, "listOfMeasurements")
+
+        if measurements is None:
+            # There was a typo and it should be catched here
+            measurements = self._get_element(data_annotation, "listOfMasurements")
+
+        measurement_files = {
+            measurement.attrib["id"]: measurement.attrib["file"]
+            for measurement in measurements
+            if measurement.attrib.get("file")
+        }
+        measurement_dict = {
+            measurement.attrib["id"]: self._parseMeasurement(
+                measurement, enzmldoc=enzmldoc
+            )
+            for measurement in measurements
+        }
+
+        return (measurement_dict, measurement_files)
+
+    def _parseMeasurement(
+        self, measurement: ET.Element, enzmldoc: "EnzymeMLDocument"
+    ) -> Measurement:
+        """Extracts individual initial concentrations of a measurement.
+
+        Args:
+            measurement (ET.Element): Measurement XML information
+
+        Returns:
+            Measurement: Initialized measurement object.
+        """
+
+        # Get conditions (temp, ph)
+        temperature = measurement.attrib.get("temperature_value")
+        temperature_unit = measurement.attrib.get("temperature_unit")
+        ph = measurement.attrib.get("ph")
+
+        # Get the unit string of temp if given
+        if temperature_unit:
+            temperature_unit = enzmldoc.getUnitString(temperature_unit)
+
+        # initialize Measurement object
+        measurement_object = Measurement(
+            name=measurement.attrib["name"],
+            temperature=temperature,
+            temperature_unit=temperature_unit,
+            ph=ph,
+        )
+
+        measurement_object.id = measurement.attrib["id"]
+        temperature_unit_id = measurement.attrib.get("temperature_unit")
+        measurement_object._temperature_unit_id = temperature_unit_id
+        measurement_object._enzmldoc = self.enzmldoc
+
+        for init_conc_element in measurement:
+
+            params, unit_id = self._parse_init_conc_element(init_conc_element, enzmldoc)
+            measurement_object.addData(**params, log=False)
+
+            if params["reactant_id"]:
+                meas_data = measurement_object.getReactant(params["reactant_id"])
+            elif params["protein_id"]:
+                meas_data = measurement_object.getProtein(params["protein_id"])
+            else:
+                raise ValueError("Neither 'reactant_id' nor 'protein_id' are defined")
+
+            meas_data._unit_id = unit_id
+            meas_data._enzmldoc = self.enzmldoc
+
+        return measurement_object
+
+    @staticmethod
+    def _parse_init_conc_element(element: ET.Element, enzmldoc):
+        """Parses initial concentration data of a measurement.
+
+        Args:
+            element (ET.Element): Element containing information about the initial concentration and species.
+
+        Raises:
+            KeyError: If there is neither a protein nor reactant ID.
+        """
+
+        value = float(element.attrib["value"])
+
+        # Convert the unit ID to the corresponding SI string
+        unit_id = element.attrib["unit"]
+        unit = enzmldoc.unit_dict[unit_id].name
+
+        reactant_id = None
+        protein_id = None
+
+        if "reactant" in element.attrib.keys():
+            reactant_id = element.attrib["reactant"]
+        elif "protein" in element.attrib.keys():
+            protein_id = element.attrib["protein"]
+        else:
+            raise KeyError("Neither reactant or protein ID defined.")
+
+        return {
+            "init_conc": float(value),
+            "unit": unit,
+            "reactant_id": reactant_id,
+            "protein_id": protein_id,
+        }, unit_id
+
+    @staticmethod
+    def _get_element(tree: ET.Element, name: str):
+        for element in tree.iter("*"):
+            if name.lower() in element.tag.lower():
+                return element
+
+        return None
+
+    def _getFiles(self, enzmldoc):
+        """Extracts all added files fro the archive.
+
+        Args:
+            archive (CombineArchive): The OMEX archive to extract files from.
+            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to add files to.
+        """
+
+        # Iterate over enries and extract files
+        for file_location in self.archive.getAllLocations():
+            file_location = str(file_location)
+
+            if "./files/" in file_location:
+
+                # Convert raw file to file_handle
+                file_handle = tempfile.NamedTemporaryFile()
+                file_handle.name = os.path.basename(file_location)
+
+                # Write file to temporary file
+                path = f"./{file_handle.name}"
+                self.archive.extractEntry(file_location, path)
+
+                with open(path, "rb") as f:
+                    file_handle.write(f.read())
+                    file_handle.seek(0)
+
+                # Add the file to the EnzymeMLDocument
+                enzmldoc.addFile(file_handle=file_handle)
+
+                # Remove the temporary file
+                os.remove(path)

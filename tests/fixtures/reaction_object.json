@@ -1,0 +1,49 @@
+{
+      "name": "SomeReaction",
+      "reversible": true,
+      "temperature": 200,
+      "temperature_unit": "C",
+      "ph": 7.0,
+      "ontology": "SBO:0000176",
+      "id": "r0",
+      "meta_id": "METAID_R0",
+      "uri": "URI",
+      "creator_id": "a0",
+      "model": {
+        "name": "Menten",
+        "equation": "s0 * x",
+        "parameters": [
+          {
+            "name": "x",
+            "value": 10.0,
+            "unit": "1 / s",
+            "stdev": 0.1,
+            "initial_value": 10.0
+          }
+        ]
+      },
+      "educts": [
+        {
+          "species_id": "s0",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000015"
+        }
+      ],
+      "products": [
+        {
+          "species_id": "s1",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000011"
+        }
+      ],
+      "modifiers": [
+        {
+          "species_id": "p0",
+          "stoichiometry": 1.0,
+          "constant": true,
+          "ontology": "SBO:0000013"
+        }
+      ]
+}

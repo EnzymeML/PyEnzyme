@@ -1,38 +1,107 @@
-'''
-File: michaelismenten.py
-Project: models
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Wednesday June 23rd 2021 10:30:15 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+# File: michaelismenten.py
+# Project: models
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
-from pyenzyme.enzymeml.models import KineticModel
-from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
+from typing import Any, Dict
+from pyenzyme.enzymeml.core.ontology import SBOTerm
+from pyenzyme.enzymeml.models.kineticmodel import ModelFactory
+from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
 
 
-def MichaelisMenten(
-    vmax_val,
-    vmax_unit,
-    km_val,
-    km_unit,
-    substrate_id,
-    enzmldoc
+def MichaelisMentenKCat(
+    substrate: str,
+    protein: str,
+    enzmldoc,
+    k_cat: Dict[str, Any] = {"ontology": SBOTerm.K_CAT},
+    k_m: Dict[str, Any] = {"ontology": SBOTerm.K_M},
 ):
+    """Sets up a rate law following the Henri-Michaelis-Menten law.
 
-    equation = f"vmax_{substrate_id} * ( {substrate_id} / ({substrate_id} + km_{substrate_id}) )"
+    v = k_cat * protein * substrate / (k_m + substrate)
 
-    vmax_unit = UnitCreator().getUnit(vmax_unit, enzmldoc)
-    km_unit = UnitCreator().getUnit(km_unit, enzmldoc)
+    Args:
+        substrate (str): Identifier or name of the substrate.
+        protein (str): Identifier or name of the protein.
+        enzmldoc ([type]): EnzymeML document to which the model will be adopted.
+        k_cat (Dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
+        k_m (Dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
 
-    parameters = {
+    Returns:
+        KineticModel: Michaelis-Menten model in K_cat form with the specified parameters.
+    """
+    # Check if the given IDs are part of the EnzymeML document already
+    if substrate not in enzmldoc.getSpeciesIDs():
+        raise SpeciesNotFoundError(
+            species_id=substrate, enzymeml_part="Reactants/Proteins"
+        )
 
-        f"vmax_{substrate_id}": (vmax_val, vmax_unit),
-        f"km_{substrate_id}": (km_val, km_unit)
+    if protein not in enzmldoc.getSpeciesIDs():
+        raise SpeciesNotFoundError(
+            species_id=protein, enzymeml_part="Reactants/Proteins"
+        )
 
-    }
+    # Check if ontologies are added, if not add them
+    if k_m.get("ontology") is None:
+        k_m["ontology"] = SBOTerm.K_M
 
-    return KineticModel(equation, parameters, enzmldoc)
+    if k_cat.get("ontology") is None:
+        k_cat["ontology"] = SBOTerm.K_CAT
+
+    # Create the model using a factory
+    model = ModelFactory(
+        name="Michaelis-Menten Rate Law",
+        equation="k_cat * protein * substrate / (k_m + substrate)",
+        k_cat=k_cat,
+        k_m=k_m,
+        ontology=SBOTerm.MICHAELIS_MENTEN,
+    )
+
+    return model(protein=protein, substrate=substrate)
+
+
+def MichaelisMentenVMax(
+    substrate: str,
+    enzmldoc,
+    vmax: Dict[str, Any] = {"ontology": SBOTerm.V_MAX},
+    k_m: Dict[str, Any] = {"ontology": SBOTerm.K_M},
+):
+    """Sets up a rate law following the Henri-Michaelis-Menten law.
+
+    v = vmax * substrate / (k_m + substrate)
+
+    Args:
+        substrate (str): Identifier or name of the substrate.
+        protein (str): Identifier or name of the protein.
+        enzmldoc ([type]): EnzymeML document to which the model will be adopted.
+        k_cat (Dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
+        k_m (Dict[str, Any], optional): Dictionary for parameter config. See KineticParameter class for details. Defaults to {"ontology": SBOTerm.K_CAT}.
+
+    Returns:
+        KineticModel: Michaelis-Menten model in K_cat form with the specified parameters.
+    """
+
+    # Check if the given IDs are part of the EnzymeML document already
+    if substrate not in enzmldoc.getSpeciesIDs():
+        raise SpeciesNotFoundError(
+            species_id=substrate, enzymeml_part="Reactants/Proteins"
+        )
+
+    # Check if ontologies are added, if not add them
+    if k_m.get("ontology") is None:
+        k_m["ontology"] = SBOTerm.K_M
+
+    if vmax.get("ontology") is None:
+        vmax["ontology"] = SBOTerm.V_MAX
+
+    # Create the model using a factory
+    model = ModelFactory(
+        name="Michaelis-Menten Rate Law",
+        equation="vmax * substrate / (k_m + substrate)",
+        vmax=vmax,
+        k_m=k_m,
+        ontology=SBOTerm.MICHAELIS_MENTEN,
+    )
+
+    return model(substrate=substrate)

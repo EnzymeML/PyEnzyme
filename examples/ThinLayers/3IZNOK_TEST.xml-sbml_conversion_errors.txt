@@ -1,0 +1,1 @@
+WARNING: Model is encoded as SBML Level 3, PySCeS only officially supports L2V5.

@@ -1,136 +1,385 @@
-'''
-File: kineticmodel.py
-Project: models
-Author: Jan Range
-License: BSD-2 clause
------
-Last Modified: Tuesday June 22nd 2021 9:55:38 pm
-Modified By: Jan Range (<jan.range@simtech.uni-stuttgart.de>)
------
-Copyright (c) 2021 Institute of Biochemistry and Technical Biochemistry Stuttgart
-'''
+# File: kineticmodel.py
+# Project: models
+# Author: Jan Range
+# License: BSD-2 clause
+# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
-from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
-from pyenzyme.enzymeml.core.functionalities import TypeChecker
-from libsbml._libsbml import parseL3Formula
-import json
+import ast
+import re
+import numexpr
+
+from typing import List, TYPE_CHECKING, Optional
+from pydantic import Field
+from dataclasses import dataclass
+
+from pydantic.fields import PrivateAttr
+
+from pyenzyme.enzymeml.core.enzymemlbase import EnzymeMLBase
+from pyenzyme.enzymeml.core.ontology import SBOTerm
+from pyenzyme.enzymeml.core.utils import type_checking, deprecated_getter
+
+if TYPE_CHECKING:  # pragma: no cover
+    static_check_init_args = dataclass
+else:
+    static_check_init_args = type_checking
 
 
-class KineticModel(object):
+@static_check_init_args
+class KineticParameter(EnzymeMLBase):
 
-    def __init__(self, equation, parameters, enzmldoc):
+    name: str = Field(
+        ...,
+        description="Name of the estimated parameter.",
+    )
 
-        '''
-        Model class to define kinetic laws and store modeling parameters.
+    value: Optional[float] = Field(
+        None,
+        description="Numerical value of the estimated parameter.",
+    )
+
+    unit: Optional[str] = Field(
+        None,
+        description="Unit of the estimated parameter.",
+    )
+
+    initial_value: Optional[float] = Field(
+        None, description="Initial value that was used for the parameter estimation."
+    )
+
+    upper: Optional[float] = Field(
+        None, description="Upper bound of the estimated parameter."
+    )
+
+    lower: Optional[float] = Field(
+        None, description="Lower bound of the estimated parameter."
+    )
+
+    is_global: bool = Field(
+        False, description="Specifies if this parameter is a global parameter."
+    )
+
+    stdev: Optional[float] = Field(
+        None, description="Standard deviation of the estimated parameter."
+    )
+
+    constant: bool = Field(False, description="Specifies if this parameter is constant")
+
+    ontology: Optional[SBOTerm] = Field(
+        None,
+        description="Type of the estimated parameter.",
+    )
+
+    # * Private attributes
+    _unit_id: Optional[str] = PrivateAttr(None)
+    _enzmldoc = PrivateAttr(default=None)
+
+    def get_id(self):
+        """For logging. Dont bother."""
+        return self.name
+
+    # ! Utilities
+    def update(self, **kwargs):
+        """Adds attributes to this parameter based in kwargs"""
+        self.__dict__.update(kwargs)
+
+    # ! Getters
+    def unitdef(self):
+        """Returns the appropriate unitdef if an enzmldoc is given"""
+
+        if not self._enzmldoc:
+            return None
+
+        return self._enzmldoc.unit_dict[self._unit_id]
+
+
+@static_check_init_args
+class KineticModel(EnzymeMLBase):
+
+    name: str = Field(
+        ...,
+        description="Name of the kinetic law.",
+    )
+
+    equation: str = Field(
+        ...,
+        description="Equation for the kinetic law.",
+    )
+
+    parameters: List[KineticParameter] = Field(
+        default_factory=list,
+        description="List of estimated parameters.",
+    )
+
+    ontology: Optional[SBOTerm] = Field(
+        None,
+        description="Type of the estimated parameter.",
+    )
+
+    # ! Add methods
+    def addParameter(
+        self,
+        name: str,
+        value: Optional[float] = None,
+        unit: Optional[str] = None,
+        initial_value: Optional[float] = None,
+        upper: Optional[float] = None,
+        lower: Optional[float] = None,
+        is_global: bool = False,
+        stdev: Optional[float] = None,
+        constant: bool = False,
+        ontology: Optional[SBOTerm] = None,
+    ):
+        """Adds a parameter to the KineticModel object
 
         Args:
-            String equation: String describing mathematical formula of model
-            Dict parameters: Dictionary of parameters from formula
-        '''
+            name (str): Name of the estimated parameter.
+            value (Optional[float], optional): Numerical value of the estimated parameter.. Defaults to None.
+            unit (Optional[str], optional): Unit of the estimated parameter.. Defaults to None.
+            initial_value (Optional[float], optional): Initial value that was used for the parameter estimation. Defaults to None.
+            upper (Optional[float], optional): Upper bound of the estimated parameter.. Defaults to None.
+            lower (Optional[float], optional): Lower bound of the estimated parameter.. Defaults to None.
+            is_global (bool, optional): Specifies if this parameter is a global parameter.. Defaults to False.
+            stdev (Optional[float], optional): Standard deviation of the estimated parameter.. Defaults to None.
+            constant (bool, optional): Specifies if this parameter is constant. Defaults to False.
+            ontology (Optional[SBOTerm], optional): Type of the estimated parameter.. Defaults to None.
+        """
 
-        self.setEquation(equation)
-        self.setParameters(parameters, enzmldoc)
-        self.setEqObject(self.getEquation())
+        self.parameters.append(
+            KineticParameter(
+                name=name,
+                value=value,
+                unit=unit,
+                initial_value=initial_value,
+                upper=upper,
+                lower=lower,
+                is_global=is_global,
+                stdev=stdev,
+                constant=constant,
+                ontology=ontology,
+            )
+        )
 
-    def toJSON(self, d=False, enzmldoc=None):
+        self.__dict__["_" + self.parameters[-1].name] = self.parameters[-1]
 
-        def transformAttr(self):
-            d = dict()
-            for key, item in self.__dict__.items():
-                key = key.split('__')[-1]
+    # ! Initializers
+    @staticmethod
+    def createGenerator(name: str, equation: str, **parameters):
+        """Creates an abstract model generator to generated specific models.
 
-                if 'eqObject' not in key:
+        Args:
+            name (str): Name of the model.
+            equation (str): Equation
 
-                    if type(item) == dict and enzmldoc is not None:
+        Returns:
+            [type]: [description]
+        """
 
-                        item = {
-                            k: (
-                                it[0],
-                                enzmldoc.getUnitDict()[it[1]].getName()
-                            )
-                            for k, it in item.items()
-                            }
+        return ModelFactory(name=name, equation=equation, **parameters)
 
-                    d[key] = item
+    @classmethod
+    def fromEquation(cls, name: str, equation: str):
+        """Creates a Kinetic Model instance from an equation
 
-            return d
+        Args:
+            equation (str): Mathematical equation decribing the model.
 
-        if d:
-            return transformAttr(self)
+        Returns:
+            KineticModel: Resulting kinetic model
+        """
 
-        return json.dumps(
-            self,
-            default=transformAttr,
-            indent=4
+        # Create a new instance
+        cls = cls(name=name, equation=equation)
+
+        # Parse equation and add parameters
+        for node in ast.walk(ast.parse(equation)):
+            if isinstance(node, ast.Name):
+                name = node.id
+                regex = re.compile(r"[s|p|c]\d*")
+                if not bool(regex.match(name)) and "_" + name not in cls.__dict__:
+                    cls.addParameter(name=name)
+
+        return cls
+
+    # ! Utilities
+
+    def get_id(self) -> str:
+        return self.name
+
+    def evaluate(self, **kwargs):
+        """Calculates the the reaction velocity given the internal parameters and variable concentrations handed as keyword arguments.
+
+        Examples:
+
+            model = KineticModel(...) <- Lets assume this is a Menten Model with already estimated parameters
+            print(model.evaluate(protein=10.0, substrate=1.0))
+
+            >> 1.002 <- This is the resulting velocity
+
+        Returns:
+            float: Corresponding reaction velocity given the internal parameters and variables.
+        """
+
+        # Initialize a dictionary which will take care to create an eval string
+        params = {}
+
+        # Get the values for the parameters
+        for parameter in self.parameters:
+            if parameter.value:
+                params.update({parameter.name: parameter.value})
+
+        # Now replace the strings in the equation to evaluate it using numexpr
+        eval_string = self.equation
+        for key, value in {**kwargs, **params}.items():
+
+            eval_string = eval_string.replace(key, str(value))
+
+        return numexpr.evaluate(eval_string).tolist()
+
+    # ! Getters
+
+    def getParameter(self, name: str) -> KineticParameter:
+        """Returns a parameter of choice from the model.
+
+        Args:
+            name (str): Name of the parameter.
+
+        Raises:
+            KeyError: If the parameter does not exist.
+
+        Returns:
+            KineticParameter: The desired parameter.
+        """
+
+        try:
+            return next(filter(lambda parm: parm.name == name, self.parameters))
+        except StopIteration:
+            raise KeyError(f"Parameter {name} not found in the model.")
+
+    @deprecated_getter("equation")
+    def getEquation(self):
+        return self.equation
+
+    @deprecated_getter("parameters")
+    def getParameters(self):
+        return self.parameters
+
+    @deprecated_getter("name")
+    def getName(self):
+        return self.name
+
+
+class ModelFactory:
+
+    equation: str
+    parameters: List[str]
+    name: str
+
+    def __init__(
+        self, name: str, equation: str, ontology: Optional[SBOTerm] = None, **parameters
+    ) -> None:
+
+        # Parse the eqation and get all names and variables
+        self.variables = self.parse_equation(equation)
+
+        # Initialize the model
+        self.model = KineticModel(name=name, equation=equation, ontology=None)
+
+        for name, options in parameters.items():
+
+            # Remove parameter from variables
+            self.variables.remove(name)
+
+            # Get all teh options for the parameter
+            init_value = options.get("init_value")
+            value = options.get("value")
+            unit = options.get("unit")
+            ontology = options.get("ontology")
+            stdev = options.get("stdev")
+            upper = options.get("upper")
+            lower = options.get("lower")
+            constant = options.get("constant")
+
+            # Convert constant to bool if not set
+            if not constant:
+                constant = False
+
+            parameter = KineticParameter(
+                name=name,
+                value=value,
+                unit=unit,
+                initial_value=init_value,
+                stdev=stdev,
+                ontology=ontology,
+                upper=upper,
+                lower=lower,
+                is_global=False,
+                constant=constant,
             )
 
-    def __str__(self):
-        return self.toJSON()
+            self.model.parameters.append(parameter)
 
-    def addToReaction(self, reaction):
+    def __call__(self, mapping: dict = {}, **variables) -> KineticModel:
+        """Returns a KineticModel that is suited for the given parameters."""
 
-        '''
-        Adds kinetic law to SBML reaction.
-        Only relevant for EnzymeML > SBML conversion.
+        # Copy the internal object and modify it to the needs
+        model = KineticModel(**self.model.dict())
 
-        Args:
-            Reaction (SBML) reaction: SBML reaciton class
-        '''
+        # Replace everything
+        for stock_variable in self.variables:
 
-        kl = reaction.createKineticLaw()
+            try:
+                identifier = variables[stock_variable]
 
-        for key, item in self.__parameters.items():
+                if isinstance(identifier, list):
+                    # Allow multiple species
+                    identifier = [repr(name) for name in identifier]
+                    identifier = f"({' * '.join(identifier)})"
+                else:
+                    identifier = repr(identifier)
 
-            local_param = kl.createLocalParameter()
-            local_param.setId(key)
-            local_param.setValue(item[0])
-            local_param.setUnits(item[1])
+                model.equation = model.equation.replace(stock_variable, identifier)
 
-        kl.setMath(self.__eqObject)
-
-    def getEquation(self):
-        return self.__equation
-
-    def getParameters(self):
-        return self.__parameters
-
-    def getEqObject(self):
-        return self.__eqObject
-
-    def setEquation(self, equation):
-        '''
-        Args:
-            String equation: mathematical description of kinetic law
-        '''
-        self.__equation = TypeChecker(equation, str)
-
-    def setParameters(self, parameters, enzmldoc):
-        '''
-        Args:
-            Dict parameters: Float parameters indexed by String names
-
-        '''
-        parameters = TypeChecker(parameters, dict)
-
-        self.__parameters = dict()
-        for paramName, (paramValue, paramUnit) in parameters.items():
-
-            if paramUnit not in enzmldoc.getUnitDict().keys():
-                paramUnit = UnitCreator().getUnit(paramUnit, enzmldoc)
-
-            self.__parameters[paramName] = (
-                    paramValue,
-                    paramUnit
+            except KeyError:
+                raise KeyError(
+                    f"Variable {stock_variable} has not been given. Please make sure to cover all variables: [{repr(self.variables)}]"
                 )
 
-    def setEqObject(self, equation):
-        self.__eqObject = parseL3Formula(equation)
+        # Apply mapping
+        if mapping:
+            self._apply_mapping(mapping, model)
 
-    def delEquation(self):
-        del self.__equation
+        return model
 
-    def delParameters(self):
-        del self.__parameters
+    def _apply_mapping(self, mapping: dict, model: KineticModel):
+        """Applies a mapping that has been given to the model."""
 
-    def delEqObject(self):
-        del self.__eqObject
+        for param_old, param_new in mapping.items():
+            model.equation = model.equation.replace(param_old, param_new)
+
+            # Variable to control when a parameter has found
+            found = False
+
+            for index, parameter in enumerate(model.parameters):
+                if parameter.name == param_old:
+
+                    # Copy old and add new parameter
+                    nu_param = parameter.copy()
+                    nu_param.name = param_new
+                    model.parameters.append(nu_param)
+
+                    found = True
+
+                    # Remove old one
+                    del model.parameters[index]
+                    continue
+
+            if not found:
+                raise KeyError(f"Parameter {param_old} is not part of the model.")
+
+    @staticmethod
+    def parse_equation(equation: str):
+        return [
+            node.id
+            for node in ast.walk(ast.parse(equation))
+            if isinstance(node, ast.Name)
+        ]
