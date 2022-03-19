@@ -10,13 +10,22 @@ Welcome to PyEnzyme's documentation!
    :maxdepth: 1
    :caption: First Steps
 
-   _getstarted/01_Overview
+   _getstarted/01_BasicUsage
+   _getstarted/02_Validation
+   _getstarted/03_Visualisation
+   _getstarted/04_UploadToDataverse
 
 .. toctree:: 
    :maxdepth: 2
    :caption: API Reference
 
    core
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Examples
+
+   _examples/01_KineticModeling_PySCeS.ipynb
 
 
 
