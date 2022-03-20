@@ -1,7 +1,10 @@
 <h1 align="center">
   PyEnzyme
 </h1>
-<p align="center">PyEnzyme is the interface to the data model <b>EnzymeML</b> and offers a convenient way to document and model research data. Lightweight syntax for rapid development of data management solution in enzymology and biocatalysis.</p>
+<p align="center"> 
+PyEnzyme is the interface to the data model <b>EnzymeML</b> and offers a convenient way to document and model research data. Lightweight syntax for rapid development of data management solution in enzymology and biocatalysis.</p>
+
+![example workflow](https://github.com/EnzymeML/PyENzyme/actions/workflows/build.yml/badge.svg)
 
 ### 🧬 Features
 
