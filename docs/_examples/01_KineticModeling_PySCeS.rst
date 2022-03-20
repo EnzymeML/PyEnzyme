@@ -27,7 +27,7 @@ which can be done using:
 ::
 
        !pip install pysces
-       !pip install git+git://github.com/EnzymeML/PyEnzyme.git@Refactoring
+       !pip install git+git://github.com/EnzymeML/PyEnzyme.git
 
 This is **not needed** when running this notebook via **Binder**, as the
 environment is already set up.
