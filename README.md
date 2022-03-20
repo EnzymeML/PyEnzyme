@@ -7,6 +7,9 @@ PyEnzyme is the interface to the data model <b>EnzymeML</b> and offers a conveni
 
 ### 🧬 Features
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2067f8313cbe460f8adcd2de3fb0fc14)](https://app.codacy.com/gh/EnzymeML/PyEnzyme?utm_source=github.com&utm_medium=referral&utm_content=EnzymeML/PyEnzyme&utm_campaign=Badge_Grade_Settings)
+
+
 - Reproducible **documentation** of enzymatic and biocatalytic experiments.
 - **Import** from and **export** to the SBML-based markup language **EnzymeML** and more.
 - Perform **database-specific validation** prior to database upload.
