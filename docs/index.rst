@@ -69,27 +69,20 @@ on our endpoints. You can also use our self-hosted PyEnzyme instance if
 you have no server space - Use https://enzymeml.sloppy.zone as base URL
 to the endpoints.
 
-
-.. toctree:: 
-   :maxdepth: 1
-   :caption: Installation
-
-   installation.rst
-
 .. toctree::
    :maxdepth: 0
    :caption: First Steps
 
-   _getstarted/01_BasicUsage
-   _getstarted/02_Validation
-   _getstarted/03_Visualisation
-   _getstarted/04_UploadToDataverse
+   _getstarted/01_BasicUsage.rst
+   _getstarted/02_Validation.rst
+   _getstarted/03_Visualisation.rst
+   _getstarted/04_UploadToDataverse.rst
 
 .. toctree::
    :maxdepth: 1
    :caption: Examples
 
-   _examples/01_KineticModeling_PySCeS.ipynb
+   _examples/01_KineticModeling_PySCeS.rst
 
 .. toctree:: 
    :maxdepth: 2
