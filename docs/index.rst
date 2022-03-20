@@ -50,7 +50,7 @@ options.
    # Complete
    python -m pip install "pyenzyme[all]"
 
-PyEnzyme’s REST-API
+REST-API
 -------------------
 
 If you want to deploy PyEnzyme as a server and use our REST-API to
@@ -68,6 +68,9 @@ See the `API documentation <https://enzymeml.sloppy.zone>`__ for details
 on our endpoints. You can also use our self-hosted PyEnzyme instance if
 you have no server space - Use https://enzymeml.sloppy.zone as base URL
 to the endpoints.
+
+Table of contents
+-------------------
 
 .. toctree::
    :maxdepth: 0
