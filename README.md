@@ -108,7 +108,7 @@ enzmldoc.toFile(".", name="ADH Experiment")
 
 ## 📖 Documentation and more examples
 
-Explore all the features of **PyEnzyme** in our [documentation](https://pyenzyme.readthedocs.io/en/refactoring/) and take part in [Discussions](https://github.com/EnzymeML/PyEnzyme/discussions) and/or [Issues](https://github.com/EnzymeML/PyEnzyme/issues). 
+Explore all the features of **PyEnzyme** in our [documentation](https://pyenzyme.readthedocs.io/en/latest/index.html#) and take part in [Discussions](https://github.com/EnzymeML/PyEnzyme/discussions) and/or [Issues](https://github.com/EnzymeML/PyEnzyme/issues). 
 
 ## ⚠️ License
 
