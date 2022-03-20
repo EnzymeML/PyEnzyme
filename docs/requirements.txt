@@ -3,3 +3,4 @@ ipython
 sphinx-copybutton
 nbsphinx
 sphinxawesome-theme
+furo
