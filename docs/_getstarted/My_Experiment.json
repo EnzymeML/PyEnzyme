@@ -99,15 +99,16 @@
           "stoichiometry": 1.0,
           "constant": false,
           "ontology": "SBO:0000015"
-        },
+        }
+      ],
+      "products": [
         {
           "species_id": "s1",
           "stoichiometry": 1.0,
           "constant": false,
-          "ontology": "SBO:0000015"
+          "ontology": "SBO:0000011"
         }
       ],
-      "products": [],
       "modifiers": []
     },
     "r1": {

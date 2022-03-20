@@ -12,17 +12,18 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
+
+sys.path.insert(0, os.path.abspath("."))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'PyEnzyme'
-copyright = '2021, Jan Range'
-author = 'Jan Range'
+project = "PyEnzyme"
+copyright = "2022, Jan Range"
+author = "Jan Range, Dr. Frank Bergmann, Prof. Dr. Johann Rohwer"
 
 # The full version, including alpha/beta/rc tags
-release = '1.2.0'
+release = "1.1.3"
 
 
 # -- General configuration ---------------------------------------------------
@@ -52,12 +53,12 @@ autodoc_pydantic_model_show_json = True
 autodoc_pydantic_settings_show_json = False
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -65,9 +66,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
+html_theme = "furo"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
