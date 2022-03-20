@@ -1,0 +1,75 @@
+global:
+  v_r:
+    initial_value: null
+    constant: true
+    upper: null
+    lower: null
+  K_si:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null
+  K_n:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null
+r1:
+  K_s:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null
+r2:
+  k_2:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null
+r5:
+  k_6:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null
+r6:
+  k_3:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null
+r7:
+  K_pg:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null
+r9:
+  k_5:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null
+r10:
+  k_4:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null
+  k_4b:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null
+r11:
+  K_p:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null
+r12:
+  k_d:
+    initial_value: null
+    constant: false
+    upper: null
+    lower: null

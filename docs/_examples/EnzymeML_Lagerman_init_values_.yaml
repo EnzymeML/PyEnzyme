@@ -1,0 +1,76 @@
+global:
+  K_si:
+    initial_value: 6.346729249
+    constant: false
+    upper: 1000
+    lower: 0.01
+  K_n:
+    initial_value: 11.00542741
+    constant: false
+    upper: 10000
+    lower: 0.01
+  v_r:
+    initial_value: 1e9
+    constant: true
+    upper: null
+    lower: null
+r1:
+  K_s:
+    initial_value: 5.676255758
+    constant: false
+    upper: 1000
+    lower: 0.01
+r2:
+  k_2:
+    initial_value: 652085.5139
+    constant: false
+    upper: 1e6
+    lower: 1.0
+r5:
+  k_6:
+    initial_value: 393169.3931
+    constant: false
+    upper: 1e7
+    lower: 1.0
+r6:
+  k_3:
+    initial_value: 8.93817854
+    constant: false
+    upper: 1e6
+    lower: 1.0
+r7:
+  K_pg:
+    initial_value: 47.34446037
+    constant: false
+    upper: 1000
+    lower: 0.01
+r9:
+  k_5:
+    initial_value: 672295.823
+    constant: false
+    upper: 1e6
+    lower: 1.0
+r10:
+  k_4:
+    initial_value: 1870570.524
+    constant: false
+    upper: 1e8
+    lower: 1.0
+  k_4b:
+    initial_value: 42451.1374
+    constant: false
+    upper: 1e8
+    lower: 1.0
+r11:
+  K_p:
+    initial_value: 0.9433184993
+    constant: false
+    upper: 1000
+    lower: 0.01
+r12:
+  k_d:
+    initial_value: 0.5149464784
+    constant: false
+    upper: 1.0
+    lower: 0.001
+

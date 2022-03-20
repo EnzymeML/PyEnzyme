@@ -1,0 +1,217 @@
+{
+  "name": "Test",
+  "level": 3,
+  "version": "2",
+  "pubmedid": "PubMedID",
+  "url": "URL",
+  "doi": "DOI",
+  "creators": {
+    "a0": {
+      "given_name": "Jan",
+      "family_name": "Range",
+      "mail": "jan.range@simtech.uni-stuttgart.de",
+      "id": "a0"
+    }
+  },
+  "vessels": {
+    "v0": {
+      "name": "Vessel",
+      "volume": 10.0,
+      "unit": "ml",
+      "constant": true,
+      "id": "v0",
+      "meta_id": "METAID_V0"
+    }
+  },
+  "proteins": {
+    "p0": {
+      "name": "Protein",
+      "id": "p0",
+      "vessel_id": "v0",
+      "meta_id": "METAID_P0",
+      "init_conc": 10.0,
+      "constant": true,
+      "boundary": false,
+      "unit": "mmole / l",
+      "ontology": "SBO:0000252",
+      "sequence": "HLPMV",
+      "ecnumber": "1.1.1.1",
+      "organism": "E.coli",
+      "organism_tax_id": "27367",
+      "uniprotid": "P02357"
+    }
+  },
+  "complexes": {
+    "c0": {
+      "name": "Complex",
+      "id": "c0",
+      "vessel_id": "v0",
+      "meta_id": "METAID_C0",
+      "init_conc": 10.0,
+      "constant": false,
+      "boundary": false,
+      "unit": "mmole / l",
+      "ontology": "SBO:0000296",
+      "participants": [
+        "s0", "p0"
+      ]
+    }
+  },
+  "reactants": {
+    "s0": {
+      "name": "Reactant",
+      "id": "s0",
+      "vessel_id": "v0",
+      "meta_id": "METAID_S0",
+      "init_conc": 10.0,
+      "constant": false,
+      "boundary": false,
+      "unit": "mmole / l",
+      "ontology": "SBO:0000247",
+      "smiles": "[H]O[H]",
+      "inchi": "InChI:HJJH",
+      "chebi_id": "CHEBI:09823"
+    },
+    "s1": {
+      "name": "Reactant2",
+      "id": "s1",
+      "vessel_id": "v0",
+      "meta_id": "METAID_S0",
+      "init_conc": 10.0,
+      "constant": false,
+      "boundary": false,
+      "unit": "mmole / l",
+      "ontology": "SBO:0000247",
+      "smiles": "[H]O[H]",
+      "inchi": "InChI:HJJH",
+      "chebi_id": "CHEBI:09823"
+    }
+  },
+  "reactions": {
+    "r0": {
+      "name": "Reaction",
+      "reversible": true,
+      "temperature": 200,
+      "temperature_unit": "K",
+      "ph": 7.0,
+      "ontology": "SBO:0000176",
+      "id": "r0",
+      "meta_id": "METAID_R0",
+      "model": {
+        "name": "Menten",
+        "equation": "s0 * x",
+        "parameters": [
+          {
+            "name": "x",
+            "value": 10.0,
+            "unit": "1 / s",
+            "stdev": 0.1,
+            "initial_value": 10.0
+          }
+        ]
+      },
+      "educts": [
+        {
+          "species_id": "s0",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000015"
+        }
+      ],
+      "products": [
+        {
+          "species_id": "s1",
+          "stoichiometry": 1.0,
+          "constant": false,
+          "ontology": "SBO:0000011"
+        }
+      ],
+      "modifiers": [
+        {
+          "species_id": "p0",
+          "stoichiometry": 1.0,
+          "constant": true,
+          "ontology": "SBO:0000013"
+        }
+      ]
+    }
+  },
+  "measurements": {
+    "m0": {
+      "name": "SomeMeasurement",
+      "temperature": 4.0,
+      "temperature_unit": "K",
+      "ph": 7.0,
+      "species_dict": {
+        "reactants": {
+          "s0": {
+            "init_conc": 10.0,
+            "unit": "mmole / l",
+            "measurement_id": "m0",
+            "reactant_id": "s0",
+            "replicates": [
+              {
+                "id": "repl_s0_0",
+                "species_id": "s0",
+                "data_type": "conc",
+                "data_unit": "mmole / l",
+                "time_unit": "s",
+                "time": [
+                  1.0,
+                  2.0,
+                  3.0,
+                  4.0
+                ],
+                "data": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "is_calculated": false
+              }
+            ]
+          }
+        },
+        "proteins": {
+          "p0": {
+            "init_conc": 10.0,
+            "unit": "mmole / l",
+            "measurement_id": "m0",
+            "protein_id": "p0",
+            "replicates": [
+              {
+                "id": "repl_p0_0",
+                "species_id": "p0",
+                "data_type": "conc",
+                "data_unit": "mmole / l",
+                "time_unit": "s",
+                "time": [
+                  1.0,
+                  2.0,
+                  3.0,
+                  4.0
+                ],
+                "data": [
+                  1.0,
+                  1.0,
+                  1.0,
+                  1.0
+                ],
+                "is_calculated": false
+              }
+            ]
+          }
+        }
+      },
+      "global_time": [
+        1.0,
+        2.0,
+        3.0,
+        4.0
+      ],
+      "global_time_unit": "s",
+      "id": "m0"
+    }
+  }
+}
