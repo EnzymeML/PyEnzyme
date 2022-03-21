@@ -62,7 +62,7 @@ See the [API documentation](https://enzymeml.sloppy.zone) for details on our end
 
 ## ⚙️ Example code
 
-This example will demonstrate how to create a simple EnzymeML document using PyEnzyme and how to use initializers from official databases **Chebi** and **UniProt** to gather metadata. For more examples, please visit our [documentation](https://pyenzyme.readthedocs.io/en/refactoring/) (Work in progress)
+This example will demonstrate how to create a simple EnzymeML document using PyEnzyme and how to use initializers from official databases **Chebi** and **UniProt** to gather metadata. For more examples, please visit our [documentation](https://pyenzyme.readthedocs.io/en/latest/index.html#) (Work in progress)
 
 ```python
 import pyenzyme as pe
