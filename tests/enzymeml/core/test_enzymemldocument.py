@@ -275,3 +275,12 @@ class TestEnzymeMLDocument:
         param.unit = "mole / l"
 
         check_consistency("mole / l", param._unit_id, "kinetic parameter")
+
+    def test_writing_sbml(self, enzmldoc):
+        """Test whether the XML content is as expected"""
+
+        expected = open(
+            "./tests/fixtures/write_xml_string.xml", "r", encoding="utf-8"
+        ).read()
+
+        assert enzmldoc.toXMLString() == expected

@@ -1199,6 +1199,10 @@ class EnzymeMLDocument(EnzymeMLBase):
                     # Numeric constants are ignored now
                     continue
 
+            elif isinstance(node, ast.Str):
+                # Python 3.7 compatibility since ast.Constant is ast.Str here
+                name = node.s
+
             elif isinstance(node, ast.Name):
                 # If the equation has been done manually
                 name = node.id
@@ -1216,12 +1220,19 @@ class EnzymeMLDocument(EnzymeMLBase):
                         name.replace("'", ""),
                     ).id
 
+                    if not bool(re.match(r"'[a-zA-Z\d]*'", name)):
+                        name = f"'{name}'"
+
                     model.equation = model.equation.replace(name, species_id)
                 except StopIteration:
                     # If neither name or ID is found, raise Error
                     raise SpeciesNotFoundError(
                         enzymeml_part="Kinetic Model", species_id=name
                     )
+
+            elif not bool(re.match(r"'[a-zA-Z\d]*'", name)):
+                quoted = f"'{name}'"
+                model.equation = model.equation.replace(quoted, name)
 
     def _reference_global_parameters(self, model):
         """Removes single parameters and references global parameters if names match"""
