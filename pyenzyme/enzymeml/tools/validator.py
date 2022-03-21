@@ -10,10 +10,11 @@ import re
 import yaml
 import os
 import pandas as pd
-import warnings
 
 from itertools import cycle
 from typing import Optional, Dict, Tuple, List
+
+from pyenzyme.enzymeml.core.unitdef import UnitDef
 
 # Set up a logger for validation
 logger = logging.getLogger("validator")
@@ -520,16 +521,26 @@ class EnzymeMLValidator:
             Bool: Whether the document is consistent in units
         """
 
+        # Initialize validator to use
+        cls = cls(scheme={})
+
         # Now create a data structure of units per species for
         # Measurements and Replicates
-        used_units, used_time_units = {}, {}
+        used_units = {}
+        used_time_units = {}
+        used_volume_units = {}
         report, is_consistent = {}, True
 
+        # Check vessel unit
+        cls._check_vessels(enzmldoc, used_volume_units)
+
         # Perform consistency check on parameters
-        cls._check_parameters(enzmldoc, used_time_units)
+        cls._check_parameters(enzmldoc, used_time_units, used_volume_units)
 
         # Perform consistency check on species/replicates/measurements
-        cls._check_species(enzmldoc, report, used_time_units, used_units)
+        cls._check_species(
+            enzmldoc, report, used_time_units, used_units, used_volume_units
+        )
 
         if strict:
 
@@ -549,13 +560,35 @@ class EnzymeMLValidator:
                 # Append to report
                 report["time_units"] = cls._reformat_strict_report(used_time_units)
 
+            if len(set(used_volume_units.values())) != 1:
+                logger.warning(
+                    f"Inconsistent usage of volume units. All units should be the same, but found {set(used_volume_units.values())}. In order to guarantee modelling platforms based on SBML to work properly, make sure that vessel volume unit is consistent with the one used in concentration. \n\nBest done by editing vessels using 'enzmldoc.getVessel(ID)' and an appropriate 'unit' assigned along with a rescaling."
+                )
+
+                # Append to report
+                report["volume_units"] = cls._reformat_strict_report(used_volume_units)
+
         if report:
             is_consistent = False
 
         return is_consistent, report
 
-    @staticmethod
-    def _check_parameters(enzmldoc, used_time_units: Dict[str, str]) -> None:
+    def _check_vessels(self, enzmldoc, used_volume_units: Dict[str, str]):
+        """Checks volumetric unit consitency of Vessels"""
+
+        for vessel in enzmldoc.vessel_dict.values():
+            vessel_unit = vessel.unitdef()
+            volume_part = self._get_baseunit_part(vessel_unit, kind="litre")
+
+            if volume_part:
+                used_volume_units[vessel.id] = volume_part[0].get_name()
+
+    def _check_parameters(
+        self,
+        enzmldoc,
+        used_time_units: Dict[str, str],
+        used_volume_units: Dict[str, str],
+    ) -> None:
         """Checks time unit consistency of Parameters"""
 
         # Get all the time units used in parameters
@@ -574,19 +607,27 @@ class EnzymeMLValidator:
             if param.unit:
 
                 # Get the time unit, if given
-                time_part = list(
-                    filter(
-                        lambda baseunit: baseunit.kind == "second",
-                        param.unitdef().units,
-                    )
-                )
+                time_part = self._get_baseunit_part(param.unitdef(), "second")
 
                 if time_part:
                     # When there is a time unit, store it
                     used_time_units[param.name] = time_part[0].get_name()
 
-    @staticmethod
-    def _check_species(enzmldoc, report, used_time_units, used_units):
+                # Get the volume unit, if given
+                volume_part = self._get_baseunit_part(param.unitdef(), "litre")
+
+                if volume_part:
+                    # When there is a time unit, store it
+                    used_volume_units[param.name] = volume_part[0].get_name()
+
+    def _check_species(
+        self,
+        enzmldoc,
+        report: Dict,
+        used_time_units: Dict[str, str],
+        used_units: Dict[str, str],
+        used_volume_units: Dict[str, str],
+    ):
         """Checks consistency for species to measurements"""
 
         all_species = {
@@ -625,6 +666,7 @@ class EnzymeMLValidator:
                     meas_data = meas_species.get(id)
                     meas_unit = meas_data.unitdef()
                     meas_unit_name = meas_unit._get_unit_name()
+                    meas_vol_unit = self._get_baseunit_part(meas_unit, "litre")
 
                     if unit is None:
                         # Use meas unit as the expected one
@@ -635,6 +677,10 @@ class EnzymeMLValidator:
                     location = f"{measurement.id}/{meas_data.get_id()}"
                     used_units[location] = meas_unit_name
                     used_time_units[location] = measurement.global_time_unit
+
+                    # If there is a volumetric unit, add it
+                    if meas_vol_unit:
+                        used_volume_units[location] = meas_vol_unit[0].get_name()
 
                     if unit_name != meas_unit_name:
                         # Report if there are inconsistencies
@@ -649,6 +695,7 @@ class EnzymeMLValidator:
                         # Get replicate units
                         repl_unit = replicate.data_unitdef()
                         repl_unit_name = repl_unit._get_unit_name()
+                        repl_vol_unit = self._get_baseunit_part(repl_unit, "litre")
 
                         # Add to list of already used units
                         location = (
@@ -656,6 +703,10 @@ class EnzymeMLValidator:
                         )
                         used_units[location] = meas_unit_name
                         used_time_units[location] = measurement.global_time_unit
+
+                        # If there is a volumetric unit, add it
+                        if meas_vol_unit:
+                            used_volume_units[location] = repl_vol_unit[0].get_name()
 
                         if unit_name != repl_unit_name:
                             # Report if there are inconsistencies
@@ -682,3 +733,14 @@ class EnzymeMLValidator:
             nu_report[value] = [loc for loc, unit in report.items() if unit == value]
 
         return nu_report
+
+    @staticmethod
+    def _get_baseunit_part(unitdef: UnitDef, kind: str):
+        """Gets a specific part of a unitdef"""
+
+        return list(
+            filter(
+                lambda baseunit: baseunit.kind == kind,
+                unitdef.units,
+            )
+        )

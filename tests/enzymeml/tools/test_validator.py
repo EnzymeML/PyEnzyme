@@ -59,6 +59,9 @@ class TestValidation:
     def test_check_unit_consistency_positive(self, enzmldoc):
         """Checks whether unit consistency checkup behaves correctly - Positive case"""
 
+        # Set vessel to "l" to get a positive result
+        enzmldoc.vessel_dict["v0"].unit = "l"
+
         # Test default mode - Positive outcome
         is_consistent, report = EnzymeMLValidator.check_unit_consistency(enzmldoc)
 
@@ -106,7 +109,11 @@ class TestValidation:
             "conc_units": {
                 "fmole / l": ["s0", "m0/s0", "m0/s0/repl_s0_0"],
                 "mmole / l": ["p0", "m0/p0", "m0/p0/repl_p0_0", "s1", "c0"],
-            }
+            },
+            "volume_units": {
+                "l": ["m0/p0", "m0/p0/repl_p0_0", "m0/s0", "m0/s0/repl_s0_0"],
+                "ml": ["v0"],
+            },
         }
 
     def test_check_unit_consistency_strict_mode_time(self, enzmldoc):
@@ -134,7 +141,11 @@ class TestValidation:
             "time_units": {
                 "min": ["x"],
                 "s": ["m0/p0", "m0/p0/repl_p0_0", "m0/s0", "m0/s0/repl_s0_0"],
-            }
+            },
+            "volume_units": {
+                "l": ["m0/p0", "m0/p0/repl_p0_0", "m0/s0", "m0/s0/repl_s0_0"],
+                "ml": ["v0"],
+            },
         }
 
     def test_check_unit_consistency_default_mode_negative(self, enzmldoc):
@@ -179,5 +190,9 @@ class TestValidation:
                     "s1",
                     "c0",
                 ],
+            },
+            "volume_units": {
+                "l": ["m0/p0", "m0/p0/repl_p0_0", "m0/s0", "m0/s0/repl_s0_0"],
+                "ml": ["v0"],
             },
         }
