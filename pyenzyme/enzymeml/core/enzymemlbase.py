@@ -7,9 +7,9 @@
 import json
 import logging
 
-from pydantic import BaseModel, PrivateAttr
-from pyenzyme.utils.log import log_change
-from typing import Optional
+from pydantic import BaseModel
+from pyenzyme.utils.log import log_change, log_object
+
 
 logger = logging.getLogger("pyenzyme")
 
@@ -39,6 +39,15 @@ class EnzymeMLBase(BaseModel):
 
     def __setattr__(self, name, value):
         """Modified attribute setter to document changes in the EnzymeML document"""
+
+        # TODO Refactor this to spearate methods
+
+        # Check if there is a model that is to be added
+        if name == "model" and value is not None:
+            if self._enzmldoc:
+                value = self.set_kinetic_model(
+                    model=value, reaction=self, enzmldoc=self._enzmldoc
+                )
 
         # Check for changing units and assign a new one
         if "unit" in name and not name.startswith("_") and hasattr(self, "_enzmldoc"):
@@ -95,3 +104,32 @@ class EnzymeMLBase(BaseModel):
 
         # Finally, set the new attribute's value
         super().__setattr__(name, value)
+
+    @staticmethod
+    def set_kinetic_model(
+        model,
+        reaction,
+        enzmldoc,
+    ) -> None:
+        """Sets the kinetic model of the reaction and in addition converts all units to UnitDefs.
+
+        Args:
+            model (KineticModel): Kinetic model that has been derived.
+            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument that holds the reaction.
+        """
+
+        # ID consistency
+        enzmldoc._check_kinetic_model_ids(
+            model=model,
+        )
+
+        # Unit conversion
+        enzmldoc._convert_kinetic_model_units(model.parameters, enzmldoc=enzmldoc)
+
+        # Log creator object
+        log_object(logger, model)
+        logger.debug(
+            f"Added {type(model).__name__} '{model.name}' to reaction '{reaction.name}'"
+        )
+
+        return model

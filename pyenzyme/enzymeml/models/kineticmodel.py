@@ -378,8 +378,12 @@ class ModelFactory:
 
     @staticmethod
     def parse_equation(equation: str):
-        return [
-            node.id
-            for node in ast.walk(ast.parse(equation))
-            if isinstance(node, ast.Name)
-        ]
+        return list(
+            set(
+                [
+                    node.id
+                    for node in ast.walk(ast.parse(equation))
+                    if isinstance(node, ast.Name)
+                ]
+            )
+        )
