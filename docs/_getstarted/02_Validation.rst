@@ -85,7 +85,7 @@ workflows to utilize validation.
     enzmldoc = pe.EnzymeMLDocument.fromFile("Model_4.omex")
     
     # Perform validation against the preciously generated YAML
-    report, is_valid = enzmldoc.validate(yaml_path="EnzymeML_Validation_Template_Example.yaml")
+    report, is_valid = enzmldoc.validateDocument(yaml_path="EnzymeML_Validation_Template_Example.yaml")
     
     print(f">> Document is valid: {is_valid}")
 
