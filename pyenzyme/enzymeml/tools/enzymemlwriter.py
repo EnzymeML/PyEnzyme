@@ -153,7 +153,7 @@ class EnzymeMLWriter:
         self._addReactants(model, enzmldoc.reactant_dict)
         self._addGlobalParameters(model, enzmldoc.global_parameters)
         self._addReactions(model, enzmldoc.reaction_dict)
-        self._addUnits(model, enzmldoc.unit_dict)
+        self._addUnits(model, enzmldoc._unit_dict)
 
     def _createArchive(self, enzmldoc, listofPaths, name: str = None):
 

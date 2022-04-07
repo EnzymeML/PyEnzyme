@@ -149,7 +149,7 @@ class TestUnitCreator:
         # ! Single rational
         # Create result
         id = creator.getUnit("mole / l", enzmldoc)
-        res = enzmldoc.unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})
+        res = enzmldoc._unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})
 
         # Create expectation
         expec = UnitDef(name="mole / l")
@@ -162,7 +162,7 @@ class TestUnitCreator:
         # ! Multiple rationals
         # Create result
         id = creator.getUnit("mole g / l s", enzmldoc)
-        res = enzmldoc.unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})
+        res = enzmldoc._unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})
 
         # Create expectation
         expec = UnitDef(name="g mole / l s")
@@ -177,7 +177,7 @@ class TestUnitCreator:
         # ! Potentiated units
         # Create result
         id = creator.getUnit("mole^2", enzmldoc)
-        res = enzmldoc.unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})
+        res = enzmldoc._unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})
 
         # Create expectation
         expec = UnitDef(name="mole^2")
@@ -189,7 +189,7 @@ class TestUnitCreator:
         # ! Potentiated rational units
         # Create result
         id = creator.getUnit("mole^2 / l^4", enzmldoc)
-        res = enzmldoc.unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})
+        res = enzmldoc._unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})
 
         # Create expectation
         expec = UnitDef(name="mole^2 / l^4")
@@ -202,7 +202,7 @@ class TestUnitCreator:
         # ! Potentiated multiple rational units
         # Create result
         id = creator.getUnit("mole^2 g^3 / l^4 s", enzmldoc)
-        res = enzmldoc.unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})
+        res = enzmldoc._unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})
 
         # Create expectation
         expec = UnitDef(name="g^3 mole^2 / l^4 s")
@@ -247,4 +247,4 @@ class TestUnitCreator:
         # Create unit and store ID
         id = creator.getUnit(name, enzmldoc)
 
-        return enzmldoc.unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})
+        return enzmldoc._unit_dict[id].dict(exclude={"id", "meta_id", "ontology"})

@@ -347,7 +347,7 @@ class TestEnzymeReactionBasic:
         assert parameter.name == "x"
         assert parameter.value == 10.0
         assert parameter.unit == "mmole / l"
-        assert enzmldoc.unit_dict[parameter._unit_id].name == "mmole / l"
+        assert enzmldoc._unit_dict[parameter._unit_id].name == "mmole / l"
 
         # Faulty case
         with pytest.raises(SpeciesNotFoundError):

@@ -54,7 +54,7 @@ class AbstractSpecies(ABC, AbstractSpeciesDataclass):
         if not self.unit:
             return None
 
-        return self._enzmldoc.unit_dict[self._unit_id]
+        return self._enzmldoc._unit_dict[self._unit_id]
 
 
 class AbstractSpeciesFactory(ABC):

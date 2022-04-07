@@ -25,7 +25,6 @@ class EnzymeMLBase(BaseModel):
             exclude_none=True,
             exclude={
                 "log": ...,
-                "unit_dict": ...,
                 "file_dict": ...,
                 "protein_dict": {"Protein": {"__all__": {"_unit_id"}}},
             },
@@ -57,7 +56,7 @@ class EnzymeMLBase(BaseModel):
 
                 # Create a new UnitDef and get the ID
                 new_unit_id = self._enzmldoc._convertToUnitDef(value)
-                value = self._enzmldoc.unit_dict[new_unit_id]._get_unit_name()
+                value = self._enzmldoc._unit_dict[new_unit_id]._get_unit_name()
 
                 # Set the unit ID to the object
                 attr_name = f"_{name}_id"
@@ -69,7 +68,7 @@ class EnzymeMLBase(BaseModel):
         # Whenever a new ID is assigned, make sure the names are compliant with our standards
         if "unit_id" in name and hasattr(self, "_enzmldoc"):
             if self._enzmldoc:
-                unit_name = self._enzmldoc.unit_dict[value]._get_unit_name()
+                unit_name = self._enzmldoc._unit_dict[value]._get_unit_name()
                 attr_name = name.replace("_id", "")[1::]
                 super().__setattr__(attr_name, unit_name)
 

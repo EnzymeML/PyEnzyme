@@ -14,7 +14,7 @@ import pandas as pd
 import seaborn as sns
 import plotly.express as px
 
-from pydantic import Field, validator, validate_arguments
+from pydantic import Field, PrivateAttr, validator, validate_arguments
 from typing import Dict, List, Tuple, TYPE_CHECKING, Optional, Union
 from dataclasses import dataclass
 from io import StringIO
@@ -134,12 +134,6 @@ class EnzymeMLDocument(EnzymeMLBase):
         description="Dictionary mapping from reaction IDs to reaction describing objects.",
     )
 
-    unit_dict: Dict[str, UnitDef] = Field(
-        alias="units",
-        default_factory=dict,
-        description="Dictionary mapping from unit IDs to unit describing objects.",
-    )
-
     measurement_dict: Dict[str, Measurement] = Field(
         alias="measurements",
         default_factory=dict,
@@ -161,6 +155,9 @@ class EnzymeMLDocument(EnzymeMLBase):
     log: str = Field(
         default="",
     )
+
+    # * Private attributes
+    _unit_dict: Dict[str, UnitDef] = PrivateAttr(default_factory=dict)
 
     # ! Validators
     @validator("log")
@@ -648,7 +645,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return prefix + str(0)
 
-    def validate(self, yaml_path: str) -> Tuple[Dict, bool]:
+    def validateDocument(self, yaml_path: str) -> Tuple[Dict, bool]:
         """Validates an EnzymeML based on a given YAML file.
 
         The YAML file should be compliant with PyEnzymes template found on Github
@@ -729,7 +726,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         if units:
             fin_string.append(">>> Units")
-            generate_lines(self.unit_dict)
+            generate_lines(self._unit_dict)
 
         fin_string.append(">>> Reactants")
         generate_lines(self.reactant_dict)
@@ -931,7 +928,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         if param.unit:
             param._unit_id = self._convertToUnitDef(param.unit)
-            param.unit = self.unit_dict[param._unit_id]._get_unit_name()
+            param.unit = self._unit_dict[param._unit_id]._get_unit_name()
 
         # Assign the current EnzymeMLDocument
         param._enzmldoc = self
@@ -1094,12 +1091,12 @@ class EnzymeMLDocument(EnzymeMLBase):
         if species.unit and use_parser:
             unit_id = self._convertToUnitDef(species.unit)
             species._unit_id = unit_id
-            species.unit = self.unit_dict[species._unit_id]._get_unit_name()
+            species.unit = self._unit_dict[species._unit_id]._get_unit_name()
 
         elif species.unit and use_parser is False:
             species._unit_id = species.unit
             species.unit = self.getUnitString(species._unit_id)
-            species.unit = self.unit_dict[species._unit_id]._get_unit_name()
+            species.unit = self._unit_dict[species._unit_id]._get_unit_name()
 
         # Log creation of the object
         log_object(logger, species)
@@ -1261,7 +1258,9 @@ class EnzymeMLDocument(EnzymeMLBase):
         for parameter in parameters:
             if parameter.unit:
                 parameter._unit_id = enzmldoc._convertToUnitDef(parameter.unit)
-                parameter.unit = enzmldoc.unit_dict[parameter._unit_id]._get_unit_name()
+                parameter.unit = enzmldoc._unit_dict[
+                    parameter._unit_id
+                ]._get_unit_name()
                 parameter._enzmldoc = enzmldoc
 
     def addReactions(self, reactions: List[EnzymeReaction]):
@@ -1360,7 +1359,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             )
 
             # Set correct string
-            measurement.global_time_unit = self.unit_dict[
+            measurement.global_time_unit = self._unit_dict[
                 measurement._global_time_unit_id
             ]._get_unit_name()
 
@@ -1371,7 +1370,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             )
 
             # Set correct string
-            measurement.temperature_unit = self.unit_dict[
+            measurement.temperature_unit = self._unit_dict[
                 measurement._temperature_unit_id
             ]._get_unit_name()
 
@@ -1489,7 +1488,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         if unit is None:
             raise TypeError("No unit given.")
-        elif unit in self.unit_dict.keys():
+        elif unit in self._unit_dict.keys():
             return unit
 
         return UnitCreator().getUnit(unit, self)
@@ -1517,7 +1516,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             raise TypeError("No unit given.")
 
         try:
-            return self.unit_dict[unit_id].name
+            return self._unit_dict[unit_id].name
         except KeyError:
             raise SpeciesNotFoundError(species_id=unit_id, enzymeml_part="Units")
 
@@ -1536,7 +1535,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         return self._getSpecies(
             id=id,
-            dictionary=self.unit_dict,
+            dictionary=self._unit_dict,
             element_type="Units",
         )
 
@@ -1669,7 +1668,7 @@ class EnzymeMLDocument(EnzymeMLBase):
         """
 
         all_dicts = {
-            **self.unit_dict,
+            **self._unit_dict,
             **self.vessel_dict,
             **self.reactant_dict,
             **self.protein_dict,
@@ -1829,7 +1828,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
     @deprecated_getter("unit_dict")
     def getUnitDict(self):
-        return self.unit_dict
+        return self._unit_dict
 
     @deprecated_getter("file_dict")
     def getFileDict(self):

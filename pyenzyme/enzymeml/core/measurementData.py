@@ -86,7 +86,7 @@ class MeasurementData(EnzymeMLBase):
         unit_id = None
 
         # Transform initial concentration
-        unitdef: UnitDef = enzmldoc.unit_dict[self._unit_id].copy()
+        unitdef: UnitDef = enzmldoc._unit_dict[self._unit_id].copy()
         transform_value, new_unit_name, unit_id = self._getTransformation(
             unitdef, kind, scale, enzmldoc
         )
@@ -134,7 +134,7 @@ class MeasurementData(EnzymeMLBase):
         """
 
         data_unit_id = replicate._data_unit_id
-        unitdef: UnitDef = enzmldoc.unit_dict[data_unit_id].copy()
+        unitdef: UnitDef = enzmldoc._unit_dict[data_unit_id].copy()
 
         # Calculate the scale to transform the unit
         transform_value, new_unit_name, unit_id = self._getTransformation(
@@ -172,7 +172,7 @@ class MeasurementData(EnzymeMLBase):
         if not self._enzmldoc:
             return None
 
-        return self._enzmldoc.unit_dict[self._unit_id]
+        return self._enzmldoc._unit_dict[self._unit_id]
 
     @deprecated_getter("reactant_id")
     def getReactantID(self) -> Optional[str]:

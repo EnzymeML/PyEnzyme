@@ -201,7 +201,7 @@ class TestMeasurement:
 
         assert replicate.data == [1000.0, 1000.0, 1000.0, 1000.0]
         assert replicate.time == [1.0, 2.0, 3.0, 4.0]
-        assert enzmldoc.unit_dict[nu_unit_id].name == "umole / l"
+        assert enzmldoc._unit_dict[nu_unit_id].name == "umole / l"
 
         # Check for proteins
         replicate = measurement.species_dict["proteins"]["p0"].replicates[0]
@@ -209,7 +209,7 @@ class TestMeasurement:
 
         assert replicate.data == [1000.0, 1000.0, 1000.0, 1000.0]
         assert replicate.time == [1.0, 2.0, 3.0, 4.0]
-        assert enzmldoc.unit_dict[nu_unit_id].name == "umole / l"
+        assert enzmldoc._unit_dict[nu_unit_id].name == "umole / l"
 
         # Test for not supported unit kinds
         with pytest.raises(ValueError):

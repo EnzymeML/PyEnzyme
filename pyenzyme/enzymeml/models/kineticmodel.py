@@ -89,7 +89,7 @@ class KineticParameter(EnzymeMLBase):
         if not self._enzmldoc:
             return None
 
-        return self._enzmldoc.unit_dict[self._unit_id]
+        return self._enzmldoc._unit_dict[self._unit_id]
 
 
 @static_check_init_args

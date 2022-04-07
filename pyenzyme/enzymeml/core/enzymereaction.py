@@ -688,7 +688,7 @@ class EnzymeReaction(EnzymeMLBase):
         if not self._enzmldoc:
             return None
 
-        return self._enzmldoc.unit_dict[self._temperature_unit_id]
+        return self._enzmldoc._unit_dict[self._temperature_unit_id]
 
     def getTemperature(self) -> float:
         raise NotImplementedError("Temperature is now part of measurements.")

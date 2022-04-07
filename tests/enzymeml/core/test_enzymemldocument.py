@@ -36,7 +36,7 @@ class TestEnzymeMLDocument:
         assert not enzmldoc.complex_dict
         assert not enzmldoc.reactant_dict
         assert not enzmldoc.reaction_dict
-        assert not enzmldoc.unit_dict
+        assert not enzmldoc._unit_dict
         assert not enzmldoc.file_dict
         assert not enzmldoc.global_parameters
 
@@ -60,7 +60,7 @@ class TestEnzymeMLDocument:
         assert not enzmldoc.complex_dict
         assert not enzmldoc.reactant_dict
         assert not enzmldoc.reaction_dict
-        assert not enzmldoc.unit_dict
+        assert not enzmldoc._unit_dict
         assert not enzmldoc.file_dict
         assert not enzmldoc.global_parameters
 
@@ -228,7 +228,7 @@ class TestEnzymeMLDocument:
         def check_consistency(unit, unit_id, kind):
             # Helper function
             assert (
-                enzmldoc.unit_dict[unit_id].name == unit
+                enzmldoc._unit_dict[unit_id].name == unit
             ), f"Unit change for {kind} inconsistent"
 
         # Test unit change vessel

@@ -62,7 +62,7 @@ class TestMeasurementData:
 
         assert replicate.data == [1000.0, 1000.0, 1000.0, 1000.0]
         assert replicate.data_unit == "umole / l"
-        assert enzmldoc.unit_dict[replicate._data_unit_id].name == "umole / l"
+        assert enzmldoc._unit_dict[replicate._data_unit_id].name == "umole / l"
 
         assert data.init_conc == 10000.0
         assert data.unit == "umole / l"

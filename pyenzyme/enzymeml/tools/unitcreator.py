@@ -55,7 +55,7 @@ class UnitCreator:
             )
 
         # Generate ID
-        id = enzmldoc._generateID(prefix="u", dictionary=enzmldoc.unit_dict)
+        id = enzmldoc._generateID(prefix="u", dictionary=enzmldoc._unit_dict)
 
         # Call unit parser to identify units
         parser = UnitParser()
@@ -101,13 +101,13 @@ class UnitCreator:
         if self.__checkFootprints(enzmldoc, unitdef.getFootprint()) != "NEW":
             return self.__checkFootprints(enzmldoc, unitdef.getFootprint())
 
-        enzmldoc.unit_dict[unitdef.id] = unitdef
+        enzmldoc._unit_dict[unitdef.id] = unitdef
 
         return unitdef.id
 
     def __checkFootprints(self, enzmldoc, footprint):
 
-        for unit_id, unitdef in enzmldoc.unit_dict.items():
+        for unit_id, unitdef in enzmldoc._unit_dict.items():
             if DeepDiff(unitdef.getFootprint(), footprint) == {}:
                 return unit_id
 
@@ -197,7 +197,6 @@ class UnitCreator:
         unitdef.addBaseUnit(kind, exponent, scale, multiplier)
 
     def __getPrefix(self, prefix):
-
 
         if prefix == "f":
             return -15

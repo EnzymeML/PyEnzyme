@@ -396,7 +396,7 @@ class Measurement(EnzymeMLBase):
         if not self._enzmldoc:
             return None
 
-        return self._enzmldoc.unit_dict[self._temperature_unit_id]
+        return self._enzmldoc._unit_dict[self._temperature_unit_id]
 
     @validate_arguments
     def getReactant(self, reactant_id: str) -> MeasurementData:

@@ -147,7 +147,7 @@ class EnzymeMLReader:
 
         # Fetch units
         unitDict = self._getUnits(model)
-        self.enzmldoc.unit_dict = unitDict
+        self.enzmldoc._unit_dict = unitDict
 
         # Fetch Vessel
         vessel = self._getVessel(model, self.enzmldoc)
@@ -728,8 +728,8 @@ class EnzymeMLReader:
                         species_id=reactant_id,
                         data_type=data_type,
                         measurement_id=measurement_id,
-                        data_unit=enzmldoc.unit_dict[data_unit_id].name,
-                        time_unit=enzmldoc.unit_dict[time_unit_id].name,
+                        data_unit=enzmldoc._unit_dict[data_unit_id].name,
+                        time_unit=enzmldoc._unit_dict[time_unit_id].name,
                         data=data,
                         time=time,
                         is_calculated=is_calculated,
@@ -879,7 +879,7 @@ class EnzymeMLReader:
 
         # Convert the unit ID to the corresponding SI string
         unit_id = element.attrib["unit"]
-        unit = enzmldoc.unit_dict[unit_id].name
+        unit = enzmldoc._unit_dict[unit_id].name
 
         reactant_id = None
         protein_id = None
