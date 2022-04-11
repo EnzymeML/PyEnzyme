@@ -47,6 +47,9 @@ options.
    # REST API
    python -m pip install "pyenzyme[rest]"
 
+   # Dataverse
+   python -m pip install "pyenzyme[dataverse]"
+
    # Complete
    python -m pip install "pyenzyme[all]"
 
