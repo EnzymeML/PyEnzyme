@@ -42,6 +42,7 @@ setup(
         "seaborn",
         "plotly",
         "pyyaml==5.4.1",
+        "deprecation",
     ],
     extras_require={
         "test": ["pytest-cov"],
