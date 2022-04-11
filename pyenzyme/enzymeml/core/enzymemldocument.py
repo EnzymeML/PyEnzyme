@@ -1217,7 +1217,7 @@ class EnzymeMLDocument(EnzymeMLBase):
                         name.replace("'", ""),
                     ).id
 
-                    if not bool(re.match(r"'[a-zA-Z\d]*'", name)):
+                    if not name.startswith("'"):
                         name = f"'{name}'"
 
                     model.equation = model.equation.replace(name, species_id)
