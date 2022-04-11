@@ -80,7 +80,35 @@ class TestKineticModel:
         assert km.equation == "'p0'*kcat*'s0' / (km * 's0')"
 
         # Add model to reaction
-        enzmldoc.reaction_dict["r0"].setModel(km, enzmldoc)
+        reaction = enzmldoc.reaction_dict["r0"]
+        reaction.setModel(km, enzmldoc)
 
-        assert km.name == "Michaelis Menten Model"
-        assert km.equation == "p0*kcat*s0 / (km * s0)"
+        assert reaction.model.name == "Michaelis Menten Model"
+        assert reaction.model.equation == "p0*kcat*s0 / (km * s0)"
+
+        # Add model to reaction
+        reaction.model = km
+
+        assert reaction.model.name == "Michaelis Menten Model"
+        assert reaction.model.equation == "p0*kcat*s0 / (km * s0)"
+
+        # Test if the model is actually written to the XML
+        xml_string = enzmldoc.toXMLString()
+        expected = """<math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> p0 </ci>
+                <ci> kcat </ci>
+                <ci> s0 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> km </ci>
+                <ci> s0 </ci>
+              </apply>
+            </apply>
+          </math>"""
+
+        assert expected in xml_string, "Model has not been written to XML"
