@@ -36,7 +36,6 @@ from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
 from pyenzyme.enzymeml.tools.templatereader import read_template
 from pyenzyme.enzymeml.tools.validator import EnzymeMLValidator
-from pyenzyme.enzymeml.databases.dataverse import uploadToDataverse
 
 from pyenzyme.enzymeml.core.ontology import EnzymeMLPart, SBOTerm
 from pyenzyme.utils.log import setup_custom_logger, log_object
@@ -323,6 +322,14 @@ class EnzymeMLDocument(EnzymeMLBase):
             api_token (str): API Token of the dataverse to upload. Defaults to None. If None the API Token will be drawn from env vars.
 
         """
+
+        try:
+            from pyenzyme.enzymeml.databases.dataverse import uploadToDataverse
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "PyDaRUS has not been found. Please make sure to install 'pyDaRUS' to use the dataverse upload."
+            )
+
         uploadToDataverse(
             enzmldoc=self,
             dataverse_name=dataverse_name,

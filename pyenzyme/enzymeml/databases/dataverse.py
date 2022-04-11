@@ -9,6 +9,7 @@ import os
 import pydantic
 
 from typing import Dict, Any, Optional
+
 from pyDaRUS import EnzymeMl, Citation, Dataset
 from pyDaRUS.metadatablocks.enzymeML import Constant
 from pyDaRUS.metadatablocks.citation import SubjectEnum

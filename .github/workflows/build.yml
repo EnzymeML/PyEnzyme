@@ -21,7 +21,7 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           pip3 install python-copasi
-          pip3 install -e .[test]
+          pip3 install -e .[test,dataverse]
       - name: Test with pytest
         run: |
           python3 -m pytest
