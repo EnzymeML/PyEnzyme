@@ -106,7 +106,9 @@
             "value": 10.0,
             "unit": "1 / s",
             "stdev": 0.1,
-            "initial_value": 10.0
+            "initial_value": 10.0,
+            "upper": 11.0,
+            "lower": 9.0
           }
         ]
       },

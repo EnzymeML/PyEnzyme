@@ -628,6 +628,8 @@ class EnzymeMLReader:
         annotation = parameter.getAnnotationString()
         param_dict = self._parseSpeciesAnnotation(annotation)
 
+        print(param_dict)
+
         if unit_id:
             param_dict["unit"] = enzmldoc.getUnitString(unit_id)
 
@@ -645,8 +647,8 @@ class EnzymeMLReader:
             unit=param_dict.get("unit"),
             ontology=self._sboterm_to_enum(parameter.getSBOTerm()),
             initial_value=param_dict.get("initial_value"),
-            upper=param_dict.get("upperbound"),
-            lower=param_dict.get("lowerbound"),
+            upper=param_dict.get("upper_bound"),
+            lower=param_dict.get("lower_bound"),
             stdev=param_dict.get("stdev"),
             constant=constant,
         )

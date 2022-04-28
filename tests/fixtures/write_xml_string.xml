@@ -130,6 +130,8 @@
               <annotation>
                 <enzymeml:parameter xmlns:enzymeml="http://sbml.org/enzymeml/version2">
                   <enzymeml:initialValue>10.0</enzymeml:initialValue>
+                  <enzymeml:upperBound>11.0</enzymeml:upperBound>
+                  <enzymeml:lowerBound>9.0</enzymeml:lowerBound>
                   <enzymeml:stdev>0.1</enzymeml:stdev>
                 </enzymeml:parameter>
               </annotation>
