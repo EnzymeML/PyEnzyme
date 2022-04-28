@@ -628,8 +628,6 @@ class EnzymeMLReader:
         annotation = parameter.getAnnotationString()
         param_dict = self._parseSpeciesAnnotation(annotation)
 
-        print(param_dict)
-
         if unit_id:
             param_dict["unit"] = enzmldoc.getUnitString(unit_id)
 
