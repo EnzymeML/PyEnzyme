@@ -10,7 +10,8 @@ RUN apt-get update \
     && apt-get purge -y --auto-remove
 
 
-RUN pip3 install -r requirements.txt --no-cache-dir
+RUN pip3 install git+https://github.com/EnzymeML/PyEnzyme.git
+RUN pip3 install fastapi uvicorn
 
 COPY pyenzyme_server.py /app
 
