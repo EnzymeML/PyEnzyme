@@ -62,6 +62,7 @@ class DataTypes(str, Enum):
     ABSORPTION = "abs"
     FEED = "feed"
     BIOMASS = "biomass"
+    CONVERSION = "conversion"
 
 
 class EnzymeMLPart(str, Enum):

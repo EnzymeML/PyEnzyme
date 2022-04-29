@@ -165,6 +165,7 @@ def read_template(path: str, enzmldoc):
             type_mapping = {
                 "Concentration": DataTypes.CONCENTRATION,
                 "Absorption": DataTypes.ABSORPTION,
+                "Conversion [%]": DataTypes.CONVERSION,
             }
 
             if reactant_id not in measurement.species_dict["reactants"]:
@@ -174,6 +175,12 @@ def read_template(path: str, enzmldoc):
 
             replicates = None
             if row_values:
+
+                if type_mapping[row["Type"]] is DataTypes.CONVERSION:
+                    # Convert percent to rational [0,1]
+                    row_values = list(map(lambda value: value / 100, row_values))
+                    reactant_unit = "dimensionless"
+
                 # Create Replicate
                 replicate = Replicate(
                     id=f"replica_{replicate_index}_{reactant_name}_{experiment_id}",
