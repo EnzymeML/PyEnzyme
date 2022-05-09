@@ -61,7 +61,7 @@ If you want to deploy PyEnzyme as a server and use our REST-API to access PyEnzy
 docker pull enzymeml/pyenzyme:latest
 docker run -p 8000:8000 enzymeml/pyenzyme:latest
 ```
-See the [API documentation](https://pyenzyme.readthedocs.io/en/latest/) for details on our endpoints. You can also use our self-hosted PyEnzyme instance if you have no server space - Use https://enzymeml.sloppy.zone as base URL to the endpoints.
+See the [API documentation](https://enzymeml.sloppy.zone) for details on our endpoints. You can also use our self-hosted PyEnzyme instance if you have no server space - Use https://enzymeml.sloppy.zone as base URL to the endpoints.
 
 ## ⚙️ Example code
 
