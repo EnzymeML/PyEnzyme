@@ -62,6 +62,26 @@ class TestKineticModel:
         assert km.getParameter("km").stdev == 1.0
         assert not km.getParameter("km").is_global
 
+    def test_from_equation(self, enzmldoc):
+        """Tests the model initialization via an equation"""
+
+        # With IDs
+        model = KineticModel.fromEquation(name="Model", equation="s0 * x + p0 * c0")
+
+        assert len(model.parameters) == 1
+        assert model.parameters[0].name == "x"
+        assert model.name == "Model"
+
+        # With names
+        model = KineticModel.fromEquation(
+            name="Model", equation="Reactant * x + Protein * Complex", enzmldoc=enzmldoc
+        )
+
+        assert len(model.parameters) == 1
+        assert model.parameters[0].name == "x"
+        assert model.name == "Model"
+        assert model.equation == "s0 * x + p0 * c0"
+
     def test_model_generator(self, enzmldoc):
         """Tests consistency of the model generator"""
 

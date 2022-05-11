@@ -8,7 +8,7 @@ import ast
 import re
 import numexpr
 
-from typing import List, TYPE_CHECKING, Optional
+from typing import Any, List, TYPE_CHECKING, Optional
 from pydantic import Field
 from dataclasses import dataclass
 
@@ -177,7 +177,7 @@ class KineticModel(EnzymeMLBase):
         return ModelFactory(name=name, equation=equation, **parameters)
 
     @classmethod
-    def fromEquation(cls, name: str, equation: str):
+    def fromEquation(cls, name: str, equation: str, enzmldoc: Optional[Any] = None):
         """Creates a Kinetic Model instance from an equation
 
         Args:
@@ -187,18 +187,55 @@ class KineticModel(EnzymeMLBase):
             KineticModel: Resulting kinetic model
         """
 
+        if enzmldoc:
+            # Convert an equation with names to one with IDs
+
+            class_name = enzmldoc.__class__.__name__
+            if class_name != "EnzymeMLDocument":
+                # Guard clause
+                raise TypeError(
+                    f"Expected type 'EnzymeMLDocument' for argument 'enzmldoc'. Got '{class_name}' instead."
+                )
+
+            # Now perform the actual conversion
+            equation = cls._convert_names_to_ids(enzmldoc, equation)
+
         # Create a new instance
         cls = cls(name=name, equation=equation)
 
         # Parse equation and add parameters
+        used_species = []
         for node in ast.walk(ast.parse(equation)):
             if isinstance(node, ast.Name):
                 name = node.id
                 regex = re.compile(r"[s|p|c]\d*")
                 if not bool(regex.match(name)) and "_" + name not in cls.__dict__:
                     cls.addParameter(name=name)
+                else:
+                    used_species.append(name)
+
+        if not used_species:
+            raise TypeError(
+                "It seems like you have included no species (Protein, Reactant, Complex) in your equation. "
+                "Are you using names? Please set your 'EnzymeMLDocument' to the argument 'enzmldoc' in order to proceed"
+            )
 
         return cls
+
+    @staticmethod
+    def _convert_names_to_ids(enzmldoc, equation: str):
+        """Converts names in an equation to appropriate IDs given in an EnzymeMLDocument"""
+
+        all_species = {
+            **enzmldoc.protein_dict,
+            **enzmldoc.reactant_dict,
+            **enzmldoc.complex_dict,
+        }
+
+        for id, species in all_species.items():
+            equation = equation.replace(species.name, id)
+
+        return equation
 
     # ! Utilities
 
