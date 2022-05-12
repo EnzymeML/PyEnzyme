@@ -1,8 +1,10 @@
 import os
 
 from fastapi import FastAPI, UploadFile, File, Request, Body
-from starlette.responses import FileResponse, JSONResponse
+from starlette.responses import FileResponse, JSONResponse, HTMLResponse
 from starlette.background import BackgroundTasks
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.measurement import Measurement
@@ -20,6 +22,11 @@ from pyenzyme.enzymeml.core.exceptions import (
 
 # * Settings
 app = FastAPI(title="PyEnzyme REST-API", version="1.2", docs_url="/")
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+templates = Jinja2Templates(directory="static")
+
 
 # * Functions
 
@@ -206,6 +213,15 @@ async def get_enzymeml_template():
     return FileResponse(
         "./templates/EnzymeML_Template.xlsm", filename="EnzymeML_Template.xlsm"
     )
+
+
+@app.get(
+    "/template/upload",
+    summary="Upload the EnzymeML spreadsheet template and convert it to EnzymeML.",
+    tags=["EnzymeML spreadsheet"],
+)
+def upload_enzymeml_template(request: Request, response_class=HTMLResponse):
+    return templates.TemplateResponse("upload.html", {"request": request})
 
 
 @app.post(
