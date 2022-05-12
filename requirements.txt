@@ -20,3 +20,4 @@ plotly
 pysces
 lmfit
 xlsxwriter
+jinja2
