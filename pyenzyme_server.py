@@ -4,10 +4,10 @@ from fastapi import FastAPI, UploadFile, File, Request, Body
 from starlette.responses import FileResponse, JSONResponse, HTMLResponse
 from starlette.background import BackgroundTasks
 from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
 
 from pyenzyme.enzymeml.core.enzymemldocument import EnzymeMLDocument
 from pyenzyme.enzymeml.core.measurement import Measurement
+from pyenzyme.enzymeml.tools.validator import EnzymeMLValidator
 from pyenzyme.utils.rest_examples import create_full_example
 from pyenzyme.enzymeml.core.exceptions import (
     MeasurementDataSpeciesIdentifierError,
@@ -200,7 +200,7 @@ async def add_Measurement(
         background_tasks.add_task(remove_file, path=file_name)
 
 
-# ! TOOLS
+# ! TEMPLATE
 
 
 @app.get(
@@ -216,8 +216,9 @@ async def get_enzymeml_template():
 
 @app.get(
     "/template/upload",
-    summary="Upload the EnzymeML spreadsheet template and convert it to EnzymeML.",
+    summary="HTML website to upload the EnzymeML spreadsheet template and convert it to EnzymeML.",
     tags=["EnzymeML spreadsheet"],
+    response_class=HTMLResponse,
 )
 def upload_enzymeml_template(request: Request):
     return templates.TemplateResponse("upload.html", {"request": request})
@@ -263,6 +264,105 @@ async def convert_template(
 
     finally:
         background_tasks.add_task(remove_file, path=enzml_name)
+
+
+# ! Validation
+
+
+@app.get(
+    "/validation/download",
+    summary="Download the EnzymeML Validation template.",
+    tags=["EnzymeML Validation"],
+)
+async def get_validation_template():
+    return FileResponse(
+        "templates/EnzymeML_Validation_Template.xlsx",
+        filename="EnzymeML_Validation_Template.xlsm",
+    )
+
+
+@app.get(
+    "/validation/upload",
+    summary="HTML site to upload the EnzymeML Validation template and convert it to a YAML file.",
+    tags=["EnzymeML Validation"],
+    response_class=HTMLResponse,
+)
+def upload_validation_template(request: Request):
+    return templates.TemplateResponse("validation_upload.html", {"request": request})
+
+
+@app.post(
+    "/validation/convert",
+    summary="Convert the EnzymeML Validation template to a YAML template to use for validation on server site.",
+    tags=["EnzymeML Validation"],
+)
+async def convert_validation_template(
+    background_tasks: BackgroundTasks, validation_template: UploadFile = File(...)
+):
+
+    # Write to file
+    file_name = validation_template.filename
+    content = await validation_template.read()
+    with open(file_name, "wb") as file_handle:
+        file_handle.write(content)
+
+    # Generate the new EnzymeML file
+    try:
+        EnzymeMLValidator.convertSheetToYAML(
+            path=file_name,
+            filename="validation",
+        )
+
+        return FileResponse(
+            "validation.yaml", filename="EnzymeML_Validation_Template.yaml"
+        )
+
+    except Exception as e:
+        return str(e)
+
+    finally:
+        background_tasks.add_task(remove_file, path=file_name)
+        background_tasks.add_task(remove_file, path="validation.yaml")
+
+
+@app.post(
+    "/validation/",
+    summary="Vaidates an EnzymeML document based on a given EnzymeML Validation YAML file. Returns a boolean and a report, if validation has failed.",
+    tags=["EnzymeML Validation"],
+)
+async def validate_enzymeml(
+    background_tasks: BackgroundTasks,
+    omex_archive: UploadFile = File(...),
+    validation_template: UploadFile = File(...),
+):
+
+    # Write EnzymeML to file
+    omex_name = omex_archive.filename
+    content = await omex_archive.read()
+    with open(omex_name, "wb") as file_handle:
+        file_handle.write(content)
+
+    # Read EnzymeML document
+    try:
+        enzmldoc = EnzymeMLDocument.fromFile(omex_name)
+    except Exception as e:
+        return f"{e.__class__.__name__}: {str(e)}"
+    finally:
+        background_tasks.add_task(remove_file, path=omex_name)
+
+    # Write YAML to file
+    valid_name = validation_template.filename
+    content = await validation_template.read()
+    with open(valid_name, "wb") as file_handle:
+        file_handle.write(content)
+
+    # Read YAML and validate accordingly
+    try:
+        report, is_valid = enzmldoc.validateDocument(yaml_path=valid_name)
+
+        return {"is_valid": is_valid, "report": report}
+    finally:
+        background_tasks.add_task(remove_file, path=valid_name)
 
 
 # * Exception handlers
