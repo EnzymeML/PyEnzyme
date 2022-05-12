@@ -11,7 +11,7 @@ RUN apt-get update \
 
 
 RUN pip3 install git+https://github.com/EnzymeML/PyEnzyme.git
-RUN pip3 install fastapi uvicorn
+RUN pip3 install fastapi uvicorn jinja2
 
 COPY pyenzyme_server.py /app
 
