@@ -4,12 +4,11 @@
 # License: BSD-2 clause
 # Copyright (c) 2022 Stellenbosch University
 
-import copy
 import numpy as np
 import pandas as pd
 import os
 
-from typing import Union, Optional
+from typing import Union, Optional, List
 from pyenzyme.thinlayers.TL_Base import BaseThinLayer
 from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
 
@@ -45,7 +44,7 @@ class ThinLayerPysces(BaseThinLayer):
         if _PYSCES_IMPORT_STREAM is not None:
             print(_PYSCES_IMPORT_STREAM.getvalue())
             _PYSCES_IMPORT_STREAM = None
-        
+
         # check dependencies
         if _PYSCES_IMPORT_ERROR:
             raise RuntimeError(_PYSCES_IMPORT_ERROR)
@@ -63,6 +62,11 @@ class ThinLayerPysces(BaseThinLayer):
         Args:
             method (str): lmfit optimization algorithm, see https://lmfit.github.io/lmfit-py/fitting.html#choosing-different-fitting-methods
         """
+
+        if self.experimental_data is None:
+            raise ValueError(
+                "The given experiment has no data which is mandatory to perform an optimization. "
+            )
 
         # Initialize the model parameters
         parameters = self._initialize_parameters()
@@ -104,6 +108,36 @@ class ThinLayerPysces(BaseThinLayer):
                 raise TypeError(f"Reaction {reaction_id} has no model to add values to")
 
         return nu_enzmldoc
+
+    def simulate(
+        self,
+        time: Union[List[float], int],
+        step: int = 1,
+        init_file: Optional[str] = None,
+        **kwargs,
+    ):
+        """Simulates a given model over a time period"""
+
+        if isinstance(time, list):
+            # Convert to Series to maintain functionality
+            # in helper function '_simulate_experiment'
+            time = pd.Series(time)
+        elif isinstance(time, int):
+            # Generate a series to a certain point of time
+            time = pd.Series(list(range(0, time, step)))
+        else:
+            raise TypeError(
+                f"Expected either a list or number of timesteps. Got '{type(time)}' instead."
+            )
+
+        # Set up inits
+        self.inits = [{"time": time, **kwargs}]
+
+        # Perform simulation
+        output = self._simulate_experiment()
+        output.index.name = "Time"
+
+        return output
 
     # ! Helper methods
     def _initialize_parameters(self):
@@ -198,9 +232,12 @@ class ThinLayerPysces(BaseThinLayer):
             self.inits.append(init_mapping)
 
         # Concatenate and clean all DataFrames
-        self.experimental_data = pd.concat(raw_data)
-        self.experimental_data.reset_index(drop=True, inplace=True)
-        self.cols = list(self.experimental_data.columns)
+        if raw_data:
+            self.experimental_data = pd.concat(raw_data)
+            self.experimental_data.reset_index(drop=True, inplace=True)
+            self.cols = list(self.experimental_data.columns)
+        else:
+            self.experimental_data = None
 
     def _get_pysces_model(self, model_dir: str):
         """Converts an EnzymeMLDocument to a PySCeS model."""
@@ -233,11 +270,14 @@ class ThinLayerPysces(BaseThinLayer):
 
         return np.array(self.experimental_data - simulated_data)
 
-    def _simulate_experiment(self, parameters):
+    def _simulate_experiment(self, parameters=None):
         """Performs simulation based on the PySCeS model"""
 
         self.model.SetQuiet()
-        self.model.__dict__.update(parameters.valuesdict())
+
+        if parameters:
+            # Used for optimization only
+            self.model.__dict__.update(parameters.valuesdict())
 
         # intialize collection
         output = []

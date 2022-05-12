@@ -855,6 +855,31 @@ class EnzymeMLDocument(EnzymeMLBase):
                 init_values, file_handle, default_flow_style=False, sort_keys=False
             )
 
+    def generateSimulationTemplate(self, path: str):
+        """Generates an Initial Value template that can be used by a simulation method"""
+
+        class MyDumper(yaml.Dumper):
+            # Helper Class for pretty writing yaml
+            def increase_indent(self, flow=False, indentless=False):
+                return super(MyDumper, self).increase_indent(flow, False)
+
+        # Gather all species
+        all_species = {**self.reactant_dict, **self.protein_dict, **self.complex_dict}
+
+        init_dict = {
+            species.id: {"name": species.name, "init_conc": species.init_conc}
+            for species in all_species.values()
+        }
+
+        path = os.path.join(path, "initial_concentrations.yaml")
+
+        with open(path, "w") as file:
+            yaml_string = yaml.dump(
+                init_dict, Dumper=MyDumper, default_flow_style=False, sort_keys=False
+            )
+
+            file.write(yaml_string)
+
     def applyModelInitialization(self, path: str, to_values: bool = False) -> None:
         """Adds initial values per reaction to the model from a YAML config file.
 
