@@ -23,7 +23,6 @@ from pyenzyme.enzymeml.core.exceptions import (
 # * Settings
 app = FastAPI(title="PyEnzyme REST-API", version="1.2", docs_url="/")
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="static")
 
@@ -220,7 +219,7 @@ async def get_enzymeml_template():
     summary="Upload the EnzymeML spreadsheet template and convert it to EnzymeML.",
     tags=["EnzymeML spreadsheet"],
 )
-def upload_enzymeml_template(request: Request, response_class=HTMLResponse):
+def upload_enzymeml_template(request: Request):
     return templates.TemplateResponse("upload.html", {"request": request})
 
 
