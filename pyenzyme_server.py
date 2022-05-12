@@ -221,7 +221,7 @@ async def get_enzymeml_template():
     response_class=HTMLResponse,
 )
 def upload_enzymeml_template(request: Request):
-    return templates.TemplateResponse("upload.html", {"request": request})
+    return templates.TemplateResponse("template_upload.html", {"request": request})
 
 
 @app.post(
