@@ -31,7 +31,7 @@ from pyenzyme.enzymeml.core.unitdef import UnitDef
 from pyenzyme.enzymeml.core.measurement import Measurement
 from pyenzyme.enzymeml.core.measurementData import MeasurementData
 from pyenzyme.enzymeml.core.enzymereaction import EnzymeReaction
-from pyenzyme.enzymeml.models.kineticmodel import KineticParameter
+from pyenzyme.enzymeml.models.kineticmodel import KineticParameter, KineticModel
 from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
 from pyenzyme.enzymeml.tools.templatereader import read_template
@@ -776,17 +776,37 @@ class EnzymeMLDocument(EnzymeMLBase):
         for reaction in self.reaction_dict.values():
 
             # Get the equation
-            equation = reaction.get_reaction_scheme(by_name=by_name, enzmldoc=self)
+            raw_string = reaction.get_reaction_scheme(by_name=by_name, enzmldoc=self)
+
+            equation = list(filter(lambda x: "Equation:" in x, raw_string.splitlines()))
+            kinetic_law = list(filter(lambda x: "v = " in x, raw_string.splitlines()))
+            modifiers = list(
+                filter(lambda x: "Modifiers:" in x, raw_string.splitlines())
+            )
+
+            if not equation:
+                equation = None
+            else:
+                equation = equation[0].replace("Equation:", "")
+
+            if not kinetic_law:
+                kinetic_law = None
+            else:
+                kinetic_law = kinetic_law[0].replace("v = ", "")
+
+            if not modifiers:
+                modifiers = None
+            else:
+                modifiers = modifiers[0].replace("Modifiers:", "")
 
             if self.in_ipynb():
                 output.append(
                     {
                         "ID": reaction.id,
                         "Name": reaction.name,
-                        "equation": equation.split("\n")[1].replace("Equation: ", ""),
-                        "kinetic law": equation.split("\n")[2].replace(
-                            "Model: v = ", ""
-                        ),
+                        "equation": equation,
+                        "modifiers": modifiers,
+                        "kinetic law": kinetic_law,
                     }
                 )
             else:
@@ -833,6 +853,7 @@ class EnzymeMLDocument(EnzymeMLBase):
             if reaction.model is None:
                 continue
 
+            equation = reaction.model.equation
             parameters = {
                 param.name: {
                     "initial_value": None,
@@ -845,7 +866,10 @@ class EnzymeMLDocument(EnzymeMLBase):
             }
 
             if parameters:
-                init_values[reaction.id] = parameters
+                init_values[reaction.id] = {
+                    "equation": equation,
+                    "parameters": parameters,
+                }
 
         # Finally, write the template to YAML
         out = os.path.join(dir, self.name.replace(" ", "_") + "_init_values.yaml")
@@ -914,7 +938,21 @@ class EnzymeMLDocument(EnzymeMLBase):
             else:
                 # Get the reaction
                 reaction = self.getReaction(reaction_id)
-                reaction.apply_initial_values(value_dict, to_values=to_values)
+
+                if value_dict.get("equation"):
+                    model = KineticModel.fromEquation(
+                        name=reaction.model.name, equation=value_dict["equation"]
+                    )
+
+                    reaction.model = model
+
+                    reaction.apply_initial_values(
+                        value_dict["parameters"], to_values=to_values
+                    )
+
+                else:
+                    # Compliance to previous implementation
+                    reaction.apply_initial_values(value_dict, to_values=to_values)
 
     # ! Add methods
 
