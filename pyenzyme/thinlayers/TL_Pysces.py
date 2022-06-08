@@ -151,7 +151,8 @@ class ThinLayerPysces(BaseThinLayer):
                 if parameter.is_global:
                     continue
 
-                if parameter.value:
+                # need to also catch zero initial values
+                if parameter.value is not None:
                     parameters.add(
                         f"{reaction_id}_{parameter.name}",
                         parameter.value,
@@ -159,7 +160,7 @@ class ThinLayerPysces(BaseThinLayer):
                         min=parameter.lower,
                         max=parameter.upper,
                     )
-                elif parameter.initial_value:
+                elif parameter.initial_value is not None:
                     parameters.add(
                         f"{reaction_id}_{parameter.name}",
                         parameter.initial_value,
@@ -248,21 +249,36 @@ class ThinLayerPysces(BaseThinLayer):
 
                 if type(value) in [float, int] and value == 0:
                     # Catch initial values with zero and set them ot a small number
-                    value = 1.0e-6
+                    value = 1.0e-9
 
                 if species_id in self.model.species:
                     # Add if given in the model
                     setattr(self.model, f"{species_id}_init", value)
                 elif species_id == "time":
                     # Add time to the model
-                    self.model.sim_time = value.values
+                    time_values, num_reps = self._get_replicate_info(value)
+                    self.model.sim_time = time_values
                 else:
                     setattr(self.model, species_id, value)
 
             # Simulate the experiment and save results
             self.model.Simulate(userinit=1)
-            output.append(
-                [getattr(self.model.sim, species) for species in self.model.species]
-            )
+            for i in range(num_reps):
+                output.append(
+                    [getattr(self.model.sim, species) for species in self.model.species]
+                )
 
         return pd.DataFrame(np.hstack(output).T, columns=self.model.species)
+
+    def _get_replicate_info(self, time):
+        i = 1
+        # get index in time series where 2nd replicate starts
+        while i < len(time) and time[i] > time[i - 1]:
+            i += 1
+        num_reps = len(time) // i
+        if num_reps > 1:
+            for k in range(1, num_reps):
+                assert np.allclose(
+                    time[:i], time[k * i : k * i + i]
+                ), "Time points of replicates don't match!"
+        return (time[:i].values, num_reps)
