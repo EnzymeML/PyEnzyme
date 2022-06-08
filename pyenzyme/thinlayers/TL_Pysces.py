@@ -7,7 +7,9 @@
 import copy
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
 import os
+import math
 
 from typing import Union, Optional
 from pyenzyme.thinlayers.TL_Base import BaseThinLayer
@@ -70,7 +72,7 @@ class ThinLayerPysces(BaseThinLayer):
         # Perform optimization
         self.minimizer = lmfit.Minimizer(self._calculate_residual, parameters)
 
-        # Set estiomated parameters to self
+        # Set estimated parameters to self
         self.parameters = parameters
 
         return self.minimizer.minimize(method=method)
@@ -282,3 +284,80 @@ class ThinLayerPysces(BaseThinLayer):
                     time[:i], time[k * i : k * i + i]
                 ), "Time points of replicates don't match!"
         return (time[:i].values, num_reps)
+
+    def plot_fit(self):
+        """Plots the simulation and data for the fitted parameters."""
+
+        # check that optimization has been done
+        assert hasattr(self, "minimizer") and hasattr(
+            self.minimizer, "result"
+        ), "Please run optimize() first."
+
+        measurements = list(self.data.keys())
+        num = len(measurements)
+        numcols = 3
+        numrows = math.ceil(num / numcols)
+        fig, ax = plt.subplots(nrows=numrows, ncols=numcols, figsize=(9, 2.8 * numrows))
+        for i in range(num):
+            if num <= numcols:
+                theax = ax[i]
+            else:
+                theax = ax[i // numcols, i % numcols]
+            self._plot_measurement(measurements[i], i, ax=theax)
+        # remove empty axes
+        if num % numcols != 0:
+            empty = numcols - num % numcols
+            for i in range(-empty, 0):
+                if num <= numcols:
+                    ax[i].set_visible(False)
+                else:
+                    ax[num // numcols, i].set_visible(False)
+        fig.tight_layout()
+        return fig
+
+    def _plot_measurement(self, meas_id, i=0, ax=None):
+        """Plots a single measurement with simulation."""
+        time_unit = self.enzmldoc.measurement_dict[meas_id].global_time_unit
+        conc_unit = self.enzmldoc.reactant_dict[self.cols[0]].unit
+        if not ax:
+            fig, ax = plt.subplots()
+        sim = self._simulate_measurement(meas_id, self.minimizer.result.params, self.model)
+        sim.plot("Time", self.cols, ax=ax, legend=False)
+        if i == 0:
+            ax.figure.legend(loc='upper left', bbox_to_anchor=(1.0, 0.96))
+        ax.set_prop_cycle(None)
+        self.data[meas_id]["data"].plot("time", self.cols, style="^", legend=False, ax=ax)
+        ax.set_title(meas_id)
+        ax.set_xlabel(f"Time ({time_unit})")
+        ax.set_ylabel(f"Concentration ({conc_unit})")
+
+    def _simulate_measurement(self, meas_id, parameters, model):
+        """Performs simulation based on the PySCeS model"""
+
+        data = self.data[meas_id]["data"]
+        model.SetQuiet()
+        model.__dict__.update(parameters.valuesdict())
+
+        # Now iterate over all initial concentrations and simulate accordingly
+        init_concs = self._map_inits(meas_id)
+        for species_id, value in init_concs.items():
+            if species_id in model.species:
+                # Add if given in the model
+                setattr(model, f"{species_id}_init", value)
+            else:
+                setattr(model, species_id, value)
+
+        # Simulate the experiment and save results
+        end_time = data.time.iloc[-1]
+        # simulate 200 points for smooth curve
+        model.doSim(end=end_time, points=200)
+        result = pd.DataFrame(
+            np.array([getattr(model.sim, species) for species in self.cols]).T,
+            columns=self.cols,
+        )
+        result["Time"] = self.model.sim.Time
+        return result
+
+    def _map_inits(self, meas_id):
+        init_concs = self.data[meas_id]["initConc"]
+        return {species_id: value for species_id, (value, _) in init_concs.items()}
