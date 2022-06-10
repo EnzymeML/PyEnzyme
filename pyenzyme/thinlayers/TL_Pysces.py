@@ -4,7 +4,6 @@
 # License: BSD-2 clause
 # Copyright (c) 2022 Stellenbosch University
 
-import copy
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -121,7 +120,8 @@ class ThinLayerPysces(BaseThinLayer):
         # Add global parameters
         for global_param in self.global_parameters.values():
 
-            if global_param.value:
+            # need to also catch zero initial values
+            if global_param.value is not None:
                 parameters.add(
                     f"{global_param.name}",
                     global_param.value,
@@ -130,7 +130,7 @@ class ThinLayerPysces(BaseThinLayer):
                     max=global_param.upper,
                 )
 
-            elif global_param.initial_value:
+            elif global_param.initial_value is not None:
                 parameters.add(
                     f"{global_param.name}",
                     global_param.initial_value,
@@ -216,15 +216,28 @@ class ThinLayerPysces(BaseThinLayer):
         sbmlfile_name = f"{self.enzmldoc.name.replace(' ', '_')}.xml"
         sbmlfile_path = os.path.join(model_dir, sbmlfile_name)
         with open(sbmlfile_path, "w") as file:
-            file.write(self.enzmldoc.toXMLString())
+            file.write(self.sbml_xml)
 
         # First, convert the EnzymeML model to a PySCeS model
-        pysces.interface.convertSBML2PSC(
-            sbmlfile_name, sbmldir=model_dir, pscdir=model_dir
-        )
+        pscfile_path = sbmlfile_path + ".psc"
+        if not (
+            (os.path.exists(pscfile_path))
+            and (os.path.getmtime(pscfile_path) > os.path.getmtime(self.filepath))
+        ):
+            pysces.interface.convertSBML2PSC(sbmlfile_name, sbmldir=model_dir, pscdir=model_dir)
 
         # Finally, load the PSC model
         self.model = pysces.model(sbmlfile_name, dir=model_dir)
+
+        # work around https://github.com/PySCeS/pysces/issues/79
+        if (
+            self.model.__KeyWords__["Species_In_Conc"]
+            and self.model.__KeyWords__["Output_In_Conc"]
+        ):
+            for comp in self.model.__compartments__:
+                self.model.__compartments__[comp]["size"] = 1.0
+                setattr(self.model, comp, 1.0)
+                setattr(self.model, f"{comp}_init", 1.0)
 
     def _calculate_residual(self, parameters) -> np.ndarray:
         """Function that will be optimized"""
@@ -313,7 +326,6 @@ class ThinLayerPysces(BaseThinLayer):
                 else:
                     ax[num // numcols, i].set_visible(False)
         fig.tight_layout()
-        return fig
 
     def _plot_measurement(self, meas_id, i=0, ax=None):
         """Plots a single measurement with simulation."""

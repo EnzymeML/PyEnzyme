@@ -22,6 +22,7 @@ class BaseThinLayer(ABC):
             raise TypeError("Measurements must either be a list of IDs or 'all'")
 
         # Load the EnzymeML document to gather data
+        self.filepath = path
         self.enzmldoc = EnzymeMLDocument.fromFile(path)
 
         # If an initialization schema is given, apply it here
