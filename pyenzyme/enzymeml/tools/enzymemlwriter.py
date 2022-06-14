@@ -530,7 +530,7 @@ class EnzymeMLWriter:
         global_param.setId(parameter.name)
         global_param.setConstant(parameter.constant)
 
-        if parameter.value:
+        if parameter.value is not None:
             global_param.setValue(parameter.value)
 
         if parameter._unit_id:
@@ -728,7 +728,7 @@ class EnzymeMLWriter:
         local_param = kinetic_law.createLocalParameter()
         local_param.setId(parameter.name)
 
-        if parameter.value:
+        if parameter.value is not None:
             local_param.setValue(parameter.value)
 
         if parameter._unit_id:
