@@ -166,6 +166,7 @@ def read_template(path: str, enzmldoc):
                 "Concentration": DataTypes.CONCENTRATION,
                 "Absorption": DataTypes.ABSORPTION,
                 "Conversion [%]": DataTypes.CONVERSION,
+                "Peak Area": DataTypes.PEAK_AREA,
             }
 
             if reactant_id not in measurement.species_dict["reactants"]:
@@ -179,6 +180,14 @@ def read_template(path: str, enzmldoc):
                 if type_mapping[row["Type"]] is DataTypes.CONVERSION:
                     # Convert percent to rational [0,1]
                     row_values = list(map(lambda value: value / 100, row_values))
+                    reactant_unit = "dimensionless"
+                elif type_mapping[row["Type"]] is DataTypes.PEAK_AREA:
+                    # Add dimensionless unit
+                    if any(value < 0 for value in row_values):
+                        raise ValueError(
+                            "Peak area cant be negative. Data might be corrupted"
+                        )
+
                     reactant_unit = "dimensionless"
 
                 # Create Replicate
