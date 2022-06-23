@@ -85,6 +85,7 @@ class ThinLayerCopasi(BaseThinLayer):
         # initialize base class, let it do the reading
         BaseThinLayer.__init__(
             self, path, measurement_ids, init_file=init_file)
+        print('baselayer init done')
         self.name = self.enzmldoc.name
         self.working_dir = os.path.join(os.path.abspath(outdir), self.name)
         self.cps_file = os.path.join(self.working_dir, self.name + '.cps')
@@ -97,6 +98,7 @@ class ThinLayerCopasi(BaseThinLayer):
             self.dm.importSBMLFromString(self.sbml_xml)
         except COPASI.CCopasiException:
             log.error(COPASI.CCopasiMessage.getAllMessageText())
+        print('sbml import done')
 
         # maps
         self._init_maps()
@@ -112,17 +114,21 @@ class ThinLayerCopasi(BaseThinLayer):
         self.exp_set = self.problem.getExperimentSet()
         self.exp_files = []
         self.delete_files_at_exit = True
+        print('task init done')
 
         # read in experiments
         self._import_experiments()
+        print('imported experiments')
 
         # set all parameters as fit items
         if init_file is None:
             self._set_default_items()
         else:
             self._set_default_items_from_init_file()
+        print('imported fit items')
 
         self.dm.saveModel(self.cps_file, True)
+        print('saved model')
 
     def __del__(self):
         """Destructor freeing memory, cleaning files"""

@@ -60,6 +60,7 @@ class TestModel4(unittest.TestCase):
         self.thin_layer = None
 
     def test_example(self):
+        print('start test')
         start = time.perf_counter_ns()
         self.thin_layer = ThinLayerCopasi(path=self.example_file, outdir=temp_dir, init_file=self.init_file)
         duration = time.perf_counter_ns() - start
