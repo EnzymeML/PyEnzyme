@@ -1,6 +1,7 @@
 import unittest
 import COPASI
 import os
+import time
 
 from pyenzyme.thinlayers.TL_Copasi import ThinLayerCopasi
 
@@ -62,12 +63,27 @@ class TestModel4(unittest.TestCase):
         self.thin_layer.enzmldoc.toFile(out_dir, 'test')
 
     def test_example(self):
+        start = time.perf_counter_ns()
         fit_items = self.thin_layer.get_fit_parameters()
         initial_values = [val['start'] for val in fit_items]
+        duration = time.perf_counter_ns() - start
+        print(f"get fit paramters:  {duration // 1000000}ms.")
+        start = time.perf_counter_ns()
         self.thin_layer.task.setMethodType(COPASI.CTaskEnum.Method_Statistics)
         self.thin_layer.optimize()
+        duration = time.perf_counter_ns() - start
+        print(f"optimize:  {duration // 1000000}ms.")
+        start = time.perf_counter_ns()
         new_values = [val for val in self.thin_layer.problem.getSolutionVariables()]
         self.assertNotEqual(initial_values, new_values)
+        duration = time.perf_counter_ns() - start
+        print(f"get result:  {duration // 1000000}ms.")
+        start = time.perf_counter_ns()
         new_doc = self.thin_layer.write()
+        duration = time.perf_counter_ns() - start
+        print(f"create new document:  {duration // 1000000}ms.")
+        start = time.perf_counter_ns()
         new_doc.toFile(out_dir, 'test2')
+        duration = time.perf_counter_ns() - start
+        print(f"write document:  {duration // 1000000}ms.")
         self.assertIsNotNone(new_doc)
