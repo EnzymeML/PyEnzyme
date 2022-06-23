@@ -110,6 +110,8 @@ class ThinLayerCopasi(BaseThinLayer):
         self.problem = self.task.getProblem()
         self.problem.setCalculateStatistics(True)
         self.exp_set = self.problem.getExperimentSet()
+        self.exp_files = []
+        self.delete_files_at_exit = True
 
         # read in experiments
         self._import_experiments()
@@ -121,6 +123,28 @@ class ThinLayerCopasi(BaseThinLayer):
             self._set_default_items_from_init_file()
 
         self.dm.saveModel(self.cps_file, True)
+
+    def __del__(self):
+        """Destructor freeing memory, cleaning files"""
+        del self.enzmldoc
+        self.task = None
+        self.model = None
+        self.problem = None
+        self.data = None
+        self.sbml_xml = None
+        sbml_id_map = None
+
+        if self.dm != None:
+            COPASI.CRootContainer.removeDatamodel(self.dm)
+            self.dm = None
+
+        if self.delete_files_at_exit:
+            os.remove(self.cps_file)
+            self.cps_file = None
+            for name in self.exp_files:
+                os.remove(name)
+            self.exp_files = None
+
 
     def _init_maps(self):
         """Initializes a map from SBML id to COPASI objects"""
@@ -183,6 +207,7 @@ class ThinLayerCopasi(BaseThinLayer):
 
             exp_filename = os.path.abspath(os.path.join(
                 self.working_dir, measurement_id + '.tsv'))
+            self.exp_files.append(exp_filename)
 
             data.to_csv(exp_filename,
                         sep='\t', header=True, index=False)

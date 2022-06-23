@@ -57,12 +57,17 @@ class TestModel4(unittest.TestCase):
     def setUp(self):
         self.assertTrue(os.path.exists(self.example_file))
         self.assertTrue(os.path.exists(self.init_file))
-        self.thin_layer = ThinLayerCopasi(path=self.example_file, outdir=temp_dir, init_file=self.init_file)
-
-    def test_write(self):
-        self.thin_layer.enzmldoc.toFile(out_dir, 'test')
+        self.thin_layer = None
 
     def test_example(self):
+        start = time.perf_counter_ns()
+        self.thin_layer = ThinLayerCopasi(path=self.example_file, outdir=temp_dir, init_file=self.init_file)
+        duration = time.perf_counter_ns() - start
+        print(f"initialize tl:  {duration // 1000000}ms.")
+        start = time.perf_counter_ns()
+        self.thin_layer.enzmldoc.toFile(out_dir, 'test')
+        duration = time.perf_counter_ns() - start
+        print(f"write file:  {duration // 1000000}ms.")
         start = time.perf_counter_ns()
         fit_items = self.thin_layer.get_fit_parameters()
         initial_values = [val['start'] for val in fit_items]

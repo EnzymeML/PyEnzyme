@@ -27,7 +27,7 @@ jobs:
         uses: mxschmitt/action-tmate@v3
       - name: Test with pytest
         run: |
-          python3 -m pytest -v
+          python3 -m pytest -v -s
       - name: Lint with flake8
         run: |
           pip install flake8
