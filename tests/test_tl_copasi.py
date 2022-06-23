@@ -83,3 +83,7 @@ class TestTlCopasi(unittest.TestCase):
         duration = time.perf_counter_ns() - start
         print(f"write document:  {duration // 1000000}ms.", flush=True)
         self.assertIsNotNone(new_doc)
+
+
+if __name__ == '__main__':
+    unittest.main()
