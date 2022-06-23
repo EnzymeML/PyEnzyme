@@ -8,6 +8,9 @@ this_dir = os.path.abspath(os.path.dirname(__file__))
 temp_dir = os.path.join(this_dir, 'tmp')
 if not os.path.exists(temp_dir):
     os.mkdir(temp_dir)
+out_dir = os.path.join(this_dir, 'out')
+if not os.path.exists(out_dir):
+    os.mkdir(out_dir)
 
 
 class TestTlCopasi(unittest.TestCase):
@@ -34,9 +37,6 @@ class TestTlCopasi(unittest.TestCase):
 class TestTlCopasiENO(unittest.TestCase):
     example_file = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'PGM-ENO.omex')
 
-    def test_copasi_version(self):
-        self.assertGreaterEqual(int(COPASI.CVersion.VERSION.getVersionDevel()), 214, "Need newer COPASI version")
-
     def test_example_file_exists(self):
         self.assertTrue(os.path.exists(self.example_file))
 
@@ -53,22 +53,21 @@ class TestModel4(unittest.TestCase):
     example_file = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'Model_4.omex')
     init_file = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'Model_4_init.yaml')
 
-    def test_copasi_version(self):
-        self.assertGreaterEqual(int(COPASI.CVersion.VERSION.getVersionDevel()), 214, "Need newer COPASI version")
-
-    def test_example_file_exists(self):
+    def setUp(self):
         self.assertTrue(os.path.exists(self.example_file))
         self.assertTrue(os.path.exists(self.init_file))
+        self.thin_layer = ThinLayerCopasi(path=self.example_file, outdir=temp_dir, init_file=self.init_file)
+
+    def test_write(self):
+        self.thin_layer.enzmldoc.toFile(out_dir, 'test')
 
     def test_example(self):
-        thin_layer = ThinLayerCopasi(path=self.example_file, outdir=temp_dir, init_file=self.init_file)
-        thin_layer.enzmldoc.toFile('test')
-        fit_items = thin_layer.get_fit_parameters()
+        fit_items = self.thin_layer.get_fit_parameters()
         initial_values = [val['start'] for val in fit_items]
-        thin_layer.task.setMethodType(COPASI.CTaskEnum.Method_Statistics)
-        thin_layer.optimize()
-        new_values = [val for val in thin_layer.problem.getSolutionVariables()]
+        self.thin_layer.task.setMethodType(COPASI.CTaskEnum.Method_Statistics)
+        self.thin_layer.optimize()
+        new_values = [val for val in self.thin_layer.problem.getSolutionVariables()]
         self.assertNotEqual(initial_values, new_values)
-        new_doc = thin_layer.write()
-        new_doc.toFile('Test')
+        new_doc = self.thin_layer.write()
+        new_doc.toFile(out_dir, 'test2')
         self.assertIsNotNone(new_doc)
