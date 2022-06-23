@@ -13,19 +13,24 @@ out_dir = os.path.join(this_dir, 'out')
 if not os.path.exists(out_dir):
     os.mkdir(out_dir)
 
-
 class TestTlCopasi(unittest.TestCase):
 
-    example_file = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', '3IZNOK_Simulated.omex')
+    example_file1 = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', '3IZNOK_Simulated.omex')
+    example_file2 = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'PGM-ENO.omex')
+    example_file3 = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'Model_4.omex')
+    init_file = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'Model_4_init.yaml')
 
     def test_copasi_version(self):
         self.assertGreaterEqual(int(COPASI.CVersion.VERSION.getVersionDevel()), 214, "Need newer COPASI version")
     
     def test_example_file_exists(self):
-        self.assertTrue(os.path.exists(self.example_file))
+        self.assertTrue(os.path.exists(self.example_file1))
+        self.assertTrue(os.path.exists(self.example_file2))
+        self.assertTrue(os.path.exists(self.example_file3))
+        self.assertTrue(os.path.exists(self.init_file))
     
-    def test_example(self):
-        thin_layer = ThinLayerCopasi(path=self.example_file, outdir=temp_dir)
+    def test_example_3IZNOK_Simulated(self):
+        thin_layer = ThinLayerCopasi(path=self.example_file1, outdir=temp_dir)
         self.assertEqual(thin_layer.reaction_data['r0'][0].parameters[0].name, 'k_cat')
         self.assertEqual(thin_layer.reaction_data['r0'][0].parameters[0].value, 0.015)
         self.assertEqual(thin_layer.reaction_data['r0'][0].parameters[1].name, 'k_m')
@@ -33,36 +38,21 @@ class TestTlCopasi(unittest.TestCase):
         thin_layer.task.setMethodType(COPASI.CTaskEnum.Method_Statistics)
         thin_layer.optimize()
         new_doc = thin_layer.write()
+        del thin_layer
 
-
-class TestTlCopasiENO(unittest.TestCase):
-    example_file = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'PGM-ENO.omex')
-
-    def test_example_file_exists(self):
-        self.assertTrue(os.path.exists(self.example_file))
-
-    def test_example(self):
-        thin_layer = ThinLayerCopasi(path=self.example_file, outdir=temp_dir)
+    def test_example_ENO(self):
+        thin_layer = ThinLayerCopasi(path=self.example_file2, outdir=temp_dir)
         fit_items = thin_layer.get_fit_parameters()
         initial_values = [val['start'] for val in fit_items]
         result = thin_layer.optimize().reset_index().to_dict(orient='records')
         new_values = [val['value'] for val in result]
         self.assertNotEqual(initial_values, new_values)
+        del thin_layer
 
-
-class TestModel4(unittest.TestCase):
-    example_file = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'Model_4.omex')
-    init_file = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'Model_4_init.yaml')
-
-    def setUp(self):
-        self.assertTrue(os.path.exists(self.example_file))
-        self.assertTrue(os.path.exists(self.init_file))
-        self.thin_layer = None
-
-    def test_example(self):
+    def test_example_Model4(self):
         print('start test')
         start = time.perf_counter_ns()
-        self.thin_layer = ThinLayerCopasi(path=self.example_file, outdir=temp_dir, init_file=self.init_file)
+        self.thin_layer = ThinLayerCopasi(path=self.example_file3, outdir=temp_dir, init_file=self.init_file)
         duration = time.perf_counter_ns() - start
         print(f"initialize tl:  {duration // 1000000}ms.")
         start = time.perf_counter_ns()
