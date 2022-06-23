@@ -2,7 +2,7 @@ import unittest
 import COPASI
 import os
 
-from pyenzyme.thinlayers import ThinLayerCopasi
+from pyenzyme.thinlayers.TL_Copasi import ThinLayerCopasi
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
 temp_dir = os.path.join(this_dir, 'tmp')
@@ -26,6 +26,7 @@ class TestTlCopasi(unittest.TestCase):
         self.assertEqual(thin_layer.reaction_data['r0'][0].parameters[0].value, 0.015)
         self.assertEqual(thin_layer.reaction_data['r0'][0].parameters[1].name, 'k_m')
         self.assertEqual(thin_layer.reaction_data['r0'][0].parameters[1].value, 0.01)
+        thin_layer.task.setMethodType(COPASI.CTaskEnum.Method_Statistics)
         thin_layer.optimize()
         new_doc = thin_layer.write()
 
@@ -64,7 +65,7 @@ class TestModel4(unittest.TestCase):
         thin_layer.enzmldoc.toFile('test')
         fit_items = thin_layer.get_fit_parameters()
         initial_values = [val['start'] for val in fit_items]
-        thin_layer.task.setMethodType(COPASI.CTaskEnum.Method_LevenbergMarquardt)
+        thin_layer.task.setMethodType(COPASI.CTaskEnum.Method_Statistics)
         thin_layer.optimize()
         new_values = [val for val in thin_layer.problem.getSolutionVariables()]
         self.assertNotEqual(initial_values, new_values)
