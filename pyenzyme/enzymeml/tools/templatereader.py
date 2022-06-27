@@ -166,7 +166,6 @@ def read_template(path: str, enzmldoc):
                 "Concentration": DataTypes.CONCENTRATION,
                 "Absorption": DataTypes.ABSORPTION,
                 "Conversion [%]": DataTypes.CONVERSION,
-                "Total concentration after addition": DataTypes.CONCENTRATION,
             }
 
             if reactant_id not in measurement.species_dict["reactants"]:
