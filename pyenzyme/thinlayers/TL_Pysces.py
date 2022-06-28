@@ -7,10 +7,13 @@
 import numpy as np
 import pandas as pd
 import os
+import yaml
 
 from typing import Union, Optional, List
 from pyenzyme.thinlayers.TL_Base import BaseThinLayer
 from pyenzyme.enzymeml.core.exceptions import SpeciesNotFoundError
+from pyenzyme.enzymeml.core.measurement import Measurement
+from pyenzyme.enzymeml.core.replicate import Replicate
 
 import io
 from contextlib import redirect_stdout
@@ -114,6 +117,8 @@ class ThinLayerPysces(BaseThinLayer):
         time: Union[List[float], int],
         step: int = 1,
         init_file: Optional[str] = None,
+        name: Optional[str] = None,
+        to_measurement: bool = False,
         **kwargs,
     ):
         """Simulates a given model over a time period"""
@@ -130,12 +135,23 @@ class ThinLayerPysces(BaseThinLayer):
                 f"Expected either a list or number of timesteps. Got '{type(time)}' instead."
             )
 
-        # Set up inits
-        self.inits = [{"time": time, **kwargs}]
+        if init_file:
+            inits = yaml.safe_load(open(init_file).read())
+            initials = {
+                species_id: config["init_conc"] for species_id, config in inits.items()
+            }
+        else:
+            initials = {**kwargs}
+
+        self.inits = [{"time": time, **initials}]
 
         # Perform simulation
         output = self._simulate_experiment()
         output.index.name = "Time"
+
+        if to_measurement:
+            name = name if name is not None else "Unnamed"
+            self._add_to_measurements(name=name, time=time, data=output)
 
         return output
 
@@ -306,3 +322,79 @@ class ThinLayerPysces(BaseThinLayer):
             )
 
         return pd.DataFrame(np.hstack(output).T, columns=self.model.species)
+
+    def _add_to_measurements(self, name: str, time, data):
+        """Adds simulation outputs to measurements"""
+
+        FUNCTIONAL_FIELDS = ["reaction", "time"]
+
+        # Create the measurement
+        time_unit = self._infer_time_unit()
+        measurement = Measurement(
+            name=name,
+            global_time=time.to_list(),
+            global_time_unit=time_unit,
+        )
+
+        for init in self.inits:
+            for species, init_conc in init.items():
+
+                if species in FUNCTIONAL_FIELDS:
+                    continue
+
+                unit = self.enzmldoc.getAny(species).unit
+
+                if species in data:
+                    repls = [
+                        Replicate(
+                            id=f"simu_{name}_{species}_{init_conc}",
+                            species_id=species,
+                            data_unit=unit,
+                            time_unit=time_unit,
+                            data=data[species].to_list(),
+                            time=time.to_list(),
+                            is_calculated=True,
+                        )
+                    ]
+
+                else:
+                    repls = []
+
+                measurement.addData(
+                    reactant_id=species,
+                    init_conc=init_conc,
+                    unit=unit,
+                    replicates=repls,
+                )
+
+            self.enzmldoc.addMeasurement(measurement)
+
+    def _infer_time_unit(self):
+        """Retrieves the time unit for the simulation from the parameter unit definitions"""
+
+        params = self.enzmldoc.exportKineticParameters()
+        unit_defs = [
+            self.enzmldoc._unit_dict[self.enzmldoc._convertToUnitDef(unit)]
+            for unit in params.unit
+            if unit is not None
+        ]
+
+        # Filter time units and create a unique set
+        time_units = set()
+        for unit in unit_defs:
+            # Find the time part and safe in a list
+
+            filtered_units = list(
+                filter(lambda base: base.kind == "second", unit.units)
+            )
+
+            time_units.update([unit.get_name() for unit in filtered_units])
+
+        if len(time_units):
+            return list(time_units)[0]
+
+        # Raise an error if there are either no time units
+        # or different ones -> Bot scenarios do not make sense
+        raise ValueError(
+            "Either found none or different time units in the document. ({time_units})"
+        )
