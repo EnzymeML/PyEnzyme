@@ -629,7 +629,10 @@ class EnzymeMLDocument(EnzymeMLBase):
         param_report = pd.DataFrame(params).set_index("reaction", inplace=False)
 
         if exclude_constant:
-            return param_report[param_report.constant == False]
+            param_report = [param_report.constant == False]
+
+        if not as_dataframe:
+            return params
 
         return param_report
 
