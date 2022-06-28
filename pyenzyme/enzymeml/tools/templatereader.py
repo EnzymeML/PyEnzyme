@@ -230,15 +230,18 @@ def get_template_map(obj) -> dict:
 
 def extract_values(sheet: pd.DataFrame, mapping: Dict[str, str]) -> list:
 
+    # Get all valid columns
+    cols = [col for col in sheet.columns if "Unnamed" not in col]
+    sheet = sheet[cols]
     sheet = sheet.replace(r"^\s*$", np.nan, regex=True)
-    sheet = sheet.dropna(thresh=len(mapping) - 1)
+    sheet = sheet.dropna(thresh=len(mapping) - 2)
     records = sheet.to_dict(orient="records")
 
     return [
         {
             mapping.get(key): item
             for key, item in record.items()
-            if item and mapping.get(key)
+            if item and mapping.get(key) and "nan" not in repr(item)
         }
         for record in records
     ]
