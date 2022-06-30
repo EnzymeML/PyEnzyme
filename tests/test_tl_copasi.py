@@ -6,29 +6,42 @@ import time
 from pyenzyme.thinlayers.TL_Copasi import ThinLayerCopasi
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
-temp_dir = os.path.join(this_dir, 'tmp')
+temp_dir = os.path.join(this_dir, "tmp")
 if not os.path.exists(temp_dir):
     os.mkdir(temp_dir)
-out_dir = os.path.join(this_dir, 'out')
+out_dir = os.path.join(this_dir, "out")
 if not os.path.exists(out_dir):
     os.mkdir(out_dir)
 
+
 class TestTlCopasi(unittest.TestCase):
 
-    example_file1 = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', '3IZNOK_Simulated.omex')
-    example_file2 = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'PGM-ENO.omex')
-    example_file3 = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'Model_4.omex')
-    init_file = os.path.join(this_dir, '..', 'examples', 'ThinLayers', 'COPASI', 'Model_4_init.yaml')
+    example_file1 = os.path.join(
+        this_dir, "..", "examples", "ThinLayers", "COPASI", "3IZNOK_Simulated.omex"
+    )
+    example_file2 = os.path.join(
+        this_dir, "..", "examples", "ThinLayers", "COPASI", "PGM-ENO.omex"
+    )
+    example_file3 = os.path.join(
+        this_dir, "..", "examples", "ThinLayers", "COPASI", "Model_4.omex"
+    )
+    init_file = os.path.join(
+        this_dir, "..", "examples", "ThinLayers", "COPASI", "Model_4_init.yaml"
+    )
 
     def test_copasi_version(self):
-        self.assertGreaterEqual(int(COPASI.CVersion.VERSION.getVersionDevel()), 214, "Need newer COPASI version")
-    
+        self.assertGreaterEqual(
+            int(COPASI.CVersion.VERSION.getVersionDevel()),
+            214,
+            "Need newer COPASI version",
+        )
+
     def test_example_file_exists(self):
         self.assertTrue(os.path.exists(self.example_file1))
         self.assertTrue(os.path.exists(self.example_file2))
         self.assertTrue(os.path.exists(self.example_file3))
         self.assertTrue(os.path.exists(self.init_file))
-    
+
     # def test_example_3IZNOK_Simulated(self):
     #     thin_layer = ThinLayerCopasi(path=self.example_file1, outdir=temp_dir)
     #     self.assertEqual(thin_layer.reaction_data['r0'][0].parameters[0].name, 'k_cat')
@@ -50,18 +63,20 @@ class TestTlCopasi(unittest.TestCase):
     #     del thin_layer
 
     def test_example_Model4(self):
-        print('start test', flush=True)
+        print("start test", flush=True)
         start = time.perf_counter_ns()
-        self.thin_layer = ThinLayerCopasi(path=self.example_file3, outdir=temp_dir, init_file=self.init_file)
+        self.thin_layer = ThinLayerCopasi(
+            path=self.example_file3, outdir=temp_dir, init_file=self.init_file
+        )
         duration = time.perf_counter_ns() - start
         print(f"initialize tl:  {duration // 1000000}ms.", flush=True)
         start = time.perf_counter_ns()
-        self.thin_layer.enzmldoc.toFile(out_dir, 'test', flush=True)
+        self.thin_layer.enzmldoc.toFile(out_dir, "test")
         duration = time.perf_counter_ns() - start
         print(f"write file:  {duration // 1000000}ms.", flush=True)
         start = time.perf_counter_ns()
         fit_items = self.thin_layer.get_fit_parameters()
-        initial_values = [val['start'] for val in fit_items]
+        initial_values = [val["start"] for val in fit_items]
         duration = time.perf_counter_ns() - start
         print(f"get fit paramters:  {duration // 1000000}ms.", flush=True)
         start = time.perf_counter_ns()
@@ -79,11 +94,11 @@ class TestTlCopasi(unittest.TestCase):
         duration = time.perf_counter_ns() - start
         print(f"create new document:  {duration // 1000000}ms.", flush=True)
         start = time.perf_counter_ns()
-        new_doc.toFile(out_dir, 'test2')
+        new_doc.toFile(out_dir, "test2")
         duration = time.perf_counter_ns() - start
         print(f"write document:  {duration // 1000000}ms.", flush=True)
         self.assertIsNotNone(new_doc)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
