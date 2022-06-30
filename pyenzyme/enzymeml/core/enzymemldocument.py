@@ -595,7 +595,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         if len(measurement_ids) == 1 and measurement_ids[0] != "all":
             # If its only a single measurement, return it directly
-            return replicate_data[measurement_ids[0]]
+            return replicate_data
 
         return replicate_data
 
