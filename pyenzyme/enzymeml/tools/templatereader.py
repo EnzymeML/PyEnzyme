@@ -242,7 +242,7 @@ def extract_values(sheet: pd.DataFrame, mapping: Dict[str, str]) -> list:
         {
             mapping.get(key): item
             for key, item in record.items()
-            if item and mapping.get(key) and "nan" not in repr(item)
+            if item and mapping.get(key) and "nan" != repr(item)
         }
         for record in records
     ]
