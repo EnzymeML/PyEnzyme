@@ -9,6 +9,7 @@ import re
 import ast
 import json
 import yaml
+import sys
 import logging
 import pandas as pd
 import seaborn as sns
@@ -595,7 +596,7 @@ class EnzymeMLDocument(EnzymeMLBase):
 
         if len(measurement_ids) == 1 and measurement_ids[0] != "all":
             # If its only a single measurement, return it directly
-            return replicate_data[measurement_ids[0]]
+            return replicate_data
 
         return replicate_data
 
@@ -770,6 +771,10 @@ class EnzymeMLDocument(EnzymeMLBase):
 
     def printReactionSchemes(self, by_name: bool = True):
         """Prints all reaction equations to inspect the content"""
+
+        if len(self.reaction_dict) == 0:
+            print(">> No reactions present in this EnzymeML Document.", file=sys.stderr)
+            return
 
         output = []
 

@@ -41,7 +41,7 @@ setup(
         "pyyaml==5.4.1",
         "deprecation",
         "xmltodict",
-        "requests",
+        "requests"
     ],
     extras_require={
         "test": ["pytest-cov"],

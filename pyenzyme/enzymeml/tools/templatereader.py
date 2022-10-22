@@ -166,6 +166,8 @@ def read_template(path: str, enzmldoc):
                 "Concentration": DataTypes.CONCENTRATION,
                 "Absorption": DataTypes.ABSORPTION,
                 "Conversion [%]": DataTypes.CONVERSION,
+                "Peak Area": DataTypes.PEAK_AREA,
+                "Total concentration after addition": DataTypes.CONCENTRATION,
             }
 
             if reactant_id not in measurement.species_dict["reactants"]:
@@ -179,6 +181,14 @@ def read_template(path: str, enzmldoc):
                 if type_mapping[row["Type"]] is DataTypes.CONVERSION:
                     # Convert percent to rational [0,1]
                     row_values = list(map(lambda value: value / 100, row_values))
+                    reactant_unit = "dimensionless"
+                elif type_mapping[row["Type"]] is DataTypes.PEAK_AREA:
+                    # Add dimensionless unit
+                    if any(value < 0 for value in row_values):
+                        raise ValueError(
+                            "Peak area cant be negative. Data might be corrupted"
+                        )
+
                     reactant_unit = "dimensionless"
 
                 # Create Replicate
@@ -221,15 +231,18 @@ def get_template_map(obj) -> dict:
 
 def extract_values(sheet: pd.DataFrame, mapping: Dict[str, str]) -> list:
 
+    # Get all valid columns
+    cols = [col for col in sheet.columns if "Unnamed" not in col]
+    sheet = sheet[cols]
     sheet = sheet.replace(r"^\s*$", np.nan, regex=True)
-    sheet = sheet.dropna(thresh=len(mapping) - 1)
+    sheet = sheet.dropna(thresh=len(mapping) - 2)
     records = sheet.to_dict(orient="records")
 
     return [
         {
             mapping.get(key): item
             for key, item in record.items()
-            if item and mapping.get(key)
+            if item and mapping.get(key) and "nan" != repr(item)
         }
         for record in records
     ]

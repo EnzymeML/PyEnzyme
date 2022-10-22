@@ -58,8 +58,7 @@
       "constant": false,
       "boundary": false,
       "ontology": "SBO:0000247",
-      "smiles": "CC=O",
-      "inchi": "nan"
+      "smiles": "CC=O"
     },
     "s2": {
       "name": "CO2",
@@ -69,7 +68,6 @@
       "constant": false,
       "boundary": false,
       "ontology": "SBO:0000247",
-      "smiles": "nan",
       "inchi": "InChI=1S/CO2/c2-1-3"
     }
   },
