@@ -4,10 +4,11 @@
 # License: BSD-2 clause
 # Copyright (c) 2022 Stellenbosch University
 
-import copy
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
 import os
+import math
 
 from typing import Union, Optional
 from pyenzyme.thinlayers.TL_Base import BaseThinLayer
@@ -70,7 +71,7 @@ class ThinLayerPysces(BaseThinLayer):
         # Perform optimization
         self.minimizer = lmfit.Minimizer(self._calculate_residual, parameters)
 
-        # Set estiomated parameters to self
+        # Set estimated parameters to self
         self.parameters = parameters
 
         return self.minimizer.minimize(method=method)
@@ -119,7 +120,8 @@ class ThinLayerPysces(BaseThinLayer):
         # Add global parameters
         for global_param in self.global_parameters.values():
 
-            if global_param.value:
+            # need to also catch zero initial values
+            if global_param.value is not None:
                 parameters.add(
                     f"{global_param.name}",
                     global_param.value,
@@ -128,7 +130,7 @@ class ThinLayerPysces(BaseThinLayer):
                     max=global_param.upper,
                 )
 
-            elif global_param.initial_value:
+            elif global_param.initial_value is not None:
                 parameters.add(
                     f"{global_param.name}",
                     global_param.initial_value,
@@ -151,7 +153,8 @@ class ThinLayerPysces(BaseThinLayer):
                 if parameter.is_global:
                     continue
 
-                if parameter.value:
+                # need to also catch zero initial values
+                if parameter.value is not None:
                     parameters.add(
                         f"{reaction_id}_{parameter.name}",
                         parameter.value,
@@ -159,7 +162,7 @@ class ThinLayerPysces(BaseThinLayer):
                         min=parameter.lower,
                         max=parameter.upper,
                     )
-                elif parameter.initial_value:
+                elif parameter.initial_value is not None:
                     parameters.add(
                         f"{reaction_id}_{parameter.name}",
                         parameter.initial_value,
@@ -213,15 +216,28 @@ class ThinLayerPysces(BaseThinLayer):
         sbmlfile_name = f"{self.enzmldoc.name.replace(' ', '_')}.xml"
         sbmlfile_path = os.path.join(model_dir, sbmlfile_name)
         with open(sbmlfile_path, "w") as file:
-            file.write(self.enzmldoc.toXMLString())
+            file.write(self.sbml_xml)
 
         # First, convert the EnzymeML model to a PySCeS model
-        pysces.interface.convertSBML2PSC(
-            sbmlfile_name, sbmldir=model_dir, pscdir=model_dir
-        )
+        pscfile_path = sbmlfile_path + ".psc"
+        if not (
+            (os.path.exists(pscfile_path))
+            and (os.path.getmtime(pscfile_path) > os.path.getmtime(self.filepath))
+        ):
+            pysces.interface.convertSBML2PSC(sbmlfile_name, sbmldir=model_dir, pscdir=model_dir)
 
         # Finally, load the PSC model
         self.model = pysces.model(sbmlfile_name, dir=model_dir)
+
+        # work around https://github.com/PySCeS/pysces/issues/79
+        if (
+            self.model.__KeyWords__["Species_In_Conc"]
+            and self.model.__KeyWords__["Output_In_Conc"]
+        ):
+            for comp in self.model.__compartments__:
+                self.model.__compartments__[comp]["size"] = 1.0
+                setattr(self.model, comp, 1.0)
+                setattr(self.model, f"{comp}_init", 1.0)
 
     def _calculate_residual(self, parameters) -> np.ndarray:
         """Function that will be optimized"""
@@ -248,21 +264,112 @@ class ThinLayerPysces(BaseThinLayer):
 
                 if type(value) in [float, int] and value == 0:
                     # Catch initial values with zero and set them ot a small number
-                    value = 1.0e-6
+                    value = 1.0e-9
 
                 if species_id in self.model.species:
                     # Add if given in the model
                     setattr(self.model, f"{species_id}_init", value)
                 elif species_id == "time":
                     # Add time to the model
-                    self.model.sim_time = value.values
+                    time_values, num_reps = self._get_replicate_info(value)
+                    self.model.sim_time = time_values
                 else:
                     setattr(self.model, species_id, value)
 
             # Simulate the experiment and save results
             self.model.Simulate(userinit=1)
-            output.append(
-                [getattr(self.model.sim, species) for species in self.model.species]
-            )
+            for i in range(num_reps):
+                output.append(
+                    [getattr(self.model.sim, species) for species in self.model.species]
+                )
 
         return pd.DataFrame(np.hstack(output).T, columns=self.model.species)
+
+    def _get_replicate_info(self, time):
+        i = 1
+        # get index in time series where 2nd replicate starts
+        while i < len(time) and time[i] > time[i - 1]:
+            i += 1
+        num_reps = len(time) // i
+        if num_reps > 1:
+            for k in range(1, num_reps):
+                assert np.allclose(
+                    time[:i], time[k * i : k * i + i]
+                ), "Time points of replicates don't match!"
+        return (time[:i].values, num_reps)
+
+    def plot_fit(self):
+        """Plots the simulation and data for the fitted parameters."""
+
+        # check that optimization has been done
+        assert hasattr(self, "minimizer") and hasattr(
+            self.minimizer, "result"
+        ), "Please run optimize() first."
+
+        measurements = list(self.data.keys())
+        num = len(measurements)
+        numcols = 3
+        numrows = math.ceil(num / numcols)
+        fig, ax = plt.subplots(nrows=numrows, ncols=numcols, figsize=(9, 2.8 * numrows))
+        for i in range(num):
+            if num <= numcols:
+                theax = ax[i]
+            else:
+                theax = ax[i // numcols, i % numcols]
+            self._plot_measurement(measurements[i], i, ax=theax)
+        # remove empty axes
+        if num % numcols != 0:
+            empty = numcols - num % numcols
+            for i in range(-empty, 0):
+                if num <= numcols:
+                    ax[i].set_visible(False)
+                else:
+                    ax[num // numcols, i].set_visible(False)
+        fig.tight_layout()
+
+    def _plot_measurement(self, meas_id, i=0, ax=None):
+        """Plots a single measurement with simulation."""
+        time_unit = self.enzmldoc.measurement_dict[meas_id].global_time_unit
+        conc_unit = self.enzmldoc.reactant_dict[self.cols[0]].unit
+        if not ax:
+            fig, ax = plt.subplots()
+        sim = self._simulate_measurement(meas_id, self.minimizer.result.params, self.model)
+        sim.plot("Time", self.cols, ax=ax, legend=False)
+        if i == 0:
+            ax.figure.legend(loc='upper left', bbox_to_anchor=(1.0, 0.96))
+        ax.set_prop_cycle(None)
+        self.data[meas_id]["data"].plot("time", self.cols, style="^", legend=False, ax=ax)
+        ax.set_title(meas_id)
+        ax.set_xlabel(f"Time ({time_unit})")
+        ax.set_ylabel(f"Concentration ({conc_unit})")
+
+    def _simulate_measurement(self, meas_id, parameters, model):
+        """Performs simulation based on the PySCeS model"""
+
+        data = self.data[meas_id]["data"]
+        model.SetQuiet()
+        model.__dict__.update(parameters.valuesdict())
+
+        # Now iterate over all initial concentrations and simulate accordingly
+        init_concs = self._map_inits(meas_id)
+        for species_id, value in init_concs.items():
+            if species_id in model.species:
+                # Add if given in the model
+                setattr(model, f"{species_id}_init", value)
+            else:
+                setattr(model, species_id, value)
+
+        # Simulate the experiment and save results
+        end_time = data.time.iloc[-1]
+        # simulate 200 points for smooth curve
+        model.doSim(end=end_time, points=200)
+        result = pd.DataFrame(
+            np.array([getattr(model.sim, species) for species in self.cols]).T,
+            columns=self.cols,
+        )
+        result["Time"] = self.model.sim.Time
+        return result
+
+    def _map_inits(self, meas_id):
+        init_concs = self.data[meas_id]["initConc"]
+        return {species_id: value for species_id, (value, _) in init_concs.items()}
