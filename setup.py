@@ -15,7 +15,7 @@ from setuptools import setup
 
 setup(
     name="PyEnzyme",
-    version="1.1.3",
+    version="1.1.4",
     description="Handling of EnzymeML files",
     url="https://github.com/EnzymeML/PyEnzyme",
     author="Range, Jan",
@@ -29,7 +29,7 @@ setup(
         "python-libcombine",
         "scipy",
         "texttable",
-        "pydantic",
+        "pydantic==1.8.2",
         "deprecation",
         "deepdiff",
         "python-multipart",
@@ -40,6 +40,7 @@ setup(
         "plotly",
         "pyyaml==5.4.1",
         "deprecation",
+        "xmltodict",
         "requests",
     ],
     extras_require={
