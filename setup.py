@@ -40,6 +40,7 @@ setup(
         "plotly",
         "pyyaml==5.4.1",
         "deprecation",
+        "requests",
     ],
     extras_require={
         "test": ["pytest-cov"],
