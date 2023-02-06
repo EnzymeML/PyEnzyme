@@ -36,6 +36,7 @@ from pyenzyme.enzymeml.tools.unitcreator import UnitCreator
 from pyenzyme.enzymeml.tools.enzymemlwriter import EnzymeMLWriter
 from pyenzyme.enzymeml.tools.templatereader import read_template
 from pyenzyme.enzymeml.tools.validator import EnzymeMLValidator
+from pyenzyme.enzymeml.tools.petabwriter import enzymeml_to_petab
 
 from pyenzyme.enzymeml.core.ontology import EnzymeMLPart, SBOTerm
 from pyenzyme.utils.log import setup_custom_logger, log_object
@@ -336,6 +337,10 @@ class EnzymeMLDocument(EnzymeMLBase):
             base_url=base_url,
             api_token=api_token,
         )
+
+    def toPeTab(self, name: str) -> None:
+        """Converts an EnzymeML document to a zipped PeTab format"""
+        enzymeml_to_petab(self, name)
 
     # ! Utility methods
     def visualize(
