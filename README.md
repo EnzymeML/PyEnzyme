@@ -1,6 +1,6 @@
 <h1 align="center">
   PyEnzyme<br>
-  <img src="https://img.shields.io/badge/PyEnzyme-v1.1.3-informational" alt="v1.1.3">
+  <img src="https://img.shields.io/badge/PyEnzyme-1.1.5-blue" alt="v1.1.5">
   <img src="https://github.com/EnzymeML/PyENzyme/actions/workflows/build.yml/badge.svg" alt="Build Badge"> <img src='https://readthedocs.org/projects/pyenzyme/badge/?version=latest' alt='Documentation Status' />
 </a>
 <a href="https://www.codacy.com/gh/EnzymeML/PyEnzyme/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EnzymeML/PyEnzyme&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/4ceb8d010e7b456c926c8b18737ff102"/></a>
