@@ -50,7 +50,7 @@ def enzymeml_to_petab(enzmldoc, name: str) -> None:
             {
                 "sbml_files": ["model.xml"],
                 "measurement_files": ["measurement_table.tsv"],
-                "conditions_files": ["condition_table.tsv"],
+                "condition_files": ["condition_table.tsv"],
                 "observable_files": ["observable_table.tsv"],
             }
         ],
