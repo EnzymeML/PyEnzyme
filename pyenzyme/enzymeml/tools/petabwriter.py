@@ -36,6 +36,12 @@ def enzymeml_to_petab(enzmldoc, name: str) -> None:
     ):
         raise ValueError("Not all reactions have a model, yet this is necessary")
 
+    # Move all local parameters from local to global
+    for reaction in enzmldoc.reaction_dict.values():
+        for parameter in reaction.model.parameters:
+            parameter.is_global = True
+            enzmldoc.global_parameters[parameter.name] = parameter
+
     # Convert to DataFrames
     condition_table = build_condition_table(enzmldoc)
     parameter_table = build_parameters_table(enzmldoc, parameter_scale="lin")
@@ -157,6 +163,8 @@ def _create_noise_parameters(species_id: str, enzmldoc):
         "parameterScale": "lin",
         "nominalValue": _calculate_stdev_by_id(species_id, enzmldoc),
         "estimate": 0,
+        "upperBound": 1e6,
+        "lowerBound": 1e-6,
     }
 
     if not row["nominalValue"]:
