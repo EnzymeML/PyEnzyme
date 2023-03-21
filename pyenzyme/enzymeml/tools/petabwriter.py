@@ -158,7 +158,7 @@ def _add_replicate_to_table(replicate, meas_table):
                 "replicateId": replicate_id,
                 "measurement": data_i,
                 "time": time_i,
-                "noiseParameters": "1;sd_" + species_id,
+                "noiseParameters": f"sd_{species_id}",
             }
         )
 
@@ -168,13 +168,22 @@ def _add_replicate_to_table(replicate, meas_table):
 def build_parameters_table(enzmldoc):
     """Builds the parameters table that is necessary for the PETab format"""
 
+    observable_species = set(
+        [
+            species
+            for measurement in enzmldoc.exportMeasurementData().values()
+            for species in measurement["data"].columns
+            if species != "time"
+        ]
+    )
+
     parameter_table = []
     parameter_table += _extract_parameters_from_model(
         enzmldoc.exportKineticParameters()
     )
     parameter_table += [
         _create_noise_parameters(species_id, enzmldoc)
-        for species_id in enzmldoc.reactant_dict
+        for species_id in observable_species
     ]
 
     return pd.DataFrame(parameter_table).drop_duplicates()
