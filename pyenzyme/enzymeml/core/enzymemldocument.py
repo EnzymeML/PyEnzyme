@@ -338,9 +338,9 @@ class EnzymeMLDocument(EnzymeMLBase):
             api_token=api_token,
         )
 
-    def toPeTab(self, name: str) -> None:
+    def toPeTab(self, name: str, path: str = ".") -> None:
         """Converts an EnzymeML document to a zipped PeTab format"""
-        enzymeml_to_petab(self, name)
+        enzymeml_to_petab(self, name, path)
 
     # ! Utility methods
     def visualize(
