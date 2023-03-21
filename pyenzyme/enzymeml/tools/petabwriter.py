@@ -5,12 +5,14 @@
 # Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
 
 import io
+import os
+import zipfile
+from typing import List, Dict
+
 import pandas as pd
 import numpy as np
 import yaml
-import zipfile
 
-from typing import List, Dict
 
 PARAMETER_MAPPING = {
     "name": "parameterId",
@@ -29,7 +31,17 @@ PARAMETER_DEFAULTS = {
 }
 
 
-def enzymeml_to_petab(enzmldoc, name: str) -> None:
+def enzymeml_to_petab(enzmldoc, name: str, path: str) -> None:
+    """Converts an EnzymeML document to the petab format
+
+    Args:
+        enzmldoc (EnzymeMLDocument): The EnzymeML document to be converted
+        name (str): Name of the resulting file
+        path (str): Path to which the resulting file will be written
+
+    Raises:
+        ValueError: Raised when models are incomplete.
+    """
 
     if not all(
         reaction.model is not None for reaction in enzmldoc.reaction_dict.values()
@@ -43,10 +55,15 @@ def enzymeml_to_petab(enzmldoc, name: str) -> None:
             enzmldoc.global_parameters[parameter.name] = parameter
 
     # Convert to DataFrames
-    condition_table = build_condition_table(enzmldoc)
-    parameter_table = build_parameters_table(enzmldoc, parameter_scale="lin")
-    measurement_table, ob_ids, spec_ids = build_measurement_table(enzmldoc)
-    observable_table = build_observable_table(enzmldoc, ob_ids, spec_ids)
+    condition_table, set_species = build_condition_table(enzmldoc)
+    parameter_table = build_parameters_table(enzmldoc)
+    measurement_table, ob_ids = build_measurement_table(enzmldoc)
+    observable_table = build_observable_table(enzmldoc, ob_ids)
+
+    # Check if every species that has not been set an IC
+    # within the measurements actually has one. If not, set
+    # to zero IC.
+    check_and_set_initials(enzmldoc, set_species)
 
     # Build YAML file
     petab_yaml = {
@@ -79,15 +96,23 @@ def enzymeml_to_petab(enzmldoc, name: str) -> None:
         for file_name, data in content:
             zip_file.writestr(file_name, data)
 
-    with open(f"{name}.zip", "wb") as f:
-        f.write(zip_buffer.getvalue())
+    fpath = os.path.join(path, f"{name}.zip")
+    with open(fpath, "wb") as file:
+        file.write(zip_buffer.getvalue())
 
 
 def build_condition_table(enzmldoc):
     """Builds the condition table that is necessary for the PETab format"""
     condition_table = []
+    set_species = set()
+
     for measurement in enzmldoc.measurement_dict.values():
         all_species = measurement._getAllSpecies()
+
+        # Keep track of species that have been
+        # specified with an IC
+        set_species.update(all_species.keys())
+
         init_concs = {id: meas_data.init_conc for id, meas_data in all_species.items()}
 
         condition_name = {"conditionName": measurement.name}
@@ -96,7 +121,7 @@ def build_condition_table(enzmldoc):
             {"conditionId": measurement.id, **condition_name, **init_concs}
         )
 
-    return pd.DataFrame(condition_table)
+    return pd.DataFrame(condition_table), set_species
 
 
 def build_measurement_table(enzmldoc):
@@ -114,7 +139,7 @@ def build_measurement_table(enzmldoc):
                 observable_ids.append(observable_id)
                 species_ids.append(species_id)
 
-    return pd.DataFrame(meas_table), observable_ids, species_ids
+    return pd.DataFrame(meas_table), observable_ids
 
 
 def _add_replicate_to_table(replicate, meas_table):
@@ -140,7 +165,7 @@ def _add_replicate_to_table(replicate, meas_table):
     return (observable_id, replicate.species_id)
 
 
-def build_parameters_table(enzmldoc, parameter_scale: str):
+def build_parameters_table(enzmldoc):
     """Builds the parameters table that is necessary for the PETab format"""
 
     parameter_table = []
@@ -242,30 +267,47 @@ def _apply_defaults(record: Dict) -> Dict:
     return record
 
 
-def build_observable_table(enzmldoc, observable_ids, species_ids):
+def build_observable_table(enzmldoc, observable_ids):
     """Builds the observable table that is necessary for the PETab format"""
 
-    observable_name = []
-    reactants = enzmldoc.reactant_dict
-    for reactant in reactants:
-        observable_name.append(reactants[reactant].name)
+    observable_names = []
+    observable_ids = list(set(observable_ids))
+
+    for observable_id in observable_ids:
+        observable_names.append(enzmldoc.getAny(observable_id.split("_")[0]).name)
 
     return pd.DataFrame(
         [
             {
                 "observableId": observable_id,
                 "observableName": observable_name,
-                "observableFormula": species_id,
-                "noiseFormula": "noiseParameter2_"
-                + observable_id
-                + " * noiseParameter1_"
-                + observable_id
-                + " * "
-                + observable_id,
+                "observableFormula": observable_id.split("_")[0],
+                "noiseFormula": f"noiseParameter1_{observable_id}",
                 "noiseDistribution": "normal",
             }
-            for observable_id, species_id, observable_name in zip(
-                observable_ids, species_ids, observable_name
-            )
+            for observable_id, observable_name in zip(observable_ids, observable_names)
         ]
     ).drop_duplicates()
+
+
+def check_and_set_initials(enzmldoc, set_species: set) -> None:
+    """
+    Checks whether species that have not been set within a measurement obatin
+    an IC and set those that do not have one to 0.0
+    """
+
+    all_species = [
+        *list(enzmldoc.reactant_dict.keys()),
+        *list(enzmldoc.protein_dict.keys()),
+        *list(enzmldoc.complex_dict.keys()),
+    ]
+
+    for species_id in all_species:
+        if species_id in set_species:
+            continue
+
+        species = enzmldoc.getAny(species_id)
+
+        if species.init_conc is None:
+            species.init_conc = 0
+            species.unit = "mmole / l"
