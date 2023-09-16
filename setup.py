@@ -38,7 +38,7 @@ setup(
         "numexpr",
         "seaborn",
         "plotly",
-        "pyyaml==5.4.1",
+        "pyyaml",
         "deprecation",
         "xmltodict",
         "requests"
