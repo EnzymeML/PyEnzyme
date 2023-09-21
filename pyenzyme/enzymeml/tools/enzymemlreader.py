@@ -183,7 +183,7 @@ class EnzymeMLReader:
     @staticmethod
     def _sboterm_to_enum(sbo_term: int) -> Optional[SBOTerm]:
         try:
-            sbo_string: str = libsbml.SBO_intToString(sbo_term)
+            sbo_string: str = libsbml.SBO.intToString(sbo_term)
 
             if len(sbo_string) == 0:
                 return None
@@ -568,7 +568,7 @@ class EnzymeMLReader:
             species_id = species_ref.getSpecies()
             stoichiometry = 1.0 if modifiers else species_ref.getStoichiometry()
             constant = True if modifiers else species_ref.getConstant()
-            sbo_term = libsbml.SBO_intToString(species_ref.getSBOTerm())
+            sbo_term = libsbml.SBO.intToString(species_ref.getSBOTerm())
 
             if sbo_term:
                 ontology = SBOTerm(sbo_term)
