@@ -381,7 +381,7 @@ class EnzymeMLValidator:
             # Write to row
             writer.sheets["validation"].set_row(row_idx + 1, 25, style)
 
-        writer.save()
+        writer.close()
 
     # ! Template conversion
     @classmethod
