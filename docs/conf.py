@@ -23,7 +23,7 @@ copyright = "2022, Jan Range"
 author = "Jan Range, Dr. Frank Bergmann, Prof. Dr. Johann Rohwer"
 
 # The full version, including alpha/beta/rc tags
-release = "1.1.4"
+release = "1.1.5"
 
 
 # -- General configuration ---------------------------------------------------

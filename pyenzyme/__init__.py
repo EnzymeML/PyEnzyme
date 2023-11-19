@@ -19,4 +19,4 @@ from pyenzyme.utils.log import setup_custom_logger
 import pyenzyme.enzymeml.models
 
 
-__version__ = "1.1.4"
+__version__ = "1.1.5"

@@ -15,7 +15,7 @@ from setuptools import setup
 
 setup(
     name="PyEnzyme",
-    version="1.1.4",
+    version="1.1.5",
     description="Handling of EnzymeML files",
     url="https://github.com/EnzymeML/PyEnzyme",
     author="Range, Jan",
@@ -41,7 +41,7 @@ setup(
         "pyyaml",
         "deprecation",
         "xmltodict",
-        "requests"
+        "requests",
     ],
     extras_require={
         "test": ["pytest-cov"],
