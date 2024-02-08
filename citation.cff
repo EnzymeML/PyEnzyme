@@ -1,0 +1,43 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: PyEnzyme
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Jan
+    family-names: Range
+    email: jan.range@simtech.uni-stuttgart.de
+    affiliation: 'EXC2075 SimTech, University of Stuttgart'
+    orcid: 'https://orcid.org/0000-0001-6478-1051'
+identifiers:
+  - type: doi
+    value: 10.1111/febs.16318
+    description: >-
+      Lauterbach, S., Dienhart, H., Range, J. et al.
+      EnzymeML: seamless data flow and modeling of enzymatic
+      data. Nat Methods 20, 400–402 (2023)
+  - type: doi
+    value: 10.1038/s41592-022-01763-1
+    description: >-
+      Range, J., Halupczok, C., Lohmann, J., Swainston, N.,
+      Kettner, C., Bergmann, F.T., Weidemann, A., Wittig,
+      U., Schnell, S. and Pleiss, J. (2022), EnzymeML—a data
+      exchange format for biocatalysis and enzymology. FEBS
+      J, 289: 5864-5874
+repository-code: 'https://github.com/EnzymeML/PyEnzyme'
+url: 'https://enzymeml.github.io/services/'
+abstract: >-
+  PyEnzyme is the interface to the data model EnzymeML and
+  offers a convenient way to document and model research
+  data. Lightweight syntax for rapid development of data
+  management solution in enzymology and biocatalysis.
+keywords:
+  - Research Data Management
+  - Python
+license: BSD-2-Clause
+version: 1.1.5
+date-released: '2023-11-19'
