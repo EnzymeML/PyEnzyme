@@ -1,22 +1,67 @@
-# File: __init__.py
-# Project: pyenzyme
-# Author: Jan Range
-# License: BSD-2 clause
-# Copyright (c) 2022 Institute of Biochemistry and Technical Biochemistry Stuttgart
+from __future__ import annotations
 
-from pyenzyme.enzymeml.core import EnzymeMLDocument
-from pyenzyme.enzymeml.core import Vessel
-from pyenzyme.enzymeml.core import Protein
-from pyenzyme.enzymeml.core import Complex
-from pyenzyme.enzymeml.core import Reactant
-from pyenzyme.enzymeml.core import EnzymeReaction
-from pyenzyme.enzymeml.core import Measurement
-from pyenzyme.enzymeml.core import Replicate
-from pyenzyme.enzymeml.core import Creator
-from pyenzyme.enzymeml.models import KineticModel
-from pyenzyme.utils.log import setup_custom_logger
+import json
+from rich import print
+from pathlib import Path
 
-import pyenzyme.enzymeml.models
+from .model import *  # noqa: F403
+from .sbml import to_sbml  # noqa: F401
+from .tabular import to_pandas, read_csv, read_excel  # noqa: F401
+
+__all__ = [
+    "load_enzymeml",
+    "write_enzymeml",
+    "to_sbml",
+    "to_pandas",
+]
 
 
-__version__ = "1.1.5"
+def load_enzymeml(path: str) -> EnzymeMLDocument:  # noqa: F405
+    with open(path) as f:
+        return EnzymeMLDocument.model_validate_json(f.read())  # noqa: F405
+
+
+def write_enzymeml(doc: EnzymeMLDocument, path: Path | str | None = None):  # noqa: F405
+    data = json.loads(doc.model_dump_json(exclude_none=True, by_alias=True))
+    data = json.dumps(sort_by_ld(data), indent=2)
+
+    if path is None:
+        return data
+    elif isinstance(path, str):
+        path = Path(path)
+
+    if path.is_dir():
+        path = path / "experiment.json"
+
+    with open(path, "w") as f:
+        f.write(data)
+
+    print(f"\n  EnzymeML document written to [green][bold]{path}[/bold][/green]\n")
+
+
+def sort_by_ld(d: dict) -> dict:
+    keys = sorted(d.keys(), key=_pattern)
+    data = {}
+
+    for key in keys:
+        value = d[key]
+
+        if isinstance(value, dict):
+            data[key] = sort_by_ld(value)
+        elif isinstance(value, list) and all(isinstance(v, dict) for v in value):
+            data[key] = [sort_by_ld(v) for v in value]
+        else:
+            data[key] = value
+
+    return data
+
+
+def _pattern(s: str):
+    if s.startswith("@context"):
+        return 0
+    elif s.startswith("@id"):
+        return 1
+    elif s.startswith("@type"):
+        return 2
+    else:
+        return 3
