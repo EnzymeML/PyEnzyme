@@ -1,0 +1,40 @@
+[substance]
+
+mol = "OBO:UO_0000013"
+mmol = "OBO:UO_0000040"
+umol = "OBO:UO_0000039"
+nmol = "OBO:UO_0000041"
+
+[molarity]
+
+M = "OBO:UO_0000062"
+mM = "OBO:UO_0000063"
+uM = "OBO:UO_0000064"
+nM = "OBO:UO_0000025"
+
+[time]
+
+s = "OBO:UO_0000010"
+min = "OBO:UO_0000031"
+hour = "OBO:UO_0000032"
+day = "OBO:UO_0000033"
+
+[temperature]
+
+K = "OBO:UO_0000012"
+C = "OBO:UO_0000027"
+
+[mass]
+
+kg = "OBO:UO_0000009"
+g = "OBO:UO_0000021"
+mg = "OBO:UO_0000022"
+ug = "OBO:UO_0000023"
+ng = "OBO:UO_0000024"
+
+[volume]
+
+litre = "OBO:UO_0000099"
+ml = "OBO:UO_0000098"
+ul = "OBO:UO_0000101"
+nl = "OBO:UO_0000102"

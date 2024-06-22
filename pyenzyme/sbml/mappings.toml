@@ -1,0 +1,31 @@
+[smallMolecule]
+
+inchiKey = "inchikey"
+smiles = "canonical_smiles"
+
+[protein]
+
+ecnumber = "ecnumber"
+organism = "organism"
+organismTaxId = "organism_tax_id"
+sequence = "sequence"
+
+[conditions]
+
+ph = { "@value" = "ph" }
+temperature = { "@value" = "temperature", "@unit" = "temperature_unit" }
+
+[parameter]
+
+lowerBound = "lower"
+upperBound = "upper"
+stdDeviation = "stderr"
+
+[measurement]
+
+"@id" = "id"
+"@name" = "name"
+
+[initConc]
+
+initConc = { "@species" = "species_id", "@value" = "init_conc", "@unit" = "data_unit" }
