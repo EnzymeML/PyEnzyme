@@ -138,8 +138,11 @@ dmypy.json
 cython_debug/
 pyenzyme/Examples/getJSONValid.py
 
-# test dirs 
+# test dirs
 tests/tmp
 
 # PyCharm IDE
 .idea/
+
+# Mac OS
+.DS_Store
