@@ -140,7 +140,7 @@ protein_dict:
       - null
   unit:
     mandatory: true
-    description: Unit of the proteins intial concentration.
+    description: Unit of the proteins initial concentration.
     range:
       min: null
       max: null
@@ -230,7 +230,7 @@ complex_dict:
       - null
   unit:
     mandatory: true
-    description: Unit of the proteins intial concentration.
+    description: Unit of the proteins initial concentration.
     range:
       min: null
       max: null
@@ -279,7 +279,7 @@ reactant_dict:
       - null
   unit:
     mandatory: true
-    description: Unit of the reactant intial concentration.
+    description: Unit of the reactant initial concentration.
     range:
       min: null
       max: null

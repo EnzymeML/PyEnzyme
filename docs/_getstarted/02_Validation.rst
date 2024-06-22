@@ -57,7 +57,7 @@ is extended, the spreadsheet will be updated too.
 Using an example spreadsheet
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Since the blank validation YAML wont demonstrate all types of checks, we
+Since the blank validation YAML won't demonstrate all types of checks, we
 are going to use an example that has been provided in this directory and
 convert it to YAML.
 
@@ -74,7 +74,7 @@ Performing validation
 
 Once the YAML file is ready, validation can be done for an example
 ``EnzymeMLDocument`` found in this directory. The validation for this
-example will fail by intention and thus return a report taht will be
+example will fail by intention and thus return a report that will be
 shown here. Such a report is returned as ``Dict`` and can be inspected
 either manually or programmatically. This was done to allow automation
 workflows to utilize validation.

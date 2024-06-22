@@ -388,7 +388,7 @@ class ThinlayerBioCatNet():
 
             }
 
-            # get appropiate replicates
+            # get appropriate replicates
             df_meas = self.comps[ self.comps["MEASUREMENT NO."] == key ]
 
             # get numbers of replicates

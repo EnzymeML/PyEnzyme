@@ -238,8 +238,8 @@ Adding the reaction to the document
 Documenting measurement setups
 ------------------------------
 
-Now that the theoretical foundation of the experiment has been layed
-out, it is time to specify the setup of teh measurement. PyEnzyme offers
+Now that the theoretical foundation of the experiment has been laid
+out, it is time to specify the setup of the measurement. PyEnzyme offers
 a lab-like system to document such setups. Typically, experiments
 involve multiple runs with varying initial concentrations of every
 element that occurs in the reaction network or/and varying conditions
@@ -247,7 +247,7 @@ such as temperature and pH. Hence, PyEnzyme builts on top of a
 **measurement** system, where each of these represent a ‘run’.
 
 In this example, the following setups will be tracked including changing
-inital concentrations and temperatures:
+initial concentrations and temperatures:
 
 +------------------+-----------+-----------------------+-----------+-------------+-----+
 | Measurement Name | Species   | Initial concentration | Unit      | Temperature | pH  |
@@ -427,7 +427,7 @@ Saving and distributing an EnzymeML document
 --------------------------------------------
 
 Finally, the experiment has been finished and meta- as well as raw-data
-been documented. In order to make the data exchangable, PyEnzyme offers
+been documented. In order to make the data exchangeable, PyEnzyme offers
 several options for data export. First and foremost, the complete
 experiment can be exported to EnzymeML which is SBML compatible and thus
 accessible by SBML-based modeling tools (e.g. COPASI, PySCeS).
@@ -499,7 +499,7 @@ In addition, it is also possible to use the aforementioned JSON
 
 -  PyEnzyme stores a history in the document, which keeps track of what
    has been changed and added in the course of an experiment. This is
-   done, to spot potential errors and facilitate teh documentation of an
+   done, to spot potential errors and facilitate the documentation of an
    experiment’s lifeline.
 
 .. code:: ipython3
@@ -544,9 +544,9 @@ Special case: From the EnzymeML spreadsheet template
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Apart from programmatic creation of an EnzymeML document, PyEnzyme
-offers a way to convert the ‘EnzymeML spreadhseet template’ to an OMEX
+offers a way to convert the ‘EnzymeML spreadsheet template’ to an OMEX
 file. Since spreadsheets are the bread and butter of current lab
-documentation, the template widely covers teh data model and thus
+documentation, the template widely covers the data model and thus
 provides an easy access to EnzymeML’s capabilities.
 
 .. code:: ipython3
@@ -563,7 +563,7 @@ document, this example will demonstrate how to interact with an already
 created EnzymeML document using the OMEX loader. Since the purpose of an
 experiment is to generate data from a theory, modeling takes care of the
 interpretation of an experiment outcome. However, PyEnzyme and EnzymeML
-are no modeling platforms, but provides a convinient way to interface to
+are no modeling platforms, but provides a convenient way to interface to
 such. Hence, this example will demonstrate how such an interfacing could
 look like.
 
