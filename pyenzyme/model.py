@@ -5,7 +5,6 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, Generic, TypeVar
 from enum import Enum
 from uuid import uuid4
-from datetime import date, datetime
 
 # Filter Wrapper definition used to filter a list of objects
 # based on their attributes
