@@ -45,6 +45,10 @@ class Unit:
         return BaseUnit(kind=UnitType.KELVIN, exponent=1, scale=1)
 
     @staticmethod
+    def celsius():
+        return BaseUnit(kind=UnitType.CELSIUS, exponent=1, scale=1)
+
+    @staticmethod
     def dimensionless():
         return BaseUnit(kind=UnitType.DIMENSIONLESS, exponent=1, scale=1)
 
@@ -139,6 +143,7 @@ d.ld_id = ONTOMAPS["time"]["day"]
 
 kelvin = UnitDefinition(base_units=[Unit.kelvin()])._get_name()
 K = UnitDefinition(base_units=[Unit.kelvin()])._get_name()
+celsius = UnitDefinition(base_units=[Unit.celsius()])._get_name()
 
 ## Ontology
 
