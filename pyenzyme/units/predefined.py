@@ -144,6 +144,7 @@ d.ld_id = ONTOMAPS["time"]["day"]
 kelvin = UnitDefinition(base_units=[Unit.kelvin()])._get_name()
 K = UnitDefinition(base_units=[Unit.kelvin()])._get_name()
 celsius = UnitDefinition(base_units=[Unit.celsius()])._get_name()
+C = UnitDefinition(base_units=[Unit.celsius()])._get_name()
 
 ## Ontology
 
