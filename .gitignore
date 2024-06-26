@@ -131,6 +131,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# pyrightconfig
+pyrightconfig.json
+
 # pytype static type analyzer
 .pytype/
 
@@ -146,3 +149,6 @@ tests/tmp
 
 # Mac OS
 .DS_Store
+
+# Poetry
+poetry.lock
