@@ -3,7 +3,6 @@ from __future__ import annotations
 import pathlib as pl
 
 import pandas as pd
-from loguru import logger  # type: ignore
 
 from .model import (
     DataTypes,
