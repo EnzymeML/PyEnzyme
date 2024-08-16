@@ -1,7 +1,22 @@
-from enum import Enum
-import toml
 import functools as ft
 import importlib.resources as pkg_resources
+from enum import Enum
+
+import toml
+
+import pyenzyme as pe
+
+
+def get_all_parameters(enzmldoc):
+    """Extracts all parameters from an EnzymeMLDocument.
+
+    Args:
+        enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to extract parameters from.
+
+    Returns:
+        list[Parameter]: A list of all parameters in the EnzymeMLDocument.
+    """
+    return find_unique(enzmldoc, target=pe.Parameter)
 
 
 def read_static_file(path, filename: str):
