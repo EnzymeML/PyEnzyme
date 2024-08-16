@@ -1,16 +1,18 @@
 import re
+
 import rich
 from loguru import logger
+from sympy import sympify
+
 from pyenzyme.logging import add_logger
 from pyenzyme.model import (
     EnzymeMLDocument,
     Equation,
-    EqVariable,
-    EqParameter,
     EquationType,
     UnitDefinition,
+    Variable,
+    Parameter,
 )
-from sympy import sympify
 
 INIT_ASSIGNMENT_PATTERN = r"^[A-Za-z][A-Za-z\_]*"
 DERIVATIVE_PATTERN = r"([A-Za-z0-9\_]+)\'\(t\)"
@@ -22,14 +24,13 @@ ELEMENTAL_FUNCTIONS = ["exp", "log", "sin", "cos", "tan", "sqrt", "abs"]
 
 def build_equations(
     *equations: str,
-    units: list[UnitDefinition],
-    enzmldoc: EnzymeMLDocument | None = None,
-    unit_mapping: dict[str, UnitDefinition] = {},
+    unit_mapping: dict[str, UnitDefinition] | None = None,
 ) -> list[Equation]:
     """Builds a list of Equation objects from a list of string representations.
 
     Args:
         *equations (list[str]): A list of string representations of the ODEs
+        unit_mapping: A dictionary mapping parameter names to their respective
 
     Returns:
         list[ODE]: A list of ODE objects
@@ -38,22 +39,17 @@ def build_equations(
         >> build_equations("s1'(t) = 2 * s2(t)", "s2'(t) = 3 * s1(t)")
     """
 
-    assert all(isinstance(eq, str) for eq in equations), "All equations must be strings"
-    assert all(
-        isinstance(unit, UnitDefinition) for unit in units
-    ), "All units must be UnitDefinition objects"
-    assert len(equations) == len(
-        units
-    ), "The number of equations must match the number of units"
+    if unit_mapping is None:
+        unit_mapping = {}
 
-    return [build_equation(eq, unit, enzmldoc) for eq, unit in zip(equations, units)]  # type: ignore
+    assert all(isinstance(eq, str) for eq in equations), "All equations must be strings"
+
+    return [build_equation(eq, unit_mapping) for eq in equations]  # type: ignore
 
 
 def build_equation(
     equation: str,
-    unit: UnitDefinition,
-    enzmldoc: EnzymeMLDocument | None = None,
-    unit_mapping: dict[str, UnitDefinition] = {},
+    unit_mapping: dict[str, UnitDefinition] | None = None,
 ) -> Equation:
     """Builds an equation object from a string
 
@@ -63,7 +59,7 @@ def build_equation(
 
     Args:
         equation (str): The equation to be converted into an ODE object
-        enzmldoc (EnzymeMLDocument): The EnzymeMLDocument used to transfer parameters to
+        unit_mapping: A dictionary mapping parameter names to their respective units
 
     Returns:
         ODE: The ODE object
@@ -74,6 +70,9 @@ def build_equation(
         >> ode = ode(eq)
 
     """
+
+    if unit_mapping is None:
+        unit_mapping = {}
 
     left, right = _extract_sides(equation)
     variables = set(re.findall(VARIABLE_PATTERN, right))
@@ -102,28 +101,35 @@ def build_equation(
 
     right = sympify(_clean_and_trim(right))
     left = _clean_and_trim(left)
-    parameters = {str(symbol) for symbol in right.free_symbols} - variables
+    parameters = {str(symbol) for symbol in right.free_symbols} - variables  # type: ignore
 
     if equation_type == EquationType.ASSIGNMENT:
         parameters = parameters.union({left})
 
     eq = Equation(
-        species_id=left,
+        species_id=left if left else None,
         equation=str(right),
         variables=[_create_variable(name) for name in variables],
-        parameters=[_create_parameter(name) for name in parameters],
         equation_type=equation_type,
-        unit=unit,
+        parameters=[
+            _create_parameter(name, unit_mapping.get(name)) for name in parameters
+        ],
     )
 
-    if enzmldoc:
-        [_add_to_parameters(enzmldoc, param.name, param.id) for param in eq.parameters]
-        _add_units_to_parameters(enzmldoc, unit_mapping)
+    # Left out for now, but could be re-used by decision upon change to include
+    # parameters on the top-level document.
+    # if enzmldoc:
+    #     [_add_to_parameters(enzmldoc, param.name, param.id) for param in eq.parameters]
+    #     _add_units_to_parameters(enzmldoc, unit_mapping)
 
     return eq
 
 
 def _extract_sides(equation: str) -> tuple[str, str]:
+    if "=" not in equation:
+        # Will be handled as a kinetic law
+        return "", equation
+
     left, right, *_ = equation.split("=")
 
     if right == "":
@@ -144,12 +150,12 @@ def _clean_and_trim(eq: str) -> str:
     return eq.strip()
 
 
-def _create_parameter(name: str) -> EqParameter:
-    return EqParameter(id=name, name=name, symbol=name)
+def _create_parameter(name: str, unit: UnitDefinition | None) -> Parameter:
+    return Parameter(id=name, name=name, symbol=name, unit=unit)
 
 
-def _create_variable(name: str) -> EqVariable:
-    return EqVariable(id=name, name=name, symbol=name)
+def _create_variable(name: str) -> Variable:
+    return Variable(id=name, name=name, symbol=name)
 
 
 def _add_to_parameters(enzmldoc: EnzymeMLDocument, name: str, id: str):
