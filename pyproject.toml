@@ -17,6 +17,7 @@ pydantic = "^2.7.4"
 loguru = "^0.7.2"
 rdflib = "7.0.0"
 sympy = "^1.12.1"
+pymetadata = "^0.4.4"
 
 [tool.poetry.group.neo4j.dependencies]
 neo4j = "^5.21.0"
