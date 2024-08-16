@@ -10,6 +10,9 @@ organism = "organism"
 organismTaxId = "organism_tax_id"
 sequence = "sequence"
 
+[complex]
+participants = "participants"
+
 [conditions]
 
 ph = { "@value" = "ph" }
@@ -26,6 +29,10 @@ stdDeviation = "stderr"
 "@id" = "id"
 "@name" = "name"
 
-[initConc]
+[speciesData]
 
-initConc = { "@species" = "species_id", "@value" = "init_conc", "@unit" = "data_unit" }
+speciesData = { "@species" = "species_id", "@value" = "initial", "@unit" = "data_unit", "@type" = "data_type" }
+
+[variables]
+
+variable = { "@id" = "id", "@name" = "name", "@symbol" = "symbol" }
