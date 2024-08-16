@@ -1,9 +1,9 @@
-import pytest
 import pandas as pd
-import pyenzyme as pe
+import pytest
 
-from pyenzyme.units import mM, s
+import pyenzyme as pe
 from pyenzyme.tabular import _measurement_to_pandas, to_pandas
+from pyenzyme.units import mM, s
 
 
 class TestTabularExport:
@@ -31,7 +31,7 @@ class TestTabularExport:
 
         # Assert
         total_time_len = sum(
-            [len(m.species[0].time) for m in measurement_valid.measurements]
+            [len(m.species_data[0].time) for m in measurement_valid.measurements]
         )
 
         assert (
@@ -46,10 +46,10 @@ class TestTabularExport:
         for measurement in measurement_valid.measurements:
             df_sub = df[df["id"] == measurement.id]
             assert df_sub.shape[0] == len(
-                measurement.species[0].time
-            ), f"Expected {len(measurement.species[0].time)} rows. Got {df_sub.shape[0]}"
+                measurement.species_data[0].time
+            ), f"Expected {len(measurement.species_data[0].time)} rows. Got {df_sub.shape[0]}"
 
-            for species in measurement.species:
+            for species in measurement.species_data:
                 assert (
                     species.species_id in df.columns
                 ), f"Expected column for {species}"
@@ -59,31 +59,38 @@ class TestTabularImport:
     def test_csv_import(self):
         """Test that a CSV file can be imported to a pandas DataFrame"""
         # Act
-        meas = pe.read_csv("tests/fixtures/tabular/data.csv", data_unit=mM, time_unit=s)
+        meas = pe.read_csv(
+            "tests/fixtures/tabular/data.csv",
+            data_unit=mM,
+            time_unit=s,
+            sep=";",
+        )
 
         # Assert
         assert len(meas) == 2, f"Expected 2 measurements. Got {len(meas)}"
 
         for m in meas:
-            assert len(m.species) == 2, f"Expected 2 species. Got {len(m.species)}"
             assert (
-                len(m.species[0].time) == 11
-            ), f"Expected 10 time points. Got {len(m.species[0].time)}"
+                len(m.species_data) == 2
+            ), f"Expected 2 species. Got {len(m.species_data)}"
             assert (
-                len(m.species[1].time) == 11
-            ), f"Expected 10 time points. Got {len(m.species[1].time)}"
+                len(m.species_data[0].time) == 11
+            ), f"Expected 10 time points. Got {len(m.species_data[0].time)}"
             assert (
-                m.species[0].data_unit == mM
-            ), f"Expected mM. Got {m.species[0].data_unit}"
+                len(m.species_data[1].time) == 11
+            ), f"Expected 10 time points. Got {len(m.species_data[1].time)}"
             assert (
-                m.species[0].time_unit == s
-            ), f"Expected s. Got {m.species[0].time_unit}"
+                m.species_data[0].data_unit == mM
+            ), f"Expected mM. Got {m.species_data[0].data_unit}"
             assert (
-                m.species[1].data_unit == mM
-            ), f"Expected mM. Got {m.species[1].data_unit}"
+                m.species_data[0].time_unit == s
+            ), f"Expected s. Got {m.species_data[0].time_unit}"
             assert (
-                m.species[1].time_unit == s
-            ), f"Expected s. Got {m.species[1].time_unit}"
+                m.species_data[1].data_unit == mM
+            ), f"Expected mM. Got {m.species_data[1].data_unit}"
+            assert (
+                m.species_data[1].time_unit == s
+            ), f"Expected s. Got {m.species_data[1].time_unit}"
 
     def test_excel_import(self):
         """Test that a Excel file can be imported to a pandas DataFrame"""
@@ -96,24 +103,26 @@ class TestTabularImport:
         assert len(meas) == 2, f"Expected 2 measurements. Got {len(meas)}"
 
         for m in meas:
-            assert len(m.species) == 2, f"Expected 2 species. Got {len(m.species)}"
             assert (
-                len(m.species[0].time) == 11
+                len(m.species_data) == 2
+            ), f"Expected 2 species. Got {len(m.species_data)}"
+            assert (
+                len(m.species_data[0].time) == 11
             ), f"Expected 10 time points. Got {len(m.species[0].time)}"
             assert (
-                len(m.species[1].time) == 11
+                len(m.species_data[1].time) == 11
             ), f"Expected 10 time points. Got {len(m.species[1].time)}"
             assert (
-                m.species[0].data_unit == mM
+                m.species_data[0].data_unit == mM
             ), f"Expected mM. Got {m.species[0].data_unit}"
             assert (
-                m.species[0].time_unit == s
+                m.species_data[0].time_unit == s
             ), f"Expected s. Got {m.species[0].time_unit}"
             assert (
-                m.species[1].data_unit == mM
+                m.species_data[1].data_unit == mM
             ), f"Expected mM. Got {m.species[1].data_unit}"
             assert (
-                m.species[1].time_unit == s
+                m.species_data[1].time_unit == s
             ), f"Expected s. Got {m.species[1].time_unit}"
 
     def test_invalid_types(self):

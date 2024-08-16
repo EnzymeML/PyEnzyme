@@ -1,9 +1,9 @@
 import pytest
 
-from pyenzyme.equations._math import build_equation, build_equations
 from pyenzyme.equations._chem import build_reaction, build_reactions
-from pyenzyme.units import M, second
+from pyenzyme.equations._math import build_equation, build_equations
 from pyenzyme.model import EquationType
+from pyenzyme.units import M, second
 
 
 class TestMathEquations:
@@ -12,7 +12,7 @@ class TestMathEquations:
         equation = "s1'(t) = kcat * p0(t) * s0(t)"
 
         # Act
-        equation = build_equation(equation, unit=M / second)
+        equation = build_equation(equation)
 
         # Assert
         expected_vars = ["p0", "s0"]
@@ -37,21 +37,13 @@ class TestMathEquations:
             assert param.name in expected_params
             assert param.symbol in expected_params
 
-    def test_invalid_equation_no_left(self):
-        # Arrange
-        equation = "kcat * p0(t) * s0(t)"
-
-        # Act
-        with pytest.raises(ValueError):
-            equation = build_equation(equation, unit=M / second)
-
     def test_invalid_equation_no_right(self):
         # Arrange
         equation = "s1'(t) ="
 
         # Act
         with pytest.raises(ValueError):
-            equation = build_equation(equation, unit=M / second)
+            equation = build_equation(equation)
 
     def test_invalid_equation_no_equals(self):
         # Arrange
@@ -59,14 +51,14 @@ class TestMathEquations:
 
         # Act
         with pytest.raises(ValueError):
-            equation = build_equation(equation, unit=M / second)
+            equation = build_equation(equation)
 
     def test_equation_with_funs(self):
         # Arrange
         equation = "s1'(t) = kcat * exp(p0(t) * t)"
 
         # Act
-        equation = build_equation(equation, unit=M / second)
+        equation = build_equation(equation)
 
         # Assert
         assert (
@@ -81,7 +73,7 @@ class TestMathEquations:
         equation = "s1'(t) = kcat * exp(t)"
 
         # Act
-        equation = build_equation(equation, unit=M / second)
+        equation = build_equation(equation)
 
         # Assert
         assert (
@@ -100,7 +92,7 @@ class TestMathEquations:
 
         # Act
         units = [M / second, M]
-        equations = build_equations(*equations, units=units)
+        equations = build_equations(*equations)
 
         # Assert
         assert len(equations) == 2, f"Expected 2 equations. Got {len(equations)}"
@@ -110,7 +102,7 @@ class TestMathEquations:
         equation = "E_tot = p0 + p1"
 
         # Act
-        equation = build_equation(equation, unit=M)
+        equation = build_equation(equation)
 
         # Assert
         assert (
@@ -128,7 +120,7 @@ class TestMathEquations:
         equation = "E_tot(t) = p0 + p1"
 
         # Act
-        equation = build_equation(equation, unit=M)
+        equation = build_equation(equation)
 
         # Assert
         assert (

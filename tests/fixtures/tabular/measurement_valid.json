@@ -44,7 +44,7 @@
       ],
       "id": "m0",
       "name": "Measurement 1",
-      "species": [
+      "species_data": [
         {
           "@context": {
             "enzml": "http://www.enzymeml.org/v2/",
@@ -59,8 +59,8 @@
             "enzml:MeasurementData"
           ],
           "species_id": "s1",
-          "init_conc": 0.0,
-          "data_type": "conc",
+          "initial": 0.0,
+          "data_type": "http://purl.obolibrary.org/obo/PATO_0000033",
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
@@ -171,8 +171,8 @@
             "enzml:MeasurementData"
           ],
           "species_id": "s2",
-          "init_conc": 10.0,
-          "data_type": "conc",
+          "initial": 10.0,
+          "data_type": "http://purl.obolibrary.org/obo/PATO_0000033",
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
@@ -290,7 +290,7 @@
       ],
       "id": "m1",
       "name": "Measurement 2",
-      "species": [
+      "species_data": [
         {
           "@context": {
             "enzml": "http://www.enzymeml.org/v2/",
@@ -305,8 +305,8 @@
             "enzml:MeasurementData"
           ],
           "species_id": "s1",
-          "init_conc": 0.0,
-          "data_type": "conc",
+          "initial": 0.0,
+          "data_type": "http://purl.obolibrary.org/obo/PATO_0000033",
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
@@ -417,8 +417,8 @@
             "enzml:MeasurementData"
           ],
           "species_id": "s2",
-          "init_conc": 100.0,
-          "data_type": "conc",
+          "initial": 100.0,
+          "data_type": "http://purl.obolibrary.org/obo/PATO_0000033",
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
