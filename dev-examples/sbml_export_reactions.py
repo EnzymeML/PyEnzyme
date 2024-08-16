@@ -1,8 +1,8 @@
 import pyenzyme as pe
 import pyenzyme.equations as peq
-
 from pyenzyme.sbml.serializer import to_sbml
-from pyenzyme.units import mM, s, ml
+from pyenzyme.tools import get_all_parameters
+from pyenzyme.units import mM, s, ml, K
 
 doc = pe.EnzymeMLDocument(name="Test")
 
@@ -25,11 +25,13 @@ enzyme = doc.add_to_proteins(
 reaction = peq.build_reaction(
     scheme="s0 -> s1",
     name="Reaction 1",
+    id="r0",
     modifiers=[enzyme.id],
 )
+
 reaction.kinetic_law = peq.build_equation(
-    "v(t) = kcat * p0(t) * s0(t) / ( K_m + s0(t) )",
-    unit=mM / s,
+    "kcat * p0(t) * s0(t) / ( K_m + s0(t) )",
+    unit_mapping={"kcat": 1 / s, "K_m": mM},
 )
 
 doc.reactions += [reaction]
@@ -40,5 +42,15 @@ doc.measurements += pe.read_excel(
     time_unit=s,
 )
 
-to_sbml(doc, "./dev-examples/reactions/sbml.xml")
+for parameter in get_all_parameters(doc):
+    parameter.lower = 0.0
+    parameter.upper = 100.0
+    parameter.stderr = 0.1
+
+for meas in doc.measurements:
+    meas.temperature = 298.15
+    meas.temperature_unit = K
+    meas.ph = 7.0
+
+to_sbml(doc, out="./dev-examples/reactions/reactions_example.omex")
 pe.write_enzymeml(doc=doc, path="./dev-examples/reactions/enzymeml.json")
