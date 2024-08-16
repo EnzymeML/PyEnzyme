@@ -1,7 +1,9 @@
+from copy import deepcopy
 from enum import Enum
 from functools import partial
 
 from pydantic import model_validator
+
 from pyenzyme.model import (
     UnitDefinition as _UnitDefinition,
     BaseUnit as _BaseUnit,
@@ -99,17 +101,21 @@ class UnitDefinition(_UnitDefinition):
         Raises:
             TypeError: If the other operand type is unsupported.
         """
-        for base in self.base_units:
+
+        unit_def = deepcopy(self)
+        unit_def.id = None
+
+        for base in unit_def.base_units:
             base.exponent = -abs(base.exponent)
 
         if isinstance(other, UnitDefinition):
-            self.base_units.extend(other.base_units)
+            unit_def.base_units.extend(other.base_units)
         elif isinstance(other, _BaseUnit):
-            self.base_units.append(other)
+            unit_def.base_units.append(other)
 
-        self._get_name()
+        unit_def._get_name()
 
-        return self
+        return unit_def
 
     def __truediv__(self, other: object) -> "UnitDefinition":
         """Division operation to handle unit division.
@@ -128,17 +134,20 @@ class UnitDefinition(_UnitDefinition):
 
         """
 
+        unit_def = deepcopy(self)
+        unit_def.id = None
+
         if isinstance(other, UnitDefinition):
             for base in other.base_units:
                 base.exponent = -abs(base.exponent)
-            self.base_units.extend(other.base_units)
+            unit_def.base_units.extend(other.base_units)
         elif isinstance(other, _BaseUnit):
             other.exponent = -abs(other.exponent)
-            self.base_units.append(other)
+            unit_def.base_units.append(other)
 
-        self._get_name()
+        unit_def._get_name()
 
-        return self
+        return unit_def
 
     def __mul__(self, other: object) -> "UnitDefinition":
         """Multiplication operation to handle unit multiplication.
@@ -152,16 +161,20 @@ class UnitDefinition(_UnitDefinition):
         Raises:
             TypeError: If the other operand type is unsupported.
         """
+
+        unit_def = deepcopy(self)
+        unit_def.id = None
+
         if isinstance(other, (int, float)):
-            for base in self.base_units:
+            for base in unit_def.base_units:
                 if base.multiplier:
                     base.multiplier *= other
                 else:
                     base.multiplier = other
 
-            self._get_name()
+            unit_def._get_name()
 
-            return self
+            return unit_def
 
         raise TypeError(
             f"unsupported operand type(s) for *: 'UnitDefinition' and '{type(other)}'"
@@ -268,16 +281,19 @@ class BaseUnit(_BaseUnit):
         Raises:
             TypeError: If the other operand type is unsupported.
         """
+
+        base_unit = deepcopy(self)
+
         if isinstance(other, UnitDefinition):
-            self.exponent = -self.exponent
-            other.base_units.append(self)
+            base_unit.exponent = -base_unit.exponent
+            other.base_units.append(base_unit)
 
             other._get_name()
 
             return other
         elif isinstance(other, (int, float)):
-            self.exponent = -self.exponent
-            return self
+            base_unit.exponent = -base_unit.exponent
+            return base_unit
 
         raise TypeError(
             f"unsupported operand type(s) for /: 'BaseUnit' and '{type(other)}'"
@@ -295,13 +311,16 @@ class BaseUnit(_BaseUnit):
         Raises:
             TypeError: If the other operand type is unsupported.
         """
+
+        this_bu = deepcopy(self)
+
         if isinstance(other, BaseUnit):
             other.exponent = -other.exponent
-            return UnitDefinition(base_units=[self, other])._get_name()
+            return UnitDefinition(base_units=[this_bu, other])._get_name()
         elif isinstance(other, UnitDefinition):
             for base_unit in other.base_units:
                 base_unit.exponent = -base_unit.exponent
-            other.base_units.append(self)
+            other.base_units.append(this_bu)
             other._get_name()
 
             return other
@@ -322,9 +341,12 @@ class BaseUnit(_BaseUnit):
         Raises:
             TypeError: If the exponent is not an integer.
         """
+
+        this_bu = deepcopy(self)
+
         if isinstance(other, int):
-            self.exponent = other
-            return self
+            this_bu.exponent = other
+            return this_bu
 
         raise TypeError(
             f"unsupported operand type(s) for **: 'BaseUnit' and '{type(other)}'"
@@ -342,25 +364,28 @@ class BaseUnit(_BaseUnit):
         Raises:
             TypeError: If the other operand type is unsupported.
         """
+
+        this_bu = deepcopy(self)
+
         if isinstance(other, BaseUnit):
-            if self.exponent < 0 or other.exponent < 0:
-                self.exponent = abs(self.exponent)
+            if this_bu.exponent < 0 or other.exponent < 0:
+                this_bu.exponent = abs(this_bu.exponent)
                 other.exponent = abs(other.exponent)
 
-            return UnitDefinition(base_units=[self, other])._get_name()
+            return UnitDefinition(base_units=[this_bu, other])._get_name()
         elif isinstance(other, UnitDefinition):
-            other.base_units.append(self)
+            other.base_units.append(this_bu)
             other._get_name()
 
             return other
         elif isinstance(other, Prefix):
-            return other * self
+            return other * this_bu
         elif isinstance(other, (int, float)):
-            if self.multiplier:
-                self.multiplier *= other
+            if this_bu.multiplier:
+                this_bu.multiplier *= other
             else:
-                self.multiplier = other
-            return self
+                this_bu.multiplier = other
+            return this_bu
 
         raise TypeError(
             f"unsupported operand type(s) for *: 'BaseUnit' and '{type(other)}'"
