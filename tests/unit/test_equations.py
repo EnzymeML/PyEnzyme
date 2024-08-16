@@ -3,7 +3,6 @@ import pytest
 from pyenzyme.equations._chem import build_reaction, build_reactions
 from pyenzyme.equations._math import build_equation, build_equations
 from pyenzyme.model import EquationType
-from pyenzyme.units import M, second
 
 
 class TestMathEquations:
@@ -91,7 +90,6 @@ class TestMathEquations:
         ]
 
         # Act
-        units = [M / second, M]
         equations = build_equations(*equations)
 
         # Assert
