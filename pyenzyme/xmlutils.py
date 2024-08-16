@@ -1,38 +1,83 @@
-import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
+import xml.etree.ElementTree as ET
+from enum import Enum
+from typing import Any
 
 
-def map_to_xml(root: ET.Element, mappings: dict, namespace: str):
+def map_to_xml(
+    root: ET.Element,
+    mappings: dict,
+    namespace: str,
+):
     """
     Maps a dictionary to XML elements and appends them to the root element.
 
     Args:
         root (ET.Element): The root element to which sub-elements are appended.
         mappings (dict): The dictionary containing the key-value mappings to convert to XML.
+        namespace (str): The namespace of the XML elements.
     """
 
     for key, value in mappings.items():
         if value is None:
             continue
         if key.startswith("@"):
-            root.attrib[key[1:]] = str(value)
+            root.attrib[key[1:]] = _convert_types(value)
             continue
 
         subelement = ET.Element(f"{{{namespace}}}{key}")
 
         if isinstance(value, dict):
             process_dict_value(subelement, value)
+        elif isinstance(value, list):
+            process_multiple_element(key, namespace, root, value)
         elif key.startswith("@"):
-            subelement.attrib[key[1:]] = str(value)
+            subelement.attrib[key[1:]] = _convert_types(value)
         else:
-            subelement.text = str(value)
+            subelement.text = _convert_types(value)
 
         if not _is_empty(subelement):
             root.append(subelement)
 
 
+def _convert_types(value):
+    if isinstance(value, float) and value == 0.0:
+        return "0.0"
+    if isinstance(value, Enum):
+        return str(value.name)
+
+    return str(value)
+
+
+def process_multiple_element(
+    key: str,
+    namespace: str,
+    root: ET.Element,
+    value: Any,
+):
+    """Processes a list value and adds it as a list of elements to the root element.
+
+    Args:
+        key (str): The key of the list element.
+        namespace (str): The namespace of the list element.
+        root (ET.Element): The root element to which the list elements are appended.
+        value (list): The list of values to be added as elements.
+    """
+    for i, item in enumerate(value):
+        list_element = ET.Element(f"{{{namespace}}}{key}")
+        list_element.text = _convert_types(item)
+        root.append(list_element)
+
+
 def _is_empty(element: ET.Element):
-    """Checks if an element and its sub elements are empty."""
+    """Checks if an element and its sub elements are empty.
+
+    Args:
+        element (ET.Element): The element to check.
+
+    Returns:
+        bool: True if the element is empty, False otherwise.
+    """
 
     return all(
         [
@@ -43,7 +88,10 @@ def _is_empty(element: ET.Element):
     )
 
 
-def process_dict_value(subelement: ET.Element, value: dict):
+def process_dict_value(
+    subelement: ET.Element,
+    value: dict,
+):
     """
     Processes a dictionary value and adds it as attributes or text to a subelement.
 
@@ -56,9 +104,9 @@ def process_dict_value(subelement: ET.Element, value: dict):
             continue
 
         if subkey.startswith("@"):
-            subelement.attrib[subkey[1:]] = str(subvalue)
+            subelement.attrib[subkey[1:]] = _convert_types(subvalue)
         else:
-            subelement.text = str(subvalue)
+            subelement.text = _convert_types(subvalue)
 
 
 def serialize_to_pretty_xml_string(element: ET.Element | None) -> str | None:
@@ -67,7 +115,13 @@ def serialize_to_pretty_xml_string(element: ET.Element | None) -> str | None:
     if element is None:
         return None
 
-    rough_string = ET.tostring(element, "utf-8", xml_declaration=False)
+    rough_string = ET.tostring(
+        element,
+        encoding="unicode",
+        method="xml",
+        xml_declaration=False,
+    )
+
     reparsed = minidom.parseString(rough_string)
 
     return "\n".join(reparsed.toprettyxml(indent="\t").split("\n")[1:]).strip()
