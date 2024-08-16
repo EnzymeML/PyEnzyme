@@ -1,17 +1,15 @@
 ## This is a generated file. Do not modify it manually!
 
 from __future__ import annotations
-
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Optional, Generic, TypeVar
 from enum import Enum
-from typing import Generic, Optional, TypeVar
 from uuid import uuid4
-
-from pydantic import BaseModel, ConfigDict, Field
+from datetime import date, datetime
 
 # Filter Wrapper definition used to filter a list of objects
 # based on their attributes
 Cls = TypeVar("Cls")
-
 
 class FilterWrapper(Generic[Cls]):
     """Wrapper class to filter a list of objects based on their attributes"""
@@ -49,8 +47,7 @@ def add_namespace(obj, prefix: str | None, iri: str | None):
     elif iri and prefix is None:
         raise ValueError("If iri is provided, prefix must also be provided")
 
-    obj.ld_context[prefix] = iri  # type: ignore
-
+    obj.ld_context[prefix] = iri # type: ignore
 
 def validate_prefix(term: str | dict, prefix: str):
     """Validates that a term is prefixed with a given prefix
@@ -68,14 +65,13 @@ def validate_prefix(term: str | dict, prefix: str):
     elif isinstance(term, str) and not term.startswith(prefix + ":"):
         raise ValueError(f"Term {term} is not prefixed with {prefix}")
 
-
 # Model Definitions
 
-
 class EnzymeMLDocument(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     name: str
     references: list[str] = Field(default_factory=list)
@@ -89,22 +85,21 @@ class EnzymeMLDocument(BaseModel):
     reactions: list[Reaction] = Field(default_factory=list)
     measurements: list[Measurement] = Field(default_factory=list)
     equations: list[Equation] = Field(default_factory=list)
-    parameters: list[Parameter] = Field(default_factory=list)
 
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:EnzymeMLDocument/" + str(uuid4()),
+        default_factory=lambda: "enzml:EnzymeMLDocument/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: [
+        default_factory = lambda: [
             "enzml:EnzymeMLDocument",
         ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
@@ -116,7 +111,7 @@ class EnzymeMLDocument(BaseModel):
             "created": "schema:dateCreated",
             "modified": "schema:dateModified",
             "creators": "schema:creator",
-        },
+        }
     )
 
     def filter_creators(self, **kwargs) -> list[Creator]:
@@ -215,24 +210,13 @@ class EnzymeMLDocument(BaseModel):
 
         return FilterWrapper[Equation](self.equations, **kwargs).filter()
 
-    def filter_parameters(self, **kwargs) -> list[Parameter]:
-        """Filters the parameters attribute based on the given kwargs
-
-        Args:
-            **kwargs: The attributes to filter by.
-
-        Returns:
-            list[Parameter]: The filtered list of Parameter objects
-        """
-
-        return FilterWrapper[Parameter](self.parameters, **kwargs).filter()
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -254,9 +238,7 @@ class EnzymeMLDocument(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -265,7 +247,10 @@ class EnzymeMLDocument(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -292,6 +277,7 @@ class EnzymeMLDocument(BaseModel):
         add_namespace(self, prefix, iri)
         self.ld_type.append(term)
 
+
     def add_to_creators(
         self,
         given_name: str,
@@ -299,14 +285,21 @@ class EnzymeMLDocument(BaseModel):
         mail: str,
         **kwargs,
     ):
-        params = {"given_name": given_name, "family_name": family_name, "mail": mail}
+        params = {
+            "given_name": given_name,
+            "family_name": family_name,
+            "mail": mail
+        }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.creators.append(Creator(**params))
+        self.creators.append(
+            Creator(**params)
+        )
 
         return self.creators[-1]
+
 
     def add_to_vessels(
         self,
@@ -314,7 +307,7 @@ class EnzymeMLDocument(BaseModel):
         name: str,
         volume: float,
         unit: UnitDefinition,
-        constant: bool = True,
+        constant: bool= True,
         **kwargs,
     ):
         params = {
@@ -322,27 +315,30 @@ class EnzymeMLDocument(BaseModel):
             "name": name,
             "volume": volume,
             "unit": unit,
-            "constant": constant,
+            "constant": constant
         }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.vessels.append(Vessel(**params))
+        self.vessels.append(
+            Vessel(**params)
+        )
 
         return self.vessels[-1]
+
 
     def add_to_proteins(
         self,
         id: str,
         name: str,
-        constant: bool = False,
-        sequence: Optional[str] = None,
-        vessel_id: Optional[str] = None,
-        ecnumber: Optional[str] = None,
-        organism: Optional[str] = None,
-        organism_tax_id: Optional[str] = None,
-        references: list[str] = [],
+        constant: bool= False,
+        sequence: Optional[str]= None,
+        vessel_id: Optional[str]= None,
+        ecnumber: Optional[str]= None,
+        organism: Optional[str]= None,
+        organism_tax_id: Optional[str]= None,
+        references: list[str]= [],
         **kwargs,
     ):
         params = {
@@ -354,40 +350,54 @@ class EnzymeMLDocument(BaseModel):
             "ecnumber": ecnumber,
             "organism": organism,
             "organism_tax_id": organism_tax_id,
-            "references": references,
+            "references": references
         }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.proteins.append(Protein(**params))
+        self.proteins.append(
+            Protein(**params)
+        )
 
         return self.proteins[-1]
+
 
     def add_to_complexes(
         self,
         id: str,
-        participants: list[str] = [],
+        name: str,
+        constant: bool= False,
+        participants: list[str]= [],
         **kwargs,
     ):
-        params = {"id": id, "participants": participants}
+        params = {
+            "id": id,
+            "name": name,
+            "constant": constant,
+            "participants": participants
+        }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.complexes.append(Complex(**params))
+        self.complexes.append(
+            Complex(**params)
+        )
 
         return self.complexes[-1]
+
 
     def add_to_small_molecules(
         self,
         id: str,
         name: str,
-        constant: bool = False,
-        vessel_id: Optional[str] = None,
-        canonical_smiles: Optional[str] = None,
-        inchikey: Optional[str] = None,
-        references: list[str] = [],
+        constant: bool= False,
+        vessel_id: Optional[str]= None,
+        canonical_smiles: Optional[str]= None,
+        inchi: Optional[str]= None,
+        inchikey: Optional[str]= None,
+        references: list[str]= [],
         **kwargs,
     ):
         params = {
@@ -396,25 +406,29 @@ class EnzymeMLDocument(BaseModel):
             "constant": constant,
             "vessel_id": vessel_id,
             "canonical_smiles": canonical_smiles,
+            "inchi": inchi,
             "inchikey": inchikey,
-            "references": references,
+            "references": references
         }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.small_molecules.append(SmallMolecule(**params))
+        self.small_molecules.append(
+            SmallMolecule(**params)
+        )
 
         return self.small_molecules[-1]
+
 
     def add_to_reactions(
         self,
         id: str,
         name: str,
-        reversible: bool = False,
-        kinetic_law: Optional[Equation] = None,
-        species: list[ReactionElement] = [],
-        modifiers: list[str] = [],
+        reversible: bool= False,
+        kinetic_law: Optional[Equation]= None,
+        species: list[ReactionElement]= [],
+        modifiers: list[str]= [],
         **kwargs,
     ):
         params = {
@@ -423,107 +437,81 @@ class EnzymeMLDocument(BaseModel):
             "reversible": reversible,
             "kinetic_law": kinetic_law,
             "species": species,
-            "modifiers": modifiers,
+            "modifiers": modifiers
         }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.reactions.append(Reaction(**params))
+        self.reactions.append(
+            Reaction(**params)
+        )
 
         return self.reactions[-1]
+
 
     def add_to_measurements(
         self,
         id: str,
         name: str,
-        species: list[MeasurementData] = [],
-        group_id: Optional[str] = None,
-        ph: Optional[float] = None,
-        temperature: Optional[float] = None,
-        temperature_unit: Optional[UnitDefinition] = None,
+        species_data: list[MeasurementData]= [],
+        group_id: Optional[str]= None,
+        ph: Optional[float]= None,
+        temperature: Optional[float]= None,
+        temperature_unit: Optional[UnitDefinition]= None,
         **kwargs,
     ):
         params = {
             "id": id,
             "name": name,
-            "species": species,
+            "species_data": species_data,
             "group_id": group_id,
             "ph": ph,
             "temperature": temperature,
-            "temperature_unit": temperature_unit,
+            "temperature_unit": temperature_unit
         }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.measurements.append(Measurement(**params))
+        self.measurements.append(
+            Measurement(**params)
+        )
 
         return self.measurements[-1]
 
+
     def add_to_equations(
         self,
-        unit: UnitDefinition,
-        equation_type: EquationType,
         equation: str,
-        species_id: Optional[str] = None,
-        variables: list[EqVariable] = [],
-        parameters: list[EqParameter] = [],
+        equation_type: EquationType,
+        species_id: Optional[str]= None,
+        variables: list[Variable]= [],
+        parameters: list[Parameter]= [],
         **kwargs,
     ):
         params = {
-            "unit": unit,
-            "equation_type": equation_type,
             "equation": equation,
+            "equation_type": equation_type,
             "species_id": species_id,
             "variables": variables,
-            "parameters": parameters,
+            "parameters": parameters
         }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.equations.append(Equation(**params))
+        self.equations.append(
+            Equation(**params)
+        )
 
         return self.equations[-1]
 
-    def add_to_parameters(
-        self,
-        id: str,
-        name: str,
-        value: Optional[float] = None,
-        unit: Optional[UnitDefinition] = None,
-        initial_value: Optional[float] = None,
-        upper: Optional[float] = None,
-        lower: Optional[float] = None,
-        stderr: Optional[float] = None,
-        constant: Optional[bool] = True,
-        **kwargs,
-    ):
-        params = {
-            "id": id,
-            "name": name,
-            "value": value,
-            "unit": unit,
-            "initial_value": initial_value,
-            "upper": upper,
-            "lower": lower,
-            "stderr": stderr,
-            "constant": constant,
-        }
-
-        if "id" in kwargs:
-            params["id"] = kwargs["id"]
-
-        self.parameters.append(Parameter(**params))
-
-        return self.parameters[-1]
-
-
 class Creator(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     given_name: str
     family_name: str
@@ -532,30 +520,33 @@ class Creator(BaseModel):
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:Creator/" + str(uuid4()),
+        default_factory=lambda: "enzml:Creator/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: ["enzml:Creator", "schema:person"],
+        default_factory = lambda: [
+            "enzml:Creator","schema:person"
+        ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
             "given_name": "schema:givenName",
             "family_name": "schema:familyName",
             "mail": "schema:email",
-        },
+        }
     )
+
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -577,9 +568,7 @@ class Creator(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -588,7 +577,10 @@ class Creator(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -617,9 +609,10 @@ class Creator(BaseModel):
 
 
 class Vessel(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     id: str
     name: str
@@ -630,15 +623,17 @@ class Vessel(BaseModel):
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:Vessel/" + str(uuid4()),
+        default_factory=lambda: "enzml:Vessel/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: ["enzml:Vessel", "OBO:OBI_0400081"],
+        default_factory = lambda: [
+            "enzml:Vessel","OBO:OBI_0400081"
+        ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
@@ -648,15 +643,16 @@ class Vessel(BaseModel):
             },
             "name": "schema:name",
             "volume": "OBO:OBI_0002139",
-        },
+        }
     )
+
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -678,9 +674,7 @@ class Vessel(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -689,7 +683,10 @@ class Vessel(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -718,9 +715,10 @@ class Vessel(BaseModel):
 
 
 class Protein(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     id: str
     name: str
@@ -735,15 +733,17 @@ class Protein(BaseModel):
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:Protein/" + str(uuid4()),
+        default_factory=lambda: "enzml:Protein/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: ["enzml:Protein", "schema:Protein"],
+        default_factory = lambda: [
+            "enzml:Protein","schema:Protein"
+        ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
@@ -764,15 +764,16 @@ class Protein(BaseModel):
                 "@id": "schema:citation",
                 "@type": "@id",
             },
-        },
+        }
     )
+
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -794,9 +795,7 @@ class Protein(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -805,7 +804,10 @@ class Protein(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -834,27 +836,30 @@ class Protein(BaseModel):
 
 
 class Complex(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     id: str
+    name: str
+    constant: bool = False
     participants: list[str] = Field(default_factory=list)
 
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:Complex/" + str(uuid4()),
+        default_factory=lambda: "enzml:Complex/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: [
+        default_factory = lambda: [
             "enzml:Complex",
         ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
@@ -862,18 +867,20 @@ class Complex(BaseModel):
                 "@id": "schema:identifier",
                 "@type": "@id",
             },
+            "name": "schema:name",
             "participants": {
                 "@type": "@id",
             },
-        },
+        }
     )
+
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -895,9 +902,7 @@ class Complex(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -906,7 +911,10 @@ class Complex(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -935,32 +943,34 @@ class Complex(BaseModel):
 
 
 class SmallMolecule(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     id: str
     name: str
     constant: bool = False
     vessel_id: Optional[str] = Field(default=None)
     canonical_smiles: Optional[str] = Field(default=None)
+    inchi: Optional[str] = Field(default=None)
     inchikey: Optional[str] = Field(default=None)
     references: list[str] = Field(default_factory=list)
 
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:SmallMolecule/" + str(uuid4()),
+        default_factory=lambda: "enzml:SmallMolecule/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: [
+        default_factory = lambda: [
             "enzml:SmallMolecule",
         ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
@@ -977,15 +987,16 @@ class SmallMolecule(BaseModel):
                 "@id": "schema:citation",
                 "@type": "@id",
             },
-        },
+        }
     )
+
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -1007,9 +1018,7 @@ class SmallMolecule(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -1018,7 +1027,10 @@ class SmallMolecule(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -1047,9 +1059,10 @@ class SmallMolecule(BaseModel):
 
 
 class Reaction(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     id: str
     name: str
@@ -1061,17 +1074,17 @@ class Reaction(BaseModel):
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:Reaction/" + str(uuid4()),
+        default_factory=lambda: "enzml:Reaction/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: [
+        default_factory = lambda: [
             "enzml:Reaction",
         ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
@@ -1082,7 +1095,7 @@ class Reaction(BaseModel):
             "modifiers": {
                 "@type": "@id",
             },
-        },
+        }
     )
 
     def filter_species(self, **kwargs) -> list[ReactionElement]:
@@ -1097,12 +1110,13 @@ class Reaction(BaseModel):
 
         return FilterWrapper[ReactionElement](self.species, **kwargs).filter()
 
+
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -1124,9 +1138,7 @@ class Reaction(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -1135,7 +1147,10 @@ class Reaction(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -1162,26 +1177,33 @@ class Reaction(BaseModel):
         add_namespace(self, prefix, iri)
         self.ld_type.append(term)
 
+
     def add_to_species(
         self,
         species_id: str,
         stoichiometry: float,
         **kwargs,
     ):
-        params = {"species_id": species_id, "stoichiometry": stoichiometry}
+        params = {
+            "species_id": species_id,
+            "stoichiometry": stoichiometry
+        }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.species.append(ReactionElement(**params))
+        self.species.append(
+            ReactionElement(**params)
+        )
 
         return self.species[-1]
 
 
 class ReactionElement(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     species_id: str
     stoichiometry: float
@@ -1189,32 +1211,33 @@ class ReactionElement(BaseModel):
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:ReactionElement/" + str(uuid4()),
+        default_factory=lambda: "enzml:ReactionElement/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: [
+        default_factory = lambda: [
             "enzml:ReactionElement",
         ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
             "species_id": {
                 "@type": "@id",
             },
-        },
+        }
     )
+
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -1236,9 +1259,7 @@ class ReactionElement(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -1247,7 +1268,10 @@ class ReactionElement(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -1276,70 +1300,71 @@ class ReactionElement(BaseModel):
 
 
 class Equation(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
 
-    unit: UnitDefinition
-    equation_type: EquationType
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
+
     equation: str
+    equation_type: EquationType
     species_id: Optional[str] = Field(default=None)
-    variables: list[EqVariable] = Field(default_factory=list)
-    parameters: list[EqParameter] = Field(default_factory=list)
+    variables: list[Variable] = Field(default_factory=list)
+    parameters: list[Parameter] = Field(default_factory=list)
 
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:Equation/" + str(uuid4()),
+        default_factory=lambda: "enzml:Equation/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: [
+        default_factory = lambda: [
             "enzml:Equation",
         ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
             "species_id": {
                 "@type": "@id",
             },
-        },
+        }
     )
 
-    def filter_variables(self, **kwargs) -> list[EqVariable]:
+    def filter_variables(self, **kwargs) -> list[Variable]:
         """Filters the variables attribute based on the given kwargs
 
         Args:
             **kwargs: The attributes to filter by.
 
         Returns:
-            list[EqVariable]: The filtered list of EqVariable objects
+            list[Variable]: The filtered list of Variable objects
         """
 
-        return FilterWrapper[EqVariable](self.variables, **kwargs).filter()
+        return FilterWrapper[Variable](self.variables, **kwargs).filter()
 
-    def filter_parameters(self, **kwargs) -> list[EqParameter]:
+    def filter_parameters(self, **kwargs) -> list[Parameter]:
         """Filters the parameters attribute based on the given kwargs
 
         Args:
             **kwargs: The attributes to filter by.
 
         Returns:
-            list[EqParameter]: The filtered list of EqParameter objects
+            list[Parameter]: The filtered list of Parameter objects
         """
 
-        return FilterWrapper[EqParameter](self.parameters, **kwargs).filter()
+        return FilterWrapper[Parameter](self.parameters, **kwargs).filter()
+
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -1361,9 +1386,7 @@ class Equation(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -1372,7 +1395,10 @@ class Equation(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -1399,85 +1425,104 @@ class Equation(BaseModel):
         add_namespace(self, prefix, iri)
         self.ld_type.append(term)
 
+
     def add_to_variables(
         self,
         id: str,
         name: str,
-        symbol: Optional[str] = None,
+        symbol: str,
         **kwargs,
     ):
-        params = {"id": id, "name": name, "symbol": symbol}
+        params = {
+            "id": id,
+            "name": name,
+            "symbol": symbol
+        }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.variables.append(EqVariable(**params))
+        self.variables.append(
+            Variable(**params)
+        )
 
         return self.variables[-1]
+
 
     def add_to_parameters(
         self,
         id: str,
         name: str,
-        symbol: Optional[str] = None,
-        value: Optional[float] = None,
+        symbol: str,
+        value: Optional[float]= None,
+        unit: Optional[UnitDefinition]= None,
+        initial_value: Optional[float]= None,
+        upper: Optional[float]= None,
+        lower: Optional[float]= None,
+        stderr: Optional[float]= None,
+        constant: Optional[bool]= True,
         **kwargs,
     ):
-        params = {"id": id, "name": name, "symbol": symbol, "value": value}
+        params = {
+            "id": id,
+            "name": name,
+            "symbol": symbol,
+            "value": value,
+            "unit": unit,
+            "initial_value": initial_value,
+            "upper": upper,
+            "lower": lower,
+            "stderr": stderr,
+            "constant": constant
+        }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.parameters.append(EqParameter(**params))
+        self.parameters.append(
+            Parameter(**params)
+        )
 
         return self.parameters[-1]
 
+class Variable(BaseModel):
 
-class Parameter(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     id: str
     name: str
-    value: Optional[float] = Field(default=None)
-    unit: Optional[UnitDefinition] = Field(default=None)
-    initial_value: Optional[float] = Field(default=None)
-    upper: Optional[float] = Field(default=None)
-    lower: Optional[float] = Field(default=None)
-    stderr: Optional[float] = Field(default=None)
-    constant: bool = True
+    symbol: str
 
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:Parameter/" + str(uuid4()),
+        default_factory=lambda: "enzml:Variable/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: [
-            "enzml:Parameter",
+        default_factory = lambda: [
+            "enzml:Variable",
         ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
-            "id": {
-                "@id": "schema:identifier",
-                "@type": "@id",
-            },
-        },
+            "id": "schema:identifier",
+        }
     )
+
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -1499,9 +1544,7 @@ class Parameter(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -1510,7 +1553,119 @@ class Parameter(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
+    ):
+        """Adds a term to the @type field of the JSON-LD object
+
+        Example:
+            # Using a term
+            >> obj.add_type_term("https://schema.org/Person")
+
+            # Using a prefixed term
+            >> obj.add_type_term("schema:Person", "schema", "https://schema.org/Person")
+
+        Args:
+            term (str): The term to add to the @type field
+            prefix (str, optional): The prefix to use for the term. Defaults to None.
+            iri (str, optional): The IRI to use for the term prefix. Defaults to None.
+
+        Raises:
+            ValueError: If prefix is provided but iri is not
+            ValueError: If iri is provided but prefix is not
+        """
+
+        if prefix:
+            validate_prefix(term, prefix)
+
+        add_namespace(self, prefix, iri)
+        self.ld_type.append(term)
+
+
+class Parameter(BaseModel):
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
+
+    id: str
+    name: str
+    symbol: str
+    value: Optional[float] = Field(default=None)
+    unit: Optional[UnitDefinition] = Field(default=None)
+    initial_value: Optional[float] = Field(default=None)
+    upper: Optional[float] = Field(default=None)
+    lower: Optional[float] = Field(default=None)
+    stderr: Optional[float] = Field(default=None)
+    constant: bool = True
+
+    # JSON-LD fields
+    ld_id: str = Field(
+        serialization_alias="@id",
+        default_factory=lambda: "enzml:Parameter/" + str(uuid4())
+    )
+    ld_type: list[str] = Field(
+        serialization_alias="@type",
+        default_factory = lambda: [
+            "enzml:Parameter",
+        ],
+    )
+    ld_context: dict[str, str | dict] = Field(
+        serialization_alias="@context",
+        default_factory = lambda: {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "id": {
+                "@id": "schema:identifier",
+                "@type": "@id",
+            },
+        }
+    )
+
+
+    def set_attr_term(
+        self,
+        attr: str,
+        term: str | dict,
+        prefix: str | None = None,
+        iri: str | None = None
+    ):
+        """Sets the term for a given attribute in the JSON-LD object
+
+        Example:
+            # Using an IRI term
+            >> obj.set_attr_term("name", "http://schema.org/givenName")
+
+            # Using a prefix and term
+            >> obj.set_attr_term("name", "schema:givenName", "schema", "http://schema.org")
+
+            # Usinng a dictionary term
+            >> obj.set_attr_term("name", {"@id": "http://schema.org/givenName", "@type": "@id"})
+
+        Args:
+            attr (str): The attribute to set the term for
+            term (str | dict): The term to set for the attribute
+
+        Raises:
+            AssertionError: If the attribute is not found in the model
+        """
+
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
+
+        if prefix:
+            validate_prefix(term, prefix)
+
+        add_namespace(self, prefix, iri)
+        self.ld_context[attr] = term
+
+    def add_type_term(
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -1539,13 +1694,14 @@ class Parameter(BaseModel):
 
 
 class Measurement(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     id: str
     name: str
-    species: list[MeasurementData] = Field(default_factory=list)
+    species_data: list[MeasurementData] = Field(default_factory=list)
     group_id: Optional[str] = Field(default=None)
     ph: Optional[float] = Field(default=None)
     temperature: Optional[float] = Field(default=None)
@@ -1554,17 +1710,17 @@ class Measurement(BaseModel):
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:Measurement/" + str(uuid4()),
+        default_factory=lambda: "enzml:Measurement/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: [
+        default_factory = lambda: [
             "enzml:Measurement",
         ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
@@ -1575,11 +1731,11 @@ class Measurement(BaseModel):
             "group_id": {
                 "@type": "@id",
             },
-        },
+        }
     )
 
-    def filter_species(self, **kwargs) -> list[MeasurementData]:
-        """Filters the species attribute based on the given kwargs
+    def filter_species_data(self, **kwargs) -> list[MeasurementData]:
+        """Filters the species_data attribute based on the given kwargs
 
         Args:
             **kwargs: The attributes to filter by.
@@ -1588,14 +1744,15 @@ class Measurement(BaseModel):
             list[MeasurementData]: The filtered list of MeasurementData objects
         """
 
-        return FilterWrapper[MeasurementData](self.species, **kwargs).filter()
+        return FilterWrapper[MeasurementData](self.species_data, **kwargs).filter()
+
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -1617,9 +1774,7 @@ class Measurement(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -1628,7 +1783,10 @@ class Measurement(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -1655,80 +1813,88 @@ class Measurement(BaseModel):
         add_namespace(self, prefix, iri)
         self.ld_type.append(term)
 
-    def add_to_species(
+
+    def add_to_species_data(
         self,
         species_id: str,
-        init_conc: float,
-        data_type: DataTypes,
+        initial: float,
         data_unit: UnitDefinition,
         time_unit: UnitDefinition,
-        time: list[float] = [],
-        data: list[float] = [],
-        is_calculated: bool = False,
+        data_type: DataTypes,
+        prepared: Optional[float]= None,
+        data: list[float]= [],
+        time: list[float]= [],
+        is_simulated: bool= False,
         **kwargs,
     ):
         params = {
             "species_id": species_id,
-            "init_conc": init_conc,
-            "data_type": data_type,
+            "initial": initial,
             "data_unit": data_unit,
             "time_unit": time_unit,
-            "time": time,
+            "data_type": data_type,
+            "prepared": prepared,
             "data": data,
-            "is_calculated": is_calculated,
+            "time": time,
+            "is_simulated": is_simulated
         }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.species.append(MeasurementData(**params))
+        self.species_data.append(
+            MeasurementData(**params)
+        )
 
-        return self.species[-1]
+        return self.species_data[-1]
 
 
 class MeasurementData(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     species_id: str
-    init_conc: float
-    data_type: DataTypes
+    initial: float
     data_unit: UnitDefinition
     time_unit: UnitDefinition
-    time: list[float] = Field(default_factory=list)
+    data_type: DataTypes
+    prepared: Optional[float] = Field(default=None)
     data: list[float] = Field(default_factory=list)
-    is_calculated: bool = False
+    time: list[float] = Field(default_factory=list)
+    is_simulated: bool = False
 
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:MeasurementData/" + str(uuid4()),
+        default_factory=lambda: "enzml:MeasurementData/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: [
+        default_factory = lambda: [
             "enzml:MeasurementData",
         ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
             "species_id": {
                 "@type": "@id",
             },
-        },
+        }
     )
+
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -1750,9 +1916,7 @@ class MeasurementData(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -1761,7 +1925,10 @@ class MeasurementData(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -1790,9 +1957,10 @@ class MeasurementData(BaseModel):
 
 
 class UnitDefinition(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     id: Optional[str] = Field(default=None)
     name: Optional[str] = Field(default=None)
@@ -1801,21 +1969,21 @@ class UnitDefinition(BaseModel):
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:UnitDefinition/" + str(uuid4()),
+        default_factory=lambda: "enzml:UnitDefinition/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: [
+        default_factory = lambda: [
             "enzml:UnitDefinition",
         ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
-        },
+        }
     )
 
     def filter_base_units(self, **kwargs) -> list[BaseUnit]:
@@ -1830,12 +1998,13 @@ class UnitDefinition(BaseModel):
 
         return FilterWrapper[BaseUnit](self.base_units, **kwargs).filter()
 
+
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -1857,9 +2026,7 @@ class UnitDefinition(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -1868,7 +2035,10 @@ class UnitDefinition(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -1895,33 +2065,36 @@ class UnitDefinition(BaseModel):
         add_namespace(self, prefix, iri)
         self.ld_type.append(term)
 
+
     def add_to_base_units(
         self,
         kind: UnitType,
         exponent: int,
-        multiplier: Optional[float] = None,
-        scale: Optional[float] = None,
+        multiplier: Optional[float]= None,
+        scale: Optional[float]= None,
         **kwargs,
     ):
         params = {
             "kind": kind,
             "exponent": exponent,
             "multiplier": multiplier,
-            "scale": scale,
+            "scale": scale
         }
 
         if "id" in kwargs:
             params["id"] = kwargs["id"]
 
-        self.base_units.append(BaseUnit(**params))
+        self.base_units.append(
+            BaseUnit(**params)
+        )
 
         return self.base_units[-1]
 
-
 class BaseUnit(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
+
+    model_config: ConfigDict = ConfigDict( # type: ignore
+        validate_assigment = True,
+    ) # type: ignore
 
     kind: UnitType
     exponent: int
@@ -1931,29 +2104,30 @@ class BaseUnit(BaseModel):
     # JSON-LD fields
     ld_id: str = Field(
         serialization_alias="@id",
-        default_factory=lambda: "enzml:BaseUnit/" + str(uuid4()),
+        default_factory=lambda: "enzml:BaseUnit/" + str(uuid4())
     )
     ld_type: list[str] = Field(
         serialization_alias="@type",
-        default_factory=lambda: [
+        default_factory = lambda: [
             "enzml:BaseUnit",
         ],
     )
     ld_context: dict[str, str | dict] = Field(
         serialization_alias="@context",
-        default_factory=lambda: {
+        default_factory = lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
             "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
-        },
+        }
     )
+
 
     def set_attr_term(
         self,
         attr: str,
         term: str | dict,
         prefix: str | None = None,
-        iri: str | None = None,
+        iri: str | None = None
     ):
         """Sets the term for a given attribute in the JSON-LD object
 
@@ -1975,9 +2149,7 @@ class BaseUnit(BaseModel):
             AssertionError: If the attribute is not found in the model
         """
 
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
+        assert attr in self.model_fields, f"Attribute {attr} not found in {self.__class__.__name__}"
 
         if prefix:
             validate_prefix(term, prefix)
@@ -1986,7 +2158,10 @@ class BaseUnit(BaseModel):
         self.ld_context[attr] = term
 
     def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
+        self,
+        term: str,
+        prefix: str | None = None,
+        iri: str | None = None
     ):
         """Adds a term to the @type field of the JSON-LD object
 
@@ -2012,212 +2187,6 @@ class BaseUnit(BaseModel):
 
         add_namespace(self, prefix, iri)
         self.ld_type.append(term)
-
-
-class EqVariable(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
-
-    id: str
-    name: str
-    symbol: Optional[str] = Field(default=None)
-
-    # JSON-LD fields
-    ld_id: str = Field(
-        serialization_alias="@id",
-        default_factory=lambda: "enzml:EqVariable/" + str(uuid4()),
-    )
-    ld_type: list[str] = Field(
-        serialization_alias="@type",
-        default_factory=lambda: [
-            "enzml:EqVariable",
-        ],
-    )
-    ld_context: dict[str, str | dict] = Field(
-        serialization_alias="@context",
-        default_factory=lambda: {
-            "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
-            "OBO": "http://purl.obolibrary.org/obo/",
-            "id": {
-                "@type": "@id",
-            },
-        },
-    )
-
-    def set_attr_term(
-        self,
-        attr: str,
-        term: str | dict,
-        prefix: str | None = None,
-        iri: str | None = None,
-    ):
-        """Sets the term for a given attribute in the JSON-LD object
-
-        Example:
-            # Using an IRI term
-            >> obj.set_attr_term("name", "http://schema.org/givenName")
-
-            # Using a prefix and term
-            >> obj.set_attr_term("name", "schema:givenName", "schema", "http://schema.org")
-
-            # Usinng a dictionary term
-            >> obj.set_attr_term("name", {"@id": "http://schema.org/givenName", "@type": "@id"})
-
-        Args:
-            attr (str): The attribute to set the term for
-            term (str | dict): The term to set for the attribute
-
-        Raises:
-            AssertionError: If the attribute is not found in the model
-        """
-
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
-
-        if prefix:
-            validate_prefix(term, prefix)
-
-        add_namespace(self, prefix, iri)
-        self.ld_context[attr] = term
-
-    def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
-    ):
-        """Adds a term to the @type field of the JSON-LD object
-
-        Example:
-            # Using a term
-            >> obj.add_type_term("https://schema.org/Person")
-
-            # Using a prefixed term
-            >> obj.add_type_term("schema:Person", "schema", "https://schema.org/Person")
-
-        Args:
-            term (str): The term to add to the @type field
-            prefix (str, optional): The prefix to use for the term. Defaults to None.
-            iri (str, optional): The IRI to use for the term prefix. Defaults to None.
-
-        Raises:
-            ValueError: If prefix is provided but iri is not
-            ValueError: If iri is provided but prefix is not
-        """
-
-        if prefix:
-            validate_prefix(term, prefix)
-
-        add_namespace(self, prefix, iri)
-        self.ld_type.append(term)
-
-
-class EqParameter(BaseModel):
-    model_config: ConfigDict = ConfigDict(  # type: ignore
-        validate_assigment=True,
-    )  # type: ignore
-
-    id: str
-    name: str
-    symbol: Optional[str] = Field(default=None)
-    value: Optional[float] = Field(default=None)
-
-    # JSON-LD fields
-    ld_id: str = Field(
-        serialization_alias="@id",
-        default_factory=lambda: "enzml:EqParameter/" + str(uuid4()),
-    )
-    ld_type: list[str] = Field(
-        serialization_alias="@type",
-        default_factory=lambda: [
-            "enzml:EqParameter",
-        ],
-    )
-    ld_context: dict[str, str | dict] = Field(
-        serialization_alias="@context",
-        default_factory=lambda: {
-            "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
-            "OBO": "http://purl.obolibrary.org/obo/",
-            "id": {
-                "@type": "@id",
-            },
-        },
-    )
-
-    def set_attr_term(
-        self,
-        attr: str,
-        term: str | dict,
-        prefix: str | None = None,
-        iri: str | None = None,
-    ):
-        """Sets the term for a given attribute in the JSON-LD object
-
-        Example:
-            # Using an IRI term
-            >> obj.set_attr_term("name", "http://schema.org/givenName")
-
-            # Using a prefix and term
-            >> obj.set_attr_term("name", "schema:givenName", "schema", "http://schema.org")
-
-            # Usinng a dictionary term
-            >> obj.set_attr_term("name", {"@id": "http://schema.org/givenName", "@type": "@id"})
-
-        Args:
-            attr (str): The attribute to set the term for
-            term (str | dict): The term to set for the attribute
-
-        Raises:
-            AssertionError: If the attribute is not found in the model
-        """
-
-        assert (
-            attr in self.model_fields
-        ), f"Attribute {attr} not found in {self.__class__.__name__}"
-
-        if prefix:
-            validate_prefix(term, prefix)
-
-        add_namespace(self, prefix, iri)
-        self.ld_context[attr] = term
-
-    def add_type_term(
-        self, term: str, prefix: str | None = None, iri: str | None = None
-    ):
-        """Adds a term to the @type field of the JSON-LD object
-
-        Example:
-            # Using a term
-            >> obj.add_type_term("https://schema.org/Person")
-
-            # Using a prefixed term
-            >> obj.add_type_term("schema:Person", "schema", "https://schema.org/Person")
-
-        Args:
-            term (str): The term to add to the @type field
-            prefix (str, optional): The prefix to use for the term. Defaults to None.
-            iri (str, optional): The IRI to use for the term prefix. Defaults to None.
-
-        Raises:
-            ValueError: If prefix is provided but iri is not
-            ValueError: If iri is provided but prefix is not
-        """
-
-        if prefix:
-            validate_prefix(term, prefix)
-
-        add_namespace(self, prefix, iri)
-        self.ld_type.append(term)
-
-
-class DataTypes(Enum):
-    ABSORPTION = "abs"
-    BIOMASS = "biomass"
-    CONCENTRATION = "conc"
-    CONVERSION = "conversion"
-    FEED = "feed"
-    PEAK_AREA = "peak-area"
 
 
 class EquationType(Enum):
@@ -2226,6 +2195,13 @@ class EquationType(Enum):
     ODE = "ode"
     RATE_LAW = "rateLaw"
 
+class DataTypes(Enum):
+    ABSORBANCE = "http://purl.allotrope.org/ontologies/quality#AFQ_0000061"
+    CONCENTRATION = "http://purl.obolibrary.org/obo/PATO_0000033"
+    CONVERSION = "http://purl.allotrope.org/ontologies/quality#AFQ_0000226"
+    FLUORESCENCE = "http://purl.obolibrary.org/obo/PATO_0000018"
+    PEAK_AREA = "http://purl.allotrope.org/ontologies/result#AFR_0001073"
+    TRANSMITTANCE = "http://purl.allotrope.org/ontologies/result#AFR_0002261"
 
 class UnitType(Enum):
     AMPERE = "ampere"
