@@ -1,5 +1,9 @@
-import pandas as pd
+from __future__ import annotations
+
 import pathlib as pl
+
+import pandas as pd
+from loguru import logger  # type: ignore
 
 from .model import (
     DataTypes,
@@ -12,7 +16,7 @@ from .model import (
 
 def to_pandas(
     enzmldoc: EnzymeMLDocument,
-    ignore: list[str] = [],
+    ignore: list[str] | None = None,
 ) -> pd.DataFrame:
     """This function converts an EnzymeMLDocument object to a pandas DataFrame.
 
@@ -35,6 +39,9 @@ def to_pandas(
         ValueError: If the measurement does not contain species data.
     """
 
+    if ignore is None:
+        ignore = []
+
     assert isinstance(
         enzmldoc, EnzymeMLDocument
     ), "The input must be an EnzymeMLDocument object"
@@ -46,7 +53,7 @@ def to_pandas(
 
         if not isinstance(meas, Measurement):
             raise ValueError("The measurements must be of type Measurement")
-        if meas.species is None:
+        if meas.species_data is None:
             raise ValueError("The measurement must contain species data")
 
         df = _measurement_to_pandas(meas)
@@ -115,7 +122,7 @@ def read_csv(
     data_unit: UnitDefinition,
     time_unit: UnitDefinition,
     data_type: DataTypes = DataTypes.CONCENTRATION,
-    sep: str = ";",
+    sep: str = "\t",
 ):
     """Reads a CSV file from the specified path into a measurement.
 
@@ -241,12 +248,12 @@ def _create_single_measurement(
                 time=time,
                 data_unit=data_unit,
                 time_unit=time_unit,
-                init_conc=species_data[0],
+                initial=species_data[0],
                 data_type=data_type,
             )
         )
 
-    return Measurement(name=id, id=id, species=meas_data)
+    return Measurement(name=id, id=id, species_data=meas_data)
 
 
 def _process_multiple_measurements(
@@ -292,8 +299,8 @@ def _measurement_to_pandas(measurement: Measurement) -> pd.DataFrame:
 
     _validate_measurement(measurement)
 
-    data = {"time": measurement.species[0].time}
-    for species in measurement.species:
+    data = {"time": measurement.species_data[0].time}
+    for species in measurement.species_data:
         data[species.species_id] = species.data
     return pd.DataFrame(data)
 
@@ -305,11 +312,14 @@ def _validate_measurement(meas: Measurement) -> None:
 
     try:
         times = pd.DataFrame(
-            {species.species_id + "_time": species.time for species in meas.species}
+            {
+                species.species_id + "_time": species.time
+                for species in meas.species_data
+            }
         )
     except ValueError:
         time_lengths = {
-            species.species_id: len(species.time) for species in meas.species
+            species.species_id: len(species.time) for species in meas.species_data
         }
         raise ValueError(
             f"Export to pandas not possible, the time lengths are inconsistent. Got different time arrays per species: {time_lengths}"
