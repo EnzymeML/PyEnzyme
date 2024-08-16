@@ -1,20 +1,23 @@
-from pathlib import Path
-import libsbml
-from loguru import logger
-import pandas as pd
+from __future__ import annotations
+
 import xml.etree.ElementTree as ET
-from typing import Callable
+from pathlib import Path
+from typing import Callable, List
+
+import libsbml
+import pandas as pd
+from loguru import logger
 from pydantic import BaseModel
 
 import pyenzyme.model as pe
+import pyenzyme.tools as tools
+from pyenzyme import rdf
+from pyenzyme import xmlutils as _xml
+from pyenzyme.logging import add_logger
+from pyenzyme.sbml import create_sbml_omex
 from pyenzyme.sbml.validation import validate_sbml_export
 from pyenzyme.tabular import to_pandas
-import pyenzyme.tools as tools
-
-from pyenzyme import xmlutils as _xml
-from pyenzyme import rdf
 from pyenzyme.units.units import UnitDefinition
-from pyenzyme.logging import add_logger
 
 MAPPINGS = tools.read_static_file("pyenzyme.sbml", "mappings.toml")
 NSMAP = {"enzymeml": "https://www.enzymeml.org/v2"}
@@ -41,6 +44,7 @@ def to_sbml(
     Args:
         enzmldoc (pe.EnzymeMLDocument): The EnzymeML document to convert.
         out (Path | str | None, optional): The output file to write the SBML document to. Defaults to None.
+        verbose (bool, optional): Whether to print warnings during SBML validation. Defaults to False.
 
     Returns:
         tuple[str, pd.DataFrame] | None: The SBML document as a string and a DataFrame with the RDF triples.
@@ -59,20 +63,22 @@ def to_sbml(
     global model
     global doc
 
-    doc = enzmldoc.copy()
+    doc = enzmldoc
     sbmldoc = libsbml.SBMLDocument()
     model = sbmldoc.createModel()
-    units = tools.find_unique(enzmldoc, pe.UnitDefinition)
+    model.setName(doc.name)
+    units = _assign_ids_to_units(tools.find_unique(doc, UnitDefinition))
+
     print_warnings = verbose
 
     _xml.register_namespaces(nsmap=NSMAP)
 
     # Add entities
-    [_add_unit_definitions(unit, i) for i, unit in enumerate(units)]
+    [_add_unit_definitions(unit) for unit in units]
     [_add_vessel(vessel) for vessel in doc.vessels]
     [_add_protein(protein) for protein in doc.proteins]
+    [_add_complex(complex_) for complex_ in doc.complexes]
     [_add_small_mol(small_mol) for small_mol in doc.small_molecules]
-    [_add_parameter(param) for param in doc.parameters]
     [_add_equation(equation) for equation in doc.equations]
     [_add_reaction(reaction, i) for i, reaction in enumerate(doc.reactions)]
 
@@ -86,26 +92,27 @@ def to_sbml(
         out = Path(out)
 
     if out.is_dir():
-        out = out / "enzymeml_doc.xml"
+        out = out / "enzymeml_doc.omex"
     else:
-        out = out.with_suffix(".xml")
+        out = out.with_suffix(".omex")
 
     _validate_sbml(sbmldoc)
+    create_sbml_omex(
+        sbml_doc=libsbml.writeSBMLToString(sbmldoc),
+        data=to_pandas(doc),
+        out=out,
+    )
 
-    libsbml.writeSBML(sbmldoc, str(out))
-
-    if doc.measurements:
-        to_pandas(doc).to_csv(out.with_name("data.tsv"), sep="\t", index=False)
-
-    logger.info(f"SBML document written to {out}")
+    logger.info(f"OMEX archive written to {out}")
 
 
-def _add_unit_definitions(unit: UnitDefinition, index: int):
+def _add_unit_definitions(unit: UnitDefinition):
     """Add unit definitions to the SBML model."""
 
     sbml_unitdef = model.createUnitDefinition()
+
+    sbml_unitdef.setId(unit.id)
     sbml_unitdef.setName(unit.name)
-    sbml_unitdef.setId(f"u{index}")
     sbml_unitdef.setAnnotation(rdf.to_rdf_xml(unit))
 
     for base_unit in unit.base_units:
@@ -130,7 +137,7 @@ def _add_vessel(vessel: pe.Vessel):
     compartment.setAnnotation(rdf.to_rdf_xml(vessel))
 
     if vessel.unit in units:
-        compartment.setUnits(_get_unit(vessel.unit, units))
+        compartment.setUnits(_get_unit_id(vessel.unit))
     else:
         raise ValueError(f"Unit {vessel.unit} not found in units")
 
@@ -143,6 +150,7 @@ def _add_small_mol(small_mol: pe.SmallMolecule):
     species.setName(small_mol.name)
     species.setCompartment(small_mol.vessel_id)
     species.setConstant(small_mol.constant)
+    species.setSBOTerm("SBO:0000247")  # Simple chemical
     species.appendAnnotation(rdf.to_rdf_xml(small_mol))
 
     init_conc = _get_first_meas_init_conc(small_mol)
@@ -151,9 +159,8 @@ def _add_small_mol(small_mol: pe.SmallMolecule):
         species.setInitialConcentration(init_conc)
         species.setHasOnlySubstanceUnits(False)
 
-    root = ET.Element("enzymeml")
     annot = _xml.serialize_to_pretty_xml_string(
-        _extract_create_annot("smallMolecule", small_mol, root)
+        _extract_create_annot("smallMolecule", small_mol)
     )
 
     if annot is not None:
@@ -168,6 +175,7 @@ def _add_protein(protein: pe.Protein):
     species.setName(protein.name)
     species.setConstant(protein.constant)
     species.setCompartment(protein.vessel_id)
+    species.setSBOTerm("SBO:0000252")  # Protein
     species.appendAnnotation(rdf.to_rdf_xml(protein))
 
     init_conc = _get_first_meas_init_conc(protein)
@@ -178,6 +186,24 @@ def _add_protein(protein: pe.Protein):
 
     annot = _xml.serialize_to_pretty_xml_string(
         _extract_create_annot("protein", protein)
+    )
+
+    if annot is not None:
+        species.appendAnnotation(annot)
+
+
+def _add_complex(complex_: pe.Complex):
+    """Add complexes to the SBML model."""
+
+    species = model.createSpecies()
+    species.setId(complex_.id)
+    species.setName(complex_.name)
+    species.setConstant(True)
+    species.setSBOTerm("SBO:0000296")  # Complex
+    species.appendAnnotation(rdf.to_rdf_xml(complex_))
+
+    annot = _xml.serialize_to_pretty_xml_string(
+        _extract_create_annot("complex", complex_)
     )
 
     if annot is not None:
@@ -196,10 +222,10 @@ def _get_first_meas_init_conc(species: pe.SmallMolecule | pe.Protein):
         return None
 
     measurement = doc.measurements[0]
-    meas_species = measurement.filter_species(species_id=species.id)
+    meas_species = measurement.filter_species_data(species_id=species.id)
 
     if meas_species:
-        return meas_species[0].init_conc
+        return meas_species[0].initial
     else:
         return None
 
@@ -209,7 +235,7 @@ def _add_reaction(reaction: pe.Reaction, index: int):
 
     sbml_reaction = model.createReaction()
     sbml_reaction.setName(reaction.name)
-    sbml_reaction.setId(f"r{index}")
+    sbml_reaction.setId(reaction.id)
     sbml_reaction.setReversible(reaction.reversible)
 
     for species in reaction.species:
@@ -239,8 +265,15 @@ def _add_rate_law(equation: pe.Equation, reac: libsbml.Reaction):
     law.setMath(libsbml.parseL3Formula(equation.equation))
 
     for parameter in equation.parameters:
-        param = law.createParameter()
-        param.setId(parameter.id)
+        if not model.getParameter(parameter.id):
+            _add_parameter(pe.Parameter(**parameter.model_dump()))
+
+    if annot := _create_equation_annot(equation):
+        law.setAnnotation(_xml.serialize_to_pretty_xml_string(annot))
+
+
+def _create_equation_annot(equation: pe.Equation) -> ET.Element | None:
+    return _extract_create_annot("variables", equation.variables)
 
 
 def _get_create_fun(
@@ -269,7 +302,7 @@ def _add_parameter(parameter: pe.Parameter):
     if parameter.value:
         sbml_param.setValue(parameter.value)
     if parameter.unit:
-        sbml_param.setUnits(_get_unit(parameter.unit, units))
+        sbml_param.setUnits(_get_unit_id(parameter.unit))
 
     annot = _xml.serialize_to_pretty_xml_string(
         _extract_create_annot("parameter", parameter)
@@ -283,33 +316,37 @@ def _add_equation(equation: pe.Equation):
     """Add equations to the SBML model."""
 
     if equation.equation_type == pe.EquationType.ODE:
-        sbml_rule = model.createRateRule()
+        sbml_rule = model.createRateRule()  # type: ignore
         sbml_rule.setVariable(equation.species_id)
-        sbml_rule.setUnits(_get_unit(equation.unit, units))
     elif equation.equation_type == pe.EquationType.ASSIGNMENT:
-        sbml_rule = model.createAssignmentRule()
+        sbml_rule = model.createAssignmentRule()  # type: ignore
         sbml_rule.setVariable(equation.species_id)
-        sbml_rule.setUnits(_get_unit(equation.unit, units))
     elif equation.equation_type == pe.EquationType.INITIAL_ASSIGNMENT:
-        sbml_rule = model.createInitialAssignment()
+        sbml_rule = model.createInitialAssignment()  # type: ignore
         sbml_rule.setSymbol(equation.species_id)
     else:
         raise ValueError(f"Equation type {equation.equation_type} not supported")
 
     sbml_rule.setMath(libsbml.parseL3Formula(equation.equation))
 
+    for parameter in equation.parameters:
+        if not model.getParameter(parameter.id):  # type: ignore
+            _add_parameter(parameter)
+
+    if annot := _create_equation_annot(equation):
+        sbml_rule.setAnnotation(_xml.serialize_to_pretty_xml_string(annot))
+
 
 def _add_measurements(measurements: list[pe.Measurement]):
     """Adds measurements to the SBML model."""
 
     annotation = ET.Element(f"{{{NSMAP['enzymeml']}}}data")
-    annotation.attrib["file"] = "data.csv"
+    annotation.attrib["file"] = "data.tsv"
 
     for measurement in measurements:
         meas_element = _extract_create_annot("measurement", measurement)
-        meas_element.attrib["timeUnit"] = _get_unit(  # type: ignore
-            measurement.species[0].time_unit,
-            units,
+        meas_element.attrib["timeUnit"] = _get_unit_id(  # type: ignore
+            measurement.species_data[0].time_unit
         )
 
         assert meas_element is not None, "Measurement element is None"
@@ -317,14 +354,14 @@ def _add_measurements(measurements: list[pe.Measurement]):
         conditions = _create_condition_element(
             ph=measurement.ph,
             temperature=measurement.temperature,
-            temperature_unit=measurement.temperature_unit,  # type: ignore
+            temperature_unit=_get_unit_id(measurement.temperature_unit),  # type: ignore
         )
 
         if conditions:
             meas_element.append(conditions)
 
-        for species in measurement.species:
-            _extract_create_annot("initConc", species, meas_element)
+        for species in measurement.species_data:
+            _extract_create_annot("speciesData", species, meas_element)
 
         annotation.append(meas_element)
 
@@ -358,7 +395,7 @@ def _create_condition_element(
 
 def _extract_create_annot(
     name: str,
-    obj: BaseModel,
+    obj: BaseModel | list[BaseModel],
     element: ET.Element | None = None,
 ) -> ET.Element | None:
     """Extracts the data from the object and creates an annotation element.
@@ -374,16 +411,30 @@ def _extract_create_annot(
     Returns:
         ET.Element: The annotation element.
     """
-    mappings = _extract(obj, MAPPINGS[name])
-
     if element is None:
         element = ET.Element(f"{{{NSMAP['enzymeml']}}}{name}")
 
-    _xml.map_to_xml(
-        root=element,
-        mappings=mappings,
-        namespace=NSMAP["enzymeml"],
-    )
+    if isinstance(obj, list):
+        mappings = [
+            _extract(item, MAPPINGS[name])
+            for item in obj
+            if item.dict(exclude_unset=True)
+        ]
+
+        for mapping in mappings:
+            _xml.map_to_xml(
+                root=element,
+                mappings=mapping,
+                namespace=NSMAP["enzymeml"],
+            )
+    else:
+        mappings = _extract(obj, MAPPINGS[name])
+
+        _xml.map_to_xml(
+            root=element,
+            mappings=mappings,
+            namespace=NSMAP["enzymeml"],
+        )
 
     if len(element) == 0 and not element.attrib:
         return None
@@ -409,7 +460,13 @@ def _extract(obj: BaseModel, mapping: dict) -> dict:
             data[trgt_key] = _extract(obj, enzml_key)
         elif "unit" in enzml_key:
             value = getattr(obj, enzml_key)
-            data[trgt_key] = _get_unit(value, units)
+            data[trgt_key] = _get_unit_id(value)
+        elif isinstance(getattr(obj, enzml_key), list) and all(
+            isinstance(item, BaseModel) for item in getattr(obj, enzml_key)
+        ):
+            data[trgt_key] = [
+                _extract(item, MAPPINGS[enzml_key]) for item in getattr(obj, enzml_key)
+            ]
         else:
             data[trgt_key] = getattr(obj, enzml_key)
 
@@ -423,14 +480,13 @@ def _get_sbml_kind(unit_type: pe.UnitType):
         raise ValueError(f"Unit type {unit_type} not found in libsbml")
 
 
-def _get_unit(unit: pe.UnitDefinition, units: list[pe.UnitDefinition]) -> str | None:
+def _get_unit_id(unit: pe.UnitDefinition) -> str:
     """Helper function to get the unit from the list of units."""
-    try:
-        index = units.index(unit)
-    except ValueError:
-        return None
 
-    return f"u{index}"
+    if unit.id is None:
+        raise ValueError(f"Unit {unit.name} does not have an ID")
+
+    return unit.id
 
 
 def _validate_sbml(sbmldoc: libsbml.SBMLDocument) -> None:
@@ -458,3 +514,25 @@ def _validate_sbml(sbmldoc: libsbml.SBMLDocument) -> None:
 
     if not valid:
         raise ValueError("SBML model is not valid")
+
+
+def _assign_ids_to_units(doc_units: List[UnitDefinition]) -> List[UnitDefinition]:
+    ids = [unit.id for unit in doc_units if unit.id]
+
+    for unit in doc_units:
+        if unit.id is None:
+            new_id = next(_id_generator(ids))
+            unit.id = new_id
+
+    return doc_units
+
+
+def _id_generator(ids: list[str]):
+    """Generator for creating unique IDs that are not in unit_ids."""
+    i = 0
+    while True:
+        potential_id = f"u{i}"
+        if potential_id not in ids:
+            ids.append(potential_id)
+            yield potential_id
+        i += 1
