@@ -9,7 +9,6 @@ def validate_sbml_export(doc: pe.EnzymeMLDocument) -> bool:
 
     Args:
         doc (pe.EnzymeMLDocument): The EnzymeML document to validate.
-        channel (str, optional): The channel to log to. Defaults to sys.stderr.
 
     Returns:
         bool: True if the document is valid, False otherwise.
@@ -31,7 +30,7 @@ def _check_consistent_vessel_ids(doc: pe.EnzymeMLDocument) -> bool:
     """This validator checks whether all species have a vessel id that exists in the document.
 
     SBML documents require that all species have a vessel id that exists in the document and
-    this validator checks for that. Otherwise an error message will be logged and the validity
+    this validator checks for that. Otherwise, an error message will be logged and the validity
     set to False.
     """
 
@@ -47,7 +46,8 @@ def _check_consistent_vessel_ids(doc: pe.EnzymeMLDocument) -> bool:
             result.append(False)
         elif species.vessel_id not in vessel_ids:
             logger.error(
-                f"Species '{species.id}' of type '{type(species).__name__}' has a vessel id that does not exist in the document."
+                f"Species '{species.id}' of type '{type(species).__name__}' has a vessel id that does not exist in "
+                f"the document."
             )
             result.append(False)
         else:
@@ -75,7 +75,8 @@ def _check_equation_either_rule_or_reaction(doc: pe.EnzymeMLDocument) -> bool:
     for element in all_reaction_elements:
         if element.species_id in species_w_rate and element.species_id not in validated:
             logger.error(
-                f"Species '{element.species_id}' is part of a reaction and has a rate equation. This is not allowed in SBML."
+                f"Species '{element.species_id}' is part of a reaction and has a rate equation. This is not allowed "
+                f"in SBML."
             )
             validated.add(element.species_id)
             result.append(False)
@@ -90,7 +91,6 @@ def _check_units_exist(doc: pe.EnzymeMLDocument):
 
     mandatory_unit_objects = [
         *tools.extract(obj=doc, target=pe.MeasurementData),
-        *tools.extract(obj=doc, target=pe.Equation),
     ]
 
     optional_unit_objects = [
@@ -149,7 +149,8 @@ def _check_assigned_params_are_not_constant(doc: pe.EnzymeMLDocument):
         if params[0].constant:
             params[0].constant = False
             logger.warning(
-                f"Parameter '{params[0].id}' has an assignment rule, but is set to constant. The parameter is now set to non-constant."
+                f"Parameter '{params[0].id}' has an assignment rule, but is set to constant. The parameter is now set "
+                f"to non-constant."
             )
 
             result.append(True)
