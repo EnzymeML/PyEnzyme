@@ -25,12 +25,14 @@ ELEMENTAL_FUNCTIONS = ["exp", "log", "sin", "cos", "tan", "sqrt", "abs"]
 def build_equations(
     *equations: str,
     unit_mapping: dict[str, UnitDefinition] | None = None,
+    enzmldoc: EnzymeMLDocument,
 ) -> list[Equation]:
     """Builds a list of Equation objects from a list of string representations.
 
     Args:
         *equations (list[str]): A list of string representations of the ODEs
         unit_mapping: A dictionary mapping parameter names to their respective
+        enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to add the parameters to
 
     Returns:
         list[ODE]: A list of ODE objects
@@ -44,11 +46,19 @@ def build_equations(
 
     assert all(isinstance(eq, str) for eq in equations), "All equations must be strings"
 
-    return [build_equation(eq, unit_mapping) for eq in equations]  # type: ignore
+    return [
+        build_equation(
+            equation=eq,
+            unit_mapping=unit_mapping,
+            enzmldoc=enzmldoc,
+        )
+        for eq in equations
+    ]  # type: ignore
 
 
 def build_equation(
     equation: str,
+    enzmldoc: EnzymeMLDocument,
     unit_mapping: dict[str, UnitDefinition] | None = None,
 ) -> Equation:
     """Builds an equation object from a string
@@ -60,6 +70,7 @@ def build_equation(
     Args:
         equation (str): The equation to be converted into an ODE object
         unit_mapping: A dictionary mapping parameter names to their respective units
+        enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to add the parameters to
 
     Returns:
         ODE: The ODE object
@@ -111,16 +122,16 @@ def build_equation(
         equation=str(right),
         variables=[_create_variable(name) for name in variables],
         equation_type=equation_type,
-        parameters=[
-            _create_parameter(name, unit_mapping.get(name)) for name in parameters
-        ],
     )
 
-    # Left out for now, but could be re-used by decision upon change to include
-    # parameters on the top-level document.
-    # if enzmldoc:
-    #     [_add_to_parameters(enzmldoc, param.name, param.id) for param in eq.parameters]
-    #     _add_units_to_parameters(enzmldoc, unit_mapping)
+    [
+        _add_to_parameters(
+            enzmldoc,
+            param,
+            unit_mapping.get(param),
+        )
+        for param in parameters
+    ]
 
     return eq
 
@@ -158,38 +169,22 @@ def _create_variable(name: str) -> Variable:
     return Variable(id=name, name=name, symbol=name)
 
 
-def _add_to_parameters(enzmldoc: EnzymeMLDocument, name: str, id: str):
+def _add_to_parameters(
+    enzmldoc: EnzymeMLDocument,
+    name: str,
+    unit: UnitDefinition,
+):
     """Adds a parameter to the EnzymeMLDocument"""
 
     add_logger("ENZML")
 
     if enzmldoc.filter_parameters(name=name):
         logger.info(f"Parameter {name} already exists in EnzymeMLDocument. Skipping...")
-
         return
 
-    enzmldoc.add_to_parameters(name=name, id=name)  # type: ignore
-
-
-def _add_units_to_parameters(
-    doc: EnzymeMLDocument,
-    unit_mapping: dict[str, UnitDefinition],
-):
-    """Adds units to the parameters in the EnzymeMLDocument"""
-
-    add_logger("ENZML")
-
-    has_error = False
-
-    for param, unit in unit_mapping.items():
-        if unit.__class__.__name__ != "UnitDefinition":
-            logger.error(f"Unit {unit} is not a UnitDefinition object. Skipping...")
-            has_error = True
-            continue
-
-        doc.filter_parameters(name=param)[0].unit = unit
-
-    if has_error:
-        raise ValueError(
-            "Assigning units to parameters failed. Check the logs for more info."
-        )
+    enzmldoc.add_to_parameters(
+        name=name,
+        id=name,
+        symbol=name,
+        unit=unit,
+    )  # type: ignore
