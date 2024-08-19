@@ -192,6 +192,7 @@ def from_pandas(
 
     Args:
         df (pd.DataFrame): The DataFrame to parse.
+        id (str): The ID of the measurement.
         data_unit (UnitDefinition): The unit of the data.
         time_unit (UnitDefinition): The unit of the time.
         data_type (DataTypes): The type of the data. Default is DataTypes.CONCENTRATION.
@@ -247,7 +248,7 @@ def _create_single_measurement(
                 time=time,
                 data_unit=data_unit,
                 time_unit=time_unit,
-                initial=species_data[0],
+                initial=float(species_data[0]),
                 data_type=data_type,
             )
         )
