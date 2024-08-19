@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import math
-import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import IO
 
 import libsbml as sbml  # type: ignore
+import rich
 from loguru import logger  # type: ignore
 
 import pyenzyme as pe
@@ -20,12 +20,21 @@ MAPPINGS = tools.read_static_file("pyenzyme.sbml", "mappings.toml")
 ENZYMEML_NS = "https://www.enzymeml.org/v2"
 
 
-def read_sbml(path: Path | str):
+def read_sbml(cls, path: Path | str):
+    """
+    Reads an SBML file and initializes an EnzymeML document.
+
+    Args:
+        cls: The class to instantiate the EnzymeML document.
+        path (Path | str): The path to the OMEX archive containing the SBML file.
+
+    Returns:
+        An initialized EnzymeML document with extracted units, species, vessels, equations, parameters, reactions, and measurements.
+    """
     add_logger(name="SBML")
 
     # Create globals to use in the functions
     global units
-    global parameters
     global path_prefix
     global tsv_path
 
@@ -34,7 +43,7 @@ def read_sbml(path: Path | str):
 
     # Read the SBML file and init an EnzymeML document
     model = _init_and_read_sbml(open(sbml_path))
-    enzmldoc = pe.EnzymeMLDocument(name=model.getName())
+    enzmldoc = cls(name=model.getName())
 
     # Extract units to map these to the EnzymeML entities
     units = {  # type: ignore
@@ -50,8 +59,8 @@ def read_sbml(path: Path | str):
     # Extract vessels
     enzmldoc.vessels = [_parse_vessel(comp) for comp in model.getListOfCompartments()]
 
-    # Extract equations from rules and initial assignments
-    parameters = [_parse_parameter(param) for param in model.getListOfParameters()]  # type: ignore
+    # Extract equations and parameters
+    enzmldoc.parameters = [_parse_parameter(param) for param in model.getListOfParameters()]  # type: ignore
     enzmldoc.equations += [
         _parse_equation(rule, pe.EquationType.INITIAL_ASSIGNMENT)
         for rule in model.getListOfInitialAssignments()
@@ -233,7 +242,6 @@ def _parse_equation(rule: sbml.Rule, rule_type: pe.EquationType):
         equation_type=rule_type,
         equation=equation,
         species_id=species_id,
-        parameters=_extract_parameters(equation),
         variables=[pe.Variable(**annot) for annot in annots.get("variables", [])],
     )
 
@@ -259,11 +267,12 @@ def _parse_reaction(reaction: sbml.Reaction):
     reaction = pe.Reaction(
         id=reaction.getId(),
         name=reaction.getName(),
-        reactants=reactants,
-        products=products,
+        species=reactants + products,
         modifiers=modifiers,
         kinetic_law=kinetic_law,
     )
+
+    rich.print(reaction)
 
     return reaction
 
@@ -281,34 +290,15 @@ def _parse_kinetic_law(reaction):
     if not kinetic_law:
         return None
 
-    formula = kinetic_law.getFormula()
+    annots = _parse_enzymeml_annotations("variables", kinetic_law.getAnnotationString())
     kinetic_law = pe.Equation(
-        equation=formula,
+        equation=kinetic_law.getFormula(),
         equation_type=pe.EquationType.RATE_LAW,
         unit=M,  # We need to set a default unit here, because SBML does not provide units for kinetic laws
+        variables=[pe.Variable(**annot) for annot in annots.get("variables", [])],
     )
 
-    kinetic_law.parameters = _extract_parameters(formula)
-
     return kinetic_law
-
-
-def _extract_parameters(equation: str) -> list[pe.Parameter]:
-    """Extract the parameters from an equation."""
-
-    params = []
-    for param in parameters:
-        if any(
-            _contains_param(equation, getattr(param, attr))
-            for attr in ["id", "symbol", "name"]
-        ):
-            params.append(param)
-
-    return params
-
-
-def _contains_param(formula: str, param: str) -> bool:
-    return bool(re.search(rf"\b{param}\b", formula))
 
 
 def _parse_measurements(model: sbml.Model):
@@ -335,16 +325,24 @@ def _assign_units_and_initials(meas_id, measurements, metadata):
     measurement = [m for m in measurements if m.id == meas_id][0]
     conditions = metadata.get("condition", {})
     init_concs = metadata.get("speciesData", [])
-    measurement.temperature = conditions.get("temperature")
+    measurement.ph = _cast(conditions.get("ph"), float)
+    measurement.temperature = _cast(conditions.get("temperature"), float)
     measurement.temperature_unit = conditions.get("temperature_unit")
 
     for init_conc in init_concs:
         species_id = _get_species_id(init_conc)
         meas_data = _get_species_data(measurement, species_id)
 
-        meas_data.initial = init_conc.get("initial", 0.0)
+        meas_data.initial = float(init_conc.get("initial", 0.0))
         meas_data.time_unit = init_conc["time_unit"]
         meas_data.data_unit = init_conc["data_unit"]
+
+
+def _cast(value, data_type):
+    if value is None:
+        return None
+
+    return data_type(value)
 
 
 def _get_species_id(init_conc):
@@ -457,7 +455,11 @@ def _map_values(mappings, root, root_key=None):
                     root=root,
                     xml_key=xml_key,
                 ):
-                    data[root_key] = value
+                    if root_key in data and len(value) == 1:
+                        # Special case for conditions
+                        data[root_key][0].update(value[0])
+                    else:
+                        data[root_key] = value
 
             case str():
                 if value := _process_simple(
