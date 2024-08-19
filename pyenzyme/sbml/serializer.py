@@ -39,7 +39,7 @@ def to_sbml(
         >> import pyenzyme as pe
         >> doc = pe.EnzymeMLDocument()
         >> [add entities to doc]
-        >> pe.to_sbml(doc, "example.xml")
+        >> to_sbml(doc, "example.xml")
 
     Args:
         enzmldoc (pe.EnzymeMLDocument): The EnzymeML document to convert.
@@ -84,6 +84,9 @@ def to_sbml(
 
     if doc.measurements:
         _add_measurements(doc.measurements)
+
+    for parameter in enzmldoc.parameters:
+        _add_parameter(parameter)
 
     if out is None:
         return libsbml.writeSBMLToString(sbmldoc), to_pandas(doc)
@@ -264,10 +267,6 @@ def _add_rate_law(equation: pe.Equation, reac: libsbml.Reaction):
     law = reac.createKineticLaw()
     law.setMath(libsbml.parseL3Formula(equation.equation))
 
-    for parameter in equation.parameters:
-        if not model.getParameter(parameter.id):
-            _add_parameter(pe.Parameter(**parameter.model_dump()))
-
     if annot := _create_equation_annot(equation):
         law.setAnnotation(_xml.serialize_to_pretty_xml_string(annot))
 
@@ -328,10 +327,6 @@ def _add_equation(equation: pe.Equation):
         raise ValueError(f"Equation type {equation.equation_type} not supported")
 
     sbml_rule.setMath(libsbml.parseL3Formula(equation.equation))
-
-    for parameter in equation.parameters:
-        if not model.getParameter(parameter.id):  # type: ignore
-            _add_parameter(parameter)
 
     if annot := _create_equation_annot(equation):
         sbml_rule.setAnnotation(_xml.serialize_to_pretty_xml_string(annot))
