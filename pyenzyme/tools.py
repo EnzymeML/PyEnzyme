@@ -7,6 +7,56 @@ import toml
 import pyenzyme as pe
 
 
+def to_dict_wo_json_ld(enzmldoc: pe.EnzymeMLDocument):
+    """Serialized to dict and strips JSON-LD fields from an EnzymeMLDocument.
+
+    Please note, this function is intended for internal use only and should not be called directly.
+    For developers, if you intend to write tests and check the contents of an EnzymeMLDocument,
+    it is recommended to use this method instead of `model_dump()` to avoid JSON-LD fields,
+    since these contain IDs that are not deterministic and may cause tests to fail.
+
+    Args:
+        enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to strip JSON-LD fields from.
+
+    Returns:
+        dict: The EnzymeMLDocument with JSON-LD fields removed.
+    """
+
+    doc = enzmldoc.model_dump()
+    _recursive_key_removal(doc, "ld_id")
+    _recursive_key_removal(doc, "ld_type")
+    _recursive_key_removal(doc, "ld_context")
+
+    return doc
+
+
+def _recursive_key_removal(obj: dict | list, key: str):
+    """
+    Recursively removes all occurrences of a specified key from a dictionary or list of dictionaries.
+
+    Args:
+        obj (dict | list): The dictionary or list of dictionaries to process.
+        key (str): The key to remove from the dictionary or dictionaries.
+
+    Example:
+        >>> data = {'a': 1, 'b': {'a': 2, 'c': 3}, 'd': [{'a': 4}, {'e': 5}]}
+        >>> _recursive_key_removal(data, 'a')
+        >>> print(data)
+        {'b': {'c': 3}, 'd': [{'e': 5}]}
+    """
+    if isinstance(obj, dict):
+        for k in list(obj.keys()):
+            if key == k:
+                del obj[key]
+            else:
+                _recursive_key_removal(obj[k], key)
+    elif isinstance(obj, list):
+        # Sort the list to ensure that the order of elements is preserved
+        obj.sort(key=lambda x: str(x))
+        for entry in obj:
+            _recursive_key_removal(entry, key)
+
+
 def get_all_parameters(enzmldoc):
     """Extracts all parameters from an EnzymeMLDocument.
 
