@@ -51,6 +51,7 @@ doc.equations += peq.build_equations(
     "s1'(t) = kcat * E_tot * s0(t) / (K_m + s0(t))",
     "E_tot = 100",
     unit_mapping={"kcat": 1 / s, "K_m": mM, "E_tot": mM},
+    enzmldoc=doc,
 )
 
 doc.measurements += pe.read_excel(
@@ -69,5 +70,12 @@ for meas in doc.measurements:
     meas.temperature_unit = K
     meas.ph = 7.0
 
-to_sbml(doc, out="./dev-examples/odes/ode_example.omex")
-pe.write_enzymeml(doc=doc, path="./dev-examples/odes/enzymeml.json")
+# Write sbml doc to file
+with open("./dev-examples/odes/odes_example.xml", "w") as file:
+    file.write(to_sbml(doc)[0])
+
+# Write to omex file
+doc.to_sbml("./dev-examples/odes/odes_example.omex")
+
+# Write to EnzymeML JSON file
+pe.write_enzymeml(self=doc, path="./dev-examples/odes/enzymeml.json")

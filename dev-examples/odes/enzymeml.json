@@ -1,8 +1,8 @@
 {
   "@context": {
     "enzml": "http://www.enzymeml.org/v2/",
-    "schema": "https://schema.org/",
     "OBO": "http://purl.obolibrary.org/obo/",
+    "schema": "https://schema.org/",
     "name": "schema:title",
     "references": {
       "@id": "schema:citation",
@@ -12,7 +12,7 @@
     "modified": "schema:dateModified",
     "creators": "schema:creator"
   },
-  "@id": "enzml:EnzymeMLDocument/39303f02-65a0-490b-8e1d-02162fb04199",
+  "@id": "enzml:EnzymeMLDocument/0e46ba63-85a2-4030-ae03-9cffa8f347cd",
   "@type": [
     "enzml:EnzymeMLDocument"
   ],
@@ -23,8 +23,8 @@
     {
       "@context": {
         "enzml": "http://www.enzymeml.org/v2/",
-        "schema": "https://schema.org/",
         "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
         "id": {
           "@id": "schema:identifier",
           "@type": "@id"
@@ -32,7 +32,7 @@
         "name": "schema:name",
         "volume": "OBO:OBI_0002139"
       },
-      "@id": "enzml:Vessel/371d000b-8c93-4abc-822b-cdc223778079",
+      "@id": "enzml:Vessel/fedbf6f5-4515-4868-830f-1b41033de3b8",
       "@type": [
         "enzml:Vessel",
         "OBO:OBI_0400081"
@@ -43,8 +43,8 @@
       "unit": {
         "@context": {
           "enzml": "http://www.enzymeml.org/v2/",
-          "schema": "https://schema.org/",
-          "OBO": "http://purl.obolibrary.org/obo/"
+          "OBO": "http://purl.obolibrary.org/obo/",
+          "schema": "https://schema.org/"
         },
         "@id": "OBO:UO_0000098",
         "@type": [
@@ -56,10 +56,10 @@
           {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
             },
-            "@id": "enzml:BaseUnit/448808be-98aa-4393-9141-0e13050fe90a",
+            "@id": "enzml:BaseUnit/9f6745b1-66d0-4180-b1ac-c10cc8e87c96",
             "@type": [
               "enzml:BaseUnit"
             ],
@@ -76,8 +76,8 @@
     {
       "@context": {
         "enzml": "http://www.enzymeml.org/v2/",
-        "schema": "https://schema.org/",
         "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
         "id": {
           "@type": "@id"
         },
@@ -96,7 +96,7 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:Protein/5715b8c8-ac93-4e13-a101-3497c37dc260",
+      "@id": "enzml:Protein/d8bc713a-bcf5-4c24-981b-16a7baa1cc0b",
       "@type": [
         "enzml:Protein",
         "schema:Protein"
@@ -116,8 +116,8 @@
     {
       "@context": {
         "enzml": "http://www.enzymeml.org/v2/",
-        "schema": "https://schema.org/",
         "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
         "id": {
           "@id": "schema:identifier",
           "@type": "@id"
@@ -127,7 +127,7 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:Complex/a3f08a33-46d9-4ede-87b3-72b652279876",
+      "@id": "enzml:Complex/ef2c11f9-4278-487e-94cc-fc94fb622a47",
       "@type": [
         "enzml:Complex"
       ],
@@ -144,8 +144,8 @@
     {
       "@context": {
         "enzml": "http://www.enzymeml.org/v2/",
-        "schema": "https://schema.org/",
         "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
         "id": {
           "@id": "schema:identifier",
           "@type": "@id"
@@ -160,7 +160,7 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:SmallMolecule/b2d02c26-70fa-4401-b32f-76ff44b6e59a",
+      "@id": "enzml:SmallMolecule/58414ec1-a6f1-42dc-94e5-1380c63b20a2",
       "@type": [
         "enzml:SmallMolecule"
       ],
@@ -175,8 +175,8 @@
     {
       "@context": {
         "enzml": "http://www.enzymeml.org/v2/",
-        "schema": "https://schema.org/",
         "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
         "id": {
           "@id": "schema:identifier",
           "@type": "@id"
@@ -191,7 +191,7 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:SmallMolecule/32b0f5f4-219d-4918-84c9-de6912f3acb6",
+      "@id": "enzml:SmallMolecule/9c87ae6f-44b4-44db-bd5a-e4f7b99ddd19",
       "@type": [
         "enzml:SmallMolecule"
       ],
@@ -209,8 +209,8 @@
     {
       "@context": {
         "enzml": "http://www.enzymeml.org/v2/",
-        "schema": "https://schema.org/",
         "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
         "id": {
           "@id": "schema:identifier",
           "@type": "@id"
@@ -219,7 +219,7 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:Measurement/fbaacff6-d90f-48e6-b16c-98c77c00d5f9",
+      "@id": "enzml:Measurement/0426ea51-df1f-43d8-9e12-a21f95fc9c2f",
       "@type": [
         "enzml:Measurement"
       ],
@@ -229,13 +229,13 @@
         {
           "@context": {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "species_id": {
               "@type": "@id"
             }
           },
-          "@id": "enzml:MeasurementData/bab6a019-2090-4f60-b20c-0a39d5dd2401",
+          "@id": "enzml:MeasurementData/f8664861-2026-4a5b-97a0-35bae4e99892",
           "@type": [
             "enzml:MeasurementData"
           ],
@@ -244,8 +244,8 @@
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
             },
             "@id": "OBO:UO_0000063",
             "@type": [
@@ -257,10 +257,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/477cca4f-ec95-45a1-8c05-4578beb60b30",
+                "@id": "enzml:BaseUnit/1e8d1272-168b-497c-a82f-9adaf7042d23",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -271,10 +271,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/a045cb18-b5a9-44b1-88e2-1bb1374601d5",
+                "@id": "enzml:BaseUnit/7ded7917-83b4-4507-a055-ab1d19b5341b",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -287,8 +287,8 @@
           "time_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
             },
             "@id": "OBO:UO_0000010",
             "@type": [
@@ -300,10 +300,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/c6ff977b-6f75-46fd-ac15-3a8c3ab4e8bd",
+                "@id": "enzml:BaseUnit/a2d6d606-d789-40e4-8246-0a2af736575f",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -345,13 +345,13 @@
         {
           "@context": {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "species_id": {
               "@type": "@id"
             }
           },
-          "@id": "enzml:MeasurementData/7da88045-0b0d-44a5-afe5-ef9a6002df93",
+          "@id": "enzml:MeasurementData/ba922ab1-567e-4cdd-a015-cb00baf1dc9a",
           "@type": [
             "enzml:MeasurementData"
           ],
@@ -360,8 +360,8 @@
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
             },
             "@id": "OBO:UO_0000063",
             "@type": [
@@ -373,10 +373,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/477cca4f-ec95-45a1-8c05-4578beb60b30",
+                "@id": "enzml:BaseUnit/1e8d1272-168b-497c-a82f-9adaf7042d23",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -387,10 +387,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/a045cb18-b5a9-44b1-88e2-1bb1374601d5",
+                "@id": "enzml:BaseUnit/7ded7917-83b4-4507-a055-ab1d19b5341b",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -403,8 +403,8 @@
           "time_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
             },
             "@id": "OBO:UO_0000010",
             "@type": [
@@ -416,10 +416,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/c6ff977b-6f75-46fd-ac15-3a8c3ab4e8bd",
+                "@id": "enzml:BaseUnit/a2d6d606-d789-40e4-8246-0a2af736575f",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -464,8 +464,8 @@
       "temperature_unit": {
         "@context": {
           "enzml": "http://www.enzymeml.org/v2/",
-          "schema": "https://schema.org/",
-          "OBO": "http://purl.obolibrary.org/obo/"
+          "OBO": "http://purl.obolibrary.org/obo/",
+          "schema": "https://schema.org/"
         },
         "@id": "OBO:UO_0000012",
         "@type": [
@@ -477,10 +477,10 @@
           {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
             },
-            "@id": "enzml:BaseUnit/109807ff-d2fa-4eeb-a0ee-3de4930871f5",
+            "@id": "enzml:BaseUnit/1a31c8a4-6212-4810-804f-59c5cffd10c5",
             "@type": [
               "enzml:BaseUnit"
             ],
@@ -494,8 +494,8 @@
     {
       "@context": {
         "enzml": "http://www.enzymeml.org/v2/",
-        "schema": "https://schema.org/",
         "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
         "id": {
           "@id": "schema:identifier",
           "@type": "@id"
@@ -504,7 +504,7 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:Measurement/a1773c19-270a-40e2-848c-d74cd98fa03c",
+      "@id": "enzml:Measurement/d81322ba-5094-446e-b224-4795ff25615a",
       "@type": [
         "enzml:Measurement"
       ],
@@ -514,13 +514,13 @@
         {
           "@context": {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "species_id": {
               "@type": "@id"
             }
           },
-          "@id": "enzml:MeasurementData/a5a649d1-6bdb-4a1e-a9fb-d49ec9c3efac",
+          "@id": "enzml:MeasurementData/2c021e30-5731-4893-baf4-f337b46a51ca",
           "@type": [
             "enzml:MeasurementData"
           ],
@@ -529,8 +529,8 @@
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
             },
             "@id": "OBO:UO_0000063",
             "@type": [
@@ -542,10 +542,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/477cca4f-ec95-45a1-8c05-4578beb60b30",
+                "@id": "enzml:BaseUnit/1e8d1272-168b-497c-a82f-9adaf7042d23",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -556,10 +556,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/a045cb18-b5a9-44b1-88e2-1bb1374601d5",
+                "@id": "enzml:BaseUnit/7ded7917-83b4-4507-a055-ab1d19b5341b",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -572,8 +572,8 @@
           "time_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
             },
             "@id": "OBO:UO_0000010",
             "@type": [
@@ -585,10 +585,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/c6ff977b-6f75-46fd-ac15-3a8c3ab4e8bd",
+                "@id": "enzml:BaseUnit/a2d6d606-d789-40e4-8246-0a2af736575f",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -630,13 +630,13 @@
         {
           "@context": {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "species_id": {
               "@type": "@id"
             }
           },
-          "@id": "enzml:MeasurementData/bb46ba43-287b-49d8-bc16-51cd806cc7ed",
+          "@id": "enzml:MeasurementData/458293b5-22ca-41c2-9b25-0f98c05ce480",
           "@type": [
             "enzml:MeasurementData"
           ],
@@ -645,8 +645,8 @@
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
             },
             "@id": "OBO:UO_0000063",
             "@type": [
@@ -658,10 +658,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/477cca4f-ec95-45a1-8c05-4578beb60b30",
+                "@id": "enzml:BaseUnit/1e8d1272-168b-497c-a82f-9adaf7042d23",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -672,10 +672,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/a045cb18-b5a9-44b1-88e2-1bb1374601d5",
+                "@id": "enzml:BaseUnit/7ded7917-83b4-4507-a055-ab1d19b5341b",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -688,8 +688,8 @@
           "time_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
             },
             "@id": "OBO:UO_0000010",
             "@type": [
@@ -701,10 +701,10 @@
               {
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
+                  "OBO": "http://purl.obolibrary.org/obo/",
+                  "schema": "https://schema.org/"
                 },
-                "@id": "enzml:BaseUnit/c6ff977b-6f75-46fd-ac15-3a8c3ab4e8bd",
+                "@id": "enzml:BaseUnit/a2d6d606-d789-40e4-8246-0a2af736575f",
                 "@type": [
                   "enzml:BaseUnit"
                 ],
@@ -749,8 +749,8 @@
       "temperature_unit": {
         "@context": {
           "enzml": "http://www.enzymeml.org/v2/",
-          "schema": "https://schema.org/",
-          "OBO": "http://purl.obolibrary.org/obo/"
+          "OBO": "http://purl.obolibrary.org/obo/",
+          "schema": "https://schema.org/"
         },
         "@id": "OBO:UO_0000012",
         "@type": [
@@ -762,10 +762,10 @@
           {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
             },
-            "@id": "enzml:BaseUnit/109807ff-d2fa-4eeb-a0ee-3de4930871f5",
+            "@id": "enzml:BaseUnit/1a31c8a4-6212-4810-804f-59c5cffd10c5",
             "@type": [
               "enzml:BaseUnit"
             ],
@@ -781,13 +781,13 @@
     {
       "@context": {
         "enzml": "http://www.enzymeml.org/v2/",
-        "schema": "https://schema.org/",
         "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
         "species_id": {
           "@type": "@id"
         }
       },
-      "@id": "enzml:Equation/1f92428c-cb1a-4d9f-a8cb-3414e7e87049",
+      "@id": "enzml:Equation/07b5e8fb-729c-4e1d-892e-46be9e9e6d56",
       "@type": [
         "enzml:Equation"
       ],
@@ -798,11 +798,11 @@
         {
           "@context": {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "id": "schema:identifier"
           },
-          "@id": "enzml:Variable/6a1e9596-a851-467f-aac8-b12595a94856",
+          "@id": "enzml:Variable/edde9e7a-ce67-4af4-8788-0f96716d0e85",
           "@type": [
             "enzml:Variable"
           ],
@@ -810,209 +810,208 @@
           "name": "s0",
           "symbol": "s0"
         }
-      ],
-      "parameters": [
-        {
-          "@context": {
-            "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
-            "OBO": "http://purl.obolibrary.org/obo/",
-            "id": {
-              "@id": "schema:identifier",
-              "@type": "@id"
-            }
-          },
-          "@id": "enzml:Parameter/49b1a46d-7cc6-436c-b57f-d17a44d980b9",
-          "@type": [
-            "enzml:Parameter"
-          ],
-          "id": "K_m",
-          "name": "K_m",
-          "symbol": "K_m",
-          "unit": {
-            "@context": {
-              "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
-            },
-            "@id": "OBO:UO_0000063",
-            "@type": [
-              "OBO:UO_0000000"
-            ],
-            "id": "u2",
-            "name": "mmol / l",
-            "base_units": [
-              {
-                "@context": {
-                  "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
-                },
-                "@id": "enzml:BaseUnit/477cca4f-ec95-45a1-8c05-4578beb60b30",
-                "@type": [
-                  "enzml:BaseUnit"
-                ],
-                "kind": "mole",
-                "exponent": 1,
-                "scale": -3.0
-              },
-              {
-                "@context": {
-                  "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
-                },
-                "@id": "enzml:BaseUnit/a045cb18-b5a9-44b1-88e2-1bb1374601d5",
-                "@type": [
-                  "enzml:BaseUnit"
-                ],
-                "kind": "litre",
-                "exponent": -1,
-                "scale": 1.0
-              }
-            ]
-          },
-          "upper": 100.0,
-          "lower": 0.0,
-          "stderr": 0.1,
-          "constant": true
-        },
-        {
-          "@context": {
-            "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
-            "OBO": "http://purl.obolibrary.org/obo/",
-            "id": {
-              "@id": "schema:identifier",
-              "@type": "@id"
-            }
-          },
-          "@id": "enzml:Parameter/71b45227-a2a7-4e0c-a273-9ef99dbcab1a",
-          "@type": [
-            "enzml:Parameter"
-          ],
-          "id": "E_tot",
-          "name": "E_tot",
-          "symbol": "E_tot",
-          "unit": {
-            "@context": {
-              "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
-            },
-            "@id": "OBO:UO_0000063",
-            "@type": [
-              "OBO:UO_0000000"
-            ],
-            "id": "u2",
-            "name": "mmol / l",
-            "base_units": [
-              {
-                "@context": {
-                  "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
-                },
-                "@id": "enzml:BaseUnit/477cca4f-ec95-45a1-8c05-4578beb60b30",
-                "@type": [
-                  "enzml:BaseUnit"
-                ],
-                "kind": "mole",
-                "exponent": 1,
-                "scale": -3.0
-              },
-              {
-                "@context": {
-                  "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
-                },
-                "@id": "enzml:BaseUnit/a045cb18-b5a9-44b1-88e2-1bb1374601d5",
-                "@type": [
-                  "enzml:BaseUnit"
-                ],
-                "kind": "litre",
-                "exponent": -1,
-                "scale": 1.0
-              }
-            ]
-          },
-          "upper": 100.0,
-          "lower": 0.0,
-          "stderr": 0.1,
-          "constant": true
-        },
-        {
-          "@context": {
-            "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
-            "OBO": "http://purl.obolibrary.org/obo/",
-            "id": {
-              "@id": "schema:identifier",
-              "@type": "@id"
-            }
-          },
-          "@id": "enzml:Parameter/f4bdcef7-8883-4cf2-b1b5-6ccacd9b1e37",
-          "@type": [
-            "enzml:Parameter"
-          ],
-          "id": "kcat",
-          "name": "kcat",
-          "symbol": "kcat",
-          "unit": {
-            "@context": {
-              "enzml": "http://www.enzymeml.org/v2/",
-              "schema": "https://schema.org/",
-              "OBO": "http://purl.obolibrary.org/obo/"
-            },
-            "@id": "OBO:UO_0000010",
-            "@type": [
-              "OBO:UO_0000000"
-            ],
-            "id": "u4",
-            "name": "1 / s",
-            "base_units": [
-              {
-                "@context": {
-                  "enzml": "http://www.enzymeml.org/v2/",
-                  "schema": "https://schema.org/",
-                  "OBO": "http://purl.obolibrary.org/obo/"
-                },
-                "@id": "enzml:BaseUnit/c6ff977b-6f75-46fd-ac15-3a8c3ab4e8bd",
-                "@type": [
-                  "enzml:BaseUnit"
-                ],
-                "kind": "second",
-                "exponent": -1,
-                "scale": 1.0
-              }
-            ]
-          },
-          "upper": 100.0,
-          "lower": 0.0,
-          "stderr": 0.1,
-          "constant": true
-        }
       ]
     },
     {
       "@context": {
         "enzml": "http://www.enzymeml.org/v2/",
-        "schema": "https://schema.org/",
         "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
         "species_id": {
           "@type": "@id"
         }
       },
-      "@id": "enzml:Equation/e0c67659-dcfc-401b-a48d-0599f685aa91",
+      "@id": "enzml:Equation/77814fb8-a848-4759-8354-32a9f7a19a49",
       "@type": [
         "enzml:Equation"
       ],
       "equation": "100",
       "equation_type": "initialAssignment",
       "species_id": "E_tot",
-      "variables": [],
-      "parameters": []
+      "variables": []
+    }
+  ],
+  "parameters": [
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        }
+      },
+      "@id": "enzml:Parameter/8bd75c32-151d-4a05-9e36-be114db34334",
+      "@type": [
+        "enzml:Parameter"
+      ],
+      "id": "E_tot",
+      "name": "E_tot",
+      "symbol": "E_tot",
+      "unit": {
+        "@context": {
+          "enzml": "http://www.enzymeml.org/v2/",
+          "OBO": "http://purl.obolibrary.org/obo/",
+          "schema": "https://schema.org/"
+        },
+        "@id": "OBO:UO_0000063",
+        "@type": [
+          "OBO:UO_0000000"
+        ],
+        "id": "u2",
+        "name": "mmol / l",
+        "base_units": [
+          {
+            "@context": {
+              "enzml": "http://www.enzymeml.org/v2/",
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
+            },
+            "@id": "enzml:BaseUnit/1e8d1272-168b-497c-a82f-9adaf7042d23",
+            "@type": [
+              "enzml:BaseUnit"
+            ],
+            "kind": "mole",
+            "exponent": 1,
+            "scale": -3.0
+          },
+          {
+            "@context": {
+              "enzml": "http://www.enzymeml.org/v2/",
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
+            },
+            "@id": "enzml:BaseUnit/7ded7917-83b4-4507-a055-ab1d19b5341b",
+            "@type": [
+              "enzml:BaseUnit"
+            ],
+            "kind": "litre",
+            "exponent": -1,
+            "scale": 1.0
+          }
+        ]
+      },
+      "upper": 100.0,
+      "lower": 0.0,
+      "stderr": 0.1,
+      "constant": true
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        }
+      },
+      "@id": "enzml:Parameter/e63b8e5b-56a5-4b8e-98be-18e829b179f1",
+      "@type": [
+        "enzml:Parameter"
+      ],
+      "id": "K_m",
+      "name": "K_m",
+      "symbol": "K_m",
+      "unit": {
+        "@context": {
+          "enzml": "http://www.enzymeml.org/v2/",
+          "OBO": "http://purl.obolibrary.org/obo/",
+          "schema": "https://schema.org/"
+        },
+        "@id": "OBO:UO_0000063",
+        "@type": [
+          "OBO:UO_0000000"
+        ],
+        "id": "u2",
+        "name": "mmol / l",
+        "base_units": [
+          {
+            "@context": {
+              "enzml": "http://www.enzymeml.org/v2/",
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
+            },
+            "@id": "enzml:BaseUnit/1e8d1272-168b-497c-a82f-9adaf7042d23",
+            "@type": [
+              "enzml:BaseUnit"
+            ],
+            "kind": "mole",
+            "exponent": 1,
+            "scale": -3.0
+          },
+          {
+            "@context": {
+              "enzml": "http://www.enzymeml.org/v2/",
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
+            },
+            "@id": "enzml:BaseUnit/7ded7917-83b4-4507-a055-ab1d19b5341b",
+            "@type": [
+              "enzml:BaseUnit"
+            ],
+            "kind": "litre",
+            "exponent": -1,
+            "scale": 1.0
+          }
+        ]
+      },
+      "upper": 100.0,
+      "lower": 0.0,
+      "stderr": 0.1,
+      "constant": true
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        }
+      },
+      "@id": "enzml:Parameter/158b36f9-74bd-4148-b3f8-5a2a77ea5571",
+      "@type": [
+        "enzml:Parameter"
+      ],
+      "id": "kcat",
+      "name": "kcat",
+      "symbol": "kcat",
+      "unit": {
+        "@context": {
+          "enzml": "http://www.enzymeml.org/v2/",
+          "OBO": "http://purl.obolibrary.org/obo/",
+          "schema": "https://schema.org/"
+        },
+        "@id": "OBO:UO_0000010",
+        "@type": [
+          "OBO:UO_0000000"
+        ],
+        "id": "u4",
+        "name": "1 / s",
+        "base_units": [
+          {
+            "@context": {
+              "enzml": "http://www.enzymeml.org/v2/",
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "schema": "https://schema.org/"
+            },
+            "@id": "enzml:BaseUnit/a2d6d606-d789-40e4-8246-0a2af736575f",
+            "@type": [
+              "enzml:BaseUnit"
+            ],
+            "kind": "second",
+            "exponent": -1,
+            "scale": 1.0
+          }
+        ]
+      },
+      "upper": 100.0,
+      "lower": 0.0,
+      "stderr": 0.1,
+      "constant": true
     }
   ]
 }

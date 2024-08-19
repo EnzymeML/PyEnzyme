@@ -32,6 +32,7 @@ reaction = peq.build_reaction(
 reaction.kinetic_law = peq.build_equation(
     "kcat * p0(t) * s0(t) / ( K_m + s0(t) )",
     unit_mapping={"kcat": 1 / s, "K_m": mM},
+    enzmldoc=doc,
 )
 
 doc.reactions += [reaction]
@@ -52,5 +53,12 @@ for meas in doc.measurements:
     meas.temperature_unit = K
     meas.ph = 7.0
 
-to_sbml(doc, out="./dev-examples/reactions/reactions_example.omex")
-pe.write_enzymeml(doc=doc, path="./dev-examples/reactions/enzymeml.json")
+# Write sbml doc to file
+with open("./dev-examples/reactions/reactions_example.xml", "w") as file:
+    file.write(to_sbml(doc)[0])
+
+# Write to omex file
+doc.to_sbml("./dev-examples/reactions/reactions_example.omex")
+
+# Write to EnzymeML JSON file
+pe.write_enzymeml(self=doc, path="./dev-examples/reactions/enzymeml.json")

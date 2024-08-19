@@ -2,8 +2,11 @@ from pathlib import Path
 
 import rich
 
-from pyenzyme.sbml import read_sbml
+import pyenzyme as pe
+from pyenzyme.tools import to_dict_wo_json_ld
 
-doc = read_sbml(Path("./dev-examples/odes/ode_example.omex"))
+doc = pe.EnzymeMLDocument.from_sbml(
+    path=Path("./dev-examples/reactions/reactions_example.omex")
+)
 
-rich.print(doc)
+rich.print(to_dict_wo_json_ld(doc))
