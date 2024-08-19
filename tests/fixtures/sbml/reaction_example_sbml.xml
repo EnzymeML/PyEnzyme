@@ -2,22 +2,22 @@
 <sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
     <model name="Test">
         <annotation>
-            <enzymeml:data xmlns:enzymeml="https://www.enzymeml.org/v2" file="data.csv">
-                <enzymeml:measurement id="m0" name="m0" timeUnit="u4">
+            <enzymeml:data xmlns:enzymeml="https://www.enzymeml.org/v2" file="data.tsv">
+                <enzymeml:measurement id="m0" name="m0" timeUnit="u2">
                     <enzymeml:conditions>
                         <enzymeml:ph value="7.0"/>
-                        <enzymeml:temperature value="298.15" unit="u5"/>
+                        <enzymeml:temperature value="298.15" unit="u3"/>
                     </enzymeml:conditions>
-                    <enzymeml:initConc species="s0" unit="u2"/>
-                    <enzymeml:initConc species="s1" value="10.0" unit="u2"/>
+                    <enzymeml:speciesData species="s0" unit="u1" type="CONCENTRATION"/>
+                    <enzymeml:speciesData species="s1" value="10.0" unit="u1" type="CONCENTRATION"/>
                 </enzymeml:measurement>
-                <enzymeml:measurement id="m1" name="m1" timeUnit="u4">
+                <enzymeml:measurement id="m1" name="m1" timeUnit="u2">
                     <enzymeml:conditions>
                         <enzymeml:ph value="7.0"/>
-                        <enzymeml:temperature value="298.15" unit="u5"/>
+                        <enzymeml:temperature value="298.15" unit="u3"/>
                     </enzymeml:conditions>
-                    <enzymeml:initConc species="s0" unit="u2"/>
-                    <enzymeml:initConc species="s1" value="10.0" unit="u2"/>
+                    <enzymeml:speciesData species="s0" unit="u1" type="CONCENTRATION"/>
+                    <enzymeml:speciesData species="s1" value="10.0" unit="u1" type="CONCENTRATION"/>
                 </enzymeml:measurement>
             </enzymeml:data>
         </annotation>
@@ -34,21 +34,7 @@
                     <unit kind="litre" exponent="1" scale="-3"/>
                 </listOfUnits>
             </unitDefinition>
-            <unitDefinition id="u1" name="mmol / l s">
-                <annotation>
-                    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-                        <rdf:Description rdf:about="http://purl.obolibrary.org/obo/UO_0000063">
-                            <rdf:type rdf:resource="http://purl.obolibrary.org/obo/UO_0000000"/>
-                        </rdf:Description>
-                    </rdf:RDF>
-                </annotation>
-                <listOfUnits>
-                    <unit kind="mole" exponent="1" scale="-3"/>
-                    <unit kind="litre" exponent="-1" scale="1"/>
-                    <unit kind="second" exponent="-1" scale="1"/>
-                </listOfUnits>
-            </unitDefinition>
-            <unitDefinition id="u2" name="mmol / l">
+            <unitDefinition id="u1" name="mmol / l">
                 <annotation>
                     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
                         <rdf:Description rdf:about="http://purl.obolibrary.org/obo/UO_0000063">
@@ -61,7 +47,7 @@
                     <unit kind="litre" exponent="-1" scale="1"/>
                 </listOfUnits>
             </unitDefinition>
-            <unitDefinition id="u3" name="1 / s">
+            <unitDefinition id="u2" name="s">
                 <annotation>
                     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
                         <rdf:Description rdf:about="http://purl.obolibrary.org/obo/UO_0000010">
@@ -70,22 +56,10 @@
                     </rdf:RDF>
                 </annotation>
                 <listOfUnits>
-                    <unit kind="second" exponent="-1" scale="1"/>
+                    <unit kind="second" exponent="1" scale="1"/>
                 </listOfUnits>
             </unitDefinition>
-            <unitDefinition id="u4" name="s">
-                <annotation>
-                    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-                        <rdf:Description rdf:about="http://purl.obolibrary.org/obo/UO_0000010">
-                            <rdf:type rdf:resource="http://purl.obolibrary.org/obo/UO_0000000"/>
-                        </rdf:Description>
-                    </rdf:RDF>
-                </annotation>
-                <listOfUnits>
-                    <unit kind="second" exponent="-1" scale="1"/>
-                </listOfUnits>
-            </unitDefinition>
-            <unitDefinition id="u5" name="K">
+            <unitDefinition id="u3" name="K">
                 <annotation>
                     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
                         <rdf:Description rdf:about="http://purl.obolibrary.org/obo/UO_0000012">
@@ -97,6 +71,18 @@
                     <unit kind="kelvin" exponent="1" scale="1"/>
                 </listOfUnits>
             </unitDefinition>
+            <unitDefinition id="u4" name="1 / s">
+                <annotation>
+                    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                        <rdf:Description rdf:about="http://purl.obolibrary.org/obo/UO_0000010">
+                            <rdf:type rdf:resource="http://purl.obolibrary.org/obo/UO_0000000"/>
+                        </rdf:Description>
+                    </rdf:RDF>
+                </annotation>
+                <listOfUnits>
+                    <unit kind="second" exponent="-1" scale="1"/>
+                </listOfUnits>
+            </unitDefinition>
         </listOfUnitDefinitions>
         <listOfCompartments>
             <compartment id="v0" name="Vessel 1" size="10" units="u0" constant="true">
@@ -104,7 +90,7 @@
                     <rdf:RDF xmlns:OBO="http://purl.obolibrary.org/obo/"
                              xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
                         <rdf:Description
-                                rdf:about="http://www.enzymeml.org/v2/Vessel/774cead8-8a1c-45e4-820a-59a8fc15fb6b">
+                                rdf:about="http://www.enzymeml.org/v2/Vessel/a2ea41db-032c-4a61-a7d5-254137d0bce9">
                             <schema:name>Vessel 1</schema:name>
                             <OBO:OBI_0002139 rdf:datatype="http://www.w3.org/2001/XMLSchema#double">10.0
                             </OBO:OBI_0002139>
@@ -121,7 +107,7 @@
                     <rdf:RDF xmlns:OBO="http://purl.obolibrary.org/obo/"
                              xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
                         <rdf:Description
-                                rdf:about="http://www.enzymeml.org/v2/Protein/d69d42cc-c6ac-499c-9a6e-1050b0fc852f">
+                                rdf:about="http://www.enzymeml.org/v2/Protein/42828d0d-f4ac-489b-acd5-cd74c080f340">
                             <schema:name>Enzyme</schema:name>
                             <OBO:GSSO_007262>MTEY</OBO:GSSO_007262>
                             <rdf:type rdf:resource="http://www.enzymeml.org/v2/Protein"/>
@@ -138,7 +124,7 @@
                 <annotation>
                     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
                         <rdf:Description
-                                rdf:about="http://www.enzymeml.org/v2/SmallMolecule/c8c7ade0-c508-40b8-992c-cc31b879857b">
+                                rdf:about="http://www.enzymeml.org/v2/SmallMolecule/e794f30d-51ea-4b89-a5d7-555bcd70efe5">
                             <schema:name>Substrate</schema:name>
                             <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
                         </rdf:Description>
@@ -150,7 +136,7 @@
                 <annotation>
                     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
                         <rdf:Description
-                                rdf:about="http://www.enzymeml.org/v2/SmallMolecule/949324fb-6d78-4c38-90d3-79ed2c519ef8">
+                                rdf:about="http://www.enzymeml.org/v2/SmallMolecule/4b8a1f78-1874-447a-aee7-a80970bb1301">
                             <schema:name>Product</schema:name>
                             <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
                         </rdf:Description>
@@ -159,11 +145,11 @@
             </species>
         </listOfSpecies>
         <listOfParameters>
-            <parameter id="K_m" name="K_m" units="u2" constant="true">
+            <parameter id="kcat" name="kcat" units="u4" constant="true">
                 <annotation>
                     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
                         <rdf:Description
-                                rdf:about="http://www.enzymeml.org/v2/Parameter/6c2c19f3-31bd-49bc-abd6-af885a7666f9">
+                                rdf:about="http://www.enzymeml.org/v2/Parameter/46faced8-6229-4b7c-b06a-3feb06a11350">
                             <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
                         </rdf:Description>
                     </rdf:RDF>
@@ -174,11 +160,11 @@
                     </enzymeml:parameter>
                 </annotation>
             </parameter>
-            <parameter id="kcat" name="kcat" units="u3" constant="true">
+            <parameter id="K_m" name="K_m" units="u1" constant="true">
                 <annotation>
                     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
                         <rdf:Description
-                                rdf:about="http://www.enzymeml.org/v2/Parameter/df6b446a-f1d6-4c79-af46-7af042b1d2a7">
+                                rdf:about="http://www.enzymeml.org/v2/Parameter/706ce185-8f1d-429e-8c0d-76942326a0df">
                             <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
                         </rdf:Description>
                     </rdf:RDF>
@@ -204,8 +190,8 @@
                 <kineticLaw>
                     <annotation>
                         <enzymeml:variables xmlns:enzymeml="https://www.enzymeml.org/v2">
-                            <enzymeml:variable id="s0" name="s0" symbol="s0"/>
                             <enzymeml:variable id="p0" name="p0" symbol="p0"/>
+                            <enzymeml:variable id="s0" name="s0" symbol="s0"/>
                         </enzymeml:variables>
                     </annotation>
                     <math xmlns="http://www.w3.org/1998/Math/MathML">

@@ -2,16 +2,22 @@ import pytest
 
 from pyenzyme.equations._chem import build_reaction, build_reactions
 from pyenzyme.equations._math import build_equation, build_equations
-from pyenzyme.model import EquationType
+from pyenzyme.model import EquationType, EnzymeMLDocument
+from pyenzyme.units import s
 
 
 class TestMathEquations:
     def test_parse_equation(self):
         # Arrange
+        enzmldoc = EnzymeMLDocument(name="Test")
         equation = "s1'(t) = kcat * p0(t) * s0(t)"
 
         # Act
-        equation = build_equation(equation)
+        equation = build_equation(
+            equation=equation,
+            unit_mapping={"kcat": 1 / s},
+            enzmldoc=enzmldoc,
+        )
 
         # Assert
         expected_vars = ["p0", "s0"]
@@ -23,41 +29,54 @@ class TestMathEquations:
         assert (
             equation.equation == "kcat*p0*s0"
         ), "Equation is not correct. Got {equation.equation.equation}"
-        assert equation.parameters[0].name == "kcat", "Parameter name is not correct"
-        assert (
-            equation.parameters[0].symbol == "kcat"
-        ), "Parameter symbol is not correct"
 
         for var in equation.variables:
             assert var.name in expected_vars
             assert var.symbol in expected_vars
 
-        for param in equation.parameters:
+        for param in enzmldoc.parameters:
             assert param.name in expected_params
             assert param.symbol in expected_params
+            assert param.id in expected_params
+            assert param.unit is not None
 
     def test_invalid_equation_no_right(self):
         # Arrange
+        enzmldoc = EnzymeMLDocument(name="Test")
         equation = "s1'(t) ="
 
         # Act
         with pytest.raises(ValueError):
-            equation = build_equation(equation)
+            build_equation(
+                equation=equation,
+                unit_mapping={"kcat": 1 / s},
+                enzmldoc=enzmldoc,
+            )
 
     def test_invalid_equation_no_equals(self):
         # Arrange
+        enzmldoc = EnzymeMLDocument(name="Test")
         equation = "s1'(t) kcat * p0(t) * s0(t)"
 
         # Act
         with pytest.raises(ValueError):
-            equation = build_equation(equation)
+            build_equation(
+                equation=equation,
+                unit_mapping={"kcat": 1 / s},
+                enzmldoc=enzmldoc,
+            )
 
     def test_equation_with_funs(self):
         # Arrange
+        enzmldoc = EnzymeMLDocument(name="Test")
         equation = "s1'(t) = kcat * exp(p0(t) * t)"
 
         # Act
-        equation = build_equation(equation)
+        equation = build_equation(
+            equation=equation,
+            unit_mapping={"kcat": 1 / s},
+            enzmldoc=enzmldoc,
+        )
 
         # Assert
         assert (
@@ -69,10 +88,15 @@ class TestMathEquations:
 
     def test_equation_with_fun_only_t(self):
         # Arrange
+        enzmldoc = EnzymeMLDocument(name="Test")
         equation = "s1'(t) = kcat * exp(t)"
 
         # Act
-        equation = build_equation(equation)
+        equation = build_equation(
+            equation=equation,
+            unit_mapping={"kcat": 1 / s},
+            enzmldoc=enzmldoc,
+        )
 
         # Assert
         assert (
@@ -84,23 +108,32 @@ class TestMathEquations:
 
     def test_multiple_equations(self):
         # Arrange
+        enzmldoc = EnzymeMLDocument(name="Test")
         equations = [
             "s1'(t) = kcat * E_tot * s0(t)",
             "E_tot = p0(t) + p1(t)",
         ]
 
         # Act
-        equations = build_equations(*equations)
+        equations = build_equations(
+            *equations,
+            unit_mapping={"kcat": 1 / s},
+            enzmldoc=enzmldoc,
+        )
 
         # Assert
         assert len(equations) == 2, f"Expected 2 equations. Got {len(equations)}"
 
     def test_init_assigment_equation(self):
         # Arrange
+        enzmldoc = EnzymeMLDocument(name="Test")
         equation = "E_tot = p0 + p1"
 
         # Act
-        equation = build_equation(equation)
+        equation = build_equation(
+            equation,
+            enzmldoc=enzmldoc,
+        )
 
         # Assert
         assert (
@@ -115,10 +148,14 @@ class TestMathEquations:
 
     def test_assigment_equation(self):
         # Arrange
+        enzmldoc = EnzymeMLDocument(name="Test")
         equation = "E_tot(t) = p0 + p1"
 
         # Act
-        equation = build_equation(equation)
+        equation = build_equation(
+            equation=equation,
+            enzmldoc=enzmldoc,
+        )
 
         # Assert
         assert (
