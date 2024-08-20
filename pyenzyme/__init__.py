@@ -48,6 +48,7 @@ EnzymeMLDocument.read = classmethod(read_enzymeml)  # noqa: F405
 EnzymeMLDocument.write = write_enzymeml  # noqa: F405
 EnzymeMLDocument.from_sbml = classmethod(read_sbml)  # noqa: F405
 EnzymeMLDocument.to_sbml = to_sbml  # noqa: F405
+EnzymeMLDocument.to_pandas = to_pandas  # noqa: F405
 
 
 def sort_by_ld(d: dict) -> dict:

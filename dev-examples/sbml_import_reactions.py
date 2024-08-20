@@ -10,3 +10,7 @@ doc = pe.EnzymeMLDocument.from_sbml(
 )
 
 rich.print(to_dict_wo_json_ld(doc))
+
+df = doc.to_pandas(doc)
+
+rich.print(df)
