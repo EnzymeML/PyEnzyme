@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional, Generic, TypeVar
+from typing import Generic, Optional, TypeVar
 from uuid import uuid4
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 # Filter Wrapper definition used to filter a list of objects
 # based on their attributes
@@ -1737,11 +1737,11 @@ class Measurement(BaseModel):
         species_id: str,
         initial: float,
         data_unit: UnitDefinition,
-        time_unit: UnitDefinition,
         data_type: DataTypes,
         prepared: Optional[float] = None,
         data: list[float] = [],
         time: list[float] = [],
+        time_unit: Optional[UnitDefinition] = None,
         is_simulated: bool = False,
         **kwargs,
     ):
@@ -1749,11 +1749,11 @@ class Measurement(BaseModel):
             "species_id": species_id,
             "initial": initial,
             "data_unit": data_unit,
-            "time_unit": time_unit,
             "data_type": data_type,
             "prepared": prepared,
             "data": data,
             "time": time,
+            "time_unit": time_unit,
             "is_simulated": is_simulated,
         }
 
@@ -1773,11 +1773,11 @@ class MeasurementData(BaseModel):
     species_id: str
     initial: float
     data_unit: UnitDefinition
-    time_unit: UnitDefinition
     data_type: DataTypes
     prepared: Optional[float] = Field(default=None)
     data: list[float] = Field(default_factory=list)
     time: list[float] = Field(default_factory=list)
+    time_unit: Optional[UnitDefinition] = Field(default=None)
     is_simulated: bool = False
 
     # JSON-LD fields
