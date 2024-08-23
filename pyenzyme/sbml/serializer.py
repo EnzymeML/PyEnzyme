@@ -120,6 +120,7 @@ def _add_unit_definitions(unit: UnitDefinition):
 
     for base_unit in unit.base_units:
         sbml_unit = sbml_unitdef.createUnit()
+        sbml_unit.initDefaults()
         sbml_unit.setKind(_get_sbml_kind(base_unit.kind))
         sbml_unit.setExponent(base_unit.exponent)
 
@@ -133,6 +134,7 @@ def _add_vessel(vessel: pe.Vessel):
     """Add vessels to the SBML model."""
 
     compartment = model.createCompartment()
+    compartment.initDefaults()
     compartment.setId(vessel.id)
     compartment.setName(vessel.name)
     compartment.setConstant(True)
@@ -141,6 +143,7 @@ def _add_vessel(vessel: pe.Vessel):
 
     if vessel.unit in units:
         compartment.setUnits(_get_unit_id(vessel.unit))
+        model.setVolumeUnits(_get_unit_id(vessel.unit))
     else:
         raise ValueError(f"Unit {vessel.unit} not found in units")
 
@@ -149,6 +152,7 @@ def _add_small_mol(small_mol: pe.SmallMolecule):
     """Add small molecules to the SBML model."""
 
     species = model.createSpecies()
+    species.initDefaults()
     species.setId(small_mol.id)
     species.setName(small_mol.name)
     species.setCompartment(small_mol.vessel_id)
@@ -174,6 +178,7 @@ def _add_protein(protein: pe.Protein):
     """Add proteins to the SBML model."""
 
     species = model.createSpecies()
+    species.initDefaults()
     species.setId(protein.id)
     species.setName(protein.name)
     species.setConstant(protein.constant)
@@ -199,8 +204,10 @@ def _add_complex(complex_: pe.Complex):
     """Add complexes to the SBML model."""
 
     species = model.createSpecies()
+    species.initDefaults()
     species.setId(complex_.id)
     species.setName(complex_.name)
+    species.setCompartment(model.getCompartment(0).getId())
     species.setConstant(True)
     species.setSBOTerm("SBO:0000296")  # Complex
     species.appendAnnotation(rdf.to_rdf_xml(complex_))
@@ -237,6 +244,7 @@ def _add_reaction(reaction: pe.Reaction, index: int):
     """Add reactions to the SBML model."""
 
     sbml_reaction = model.createReaction()
+    sbml_reaction.initDefaults()
     sbml_reaction.setName(reaction.name)
     sbml_reaction.setId(reaction.id)
     sbml_reaction.setReversible(reaction.reversible)
@@ -250,6 +258,8 @@ def _add_reaction(reaction: pe.Reaction, index: int):
             species.species_id,
         )()
 
+        species_ref.initDefaults()
+        species_ref.setConstant(True)
         species_ref.setSpecies(species.species_id)
         species_ref.setStoichiometry(abs(species.stoichiometry))
 
@@ -300,6 +310,9 @@ def _add_parameter(parameter: pe.Parameter):
 
     if parameter.value:
         sbml_param.setValue(parameter.value)
+    elif parameter.initial_value:
+        sbml_param.setValue(parameter.initial_value)
+
     if parameter.unit:
         sbml_param.setUnits(_get_unit_id(parameter.unit))
 
