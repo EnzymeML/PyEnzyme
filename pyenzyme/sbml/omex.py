@@ -67,7 +67,24 @@ def read_sbml_omex(path: Path) -> tuple[Path, Path | None]:
     """
 
     omex = Omex.from_omex(path)
-    sbml_file = omex.get_path("./model.xml")
-    data = omex.get_path("./data.tsv")
+
+    # get first sbml entry in manifest
+    sbml_entry = None
+    for entry in omex.manifest.entries:
+        if '/sbml' in entry.format:
+            sbml_entry = entry.location
+            if entry.master:
+                break
+    sbml_file = omex.get_path(sbml_entry)
+
+
+    # we really need to get all of the data entries from the manifest
+    # but for now just get the first one
+    data_entry = None
+    for entry in omex.manifest.entries:
+        if '/csv' in entry.format or '/tsv' in entry.format:
+            data_entry = entry.location
+            break
+    data = omex.get_path(data_entry)
 
     return sbml_file, data
