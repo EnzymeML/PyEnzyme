@@ -82,7 +82,7 @@ def read_sbml_omex(path: Path) -> tuple[Path, Path | None]:
     # but for now just get the first one
     data_entry = None
     for entry in omex.manifest.entries:
-        if '/csv' in entry.format or '/tsv' in entry.format:
+        if '/csv' in entry.format or '/tsv' in entry.format or '/tab-separated-values' in entry.format:
             data_entry = entry.location
             break
     data = omex.get_path(data_entry)
