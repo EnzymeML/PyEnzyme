@@ -20,8 +20,9 @@ class FileURI(enum.Enum):
         TSV (str): URI for TSV files.
     """
 
-    CSV = "http://purl.org/NET/mediatypes/text/csv"
-    TSV = "https://purl.org/NET/mediatypes/text/tab-separated-values"
+    CSV = "/csv"
+    TSV_LONG = "/tab-separated-values"
+    TSV = "/tsv"
 
     @classmethod
     def from_uri(cls, uri: str):
@@ -37,13 +38,12 @@ class FileURI(enum.Enum):
         Raises:
             ValueError: If the URI is not supported.
         """
-        match uri:
-            case cls.CSV.value:
-                return cls.CSV
-            case cls.TSV.value:
-                return cls.TSV
-            case _:
-                raise ValueError(f"Unsupported file URI: {uri}")
+
+        for entry in cls:
+            if entry.value in uri:
+                return entry
+
+        raise ValueError(f"Unsupported file URI: {uri}")
 
     @classmethod
     def is_supported(cls, uri):
@@ -56,7 +56,7 @@ class FileURI(enum.Enum):
         Returns:
             bool: True if the URI is supported, False otherwise.
         """
-        return uri in [e.value for e in cls]
+        return any([e.value in uri for e in cls])
 
     def to_dataframe(self, path):
         """
@@ -76,6 +76,9 @@ class FileURI(enum.Enum):
                 # Legacy format has no headers
                 return pd.read_csv(path, header=None)
             case self.TSV:
+                # V2 format has headers
+                return pd.read_csv(path, sep="\t")
+            case self.TSV_LONG:
                 # V2 format has headers
                 return pd.read_csv(path, sep="\t")
             case _:
@@ -143,7 +146,11 @@ def read_sbml_omex(path: Path) -> tuple[TextIO, dict[str, pd.DataFrame]]:
     omex = Omex.from_omex(path)
 
     try:
-        master_file = next(part for part in omex.manifest.entries if part.master)
+        master_file = next(
+            part
+            for part in omex.manifest.entries
+            if part.master and "/sbml" in part.format
+        )
     except StopIteration:
         raise ValueError("No master file found in OMEX archive")
 
