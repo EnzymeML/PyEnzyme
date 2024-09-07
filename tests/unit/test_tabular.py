@@ -60,10 +60,9 @@ class TestTabularImport:
         """Test that a CSV file can be imported to a pandas DataFrame"""
         # Act
         meas = pe.read_csv(
-            "tests/fixtures/tabular/data.csv",
+            "tests/fixtures/tabular/data.tsv",
             data_unit=mM,
             time_unit=s,
-            sep=";",
         )
 
         # Assert
@@ -130,7 +129,7 @@ class TestTabularImport:
         # Act
         with pytest.raises(AssertionError):
             pe.read_csv(
-                "tests/fixtures/tabular/data_invalid_chars.csv",
+                "tests/fixtures/tabular/data_invalid_chars.tsv",
                 data_unit=mM,
                 time_unit=s,
             )
@@ -140,7 +139,7 @@ class TestTabularImport:
         # Act
         with pytest.raises(AssertionError):
             pe.read_csv(
-                "tests/fixtures/tabular/data_invalid.csv",
+                "tests/fixtures/tabular/data_invalid.tsv",
                 data_unit=mM,
                 time_unit=s,
             )
