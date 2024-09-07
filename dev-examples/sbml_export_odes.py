@@ -1,3 +1,5 @@
+import rich
+
 import pyenzyme as pe
 import pyenzyme.equations as peq
 from pyenzyme.sbml.serializer import to_sbml
@@ -70,9 +72,12 @@ for meas in doc.measurements:
     meas.temperature_unit = K
     meas.ph = 7.0
 
+rich.print(to_sbml(doc)[0])
 # Write sbml doc to file
-with open("./dev-examples/odes/odes_example.xml", "w") as file:
+with open("./dev-examples/odes/odes_example_test.xml", "w") as file:
     file.write(to_sbml(doc)[0])
+exit()
+
 
 # Write to omex file
 doc.to_sbml("./dev-examples/odes/odes_example.omex")

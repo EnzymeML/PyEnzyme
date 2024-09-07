@@ -1,3 +1,4 @@
+import re
 import xml.dom.minidom as minidom
 import xml.etree.ElementTree as ET
 from enum import Enum
@@ -130,3 +131,29 @@ def serialize_to_pretty_xml_string(element: ET.Element | None) -> str | None:
 def register_namespaces(nsmap: dict):
     for prefix, uri in nsmap.items():
         ET.register_namespace(prefix, uri)
+
+
+def extract_namespaces(xml_string: str | None) -> set[str]:
+    """Extract all namespaces from an ElementTree element.
+
+    Args:
+        xml_string (str | None): The XML string to extract namespaces from.
+
+    Returns:
+        set[str]: A set of namespace URIs.
+    """
+
+    if xml_string is None:
+        raise ValueError("No XML string provided")
+
+    pattern = r"\{(.*)\}"
+    namespaces = set()
+
+    root = ET.fromstring(xml_string)
+
+    for child in root.iter():
+        if match := re.match(pattern, child.tag):
+            uri = match.group(1)
+            namespaces.add(uri)
+
+    return namespaces

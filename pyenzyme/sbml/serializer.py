@@ -7,7 +7,6 @@ from typing import Callable, List
 import libsbml
 import pandas as pd
 from loguru import logger
-from pydantic import BaseModel
 
 import pyenzyme.model as pe
 import pyenzyme.tools as tools
@@ -16,6 +15,7 @@ from pyenzyme import xmlutils as _xml
 from pyenzyme.logging import add_logger
 from pyenzyme.sbml import create_sbml_omex
 from pyenzyme.sbml.validation import validate_sbml_export
+from pyenzyme.sbml.versions import v2
 from pyenzyme.tabular import to_pandas
 from pyenzyme.units.units import UnitDefinition
 
@@ -166,12 +166,13 @@ def _add_small_mol(small_mol: pe.SmallMolecule):
         species.setInitialConcentration(init_conc)
         species.setHasOnlySubstanceUnits(False)
 
-    annot = _xml.serialize_to_pretty_xml_string(
-        _extract_create_annot("smallMolecule", small_mol)
+    annot = v2.SmallMoleculeAnnot(
+        canonical_smiles=small_mol.canonical_smiles,
+        inchikey=small_mol.inchikey,
     )
 
-    if annot is not None:
-        species.appendAnnotation(annot)
+    if not annot.is_empty():
+        species.appendAnnotation(annot.to_xml(encoding="unicode"))
 
 
 def _add_protein(protein: pe.Protein):
@@ -192,12 +193,15 @@ def _add_protein(protein: pe.Protein):
         species.setInitialConcentration(init_conc)
         species.setHasOnlySubstanceUnits(False)
 
-    annot = _xml.serialize_to_pretty_xml_string(
-        _extract_create_annot("protein", protein)
+    annot = v2.ProteinAnnot(
+        ecnumber=protein.ecnumber,
+        organism=protein.organism,
+        sequence=protein.sequence,
+        organism_tax_id=protein.organism_tax_id,
     )
 
-    if annot is not None:
-        species.appendAnnotation(annot)
+    if not annot.is_empty():
+        species.appendAnnotation(annot.to_xml(encoding="unicode"))
 
 
 def _add_complex(complex_: pe.Complex):
@@ -212,12 +216,10 @@ def _add_complex(complex_: pe.Complex):
     species.setSBOTerm("SBO:0000296")  # Complex
     species.appendAnnotation(rdf.to_rdf_xml(complex_))
 
-    annot = _xml.serialize_to_pretty_xml_string(
-        _extract_create_annot("complex", complex_)
-    )
+    annot = v2.ComplexAnnot(participants=complex_.participants)
 
-    if annot is not None:
-        species.appendAnnotation(annot)
+    if not annot.is_empty():
+        species.appendAnnotation(annot.to_xml(encoding="unicode"))
 
 
 def _get_first_meas_init_conc(species: pe.SmallMolecule | pe.Protein):
@@ -277,12 +279,12 @@ def _add_rate_law(equation: pe.Equation, reac: libsbml.Reaction):
     law = reac.createKineticLaw()
     law.setMath(libsbml.parseL3Formula(equation.equation))
 
-    if annot := _create_equation_annot(equation):
-        law.setAnnotation(_xml.serialize_to_pretty_xml_string(annot))
+    annot = v2.VariablesAnnot(
+        variables=[v2.VariableAnnot(**var.model_dump()) for var in equation.variables],
+    )
 
-
-def _create_equation_annot(equation: pe.Equation) -> ET.Element | None:
-    return _extract_create_annot("variables", equation.variables)
+    if not annot.is_empty():
+        law.setAnnotation(annot.to_xml(encoding="unicode"))
 
 
 def _get_create_fun(
@@ -316,12 +318,14 @@ def _add_parameter(parameter: pe.Parameter):
     if parameter.unit:
         sbml_param.setUnits(_get_unit_id(parameter.unit))
 
-    annot = _xml.serialize_to_pretty_xml_string(
-        _extract_create_annot("parameter", parameter)
+    annot = v2.ParameterAnnot(
+        lower=parameter.lower,
+        upper=parameter.upper,
+        stderr=parameter.stderr,
     )
 
-    if annot is not None:
-        sbml_param.appendAnnotation(annot)
+    if not annot.is_empty():
+        sbml_param.appendAnnotation(annot.to_xml(encoding="unicode"))
 
 
 def _add_equation(equation: pe.Equation):
@@ -341,42 +345,55 @@ def _add_equation(equation: pe.Equation):
 
     sbml_rule.setMath(libsbml.parseL3Formula(equation.equation))
 
-    if annot := _create_equation_annot(equation):
-        sbml_rule.setAnnotation(_xml.serialize_to_pretty_xml_string(annot))
+    annot = v2.VariablesAnnot(
+        variables=[v2.VariableAnnot(**var.model_dump()) for var in equation.variables],
+    )
+
+    if not annot.is_empty():
+        sbml_rule.setAnnotation(annot.to_xml(encoding="unicode"))
 
 
 def _add_measurements(measurements: list[pe.Measurement]):
     """Adds measurements to the SBML model."""
 
-    annotation = ET.Element(f"{{{NSMAP['enzymeml']}}}data")
-    annotation.attrib["file"] = "data.tsv"
+    annot = v2.DataAnnot(file="./data.tsv")
 
     for measurement in measurements:
-        meas_element = _extract_create_annot("measurement", measurement)
-        meas_element.attrib["timeUnit"] = _get_unit_id(  # type: ignore
-            measurement.species_data[0].time_unit
+        if not measurement.species_data:
+            continue
+
+        time_unit = _get_unit_id(measurement.species_data[0].time_unit)
+        conditions = v2.ConditionsAnnot(
+            ph=v2.PHAnnot(
+                value=measurement.ph,
+            ),
+            temperature=v2.TemperatureAnnot(
+                value=measurement.temperature,
+                unit=_get_unit_id(measurement.temperature_unit),
+            ),
         )
 
-        assert meas_element is not None, "Measurement element is None"
-
-        conditions = _create_condition_element(
-            ph=measurement.ph,
-            temperature=measurement.temperature,
-            temperature_unit=_get_unit_id(measurement.temperature_unit),  # type: ignore
+        meas_annot = v2.MeasurementAnnot(
+            id=measurement.id,
+            time_unit=time_unit,
+            name=measurement.name,
+            conditions=conditions,
         )
 
-        if conditions:
-            meas_element.append(conditions)
+        for species_data in measurement.species_data:
+            species_annot = v2.SpeciesDataAnnot(
+                species_id=species_data.species_id,
+                initial=species_data.initial,
+                type=species_data.data_type.name,
+                unit=_get_unit_id(species_data.data_unit),
+            )
 
-        for species in measurement.species_data:
-            _extract_create_annot("speciesData", species, meas_element)
+            meas_annot.species_data.append(species_annot)
 
-        annotation.append(meas_element)
+        annot.measurements.append(meas_annot)
 
-    annot = _xml.serialize_to_pretty_xml_string(annotation)
-
-    if annot is not None:
-        model.appendAnnotation(annot)
+    if not annot.is_empty():
+        model.appendAnnotation(annot.to_xml(encoding="unicode"))
 
 
 def _create_condition_element(
@@ -399,86 +416,6 @@ def _create_condition_element(
     )
 
     return element
-
-
-def _extract_create_annot(
-    name: str,
-    obj: BaseModel | list[BaseModel],
-    element: ET.Element | None = None,
-) -> ET.Element | None:
-    """Extracts the data from the object and creates an annotation element.
-
-    This function makes use of the "mappings.toml" file which orchestrates
-    the mapping of the data from the object to the XML element.
-
-    Args:
-        name (str): The name of the object.
-        obj (BaseModel): The object to extract the data from.
-        element (ET.Element, optional): The element to append the annotation to. Defaults to None.
-
-    Returns:
-        ET.Element: The annotation element.
-    """
-    if element is None:
-        element = ET.Element(f"{{{NSMAP['enzymeml']}}}{name}")
-
-    if isinstance(obj, list):
-        mappings = [
-            _extract(item, MAPPINGS[name])
-            for item in obj
-            if item.dict(exclude_unset=True)
-        ]
-
-        for mapping in mappings:
-            _xml.map_to_xml(
-                root=element,
-                mappings=mapping,
-                namespace=NSMAP["enzymeml"],
-            )
-    else:
-        mappings = _extract(obj, MAPPINGS[name])
-
-        _xml.map_to_xml(
-            root=element,
-            mappings=mappings,
-            namespace=NSMAP["enzymeml"],
-        )
-
-    if len(element) == 0 and not element.attrib:
-        return None
-
-    return element
-
-
-def _extract(obj: BaseModel, mapping: dict) -> dict:
-    """Based on the mapping, extract the data from the object and return it as a dictionary.
-
-    Args:
-        obj (BaseModel): The object to extract the data from.
-        mapping (dict): The mapping to use for extraction.
-
-    Returns:
-        dict: The extracted data.
-    """
-
-    data = {}
-
-    for trgt_key, enzml_key in mapping.items():
-        if isinstance(enzml_key, dict):
-            data[trgt_key] = _extract(obj, enzml_key)
-        elif "unit" in enzml_key:
-            value = getattr(obj, enzml_key)
-            data[trgt_key] = _get_unit_id(value)
-        elif isinstance(getattr(obj, enzml_key), list) and all(
-            isinstance(item, BaseModel) for item in getattr(obj, enzml_key)
-        ):
-            data[trgt_key] = [
-                _extract(item, MAPPINGS[enzml_key]) for item in getattr(obj, enzml_key)
-            ]
-        else:
-            data[trgt_key] = getattr(obj, enzml_key)
-
-    return data
 
 
 def _get_sbml_kind(unit_type: pe.UnitType):

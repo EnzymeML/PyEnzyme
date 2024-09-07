@@ -1,10 +1,88 @@
 from __future__ import annotations
 
+import enum
 import tempfile
 from pathlib import Path
+from typing import TextIO
 
 import pandas as pd
 from pymetadata.omex import EntryFormat, ManifestEntry, Omex
+
+SBML_URI = "http://identifiers.org/combine.specifications/sbml"
+
+
+class FileURI(enum.Enum):
+    """
+    Enum representing supported file URIs for data files.
+
+    Attributes:
+        CSV (str): URI for CSV files.
+        TSV (str): URI for TSV files.
+    """
+
+    CSV = "/csv"
+    TSV_LONG = "/tab-separated-values"
+    TSV = "/tsv"
+
+    @classmethod
+    def from_uri(cls, uri: str):
+        """
+        Returns the corresponding FileURI enum member for a given URI.
+
+        Args:
+            uri (str): The URI to match.
+
+        Returns:
+            FileURI: The corresponding FileURI enum member.
+
+        Raises:
+            ValueError: If the URI is not supported.
+        """
+
+        for entry in cls:
+            if entry.value in uri:
+                return entry
+
+        raise ValueError(f"Unsupported file URI: {uri}")
+
+    @classmethod
+    def is_supported(cls, uri):
+        """
+        Checks if a given URI is supported.
+
+        Args:
+            uri (str): The URI to check.
+
+        Returns:
+            bool: True if the URI is supported, False otherwise.
+        """
+        return any([e.value in uri for e in cls])
+
+    def to_dataframe(self, path):
+        """
+        Converts the file at the given path to a pandas DataFrame based on the file format.
+
+        Args:
+            path (str): The path to the file.
+
+        Returns:
+            pd.DataFrame: The file content as a pandas DataFrame.
+
+        Raises:
+            ValueError: If the file format is not supported.
+        """
+        match self:
+            case self.CSV:
+                # Legacy format has no headers
+                return pd.read_csv(path, header=None)
+            case self.TSV:
+                # V2 format has headers
+                return pd.read_csv(path, sep="\t")
+            case self.TSV_LONG:
+                # V2 format has headers
+                return pd.read_csv(path, sep="\t")
+            case _:
+                raise ValueError(f"Unsupported file format: {self}")
 
 
 def create_sbml_omex(
@@ -54,37 +132,39 @@ def create_sbml_omex(
         omex.to_omex(out)
 
 
-def read_sbml_omex(path: Path) -> tuple[Path, Path | None]:
+def read_sbml_omex(path: Path) -> tuple[TextIO, dict[str, pd.DataFrame]]:
     """
-    Read an OMEX archive and return the SBML and data file paths.
+    Reads an OMEX archive and extracts the SBML document and associated data files.
 
     Args:
         path (Path): The path to the OMEX archive.
 
     Returns:
-        tuple[Path, Path | None]: The SBML file path and the data file path, if available.
-
+        tuple[str, dict[str, pd.DataFrame]]: A tuple containing the SBML document as a string and a dictionary
+                                             where keys are file locations and values are dataframes of the data files.
     """
-
     omex = Omex.from_omex(path)
 
-    # get first sbml entry in manifest
-    sbml_entry = None
+    try:
+        master_file = next(
+            part
+            for part in omex.manifest.entries
+            if part.master and "/sbml" in part.format
+        )
+    except StopIteration:
+        raise ValueError("No master file found in OMEX archive")
+
+    assert master_file.format == SBML_URI, "Master file is not SBML"
+
+    meas_data = dict()
+
     for entry in omex.manifest.entries:
-        if '/sbml' in entry.format:
-            sbml_entry = entry.location
-            if entry.master:
-                break
-    sbml_file = omex.get_path(sbml_entry)
+        if not FileURI.is_supported(entry.format):
+            continue
 
+        file_uri = FileURI.from_uri(entry.format)
+        df = file_uri.to_dataframe(omex.get_path(entry.location))
 
-    # we really need to get all of the data entries from the manifest
-    # but for now just get the first one
-    data_entry = None
-    for entry in omex.manifest.entries:
-        if '/csv' in entry.format or '/tsv' in entry.format or '/tab-separated-values' in entry.format:
-            data_entry = entry.location
-            break
-    data = omex.get_path(data_entry)
+        meas_data[entry.location] = df
 
-    return sbml_file, data
+    return open(omex.get_path(master_file.location)), meas_data

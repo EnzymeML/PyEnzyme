@@ -17,6 +17,7 @@ PyEnzyme is the interface to the data model <b>EnzymeML</b> and offers a conveni
 - **Visualize** experimental results for inspection and publication.
 
 ## ⚡️ Quick start
+
 Get started with PyEnzyme by running the following command
 
 ```
@@ -25,6 +26,7 @@ python -m pip install pyenzyme
 ```
 
 Or build by source
+
 ```
 git clone https://github.com/EnzymeML/PyEnzyme.git
 cd PyEnzyme
@@ -32,7 +34,10 @@ python3 setup.py install
 ```
 
 ### ⚙️ Package Options
-PyEnzyme comes with many flavors, choose whether you want only the base installation, the modeling package or all of it using the following options.
+
+PyEnzyme comes with many flavors, choose whether you want only the base installation, the modeling package or all of it
+using the following options.
+
 ```
 # COPASI - modeling
 python -m pip install "pyenzyme[copasi]"
@@ -55,17 +60,37 @@ python -m pip install "pyenzyme[all]"
 
 ## ⚙️ Example code
 
-This example will demonstrate how to create a simple EnzymeML document using PyEnzyme and how to use initializers from official databases **Chebi** and **UniProt** to gather metadata. For more examples, please visit our [documentation](https://pyenzyme.readthedocs.io/en/latest/index.html#) (Work in progress)
+This example will demonstrate how to create a simple EnzymeML document using PyEnzyme and how to use initializers from
+official databases **Chebi** and **UniProt** to gather metadata. For more examples, please visit
+our [documentation](https://pyenzyme.readthedocs.io/en/latest/index.html#) (Work in progress)
 
 ```python
 # To be added for V2
 ```
+
 <sub>(Code should run as it is)</sup>
 
 ## 📖 Documentation and more examples
 
-Explore all the features of **PyEnzyme** in our [documentation](https://pyenzyme.readthedocs.io/en/latest/index.html#) and take part in [Discussions](https://github.com/EnzymeML/PyEnzyme/discussions) and/or [Issues](https://github.com/EnzymeML/PyEnzyme/issues).
+Explore all the features of **PyEnzyme** in our [documentation](https://pyenzyme.readthedocs.io/en/latest/index.html#)
+and take part in [Discussions](https://github.com/EnzymeML/PyEnzyme/discussions)
+and/or [Issues](https://github.com/EnzymeML/PyEnzyme/issues).
+
+## 🧪 Testing
+
+In order to run tests there are two different ways. First you can utilize `pytest` directly by running the following:
+
+```bash
+python -m pytest -vv
+```
+
+Or you can the provided Dockerfile to run the tests in a containerized environment.
+
+```bash
+docker build -t pyenzyme .
+```
 
 ## ⚠️ License
 
-`PyEnzyme` is free and open-source software licensed under the [BSD 2-Clause License](https://github.com/EnzymeML/PyEnzyme/blob/main/LICENSE).
+`PyEnzyme` is free and open-source software licensed under
+the [BSD 2-Clause License](https://github.com/EnzymeML/PyEnzyme/blob/main/LICENSE).
