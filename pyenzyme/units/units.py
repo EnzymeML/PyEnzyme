@@ -49,10 +49,10 @@ def set_scale(unit: _BaseUnit, scale: int) -> _BaseUnit:
 class Prefix(Enum):
     """Enumeration for unit prefixes with corresponding scales."""
 
-    k = partial(set_scale, scale=3)
-    m = partial(set_scale, scale=-3)
-    u = partial(set_scale, scale=-6)
-    n = partial(set_scale, scale=-9)
+    k = partial(set_scale, scale=3.0)
+    m = partial(set_scale, scale=-3.0)
+    u = partial(set_scale, scale=-6.0)
+    n = partial(set_scale, scale=-9.0)
 
     def __mul__(self, other: _BaseUnit) -> _BaseUnit:
         """Multiply prefix with a BaseUnit.
