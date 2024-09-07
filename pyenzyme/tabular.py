@@ -107,9 +107,9 @@ def read_excel(
 
     df = pd.read_excel(path)
 
-    return from_pandas(
+    return from_dataframe(
         df=df,
-        id=path.stem,
+        meas_id=path.stem,
         data_unit=data_unit,
         time_unit=time_unit,
         data_type=data_type,
@@ -161,21 +161,21 @@ def read_csv(
 
     df = pd.read_csv(path, sep=sep)
 
-    return from_pandas(
+    return from_dataframe(
         df=df,
-        id=path.stem,
+        meas_id=path.stem,
         data_unit=data_unit,
         time_unit=time_unit,
         data_type=data_type,
     )
 
 
-def from_pandas(
+def from_dataframe(
     df: pd.DataFrame,
-    id: str,
     data_unit: UnitDefinition,
     time_unit: UnitDefinition,
     data_type: DataTypes = DataTypes.CONCENTRATION,
+    meas_id: str | None = None,
 ) -> list[Measurement]:
     """Parse a pandas DataFrame into a list of measurements.
 
@@ -188,11 +188,11 @@ def from_pandas(
     If there is no 'id' column, the function assumes that there is only one measurement
     in the file. If there is an 'id' column, the function assumes that there are multiple
     measurements in the file. Hence, if you want to have multiple measurements in the same
-    file, you need to have an 'id' column. Otherwise it will return a single measurement.
+    file, you need to have an 'id' column. Otherwise, it will return a single measurement.
 
     Args:
         df (pd.DataFrame): The DataFrame to parse.
-        id (str): The ID of the measurement.
+        meas_id (str | None): The ID of the measurement. Default is None.
         data_unit (UnitDefinition): The unit of the data.
         time_unit (UnitDefinition): The unit of the time.
         data_type (DataTypes): The type of the data. Default is DataTypes.CONCENTRATION.
@@ -215,10 +215,14 @@ def from_pandas(
             data_type=data_type,
         )
     else:
+        assert meas_id is not None, (
+            "The 'meas_id' argument must be provided "
+            "when parsing a single measurement"
+        )
         return [
             _create_single_measurement(
                 df=df,
-                id=id,
+                id=meas_id,
                 data_unit=data_unit,
                 time_unit=time_unit,
                 data_type=data_type,
@@ -282,7 +286,6 @@ def _process_multiple_measurements(
 
 def _validate_data(data: pd.DataFrame) -> None:
     """Validates the data from a CSV file"""
-
     assert "time" in data, "The CSV file must contain a 'time' column"
     assert data["time"][0] == 0, "The time column must start at 0"
 
