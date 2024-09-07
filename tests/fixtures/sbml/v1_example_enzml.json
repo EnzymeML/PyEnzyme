@@ -16,7 +16,7 @@
           {
             "kind": "litre",
             "exponent": 1,
-            "multiplier": 1.0,
+            "multiplier": null,
             "scale": -3.0,
             "ld_id": "enzml:BaseUnit/1dc4d70c-b72b-4f9b-9b23-6c034e300b76",
             "ld_type": [
@@ -2077,7 +2077,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -2092,7 +2092,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -2173,7 +2173,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -2188,7 +2188,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -2291,7 +2291,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -2306,7 +2306,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -2409,7 +2409,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -2424,7 +2424,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -2527,7 +2527,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -2542,7 +2542,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -2671,7 +2671,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -2686,7 +2686,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -2767,7 +2767,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -2782,7 +2782,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -2885,7 +2885,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -2900,7 +2900,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -3003,7 +3003,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -3018,7 +3018,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -3121,7 +3121,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -3136,7 +3136,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -3265,7 +3265,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -3280,7 +3280,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -3361,7 +3361,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -3376,7 +3376,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -3479,7 +3479,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -3494,7 +3494,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -3597,7 +3597,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -3612,7 +3612,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -3715,7 +3715,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -3730,7 +3730,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -3859,7 +3859,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -3874,7 +3874,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -3955,7 +3955,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -3970,7 +3970,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -4073,7 +4073,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -4088,7 +4088,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -4191,7 +4191,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -4206,7 +4206,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -4309,7 +4309,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -4324,7 +4324,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -4453,7 +4453,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -4468,7 +4468,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -4549,7 +4549,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -4564,7 +4564,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -4667,7 +4667,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -4682,7 +4682,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -4785,7 +4785,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -4800,7 +4800,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -4903,7 +4903,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -4918,7 +4918,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -5047,7 +5047,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -5062,7 +5062,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -5143,7 +5143,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -5158,7 +5158,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -5261,7 +5261,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -5276,7 +5276,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -5379,7 +5379,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -5394,7 +5394,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -5497,7 +5497,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -5512,7 +5512,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -5641,7 +5641,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -5656,7 +5656,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -5737,7 +5737,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -5752,7 +5752,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -5855,7 +5855,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -5870,7 +5870,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -5973,7 +5973,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -5988,7 +5988,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -6091,7 +6091,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -6106,7 +6106,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -6235,7 +6235,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -6250,7 +6250,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -6331,7 +6331,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -6346,7 +6346,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -6449,7 +6449,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -6464,7 +6464,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -6567,7 +6567,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -6582,7 +6582,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -6685,7 +6685,7 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": 1.0,
                 "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
                 "ld_type": [
@@ -6700,7 +6700,7 @@
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": 1.0,
+                "multiplier": null,
                 "scale": -3.0,
                 "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
                 "ld_type": [
@@ -6830,7 +6830,7 @@
           {
             "kind": "litre",
             "exponent": 1,
-            "multiplier": 1.0,
+            "multiplier": null,
             "scale": 1.0,
             "ld_id": "enzml:BaseUnit/3d69db1d-0c29-42d6-8db8-869e82a0872b",
             "ld_type": [
@@ -6845,7 +6845,7 @@
           {
             "kind": "mole",
             "exponent": -1,
-            "multiplier": 1.0,
+            "multiplier": null,
             "scale": -3.0,
             "ld_id": "enzml:BaseUnit/65742653-abe1-48cf-bdb8-870e5eb72651",
             "ld_type": [
@@ -6914,7 +6914,7 @@
           {
             "kind": "litre",
             "exponent": -1,
-            "multiplier": 1.0,
+            "multiplier": null,
             "scale": 1.0,
             "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
             "ld_type": [
@@ -6929,7 +6929,7 @@
           {
             "kind": "mole",
             "exponent": 1,
-            "multiplier": 1.0,
+            "multiplier": null,
             "scale": -3.0,
             "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
             "ld_type": [
@@ -6983,7 +6983,7 @@
           {
             "kind": "litre",
             "exponent": -1,
-            "multiplier": 1.0,
+            "multiplier": null,
             "scale": 1.0,
             "ld_id": "enzml:BaseUnit/189b3a40-6d06-46db-9aef-55d155524e46",
             "ld_type": [
@@ -6998,7 +6998,7 @@
           {
             "kind": "mole",
             "exponent": 1,
-            "multiplier": 1.0,
+            "multiplier": null,
             "scale": -3.0,
             "ld_id": "enzml:BaseUnit/9e7ff171-3d2e-4496-bb5d-4b6eff88703c",
             "ld_type": [

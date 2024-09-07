@@ -140,6 +140,8 @@ def _parse_unit(unit: sbml.UnitDefinition):
 
         if math.isnan(multiplier):
             multiplier = None
+        elif multiplier == 1.0:
+            multiplier = None
 
         enzml_unit.add_to_base_units(
             kind=kind,
