@@ -88,6 +88,7 @@ Or you can the provided Dockerfile to run the tests in a containerized environme
 
 ```bash
 docker build -t pyenzyme .
+docker run pyenzyme
 ```
 
 ## ⚠️ License
