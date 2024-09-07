@@ -7,13 +7,16 @@ from rich import print
 
 from .model import *  # noqa: F403
 from .sbml import to_sbml, read_sbml  # noqa: F401
-from .tabular import to_pandas, read_csv, read_excel  # noqa: F401
+from .tabular import to_pandas, read_csv, read_excel, from_dataframe  # noqa: F401
 
 __all__ = [
     "read_enzymeml",
     "write_enzymeml",
     "to_sbml",
     "to_pandas",
+    "read_csv",
+    "read_excel",
+    "from_dataframe",
 ]
 
 
