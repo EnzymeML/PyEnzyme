@@ -22,6 +22,11 @@ class TestSBML:
             EnzymeMLDocument.read("tests/fixtures/sbml/ode_example_enzml.json")
         )
 
+        # Remove spaces of equation
+        for eq in parsed_doc["equations"]:
+            eq["equation"] = eq["equation"].replace(" * ", "*")
+            eq["equation"] = eq["equation"].replace(" / ", "/")
+
         assert (
             parsed_doc == expected_doc
         ), "Parsed document does not match expected document"
@@ -88,6 +93,7 @@ class TestSBML:
             id="c0",
             name="Enzyme-Substrate Complex",
             participants=[enzyme.id, substrate.id],
+            vessel_id=vessel.id,
         )
 
         doc.equations += peq.build_equations(

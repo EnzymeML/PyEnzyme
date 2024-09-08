@@ -179,6 +179,7 @@
       "id": "c0",
       "name": "E·PGME",
       "constant": false,
+      "vessel_id": "v0",
       "participants": [
         "p0",
         "s0"
@@ -205,6 +206,7 @@
       "id": "c1",
       "name": "E·7-ADCA",
       "constant": false,
+      "vessel_id": "v0",
       "participants": [
         "p0",
         "s1"
@@ -231,6 +233,7 @@
       "id": "c2",
       "name": "E·PG",
       "constant": false,
+      "vessel_id": "v0",
       "participants": [
         "p0",
         "s3"
@@ -257,6 +260,7 @@
       "id": "c3",
       "name": "E·PGME·PGME",
       "constant": false,
+      "vessel_id": "v0",
       "participants": [
         "p0",
         "s0",
@@ -284,6 +288,7 @@
       "id": "c4",
       "name": "EA·7-ADCA",
       "constant": false,
+      "vessel_id": "v0",
       "participants": [
         "p1",
         "s1"
@@ -310,6 +315,7 @@
       "id": "c5",
       "name": "EA·PGME",
       "constant": false,
+      "vessel_id": "v0",
       "participants": [
         "p1",
         "s0"
@@ -336,6 +342,7 @@
       "id": "c6",
       "name": "E·CEX",
       "constant": false,
+      "vessel_id": "v0",
       "participants": [
         "p0",
         "s2"
