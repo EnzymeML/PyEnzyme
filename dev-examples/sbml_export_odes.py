@@ -47,6 +47,7 @@ enzyme_complex = doc.add_to_complexes(
     id="c0",
     name="Enzyme-Substrate Complex",
     participants=[enzyme.id, substrate.id],
+    vessel_id=vessel.id,
 )
 
 doc.equations += peq.build_equations(
@@ -73,14 +74,13 @@ for meas in doc.measurements:
     meas.ph = 7.0
 
 rich.print(to_sbml(doc)[0])
+
 # Write sbml doc to file
 with open("./dev-examples/odes/odes_example_test.xml", "w") as file:
     file.write(to_sbml(doc)[0])
-exit()
-
 
 # Write to omex file
-doc.to_sbml("./dev-examples/odes/odes_example.omex")
+doc.to_sbml("./tests/fixtures/sbml/odes_example.omex")
 
 # Write to EnzymeML JSON file
-pe.write_enzymeml(self=doc, path="./dev-examples/odes/enzymeml.json")
+pe.write_enzymeml(self=doc, path="./tests/fixtures/sbml/ode_example_enzml.json")
