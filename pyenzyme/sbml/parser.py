@@ -245,6 +245,7 @@ def _parse_complex(species: sbml.Species):
     complex_ = pe.Complex(
         id=species.getId(),
         name=species.getName(),
+        vessel_id=species.getCompartment(),
         **annots,
     )
 
