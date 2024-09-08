@@ -35,7 +35,7 @@ def _check_consistent_vessel_ids(doc: pe.EnzymeMLDocument) -> bool:
     """
 
     vessel_ids = {v.id for v in doc.vessels}
-    all_species = doc.small_molecules + doc.proteins
+    all_species = doc.small_molecules + doc.proteins + doc.complexes
     result = []
 
     for species in all_species:

@@ -211,7 +211,7 @@ def _add_complex(complex_: pe.Complex):
     species.initDefaults()
     species.setId(complex_.id)
     species.setName(complex_.name)
-    species.setCompartment(model.getCompartment(0).getId())
+    species.setCompartment(complex_.vessel_id)
     species.setConstant(True)
     species.setSBOTerm("SBO:0000296")  # Complex
     species.appendAnnotation(rdf.to_rdf_xml(complex_))
