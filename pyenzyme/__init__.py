@@ -6,8 +6,9 @@ from pathlib import Path
 from rich import print
 
 from .model import *  # noqa: F403
-from .sbml import to_sbml, read_sbml  # noqa: F401
-from .tabular import to_pandas, read_csv, read_excel, from_dataframe  # noqa: F401
+from .poem import enzymeml___poem  # noqa: F401
+from .sbml import read_sbml, to_sbml  # noqa: F401
+from .tabular import from_dataframe, read_csv, read_excel, to_pandas  # noqa: F401
 
 __all__ = [
     "read_enzymeml",
