@@ -438,8 +438,11 @@ def _get_sbml_kind(unit_type: pe.UnitType):
         raise ValueError(f"Unit type {unit_type} not found in libsbml")
 
 
-def _get_unit_id(unit: pe.UnitDefinition) -> str:
+def _get_unit_id(unit: pe.UnitDefinition) -> str | None:
     """Helper function to get the unit from the list of units."""
+
+    if unit is None:
+        return None
 
     if unit.id is None:
         raise ValueError(f"Unit {unit.name} does not have an ID")
