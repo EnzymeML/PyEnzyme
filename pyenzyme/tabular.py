@@ -59,7 +59,10 @@ def to_pandas(
         df["id"] = [meas.id] * len(df)
         dfs.append(df)
 
-    return pd.concat(dfs, ignore_index=True).reset_index(drop=True)
+    if dfs:
+        return pd.concat(dfs, ignore_index=True).reset_index(drop=True)
+    else:
+        return pd.DataFrame()
 
 
 def read_excel(

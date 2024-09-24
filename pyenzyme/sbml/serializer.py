@@ -67,7 +67,10 @@ def to_sbml(
     sbmldoc = libsbml.SBMLDocument()
     model = sbmldoc.createModel()
     model.setName(doc.name)
-    units = _assign_ids_to_units(tools.find_unique(doc, UnitDefinition))
+    units = _assign_ids_to_units(tools.find_unique(doc, pe.UnitDefinition))
+
+    # Add units that have been defined by the custom UnitDefinition
+    convert_unit_classes(doc, units)
 
     print_warnings = verbose
 
@@ -107,6 +110,16 @@ def to_sbml(
     )
 
     logger.info(f"OMEX archive written to {out}")
+
+
+def convert_unit_classes(doc: pe.EnzymeMLDocument, custom_units: list[UnitDefinition]):
+    custom_units.extend(
+        [
+            pe.UnitDefinition(**unit.model_dump())
+            for unit in _assign_ids_to_units(tools.find_unique(doc, pe.UnitDefinition))
+            if unit.id not in [unit.id for unit in custom_units]
+        ]
+    )
 
 
 def _add_unit_definitions(unit: UnitDefinition):
