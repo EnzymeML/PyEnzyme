@@ -308,8 +308,8 @@ class TemperatureAnnot(
         unit (str): The unit of the temperature value.
     """
 
-    value: float = attr(name="value")
-    unit: str = attr(name="unit")
+    value: float | None = attr(name="value", default=None)
+    unit: str | None = attr(name="unit", default=None)
 
 
 class ParameterAnnot(
