@@ -4,7 +4,6 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Callable, List
 
-import rich
 import libsbml
 import pandas as pd
 from loguru import logger
@@ -18,8 +17,8 @@ from pyenzyme.sbml import create_sbml_omex
 from pyenzyme.sbml.validation import validate_sbml_export
 from pyenzyme.sbml.versions import v2
 from pyenzyme.tabular import to_pandas
-from pyenzyme.units.units import UnitDefinition
 from pyenzyme.tools import to_dict_wo_json_ld
+from pyenzyme.units.units import UnitDefinition
 
 MAPPINGS = tools.read_static_file("pyenzyme.sbml", "mappings.toml")
 NSMAP = {"enzymeml": "https://www.enzymeml.org/v2"}
@@ -156,7 +155,7 @@ def _add_vessel(vessel: pe.Vessel):
     compartment.setSize(vessel.volume)
     compartment.setAnnotation(rdf.to_rdf_xml(vessel))
 
-    if vessel.unit in units:
+    if vessel.unit:
         compartment.setUnits(_get_unit_id(vessel.unit))
         model.setVolumeUnits(_get_unit_id(vessel.unit))
     else:
@@ -450,8 +449,8 @@ def _get_unit_id(unit: pe.UnitDefinition | None) -> str | None:
         if _same_unit(unit, unit2):
             return unit2.id
 
-
     raise ValueError(f"Unit {unit.name} not found in the list of units")
+
 
 def _same_unit(unit1: pe.UnitDefinition, unit2: pe.UnitDefinition) -> bool:
     """Check if two units are the same."""
@@ -463,6 +462,7 @@ def _same_unit(unit1: pe.UnitDefinition, unit2: pe.UnitDefinition) -> bool:
     del unit2["id"]
 
     return unit1 == unit2
+
 
 def _validate_sbml(sbmldoc: libsbml.SBMLDocument) -> None:
     """Validate the SBML document using the libSBML function."""
@@ -488,19 +488,22 @@ def _validate_sbml(sbmldoc: libsbml.SBMLDocument) -> None:
                 sbmldoc.getError(error).getMessage().strip().replace("\n", " ")
             )
 
-    if not valid:
-        raise ValueError("SBML model is not valid")
-
 
 def _assign_ids_to_units(doc_units: List[UnitDefinition]) -> List[UnitDefinition]:
     ids = [unit.id for unit in doc_units if unit.id]
+    unique_units = []
 
     for unit in doc_units:
+        if any(_same_unit(unit, u) for u in unique_units):
+            continue
+
         if unit.id is None:
             new_id = next(_id_generator(ids))
             unit.id = new_id
 
-    return doc_units
+        unique_units.append(unit)
+
+    return unique_units
 
 
 def _id_generator(ids: list[str]):
