@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Callable, List
 
+import rich
 import libsbml
 import pandas as pd
 from loguru import logger
@@ -18,6 +19,7 @@ from pyenzyme.sbml.validation import validate_sbml_export
 from pyenzyme.sbml.versions import v2
 from pyenzyme.tabular import to_pandas
 from pyenzyme.units.units import UnitDefinition
+from pyenzyme.tools import to_dict_wo_json_ld
 
 MAPPINGS = tools.read_static_file("pyenzyme.sbml", "mappings.toml")
 NSMAP = {"enzymeml": "https://www.enzymeml.org/v2"}
@@ -438,20 +440,33 @@ def _get_sbml_kind(unit_type: pe.UnitType):
         raise ValueError(f"Unit type {unit_type} not found in libsbml")
 
 
-def _get_unit_id(unit: pe.UnitDefinition) -> str | None:
+def _get_unit_id(unit: pe.UnitDefinition | None) -> str | None:
     """Helper function to get the unit from the list of units."""
 
     if unit is None:
         return None
 
-    if unit.id is None:
-        raise ValueError(f"Unit {unit.name} does not have an ID")
+    for unit2 in units:
+        if _same_unit(unit, unit2):
+            return unit2.id
 
-    return unit.id
 
+    raise ValueError(f"Unit {unit.name} not found in the list of units")
+
+def _same_unit(unit1: pe.UnitDefinition, unit2: pe.UnitDefinition) -> bool:
+    """Check if two units are the same."""
+
+    unit1 = to_dict_wo_json_ld(unit1)
+    unit2 = to_dict_wo_json_ld(unit2)
+
+    del unit1["id"]
+    del unit2["id"]
+
+    return unit1 == unit2
 
 def _validate_sbml(sbmldoc: libsbml.SBMLDocument) -> None:
     """Validate the SBML document using the libSBML function."""
+
     sbml_errors = sbmldoc.checkConsistency()
     valid = True
 

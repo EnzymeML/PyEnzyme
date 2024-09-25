@@ -16,7 +16,7 @@ from .model import (
 def to_pandas(
     enzmldoc: EnzymeMLDocument,
     ignore: list[str] | None = None,
-) -> pd.DataFrame:
+) -> pd.DataFrame | None:
     """This function converts an EnzymeMLDocument object to a pandas DataFrame.
 
     The resulting DataFrame contains the following columns:
@@ -37,6 +37,9 @@ def to_pandas(
         ValueError: If the measurements are not of type Measurement.
         ValueError: If the measurement does not contain species data.
     """
+
+    if not enzmldoc.measurements:
+        return None
 
     if ignore is None:
         ignore = []
@@ -305,11 +308,17 @@ def _measurement_to_pandas(measurement: Measurement) -> pd.DataFrame:
 
     _validate_measurement(measurement)
 
-    data = {"time": measurement.species_data[0].time}
+    data = {"time": _get_time_array(measurement)}
     for species in measurement.species_data:
-        data[species.species_id] = species.data
+        if len(species.data) > 0:
+            data[species.species_id] = species.data
+
     return pd.DataFrame(data)
 
+def _get_time_array(measurement: Measurement):
+    for meas_data in measurement.species_data:
+        if len(meas_data.time) > 0:
+            return meas_data.time
 
 def _validate_measurement(meas: Measurement) -> None:
     """Validates a Measurement object"""
@@ -321,6 +330,7 @@ def _validate_measurement(meas: Measurement) -> None:
             {
                 species.species_id + "_time": species.time
                 for species in meas.species_data
+                if len(species.time) > 0
             }
         )
     except ValueError:

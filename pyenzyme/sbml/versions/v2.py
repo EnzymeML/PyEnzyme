@@ -179,7 +179,7 @@ class MeasurementAnnot(
 
     id: str = attr(name="id")
     name: str | None = attr(name="name", default=None)
-    time_unit: str = attr(name="timeUnit")
+    time_unit: str | None = attr(name="timeUnit")
     conditions: ConditionsAnnot | None = element(tag="conditions", default=None)
     species_data: list[SpeciesDataAnnot] = element(
         tag="speciesData",
@@ -291,7 +291,7 @@ class PHAnnot(
         value (float): The pH value.
     """
 
-    value: float = attr(name="value")
+    value: float | None = attr(name="value")
 
 
 class TemperatureAnnot(
