@@ -468,7 +468,6 @@ def _validate_sbml(sbmldoc: libsbml.SBMLDocument) -> None:
     """Validate the SBML document using the libSBML function."""
 
     sbml_errors = sbmldoc.checkConsistency()
-    valid = True
 
     if sbml_errors and not print_warnings:
         logger.warning(
@@ -479,7 +478,6 @@ def _validate_sbml(sbmldoc: libsbml.SBMLDocument) -> None:
         severity = sbmldoc.getError(error).getSeverity()
 
         if severity == libsbml.LIBSBML_SEV_ERROR:
-            valid = False
             logger.error(
                 sbmldoc.getError(error).getMessage().strip().replace("\n", " ")
             )

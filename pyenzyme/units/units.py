@@ -1,6 +1,7 @@
 from copy import deepcopy
 from enum import Enum
 from functools import partial
+import sys
 
 from pydantic import model_validator
 
@@ -49,10 +50,18 @@ def set_scale(unit: _BaseUnit, scale: int) -> _BaseUnit:
 class Prefix(Enum):
     """Enumeration for unit prefixes with corresponding scales."""
 
-    k = partial(set_scale, scale=3.0)
-    m = partial(set_scale, scale=-3.0)
-    u = partial(set_scale, scale=-6.0)
-    n = partial(set_scale, scale=-9.0)
+    if sys.version_info >= (3, 13):
+        from enum import member
+
+        k = member(partial(set_scale, scale=3))
+        m = member(partial(set_scale, scale=-3))
+        u = member(partial(set_scale, scale=-6))
+        n = member(partial(set_scale, scale=-9))
+    else:
+        k = partial(set_scale, scale=3)
+        m = partial(set_scale, scale=-3)
+        u = partial(set_scale, scale=-6)
+        n = partial(set_scale, scale=-9)
 
     def __mul__(self, other: _BaseUnit) -> _BaseUnit:
         """Multiply prefix with a BaseUnit.
@@ -68,6 +77,7 @@ class Prefix(Enum):
         Raises:
             TypeError: If the other operand is not a BaseUnit.
         """
+        print(self.value)
         if isinstance(other, _BaseUnit):
             return self.value(other)
 
