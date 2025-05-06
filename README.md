@@ -86,6 +86,15 @@ reaction, participants = pe.fetch_rhea("RHEA:22864", vessel_id=vessel.id)
 enzmldoc.small_molecules += participants
 enzmldoc.reactions.append(reaction)
 
+# Parse a tabular file to a measurement
+measurements = pe.from_excel(
+    path="measurements.xlsx",
+    data_unit="mmol / l",
+    time_unit="h",
+)
+
+enzmldoc.measurements += measurements
+
 # Serialize to EnzymeML
 pe.write_enzymeml(enzmldoc, "enzmldoc.json")
 
