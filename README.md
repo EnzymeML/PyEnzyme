@@ -60,12 +60,40 @@ python -m pip install "pyenzyme[all]"
 
 ## ⚙️ Example code
 
-This example will demonstrate how to create a simple EnzymeML document using PyEnzyme and how to use initializers from
-official databases **Chebi** and **UniProt** to gather metadata. For more examples, please visit
-our [documentation](https://pyenzyme.readthedocs.io/en/latest/index.html#) (Work in progress)
+This example will demonstrate how to create a simple EnzymeML document using PyEnzyme and how to use initializers from official databases **Chebi** and **UniProt** to gather metadata.
+
+### Create a simple EnzymeML document
 
 ```python
-# To be added for V2
+import pyenzyme as pe
+
+# Create a simple EnzymeML document
+enzmldoc = pe.EnzymeMLDocument(name="Test")
+
+vessel = enzmldoc.add_to_vessels(
+    id="vessel_1",
+    name="Vessel 1",
+    volume=1.0,
+    unit="l",  # Units are automatically converted to a UnitDefinition
+)
+
+# Add a species from Chebi
+protein = pe.fetch_uniprot("P07327", vessel_id=vessel.id)
+enzmldoc.proteins.append(protein)
+
+# Add a reaction from RHEA DB
+reaction, participants = pe.fetch_rhea("RHEA:22864", vessel_id=vessel.id)
+enzmldoc.small_molecules += participants
+enzmldoc.reactions.append(reaction)
+
+# Serialize to EnzymeML
+pe.write_enzymeml(enzmldoc, "enzmldoc.json")
+
+# Deserialize from EnzymeML
+enzmldoc = pe.read_enzymeml("enzmldoc.json")
+
+# Convert to SBML
+sbml_doc = pe.to_sbml(enzmldoc, "enzmldoc.omex")
 ```
 
 <sub>(Code should run as it is)</sup>
