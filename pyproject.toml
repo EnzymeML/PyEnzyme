@@ -5,7 +5,6 @@ description = ""
 authors = ["Jan Range <range.jan@web.de>"]
 license = "MIT"
 readme = "README.md"
-include = ["pyenzyme/units/ontomaps.toml", "pyenzyme/sbml/mappings.toml"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
