@@ -3,7 +3,6 @@ import pytest
 from pyenzyme.equations._chem import build_reaction, build_reactions
 from pyenzyme.equations._math import build_equation, build_equations
 from pyenzyme import EquationType, EnzymeMLDocument
-from pyenzyme.units import s
 
 
 class TestMathEquations:

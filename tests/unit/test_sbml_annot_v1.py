@@ -7,7 +7,6 @@ from pyenzyme.sbml.versions.v1 import (
     ComplexAnnot,
     ProteinAnnot,
 )
-from pyenzyme.units import M
 
 
 class TestSBMLAnnotV1:

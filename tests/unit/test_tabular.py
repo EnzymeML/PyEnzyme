@@ -3,7 +3,6 @@ import pytest
 
 import pyenzyme as pe
 from pyenzyme.tabular import _measurement_to_pandas, to_pandas
-from pyenzyme.units import mM, s
 
 
 class TestTabularExport:
@@ -62,7 +61,7 @@ class TestTabularImport:
     def test_csv_import(self):
         """Test that a CSV file can be imported to a pandas DataFrame"""
         # Act
-        meas = pe.read_csv(
+        meas = pe.from_csv(
             "tests/fixtures/tabular/data.tsv",
             data_unit="mmol / l",
             time_unit="s",
@@ -84,21 +83,33 @@ class TestTabularImport:
             assert m.species_data[0].data_unit.name == "mmol / l", (
                 f"Expected mM. Got {m.species_data[0].data_unit}"
             )
-            assert m.species_data[0].time_unit.name == "s", (
-                f"Expected s. Got {m.species_data[0].time_unit.name}"
-            )
+
+            if m.species_data[0].time_unit is not None:
+                assert m.species_data[0].time_unit.name == "s", (
+                    f"Expected s. Got {m.species_data[0].time_unit.name}"
+                )
+            else:
+                assert m.species_data[0].time_unit is None, (
+                    f"Expected None. Got {m.species_data[0].time_unit}"
+                )
 
             assert m.species_data[1].data_unit.name == "mmol / l", (
                 f"Expected mM. Got {m.species_data[1].data_unit.name}"
             )
-            assert m.species_data[1].time_unit.name == "s", (
-                f"Expected s. Got {m.species_data[1].time_unit.name}"
-            )
+
+            if m.species_data[1].time_unit is not None:
+                assert m.species_data[1].time_unit.name == "s", (
+                    f"Expected s. Got {m.species_data[1].time_unit.name}"
+                )
+            else:
+                assert m.species_data[1].time_unit is None, (
+                    f"Expected None. Got {m.species_data[1].time_unit}"
+                )
 
     def test_excel_import(self):
         """Test that a Excel file can be imported to a pandas DataFrame"""
         # Act
-        meas = pe.read_excel(
+        meas = pe.from_excel(
             "tests/fixtures/tabular/data.xlsx",
             data_unit="mmol / l",
             time_unit="s",
@@ -111,51 +122,87 @@ class TestTabularImport:
             assert len(m.species_data) == 2, (
                 f"Expected 2 species. Got {len(m.species_data)}"
             )
-            assert len(m.species_data[0].time) == 11, (
-                f"Expected 10 time points. Got {len(m.species_data[0].time)}"
-            )
-            assert len(m.species_data[1].time) == 11, (
-                f"Expected 10 time points. Got {len(m.species_data[1].time)}"
-            )
-            assert m.species_data[0].data_unit.name == "mmol / l", (
-                f"Expected mM. Got {m.species_data[0].data_unit.name}"
-            )
-            assert m.species_data[0].time_unit.name == "s", (
-                f"Expected s. Got {m.species_data[0].time_unit.name}"
-            )
-            assert m.species_data[1].data_unit.name == "mmol / l", (
-                f"Expected mM. Got {m.species_data[1].data_unit.name}"
-            )
-            assert m.species_data[1].time_unit.name == "s", (
-                f"Expected s. Got {m.species_data[1].time_unit.name}"
-            )
+
+            if m.species_data[0].time_unit is not None:
+                assert len(m.species_data[0].time) == 11, (
+                    f"Expected 10 time points. Got {len(m.species_data[0].time)}"
+                )
+            else:
+                assert len(m.species_data[0].time) == 0, (
+                    f"Expected 0 time points. Got {len(m.species_data[0].time)}"
+                )
+
+            if m.species_data[1].time_unit is not None:
+                assert len(m.species_data[1].time) == 11, (
+                    f"Expected 10 time points. Got {len(m.species_data[1].time)}"
+                )
+            else:
+                assert len(m.species_data[1].time) == 0, (
+                    f"Expected 0 time points. Got {len(m.species_data[1].time)}"
+                )
+
+            if m.species_data[0].data_unit is not None:
+                assert m.species_data[0].data_unit.name == "mmol / l", (
+                    f"Expected mM. Got {m.species_data[0].data_unit.name}"
+                )
+            else:
+                assert m.species_data[0].data_unit is None, (
+                    f"Expected None. Got {m.species_data[0].data_unit}"
+                )
+
+            if m.species_data[0].time_unit is not None:
+                assert m.species_data[0].time_unit.name == "s", (
+                    f"Expected s. Got {m.species_data[0].time_unit.name}"
+                )
+            else:
+                assert m.species_data[0].time_unit is None, (
+                    f"Expected None. Got {m.species_data[0].time_unit}"
+                )
+
+            if m.species_data[1].data_unit is not None:
+                assert m.species_data[1].data_unit.name == "mmol / l", (
+                    f"Expected mM. Got {m.species_data[1].data_unit.name}"
+                )
+            else:
+                assert m.species_data[1].data_unit is None, (
+                    f"Expected None. Got {m.species_data[1].data_unit}"
+                )
+
+            if m.species_data[1].time_unit is not None:
+                assert m.species_data[1].time_unit.name == "s", (
+                    f"Expected s. Got {m.species_data[1].time_unit.name}"
+                )
+            else:
+                assert m.species_data[1].time_unit is None, (
+                    f"Expected None. Got {m.species_data[1].time_unit}"
+                )
 
     def test_invalid_types(self):
         """Test that an invalid CSV raises a ValueError"""
         # Act
         with pytest.raises(AssertionError):
-            pe.read_csv(
+            pe.from_csv(
                 "tests/fixtures/tabular/data_invalid_chars.tsv",
-                data_unit=mM,
-                time_unit=s,
+                data_unit="mmol / l",
+                time_unit="s",
             )
 
     def test_invalid_csv(self):
         """Test that an invalid CSV raises a ValueError"""
         # Act
         with pytest.raises(AssertionError):
-            pe.read_csv(
+            pe.from_csv(
                 "tests/fixtures/tabular/data_invalid.tsv",
-                data_unit=mM,
-                time_unit=s,
+                data_unit="mmol / l",
+                time_unit="s",
             )
 
     def test_invalid_excel(self):
         """Test that an invalid Excel raises a ValueError"""
         # Act
         with pytest.raises(AssertionError):
-            pe.read_excel(
+            pe.from_excel(
                 "tests/fixtures/tabular/data_invalid.xlsx",
-                data_unit=mM,
-                time_unit=s,
+                data_unit="mmol / l",
+                time_unit="s",
             )

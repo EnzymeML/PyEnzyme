@@ -3,7 +3,6 @@ from pathlib import Path
 
 import pyenzyme as pe
 import pyenzyme.equations as peq
-from pyenzyme import EnzymeMLDocument
 from pyenzyme.tools import to_dict_wo_json_ld, get_all_parameters
 
 
@@ -13,12 +12,12 @@ class TestSBML:
         path = Path("tests/fixtures/sbml/odes_example.omex")
 
         # Act
-        enzmldoc = EnzymeMLDocument.from_sbml(path)
+        enzmldoc = pe.from_sbml(path)
 
         # Assert
         parsed_doc = to_dict_wo_json_ld(enzmldoc)
         expected_doc = to_dict_wo_json_ld(
-            EnzymeMLDocument.read("tests/fixtures/sbml/ode_example_enzml.json")
+            pe.read_enzymeml("tests/fixtures/sbml/ode_example_enzml.json")
         )
 
         # Remove spaces of equation
@@ -35,12 +34,12 @@ class TestSBML:
         path = Path("tests/fixtures/sbml/v1_example.omex")
 
         # Act
-        enzmldoc = EnzymeMLDocument.from_sbml(path)
+        enzmldoc = pe.from_sbml(path)
 
         # Assert
         parsed_doc = to_dict_wo_json_ld(enzmldoc)
         expected_doc = to_dict_wo_json_ld(
-            EnzymeMLDocument.read("tests/fixtures/sbml/v1_example_enzml.json")
+            pe.read_enzymeml("tests/fixtures/sbml/v1_example_enzml.json")
         )
 
         assert parsed_doc == expected_doc, (
@@ -106,7 +105,7 @@ class TestSBML:
             enzmldoc=doc,
         )
 
-        doc.measurements += pe.read_excel(
+        doc.measurements += pe.from_excel(
             "tests/fixtures/tabular/data.xlsx",
             data_unit="mmol / l",
             time_unit="s",
@@ -119,15 +118,15 @@ class TestSBML:
 
         for meas in doc.measurements:
             meas.temperature = 298.15
-            meas.temperature_unit = "K"
+            meas.temperature_unit = "K"  # type: ignore
             meas.ph = 7.0
 
         with tempfile.TemporaryDirectory() as dirname:
             path = Path(dirname) / "test.omex"
-            doc.to_sbml(path)
+            pe.to_sbml(doc, path)
 
             # Act
-            enzmldoc = EnzymeMLDocument.from_sbml(path)
+            enzmldoc = pe.from_sbml(path)
 
             # Assert
             parsed_doc = to_dict_wo_json_ld(enzmldoc)
