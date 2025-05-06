@@ -1,12 +1,19 @@
 import re
 from enum import Enum
 
-from pyenzyme.model import Equation, ReactionElement, Reaction
+from pyenzyme import Equation, ReactionElement, Reaction
 
 ELEMENT_PATTERN = r"(\d*)\s?([A-Za-z\d]+)"
 
 
 class EquationSide(Enum):
+    """Enum representing the side of a chemical equation.
+
+    Attributes:
+        LEFT: Represents the left side of the equation (reactants) with value -1.
+        RIGHT: Represents the right side of the equation (products) with value 1.
+    """
+
     LEFT = -1
     RIGHT = 1
 
@@ -33,15 +40,18 @@ def build_reactions(
 
     Args:
         *equations (list[str]): A list of string representations of the reactions
+        modifiers (dict[str, list[str]], optional): A dictionary mapping reaction IDs to lists of modifier species IDs.
+            Defaults to an empty dictionary.
 
     Returns:
         list[Reaction]: A list of reaction objects
 
     Example:
-        >> reactions("2A --> B", "A + B <=> C")
+        >>> build_reactions("2A --> B", "A + B <=> C")
+        >>> build_reactions("2A --> B", modifiers={"r1": ["E"]})
 
     Raises:
-        ValueError: If the reaction direction is not valid
+        ValueError: If the reaction direction is not valid or if a specified modifier reaction ID is not found
         AssertionError: If the species is not set
     """
 
@@ -75,24 +85,23 @@ def build_reaction(
     """Builds a reaction object from a string representation.
 
     Args:
-        id (str): The id of the reaction
         name (str): The name of the reaction
-        scheme (str): The equation of the reaction
-        modifiers (list[str], optional): A list of modifiers for the reaction. Defaults to [].
+        scheme (str): The equation of the reaction in string format (e.g., "2A --> B")
+        id (str | None, optional): The ID of the reaction. If None, the name is used as ID. Defaults to None.
+        kinetic_law (Equation | None, optional): The kinetic law associated with the reaction. Defaults to None.
+        modifiers (list[str], optional): A list of modifiers (e.g., enzyme IDs) for the reaction. Defaults to [].
 
     Returns:
         Reaction: A reaction object
 
     Example:
-
-        >> reaction("R1", "Reaction 1", "2A --> B") # Irrversible reaction
-        >> reaction("R2", "Reaction 2", "A + B <=> C") # Reversible reaction
-        >> reaction("R2", "Reaction 2", "A + B <-> C") # Reversible reaction
+        >>> build_reaction("Reaction 1", "2A --> B", id="R1") # Irreversible reaction
+        >>> build_reaction("Reaction 2", "A + B <=> C", id="R2") # Reversible reaction
+        >>> build_reaction("Reaction 2", "A + B <-> C", id="R2") # Reversible reaction
 
     Raises:
         ValueError: If the reaction direction is not valid
         AssertionError: If the species is not set
-
     """
 
     if not id:
@@ -117,10 +126,13 @@ def _extract_left_right(reaction: str) -> tuple[str, str, bool]:
     """Extracts the left and right side of a reaction string.
 
     Args:
-        reaction (str): The reaction string
+        reaction (str): The reaction string (e.g., "A + B -> C")
 
     Returns:
-        tuple[str, str, bool]: A tuple containing the left side, right side, and the reaction direction
+        tuple[str, str, bool]: A tuple containing the left side, right side, and whether the reaction is reversible
+
+    Raises:
+        ValueError: If no valid reaction direction symbol is found in the equation
     """
 
     if "->" in reaction:
@@ -140,7 +152,15 @@ def _extract_left_right(reaction: str) -> tuple[str, str, bool]:
 
 
 def _extract_elements(side_string: str, side: EquationSide) -> list[ReactionElement]:
-    """Extracts the elements from a reaction string."""
+    """Extracts the elements from a reaction string.
+
+    Args:
+        side_string (str): The string representing one side of the reaction (e.g., "2A + B")
+        side (EquationSide): Enum indicating whether this is the left or right side of the equation
+
+    Returns:
+        list[ReactionElement]: A list of ReactionElement objects representing the species and their stoichiometries
+    """
     elements = []
     for element in side_string.split("+"):
         element = re.search(ELEMENT_PATTERN, element.strip())
@@ -156,6 +176,19 @@ def _create_reaction_element(
     species: str,
     side: EquationSide,
 ) -> ReactionElement:
+    """Creates a ReactionElement object from stoichiometry, species ID, and equation side.
+
+    Args:
+        stoich (str | float): The stoichiometric coefficient (can be a string or float)
+        species (str): The species ID
+        side (EquationSide): The side of the equation (LEFT or RIGHT)
+
+    Returns:
+        ReactionElement: A ReactionElement object with the appropriate stoichiometry and species ID
+
+    Raises:
+        AssertionError: If the species is not set
+    """
     assert species, "Species must be set"
 
     if stoich == "":

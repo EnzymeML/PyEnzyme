@@ -1,6 +1,13 @@
 """
 This module contains the classes for the EnzymeML version 2 format annotations
 used to map the EnzymeML JSON schema to SBML.
+
+The classes in this module define the structure for annotating SBML models with
+EnzymeML-specific information. These annotations allow for the representation of
+enzymatic reactions, experimental data, and associated metadata in a standardized format.
+
+Each annotation class corresponds to a specific aspect of enzymatic data, such as
+small molecules, proteins, complexes, experimental measurements, and parameters.
 """
 
 from __future__ import annotations
@@ -8,7 +15,6 @@ from __future__ import annotations
 import pandas as pd
 from pydantic import field_validator
 from pydantic_xml import element, attr, BaseXmlModel
-import rich
 
 from pyenzyme import DataTypes, Measurement, UnitDefinition
 from pyenzyme.sbml.utils import _get_unit
@@ -17,9 +23,18 @@ from pyenzyme.sbml.utils import _get_unit
 class BaseAnnot(BaseXmlModel):
     """
     Base class for annotations in the EnzymeML format.
+
+    This class provides common functionality for all annotation classes,
+    including methods to check if an annotation is empty.
     """
 
     def is_empty(self):
+        """
+        Check if the annotation is empty.
+
+        Returns:
+            bool: True if all attributes are None or empty lists, False otherwise.
+        """
         return all(value is None or value == [] for _, value in self)
 
 
@@ -29,6 +44,21 @@ class V2Annotation(
     search_mode="unordered",
     nsmap={"enzymeml": "https://www.enzymeml.org/v2"},
 ):
+    """
+    Top-level annotation class for EnzymeML version 2.
+
+    This class serves as a container for all other annotation types and
+    is attached to SBML elements to provide EnzymeML-specific information.
+
+    Attributes:
+        small_molecule (SmallMoleculeAnnot | None): Annotation for small molecules.
+        protein (ProteinAnnot | None): Annotation for proteins.
+        complex (ComplexAnnot | None): Annotation for complexes.
+        data (DataAnnot | None): Annotation for experimental data.
+        parameter (ParameterAnnot | None): Annotation for parameters.
+        variables (VariablesAnnot | None): Annotation for variables.
+    """
+
     small_molecule: SmallMoleculeAnnot | None = element(
         tag="smallMolecule",
         default=None,
@@ -69,6 +99,9 @@ class SmallMoleculeAnnot(
     """
     Represents the annotation for a small molecule in the EnzymeML format.
 
+    This class contains chemical identifiers that help uniquely identify
+    small molecules involved in enzymatic reactions.
+
     Attributes:
         inchikey (str | None): The InChIKey of the small molecule.
         canonical_smiles (str | None): The canonical SMILES representation of the small molecule.
@@ -86,6 +119,9 @@ class ProteinAnnot(
 ):
     """
     Represents the annotation for a protein in the EnzymeML format.
+
+    This class contains biological information about proteins, including
+    their enzymatic classification, origin, and sequence.
 
     Attributes:
         ecnumber (str | None): The EC number of the protein.
@@ -109,6 +145,9 @@ class ComplexAnnot(
     """
     Represents the annotation for a complex in the EnzymeML format.
 
+    This class describes molecular complexes formed by multiple components,
+    such as protein-protein or protein-substrate complexes.
+
     Attributes:
         participants (list[str]): A list of participants in the complex.
     """
@@ -128,6 +167,9 @@ class DataAnnot(
     """
     Represents the annotation for data in the EnzymeML format.
 
+    This class links experimental data files to measurements and provides
+    methods to convert the data into Measurement objects.
+
     Attributes:
         file (str): The file associated with the data.
         measurements (list[MeasurementAnnot]): A list of measurements associated with the data.
@@ -142,6 +184,15 @@ class DataAnnot(
     @field_validator("file")
     @classmethod
     def _check_file_path(cls, value):
+        """
+        Ensures that file paths start with './'.
+
+        Args:
+            value (str): The file path to validate.
+
+        Returns:
+            str: The validated file path.
+        """
         if not value.startswith("./"):
             return "./" + value
         return value
@@ -151,6 +202,22 @@ class DataAnnot(
         meas_data: dict[str, pd.DataFrame],
         units: dict[str, UnitDefinition],
     ) -> list[Measurement]:
+        """
+        Converts data annotations to Measurement objects.
+
+        This method processes the measurement annotations and associated data
+        to create fully-populated Measurement objects.
+
+        Args:
+            meas_data (dict[str, pd.DataFrame]): Dictionary mapping file paths to data frames.
+            units (dict[str, UnitDefinition]): Dictionary mapping unit IDs to UnitDefinition objects.
+
+        Returns:
+            list[Measurement]: List of created Measurement objects.
+
+        Raises:
+            AssertionError: If the specified data file is not found in the provided data.
+        """
         assert self.file in meas_data, f"Data file '{self.file}' not found in data"
 
         return [
@@ -170,6 +237,9 @@ class MeasurementAnnot(
 ):
     """
     Represents the annotation for a measurement in the EnzymeML format.
+
+    This class describes experimental measurements, including conditions,
+    time units, and species data.
 
     Attributes:
         id (str): The ID of the measurement.
@@ -193,6 +263,22 @@ class MeasurementAnnot(
         meas_data: pd.DataFrame,
         units: dict[str, UnitDefinition],
     ):
+        """
+        Converts a measurement annotation to a Measurement object.
+
+        This method processes the measurement data, conditions, and species data
+        to create a fully-populated Measurement object.
+
+        Args:
+            meas_data (pd.DataFrame): The data frame containing measurement data.
+            units (dict[str, UnitDefinition]): Dictionary mapping unit IDs to UnitDefinition objects.
+
+        Returns:
+            Measurement: The created Measurement object.
+
+        Raises:
+            ValueError: If no data is found for the measurement ID.
+        """
         df_sub = meas_data[meas_data.id == self.id]
 
         # Extract conditions data
@@ -221,7 +307,7 @@ class MeasurementAnnot(
             id=self.id,
             name=name,
             temperature=temperature,
-            temperature_unit=temperature_unit,
+            temperature_unit=temperature_unit,  # type: ignore
             ph=ph,
         )
 
@@ -240,6 +326,18 @@ class MeasurementAnnot(
         species: SpeciesDataAnnot,
         units: dict[str, UnitDefinition],
     ):
+        """
+        Maps species data from a data frame to a Measurement object.
+
+        This method extracts species-specific data from the data frame and
+        adds it to the Measurement object.
+
+        Args:
+            df_sub (pd.DataFrame): The filtered data frame for the current measurement.
+            measurement (Measurement): The Measurement object to add data to.
+            species (SpeciesDataAnnot): The species data annotation.
+            units (dict[str, UnitDefinition]): Dictionary mapping unit IDs to UnitDefinition objects.
+        """
         if species.species_id in df_sub.columns:
             data = df_sub[species.species_id].to_list()
             time = df_sub["time"].to_list()
@@ -250,14 +348,26 @@ class MeasurementAnnot(
             data=data,
             time=time,
             species_id=species.species_id,
-            data_unit=_get_unit(species.unit, units),
-            time_unit=_get_unit(self.time_unit, units),
+            data_unit=_get_unit(species.unit, units),  # type: ignore
+            time_unit=_get_unit(self.time_unit, units),  # type: ignore
             initial=species.initial,
-            data_type=self._map_data_type(species.type),
+            data_type=self._map_data_type(species.type),  # type: ignore
         )
 
     @staticmethod
     def _map_data_type(dtype: str):
+        """
+        Maps a string data type to a DataTypes enum value.
+
+        Args:
+            dtype (str): The string representation of the data type.
+
+        Returns:
+            DataTypes: The corresponding DataTypes enum value.
+
+        Raises:
+            ValueError: If the data type is not supported.
+        """
         if data_type := getattr(DataTypes, dtype, None):
             return data_type
         else:
@@ -272,6 +382,9 @@ class SpeciesDataAnnot(
 ):
     """
     Represents the annotation for species data in the EnzymeML format.
+
+    This class describes data associated with a specific species, including
+    its initial value, data type, and unit.
 
     Attributes:
         species_id (str): The ID of the species.
@@ -295,6 +408,9 @@ class ConditionsAnnot(
     """
     Represents the annotation for conditions in the EnzymeML format.
 
+    This class describes experimental conditions such as pH and temperature
+    under which measurements were taken.
+
     Attributes:
         ph (PHAnnot | None): The pH conditions.
         temperature (TemperatureAnnot | None): The temperature conditions.
@@ -313,6 +429,8 @@ class PHAnnot(
     """
     Represents the annotation for pH in the EnzymeML format.
 
+    This class describes the pH value of an experimental condition.
+
     Attributes:
         value (float): The pH value.
     """
@@ -328,6 +446,8 @@ class TemperatureAnnot(
 ):
     """
     Represents the annotation for temperature in the EnzymeML format.
+
+    This class describes the temperature value and unit of an experimental condition.
 
     Attributes:
         value (float): The temperature value.
@@ -346,6 +466,9 @@ class ParameterAnnot(
 ):
     """
     Represents the annotation for a parameter in the EnzymeML format.
+
+    This class describes statistical properties of parameters used in
+    kinetic models, such as bounds and standard error.
 
     Attributes:
         lower (float | None): The lower bound of the parameter.
@@ -367,6 +490,9 @@ class VariablesAnnot(
     """
     Represents the annotation for variables in the EnzymeML format.
 
+    This class serves as a container for variable annotations used in
+    kinetic models and equations.
+
     Attributes:
         variables (list[Variable]): A list of variables.
     """
@@ -382,6 +508,9 @@ class VariableAnnot(
 ):
     """
     Represents a variable in the EnzymeML format.
+
+    This class describes variables used in kinetic models and equations,
+    including their identifiers and symbols.
 
     Attributes:
         id (str | None): The ID of the variable.

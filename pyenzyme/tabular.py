@@ -74,7 +74,6 @@ def read_excel(
     data_unit: str,
     time_unit: str,
     data_type: DataTypes = DataTypes.CONCENTRATION,
-    sep: str = ";",
 ):
     """Reads a CSV file from the specified path into a measurement.
 
@@ -91,8 +90,8 @@ def read_excel(
 
     Args:
         path (str, pathlib.Path): The path to the CSV file.
-        data_unit (UnitDefinition): The unit of the data.
-        time_unit (UnitDefinition): The unit of the time.
+        data_unit (str): The unit of the data.
+        time_unit (str): The unit of the time.
         data_type (DataTypes): The type of the data. Default is DataTypes.CONCENTRATION.
         sep (str): The separator of the CSV file. Default is ';'.
 
@@ -145,8 +144,8 @@ def read_csv(
 
     Args:
         path (str, pathlib.Path): The path to the CSV file.
-        data_unit (UnitDefinition): The unit of the data.
-        time_unit (UnitDefinition): The unit of the time.
+        data_unit (str): The unit of the data.
+        time_unit (str): The unit of the time.
         data_type (DataTypes): The type of the data. Default is DataTypes.CONCENTRATION.
         sep (str): The separator of the CSV file. Default is ';'.
 
@@ -200,8 +199,8 @@ def from_dataframe(
     Args:
         df (pd.DataFrame): The DataFrame to parse.
         meas_id (str | None): The ID of the measurement. Default is None.
-        data_unit (UnitDefinition): The unit of the data.
-        time_unit (UnitDefinition): The unit of the time.
+        data_unit (str): The unit of the data.
+        time_unit (str): The unit of the time.
         data_type (DataTypes): The type of the data. Default is DataTypes.CONCENTRATION.
 
     Returns:
@@ -261,8 +260,8 @@ def _create_single_measurement(
                 species_id=str(species_id),
                 data=species_data,
                 time=time,
-                data_unit=data_unit,
-                time_unit=time_unit,
+                data_unit=data_unit,  # type: ignore
+                time_unit=time_unit,  # type: ignore
                 initial=float(species_data[0]),
                 data_type=data_type,
             )

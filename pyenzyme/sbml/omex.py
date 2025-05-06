@@ -18,6 +18,7 @@ class FileURI(enum.Enum):
     Attributes:
         CSV (str): URI for CSV files.
         TSV (str): URI for TSV files.
+        TSV_LONG (str): URI for tab-separated values files (long format).
     """
 
     CSV = "/csv"
@@ -91,16 +92,20 @@ def create_sbml_omex(
     out: Path,
 ) -> None:
     """
-    Create an OMEX archive with the given SBML and data files.
+    Create an OMEX archive with the given SBML document and optional data files.
+
+    This function creates a Combined OMEX archive that packages an SBML model with
+    associated experimental data. The SBML document is set as the master file in the
+    archive, and any provided data is saved as a TSV file.
 
     Args:
-        sbml_doc (str): The SBML document to include in the archive.
-        data (pd.DataFrame | None): The data to include in the archive.
-        out (Path): The path to save the OMEX archive.
+        sbml_doc (str): The SBML document content to include in the archive.
+        data (pd.DataFrame | None): Optional experimental data to include in the archive.
+            If provided, it will be saved as a TSV file.
+        out (Path): The path where the OMEX archive will be saved.
 
     Returns:
-        Omex: The created OMEX archive
-
+        None: The function saves the OMEX archive to the specified path but doesn't return anything.
     """
 
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -132,17 +137,29 @@ def create_sbml_omex(
         omex.to_omex(out)
 
 
-def read_sbml_omex(path: Path) -> tuple[TextIO, dict[str, pd.DataFrame]]:
+def read_sbml_omex(path: Path | str) -> tuple[TextIO, dict[str, pd.DataFrame]]:
     """
     Reads an OMEX archive and extracts the SBML document and associated data files.
 
+    This function opens an OMEX archive, identifies the master SBML file, and extracts
+    any supported data files (CSV, TSV) into pandas DataFrames. The function validates
+    that the master file is in SBML format.
+
     Args:
-        path (Path): The path to the OMEX archive.
+        path (Path | str): The path to the OMEX archive file.
 
     Returns:
-        tuple[str, dict[str, pd.DataFrame]]: A tuple containing the SBML document as a string and a dictionary
-                                             where keys are file locations and values are dataframes of the data files.
+        tuple[TextIO, dict[str, pd.DataFrame]]: A tuple containing:
+            - A file handle to the SBML document
+            - A dictionary mapping file locations to pandas DataFrames containing the data files
+
+    Raises:
+        ValueError: If no master file is found in the OMEX archive.
+        AssertionError: If the master file is not in SBML format.
     """
+    if isinstance(path, str):
+        path = Path(path)
+
     omex = Omex.from_omex(path)
 
     try:

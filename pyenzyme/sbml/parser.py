@@ -8,7 +8,6 @@ from typing import IO
 import libsbml as sbml  # type: ignore
 import pandas as pd
 from loguru import logger
-import rich  # type: ignore
 
 import pyenzyme as pe
 
@@ -24,6 +23,11 @@ from .utils import _get_unit
 def read_sbml(cls, path: Path | str):
     """
     Reads an SBML file and initializes an EnzymeML document.
+
+    This function reads an SBML file from an OMEX archive, extracts all relevant
+    information, and creates an EnzymeML document with the extracted data. It handles
+    different versions of the EnzymeML format and maps SBML elements to their
+    corresponding EnzymeML entities.
 
     Args:
         cls: The class to instantiate the EnzymeML document.
@@ -99,6 +103,9 @@ def _init_and_read_sbml(handler: IO):
     """
     Initialize the SBML reader and read the SBML document.
 
+    This function creates an SBML reader, reads the SBML document from the provided
+    file handler, and returns the model contained in the document.
+
     Args:
         handler (IO): The file handler for the SBML document.
 
@@ -127,15 +134,18 @@ def _parse_unit(unit: sbml.UnitDefinition):
     """
     Parse a unit definition from an SBML model into an EnzymeML unit definition.
 
+    This function extracts information from an SBML unit definition and creates
+    an equivalent EnzymeML unit definition with the same properties.
+
     Args:
         unit (sbml.UnitDefinition): The SBML unit definition.
 
     Returns:
-        An EnzymeML unit definition.
+        An EnzymeML unit definition with the same ID, name, and base units.
     """
     enzml_unit = pe.UnitDefinition(
-        id=unit.getName(),
-        name=unit.getName(),
+        id=unit.getId(),  # type: ignore
+        name=unit.getName(),  # type: ignore
     )
 
     for base_unit in unit.getListOfUnits():
@@ -159,11 +169,17 @@ def _parse_species(species: sbml.Species):
     """
     Parse a species from an SBML model into EnzymeML small molecule or protein.
 
+    This function determines the type of species based on its SBO term and calls
+    the appropriate parsing function to create the corresponding EnzymeML entity.
+
     Args:
         species (sbml.Species): The SBML species.
 
     Returns:
-        An EnzymeML small molecule, protein, or complex.
+        An EnzymeML small molecule, protein, or complex based on the SBO term.
+
+    Logs:
+        Error: If the SBO term is unknown or not supported.
     """
     sbo_term = species.getSBOTermID()
 
@@ -183,11 +199,16 @@ def _parse_small_molecule(species: sbml.Species):
     """
     Parse a species from an SBML model into an EnzymeML small molecule.
 
+    This function extracts information from an SBML species with an SBO term
+    indicating it's a small molecule and creates an equivalent EnzymeML small
+    molecule entity.
+
     Args:
-        species (sbml.Species): The SBML species.
+        species (sbml.Species): The SBML species with SBO term for small molecule.
 
     Returns:
-        An EnzymeML small molecule.
+        An EnzymeML small molecule with properties extracted from the SBML species
+        and its annotations.
     """
     parsed = version.parse_annotation(annotation=species.getAnnotationString())
     annots = version.extract(parsed, "small_molecule")
@@ -209,11 +230,15 @@ def _parse_protein(species: sbml.Species):
     """
     Parse a species from an SBML model into an EnzymeML protein.
 
+    This function extracts information from an SBML species with an SBO term
+    indicating it's a protein and creates an equivalent EnzymeML protein entity.
+
     Args:
-        species (sbml.Species): The SBML species.
+        species (sbml.Species): The SBML species with SBO term for protein.
 
     Returns:
-        An EnzymeML protein.
+        An EnzymeML protein with properties extracted from the SBML species
+        and its annotations.
     """
     parsed = version.parse_annotation(annotation=species.getAnnotationString())
     annots = version.extract(parsed, "protein")
@@ -235,11 +260,15 @@ def _parse_complex(species: sbml.Species):
     """
     Parse a species from an SBML model into an EnzymeML complex.
 
+    This function extracts information from an SBML species with an SBO term
+    indicating it's a complex and creates an equivalent EnzymeML complex entity.
+
     Args:
-        species (sbml.Species): The SBML species.
+        species (sbml.Species): The SBML species with SBO term for complex.
 
     Returns:
-        An EnzymeML complex.
+        An EnzymeML complex with properties extracted from the SBML species
+        and its annotations.
     """
     parsed = version.parse_annotation(annotation=species.getAnnotationString())
     annots = version.extract(parsed, "complex")
@@ -260,11 +289,17 @@ def _parse_vessel(compartment: sbml.Compartment):
     """
     Parse a compartment from an SBML model into an EnzymeML vessel.
 
+    This function extracts information from an SBML compartment and creates
+    an equivalent EnzymeML vessel entity.
+
     Args:
         compartment (sbml.Compartment): The SBML compartment.
 
-    Ret
-    print(units[compartment.getUnits()])
+    Returns:
+        An EnzymeML vessel with properties extracted from the SBML compartment.
+
+    Note:
+        The function prints the unit of the compartment for debugging purposes.
     """
     vessel = pe.Vessel(
         id=compartment.getId(),
@@ -282,11 +317,18 @@ def _parse_parameter(parameter: sbml.Parameter):
     """
     Parse a parameter from an SBML model into an EnzymeML parameter.
 
+    This function extracts information from an SBML parameter and creates
+    an equivalent EnzymeML parameter entity.
+
     Args:
         parameter (sbml.Parameter): The SBML parameter.
 
     Returns:
-        An EnzymeML parameter.
+        An EnzymeML parameter with properties extracted from the SBML parameter
+        and its annotations.
+
+    Note:
+        The function prints the parameter annotation string for debugging purposes.
     """
     print("PARAMETER", parameter.getAnnotationString())
     parsed = version.parse_annotation(annotation=parameter.getAnnotationString())
@@ -309,20 +351,23 @@ def _parse_equation(rule: sbml.Rule, rule_type: pe.EquationType):
     """
     Parse a rule from an SBML model into an EnzymeML equation.
 
+    This function extracts information from an SBML rule and creates an equivalent
+    EnzymeML equation entity based on the specified equation type.
+
     Args:
         rule (sbml.Rule): The SBML rule.
-        rule_type (pe.EquationType): The type of the equation.
+        rule_type (pe.EquationType): The type of the equation (INITIAL_ASSIGNMENT, ODE, or RATE_LAW).
 
     Returns:
-        An EnzymeML equation.
+        An EnzymeML equation with properties extracted from the SBML rule.
 
     Raises:
-        ValueError: If the rule type is unknown.
+        ValueError: If the rule type is unknown or not supported.
     """
     match rule_type:
         case pe.EquationType.INITIAL_ASSIGNMENT:
             equation = sbml.formulaToString(rule.getMath())
-            species_id = rule.getSymbol()
+            species_id = rule.getSymbol()  # type: ignore
         case pe.EquationType.ODE:
             equation = rule.getFormula()
             species_id = rule.getVariable()
@@ -352,9 +397,12 @@ def _map_v1_variables(annots: dict, equation: str):
     """
     Map variables for version 1 of the EnzymeML format.
 
+    This function identifies variables in the equation string that correspond to
+    species in the EnzymeML document and adds them to the annotations.
+
     Args:
-        annots (dict): The annotations.
-        equation (str): The equation string.
+        annots (dict): The annotations dictionary to update with variables.
+        equation (str): The equation string to search for variables.
     """
     if "variables" not in annots:
         annots["variables"] = []
@@ -379,11 +427,14 @@ def _parse_reaction(reaction: sbml.Reaction):
     """
     Parse a reaction from an SBML model into an EnzymeML reaction.
 
+    This function extracts information from an SBML reaction, including reactants,
+    products, modifiers, and kinetic law, and creates an equivalent EnzymeML reaction.
+
     Args:
         reaction (sbml.Reaction): The SBML reaction.
 
     Returns:
-        An EnzymeML reaction.
+        An EnzymeML reaction with properties extracted from the SBML reaction.
     """
     # Get the reactants and products
     products = [_parse_element(product, 1) for product in reaction.getListOfProducts()]
@@ -398,7 +449,7 @@ def _parse_reaction(reaction: sbml.Reaction):
     kinetic_law = _parse_equation(reaction.getKineticLaw(), pe.EquationType.RATE_LAW)
 
     # Create the EnzymeML reaction
-    reaction = pe.Reaction(
+    enzml_reaction = pe.Reaction(
         id=reaction.getId(),
         name=reaction.getName(),
         species=reactants + products,
@@ -406,19 +457,22 @@ def _parse_reaction(reaction: sbml.Reaction):
         kinetic_law=kinetic_law,
     )
 
-    return reaction
+    return enzml_reaction
 
 
 def _parse_element(species, direction: int):
     """
     Parse a species element from an SBML model into an EnzymeML reaction element.
 
+    This function creates an EnzymeML reaction element from an SBML species reference,
+    applying the specified direction to determine if it's a reactant or product.
+
     Args:
-        species: The SBML species element.
+        species: The SBML species element (SpeciesReference).
         direction (int): The direction of the reaction (1 for product, -1 for reactant).
 
     Returns:
-        An EnzymeML reaction element.
+        An EnzymeML reaction element with the species ID and stoichiometry.
     """
     return pe.ReactionElement(
         species_id=species.getSpecies(),
@@ -434,18 +488,20 @@ def _parse_measurements(
     """
     Parse measurements from an SBML model into EnzymeML measurements.
 
+    This function extracts measurement data from the SBML model based on the
+    EnzymeML version and creates EnzymeML measurement objects.
+
     Args:
         model (sbml.Model): The SBML model.
         list_of_reactions (sbml.ListOfReactions): The list of reactions in the SBML model.
-        meas_data (dict[str, pd.DataFrame]): The measurement data.
+        meas_data (dict[str, pd.DataFrame]): The measurement data extracted from the OMEX archive.
 
     Returns:
-        EnzymeML measurements.
+        A list of EnzymeML measurements.
 
     Raises:
-        ValueError: If the version is unknown.
+        ValueError: If the EnzymeML version is unknown or not supported.
     """
-
     match version.version:
         case SupportedVersions.VERSION1:
             parsed = version.parse_annotation(list_of_reactions.getAnnotationString())
@@ -461,13 +517,16 @@ def _parse_measurements(
 
 def _check_nan(value: float):
     """
-    Check if a value is NaN.
+    Check if a value is NaN and return None if it is.
+
+    This utility function checks if a floating-point value is NaN (Not a Number)
+    and returns None in that case, otherwise it returns the original value.
 
     Args:
         value (float): The value to check.
 
     Returns:
-        The value if it is not NaN, otherwise None.
+        float | None: The original value if it is not NaN, otherwise None.
     """
     if math.isnan(value):
         return None

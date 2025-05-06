@@ -32,6 +32,12 @@ def _check_consistent_vessel_ids(doc: pe.EnzymeMLDocument) -> bool:
     SBML documents require that all species have a vessel id that exists in the document and
     this validator checks for that. Otherwise, an error message will be logged and the validity
     set to False.
+
+    Args:
+        doc (pe.EnzymeMLDocument): The EnzymeML document to validate.
+
+    Returns:
+        bool: True if all species have valid vessel IDs, False otherwise.
     """
 
     vessel_ids = {v.id for v in doc.vessels}
@@ -63,6 +69,12 @@ def _check_equation_either_rule_or_reaction(doc: pe.EnzymeMLDocument) -> bool:
     there cannot be a rate equation and reaction element at the same time, since the latter is
     used to derive the former. This validator checks for that and logs an error message if the
     document is invalid.
+
+    Args:
+        doc (pe.EnzymeMLDocument): The EnzymeML document to validate.
+
+    Returns:
+        bool: True if all species have either rules or reactions but not both, False otherwise.
     """
 
     species_w_rate = {
@@ -86,8 +98,15 @@ def _check_equation_either_rule_or_reaction(doc: pe.EnzymeMLDocument) -> bool:
     return all(result)
 
 
-def _check_units_exist(doc: pe.EnzymeMLDocument):
-    """This validator checks whether all units in the document are defined in the SBML standard."""
+def _check_units_exist(doc: pe.EnzymeMLDocument) -> bool:
+    """This validator checks whether all units in the document are defined in the SBML standard.
+
+    Args:
+        doc (pe.EnzymeMLDocument): The EnzymeML document to validate.
+
+    Returns:
+        bool: True if all mandatory objects have units defined, False otherwise.
+    """
 
     mandatory_unit_objects = [
         *tools.extract(obj=doc, target=pe.MeasurementData),
@@ -121,12 +140,18 @@ def _check_units_exist(doc: pe.EnzymeMLDocument):
     return all(result)
 
 
-def _check_assigned_params_are_not_constant(doc: pe.EnzymeMLDocument):
+def _check_assigned_params_are_not_constant(doc: pe.EnzymeMLDocument) -> bool:
     """This validator checks whether all assigned parameters are not constant.
 
     If a parameter is assigned a value through an assignment rule, it should not be constant.
     This validator checks for that and logs a warning if a parameter is constant but has
     an assignment rule and sets the parameter to non-constant.
+
+    Args:
+        doc (pe.EnzymeMLDocument): The EnzymeML document to validate.
+
+    Returns:
+        bool: True if all assigned parameters are valid, False otherwise.
     """
 
     assignments = doc.filter_equations(equation_type=pe.EquationType.ASSIGNMENT)

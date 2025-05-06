@@ -14,6 +14,21 @@ class V1Annotation(
     tag="annotation",
     search_mode="unordered",
 ):
+    """
+    Represents the top-level annotation in the EnzymeML v1 format.
+
+    This class contains all the different types of annotations that can be
+    attached to elements in an SBML model using EnzymeML v1 format.
+
+    Attributes:
+        small_molecule (ReactantAnnot | None): Annotation for small molecules.
+        protein (ProteinAnnot | None): Annotation for proteins.
+        complex (ComplexAnnot | None): Annotation for complexes.
+        data (DataAnnot | None): Annotation for experimental data.
+        parameter (ParameterAnnot | None): Annotation for parameters.
+        variables (VariableAnnot | None): Annotation for variables.
+    """
+
     small_molecule: ReactantAnnot | None = element(
         tag="smallMolecule",
         default=None,
@@ -60,6 +75,9 @@ class ParameterAnnot(
     """
     Represents the annotation for a parameter in the EnzymeML format.
 
+    This class contains information about parameter bounds and initial values
+    that can be used in parameter estimation or simulation.
+
     Attributes:
         initial (float | None): The initial value of the parameter.
         upper (float | None): The upper bound of the parameter.
@@ -79,6 +97,9 @@ class ComplexAnnot(
     """
     Represents the annotation for a complex in the EnzymeML format.
 
+    A complex is formed by multiple participants (species) that interact
+    with each other.
+
     Attributes:
         participants (list[str]): A list of participants in the complex.
     """
@@ -93,6 +114,9 @@ class ReactantAnnot(
 ):
     """
     Represents the annotation for a reactant in the EnzymeML format.
+
+    This class contains chemical identifiers for small molecules that
+    participate in reactions.
 
     Attributes:
         inchi (str | None): The InChI of the reactant.
@@ -112,6 +136,9 @@ class ProteinAnnot(
 ):
     """
     Represents the annotation for a protein in the EnzymeML format.
+
+    This class contains biological identifiers and properties of proteins,
+    particularly enzymes that catalyze reactions.
 
     Attributes:
         sequence (str | None): The amino acid sequence of the protein.
@@ -134,7 +161,10 @@ class DataAnnot(
     nsmap={"": "http://sbml.org/enzymeml/version2"},
 ):
     """
-    Represents the annotation for data in the EnzymeML format.
+    Represents the annotation for experimental data in the EnzymeML format.
+
+    This class contains information about experimental measurements, including
+    file formats, measurement metadata, and file references.
 
     Attributes:
         formats (list[FormatAnnot]): A list of format annotations.
@@ -174,6 +204,9 @@ class DataAnnot(
         """
         Converts the data annotation to version 2 format.
 
+        This method transforms v1 data annotations into v2 Measurement objects,
+        mapping file data and units appropriately.
+
         Args:
             meas_data (dict[str, pd.DataFrame]): A dictionary of dataframes.
             units (dict[str, UnitDefinition]): A dictionary of unit definitions.
@@ -191,12 +224,13 @@ class DataAnnot(
             measurement = Measurement(id=meas_v1.id, name=meas_v1.name)
 
             for init_conc in meas_v1.init_concs:
-                measurement.add_to_species_data(
-                    data_unit=_get_unit(init_conc.unit, units),
-                    species_id=init_conc.species_id,
-                    initial=init_conc.value,
-                    data_type=DataTypes.CONCENTRATION,
-                )
+                if init_conc.species_id:
+                    measurement.add_to_species_data(
+                        data_unit=_get_unit(init_conc.unit, units),  # type: ignore
+                        species_id=init_conc.species_id,
+                        initial=init_conc.value,
+                        data_type=DataTypes.CONCENTRATION,
+                    )
 
             # Extract the format information
             file = next(f for f in self.files if f.id == meas_v1.file)
@@ -227,6 +261,10 @@ class DataAnnot(
         """
         Maps columns from the dataframe to the measurement.
 
+        This method processes each column in the format definition, extracts
+        the corresponding data from the dataframe, and adds it to the measurement
+        object with appropriate units.
+
         Args:
             df (pd.DataFrame): The dataframe containing the data.
             file_format (FormatAnnot): The format annotation.
@@ -239,9 +277,18 @@ class DataAnnot(
             values = df.iloc[:, col.index].values.tolist()
 
             if col.type == "time":
-                self._map_time_values(measurement, unit, values)
+                self._map_time_values(
+                    measurement,
+                    unit,  # type: ignore
+                    values,
+                )
             else:
-                self._map_species_values(col, measurement, unit, values)
+                self._map_species_values(
+                    col,
+                    measurement,
+                    unit,  # type: ignore
+                    values,
+                )
 
     @staticmethod
     def _map_species_values(
@@ -252,6 +299,9 @@ class DataAnnot(
     ):
         """
         Maps species values to the measurement.
+
+        This method finds the appropriate species data object in the measurement
+        and adds the concentration or other data values to it.
 
         Args:
             col (ColumnAnnot): The column annotation.
@@ -276,6 +326,9 @@ class DataAnnot(
         """
         Maps time values to the measurement.
 
+        This method adds time values to all species data objects in the measurement,
+        ensuring that time series data is properly associated with each species.
+
         Args:
             measurement (Measurement): The measurement to map the values to.
             unit (UnitDefinition): The unit definition.
@@ -294,6 +347,9 @@ class FormatAnnot(
 ):
     """
     Represents the format annotation in the EnzymeML format.
+
+    This class defines the structure of data files, specifying how columns
+    in data files map to species, time, or other measurements.
 
     Attributes:
         id (str): The ID of the format.
@@ -314,6 +370,9 @@ class ColumnAnnot(
 ):
     """
     Represents the column annotation in the EnzymeML format.
+
+    This class defines how a specific column in a data file should be interpreted,
+    including what species it refers to, what type of data it contains, and its units.
 
     Attributes:
         species_id (str | None): The ID of the species.
@@ -340,6 +399,9 @@ class MeasurementAnnot(
     """
     Represents the measurement annotation in the EnzymeML format.
 
+    This class contains metadata about a specific measurement, including
+    its identifier, name, associated file, and initial concentrations.
+
     Attributes:
         id (str): The ID of the measurement.
         name (str): The name of the measurement.
@@ -364,6 +426,9 @@ class InitConcAnnot(
     """
     Represents the initial concentration annotation in the EnzymeML format.
 
+    This class defines the initial concentration of a species (either a protein
+    or reactant) in a specific measurement.
+
     Attributes:
         protein (str | None): The protein associated with the initial concentration.
         reactant (str | None): The reactant associated with the initial concentration.
@@ -378,12 +443,15 @@ class InitConcAnnot(
 
     @computed_field
     @property
-    def species_id(self) -> str:
+    def species_id(self) -> str | None:
         """
         Computes the species ID based on the protein or reactant.
 
+        This property returns either the protein or reactant ID, ensuring
+        that exactly one of them is set.
+
         Returns:
-            str: The species ID.
+            str | None: The species ID.
         """
         assert bool(self.protein) != bool(self.reactant), (
             "Either protein or reactant must be set"
@@ -398,6 +466,9 @@ class FileAnnot(
 ):
     """
     Represents the file annotation in the EnzymeML format.
+
+    This class contains metadata about a data file, including its identifier,
+    location, and format.
 
     Attributes:
         id (str): The ID of the file.

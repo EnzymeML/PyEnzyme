@@ -14,12 +14,25 @@ from pyenzyme.versions.v2 import (
     Parameter,
 )
 
-INIT_ASSIGNMENT_PATTERN = r"^[A-Za-z][A-Za-z\_]*"
-DERIVATIVE_PATTERN = r"([A-Za-z0-9\_]+)\'\(t\)"
-VARIABLE_PATTERN = r"([A-Za-z0-9\_]+)\'?\(t\)"
-PARAMETER_PATTERN = r"([A-Za-z0-9\_]+)"
-REPLACE_PATTERN = r"\(t\)|\'"
-ELEMENTAL_FUNCTIONS = ["exp", "log", "sin", "cos", "tan", "sqrt", "abs"]
+# Regular expression patterns for parsing different parts of equations
+INIT_ASSIGNMENT_PATTERN = (
+    r"^[A-Za-z][A-Za-z\_]*"  # Pattern for initial assignment variables
+)
+DERIVATIVE_PATTERN = r"([A-Za-z0-9\_]+)\'\(t\)"  # Pattern for derivatives like x'(t)
+VARIABLE_PATTERN = (
+    r"([A-Za-z0-9\_]+)\'?\(t\)"  # Pattern for variables like x(t) or x'(t)
+)
+PARAMETER_PATTERN = r"([A-Za-z0-9\_]+)"  # Pattern for parameter names
+REPLACE_PATTERN = r"\(t\)|\'"  # Pattern for replacing (t) or ' in variables
+ELEMENTAL_FUNCTIONS = [
+    "exp",
+    "log",
+    "sin",
+    "cos",
+    "tan",
+    "sqrt",
+    "abs",
+]  # Built-in mathematical functions
 
 
 def build_equations(
@@ -29,16 +42,19 @@ def build_equations(
 ) -> list[Equation]:
     """Builds a list of Equation objects from a list of string representations.
 
+    This function takes multiple equation strings and converts each one into an Equation object.
+    It handles different types of equations including ODEs, assignments, and initial assignments.
+
     Args:
-        *equations (list[str]): A list of string representations of the ODEs
-        unit_mapping: A dictionary mapping parameter names to their respective
+        *equations (list[str]): A list of string representations of the equations
+        unit_mapping: A dictionary mapping parameter names to their respective units
         enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to add the parameters to
 
     Returns:
-        list[ODE]: A list of ODE objects
+        list[Equation]: A list of Equation objects
 
     Example:
-        >> build_equations("s1'(t) = 2 * s2(t)", "s2'(t) = 3 * s1(t)")
+        >>> build_equations("s1'(t) = 2 * s2(t)", "s2'(t) = 3 * s1(t)")
     """
 
     if unit_mapping is None:
@@ -61,25 +77,26 @@ def build_equation(
     enzmldoc: EnzymeMLDocument,
     unit_mapping: dict[str, str] | None = None,
 ) -> Equation:
-    """Builds an equation object from a string
+    """Builds an equation object from a string representation.
 
-    This function takes an equation string and converts it into an ODE object.
-    The equation string should be in the form of "s1'(t) = 2 * s2(t)" where
-    there is a left and right side of the equation.
+    This function takes an equation string and converts it into an Equation object.
+    It identifies the equation type (ODE, assignment, or initial assignment) based on the pattern,
+    extracts variables and parameters, and creates the appropriate Equation object.
 
     Args:
-        equation (str): The equation to be converted into an ODE object
-        unit_mapping: A dictionary mapping parameter names to their respective units
+        equation (str): The equation to be converted into an Equation object
         enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to add the parameters to
+        unit_mapping: A dictionary mapping parameter names to their respective units
 
     Returns:
-        ODE: The ODE object
+        Equation: The created Equation object
 
     Example:
+        >>> eq = "s1'(t) = 2 * s2(t)"
+        >>> equation = build_equation(eq, enzmldoc)
 
-        >> eq = "s1'(t) = 2 * s2(t)"
-        >> ode = ode(eq)
-
+    Raises:
+        ValueError: If the equation type is not recognized or if the equation is malformed
     """
 
     if unit_mapping is None:
@@ -137,6 +154,17 @@ def build_equation(
 
 
 def _extract_sides(equation: str) -> tuple[str, str]:
+    """Extracts the left and right sides of an equation.
+
+    Args:
+        equation (str): The equation string to parse
+
+    Returns:
+        tuple[str, str]: A tuple containing the left and right sides of the equation
+
+    Raises:
+        ValueError: If the equation is missing a left or right side
+    """
     if "=" not in equation:
         # Will be handled as a kinetic law
         return "", equation
@@ -152,6 +180,17 @@ def _extract_sides(equation: str) -> tuple[str, str]:
 
 
 def _clean_and_trim(eq: str) -> str:
+    """Cleans and trims an equation string by removing time dependencies.
+
+    This function removes the time dependency notation (t) from variables
+    and simplifies the equation representation.
+
+    Args:
+        eq (str): The equation string to clean
+
+    Returns:
+        str: The cleaned equation string
+    """
     vars = re.findall(VARIABLE_PATTERN, eq)
     for var in vars:
         var = var.replace("'", "")
@@ -162,10 +201,27 @@ def _clean_and_trim(eq: str) -> str:
 
 
 def _create_parameter(name: str, unit: UnitDefinition | None) -> Parameter:
+    """Creates a Parameter object with the given name and unit.
+
+    Args:
+        name (str): The name of the parameter
+        unit (UnitDefinition | None): The unit of the parameter
+
+    Returns:
+        Parameter: The created Parameter object
+    """
     return Parameter(id=name, name=name, symbol=name, unit=unit)
 
 
 def _create_variable(name: str) -> Variable:
+    """Creates a Variable object with the given name.
+
+    Args:
+        name (str): The name of the variable
+
+    Returns:
+        Variable: The created Variable object
+    """
     return Variable(id=name, name=name, symbol=name)
 
 
@@ -174,8 +230,13 @@ def _add_to_parameters(
     name: str,
     unit: str | UnitDefinition | None,
 ):
-    """Adds a parameter to the EnzymeMLDocument"""
+    """Adds a parameter to the EnzymeMLDocument if it doesn't already exist.
 
+    Args:
+        enzmldoc (EnzymeMLDocument): The document to add the parameter to
+        name (str): The name of the parameter
+        unit (str | UnitDefinition | None): The unit of the parameter
+    """
     add_logger("ENZML")
 
     if enzmldoc.filter_parameters(name=name):

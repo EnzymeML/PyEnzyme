@@ -11,6 +11,7 @@ from loguru import logger
 
 import pyenzyme as pe
 import pyenzyme.tools as tools
+
 from pyenzyme import rdf
 from pyenzyme import xmlutils as _xml
 from pyenzyme.logging import add_logger
@@ -18,9 +19,8 @@ from pyenzyme.sbml import create_sbml_omex
 from pyenzyme.sbml.validation import validate_sbml_export
 from pyenzyme.sbml.versions import v2
 from pyenzyme.tabular import to_pandas
-from pyenzyme.units.units import UnitDefinition
+from pyenzyme import UnitDefinition
 
-MAPPINGS = tools.read_static_file("pyenzyme.sbml", "mappings.toml")
 NSMAP = {"enzymeml": "https://www.enzymeml.org/v2"}
 
 
@@ -93,7 +93,7 @@ def to_sbml(
         _add_parameter(parameter)
 
     if out is None:
-        return libsbml.writeSBMLToString(sbmldoc), to_pandas(doc)
+        return libsbml.writeSBMLToString(sbmldoc), to_pandas(doc)  # type: ignore
 
     if isinstance(out, str):
         out = Path(out)
@@ -114,6 +114,16 @@ def to_sbml(
 
 
 def convert_unit_classes(doc: pe.EnzymeMLDocument, custom_units: list[UnitDefinition]):
+    """
+    Converts unit classes from the EnzymeML document to custom units.
+
+    This function extends the list of custom units with unique unit definitions
+    found in the EnzymeML document.
+
+    Args:
+        doc (pe.EnzymeMLDocument): The EnzymeML document containing units.
+        custom_units (list[UnitDefinition]): The list of custom units to extend.
+    """
     custom_units.extend(
         [
             pe.UnitDefinition(**unit.model_dump())
@@ -124,8 +134,12 @@ def convert_unit_classes(doc: pe.EnzymeMLDocument, custom_units: list[UnitDefini
 
 
 def _add_unit_definitions(unit: UnitDefinition):
-    """Add unit definitions to the SBML model."""
+    """
+    Add unit definitions to the SBML model.
 
+    Args:
+        unit (UnitDefinition): The unit definition to add to the SBML model.
+    """
     sbml_unitdef = model.createUnitDefinition()
 
     sbml_unitdef.setId(unit.id)
@@ -134,7 +148,7 @@ def _add_unit_definitions(unit: UnitDefinition):
     for base_unit in unit.base_units:
         sbml_unit = sbml_unitdef.createUnit()
         sbml_unit.initDefaults()
-        sbml_unit.setKind(_get_sbml_kind(base_unit.kind))
+        sbml_unit.setKind(_get_sbml_kind(base_unit.kind))  # type: ignore
         sbml_unit.setExponent(base_unit.exponent)
 
         if base_unit.scale:
@@ -144,8 +158,15 @@ def _add_unit_definitions(unit: UnitDefinition):
 
 
 def _add_vessel(vessel: pe.Vessel):
-    """Add vessels to the SBML model."""
+    """
+    Add vessels to the SBML model as compartments.
 
+    Args:
+        vessel (pe.Vessel): The vessel to add to the SBML model.
+
+    Raises:
+        ValueError: If the vessel's unit is not found in the available units.
+    """
     compartment = model.createCompartment()
     compartment.initDefaults()
     compartment.setId(vessel.id)
@@ -162,8 +183,12 @@ def _add_vessel(vessel: pe.Vessel):
 
 
 def _add_small_mol(small_mol: pe.SmallMolecule):
-    """Add small molecules to the SBML model."""
+    """
+    Add small molecules to the SBML model as species.
 
+    Args:
+        small_mol (pe.SmallMolecule): The small molecule to add to the SBML model.
+    """
     species = model.createSpecies()
     species.initDefaults()
     species.setId(small_mol.id)
@@ -189,8 +214,12 @@ def _add_small_mol(small_mol: pe.SmallMolecule):
 
 
 def _add_protein(protein: pe.Protein):
-    """Add proteins to the SBML model."""
+    """
+    Add proteins to the SBML model as species.
 
+    Args:
+        protein (pe.Protein): The protein to add to the SBML model.
+    """
     species = model.createSpecies()
     species.initDefaults()
     species.setId(protein.id)
@@ -218,8 +247,12 @@ def _add_protein(protein: pe.Protein):
 
 
 def _add_complex(complex_: pe.Complex):
-    """Add complexes to the SBML model."""
+    """
+    Add complexes to the SBML model as species.
 
+    Args:
+        complex_ (pe.Complex): The complex to add to the SBML model.
+    """
     species = model.createSpecies()
     species.initDefaults()
     species.setId(complex_.id)
@@ -236,13 +269,19 @@ def _add_complex(complex_: pe.Complex):
 
 
 def _get_first_meas_init_conc(species: pe.SmallMolecule | pe.Protein):
-    """Extracts the initial concentration of a species from the first measurement
+    """
+    Extracts the initial concentration of a species from the first measurement.
 
     SBML requires the initial concentration to be set for species that are measured,
     even if there are multiple measurements. This function extracts the initial
     concentration from the first measurement of the species to fulfill this requirement.
-    """
 
+    Args:
+        species (pe.SmallMolecule | pe.Protein): The species to get the initial concentration for.
+
+    Returns:
+        float | None: The initial concentration of the species or None if not found.
+    """
     if not doc.measurements:
         return None
 
@@ -256,8 +295,17 @@ def _get_first_meas_init_conc(species: pe.SmallMolecule | pe.Protein):
 
 
 def _add_reaction(reaction: pe.Reaction, index: int):
-    """Add reactions to the SBML model."""
+    """
+    Add reactions to the SBML model.
 
+    Args:
+        reaction (pe.Reaction): The reaction to add to the SBML model.
+        index (int): The index of the reaction in the EnzymeML document.
+
+    Raises:
+        ValueError: If the stoichiometry of a species is 0.
+        AssertionError: If the stoichiometry of a species is not set.
+    """
     sbml_reaction = model.createReaction()
     sbml_reaction.initDefaults()
     sbml_reaction.setName(reaction.name)
@@ -287,8 +335,13 @@ def _add_reaction(reaction: pe.Reaction, index: int):
 
 
 def _add_rate_law(equation: pe.Equation, reac: libsbml.Reaction):
-    """Add rate laws to the SBML Reaction."""
+    """
+    Add rate laws to the SBML Reaction.
 
+    Args:
+        equation (pe.Equation): The equation representing the rate law.
+        reac (libsbml.Reaction): The SBML reaction to add the rate law to.
+    """
     law = reac.createKineticLaw()
     law.setMath(libsbml.parseL3Formula(equation.equation))
 
@@ -305,7 +358,20 @@ def _get_create_fun(
     reaction: libsbml.Reaction,
     species: str,
 ) -> Callable[[], libsbml.SpeciesReference]:
-    """Helper function to retrieve the appropriate create function"""
+    """
+    Helper function to retrieve the appropriate create function based on stoichiometry.
+
+    Args:
+        stoichiometry (float): The stoichiometry of the species.
+        reaction (libsbml.Reaction): The SBML reaction.
+        species (str): The species ID.
+
+    Returns:
+        Callable[[], libsbml.SpeciesReference]: The appropriate create function.
+
+    Raises:
+        ValueError: If the stoichiometry is 0.
+    """
     if stoichiometry > 0:
         return reaction.createProduct
     elif stoichiometry < 0:
@@ -315,8 +381,12 @@ def _get_create_fun(
 
 
 def _add_parameter(parameter: pe.Parameter):
-    """Add parameters to the SBML model."""
+    """
+    Add parameters to the SBML model.
 
+    Args:
+        parameter (pe.Parameter): The parameter to add to the SBML model.
+    """
     sbml_param = model.createParameter()
     sbml_param.setId(parameter.id)
     sbml_param.setName(parameter.name)
@@ -342,8 +412,15 @@ def _add_parameter(parameter: pe.Parameter):
 
 
 def _add_equation(equation: pe.Equation):
-    """Add equations to the SBML model."""
+    """
+    Add equations to the SBML model.
 
+    Args:
+        equation (pe.Equation): The equation to add to the SBML model.
+
+    Raises:
+        ValueError: If the equation type is not supported.
+    """
     if equation.equation_type == pe.EquationType.ODE:
         sbml_rule = model.createRateRule()  # type: ignore
         sbml_rule.setVariable(equation.species_id)
@@ -367,8 +444,12 @@ def _add_equation(equation: pe.Equation):
 
 
 def _add_measurements(measurements: list[pe.Measurement]):
-    """Adds measurements to the SBML model."""
+    """
+    Adds measurements to the SBML model.
 
+    Args:
+        measurements (list[pe.Measurement]): The measurements to add to the SBML model.
+    """
     annot = v2.DataAnnot(file="./data.tsv")
 
     for measurement in measurements:
@@ -398,7 +479,7 @@ def _add_measurements(measurements: list[pe.Measurement]):
                 species_id=species_data.species_id,
                 initial=species_data.initial,
                 type=species_data.data_type.name,
-                unit=_get_unit_id(species_data.data_unit),
+                unit=_get_unit_id(species_data.data_unit),  # type: ignore
             )
 
             meas_annot.species_data.append(species_annot)
@@ -414,8 +495,17 @@ def _create_condition_element(
     temperature: float | None,
     temperature_unit: UnitDefinition | None,
 ):
-    """Set the conditions of the reaction in the SBML model."""
+    """
+    Set the conditions of the reaction in the SBML model.
 
+    Args:
+        ph (float | None): The pH value.
+        temperature (float | None): The temperature value.
+        temperature_unit (UnitDefinition | None): The unit of the temperature.
+
+    Returns:
+        ET.Element: The XML element representing the conditions.
+    """
     element = ET.Element(f"{{{NSMAP['enzymeml']}}}conditions")
     mappings = {
         "ph": {"@value": ph},
@@ -431,7 +521,19 @@ def _create_condition_element(
     return element
 
 
-def _get_sbml_kind(unit_type: pe.UnitType):
+def _get_sbml_kind(unit_type):
+    """
+    Convert a UnitType to the corresponding SBML unit kind.
+
+    Args:
+        unit_type (UnitType): The unit type to convert.
+
+    Returns:
+        int: The SBML unit kind.
+
+    Raises:
+        ValueError: If the unit type is not found in libsbml.
+    """
     try:
         return getattr(libsbml, f"UNIT_KIND_{unit_type.name}")
     except AttributeError:
@@ -439,8 +541,18 @@ def _get_sbml_kind(unit_type: pe.UnitType):
 
 
 def _get_unit_id(unit: pe.UnitDefinition | None) -> str | None:
-    """Helper function to get the unit from the list of units."""
+    """
+    Helper function to get the unit ID from the list of units.
 
+    Args:
+        unit (pe.UnitDefinition | None): The unit to find the ID for.
+
+    Returns:
+        str | None: The ID of the unit or None if the unit is None.
+
+    Raises:
+        ValueError: If the unit is not found in the list of units.
+    """
     if unit is None:
         return None
 
@@ -452,14 +564,26 @@ def _get_unit_id(unit: pe.UnitDefinition | None) -> str | None:
 
 
 def _same_unit(unit1: pe.UnitDefinition, unit2: pe.UnitDefinition) -> bool:
-    """Check if two units are the same."""
+    """
+    Check if two units are the same by comparing their model dumps.
 
+    Args:
+        unit1 (pe.UnitDefinition): The first unit.
+        unit2 (pe.UnitDefinition): The second unit.
+
+    Returns:
+        bool: True if the units are the same, False otherwise.
+    """
     return unit1.model_dump(exclude={"id"}) == unit2.model_dump(exclude={"id"})
 
 
 def _validate_sbml(sbmldoc: libsbml.SBMLDocument) -> None:
-    """Validate the SBML document using the libSBML function."""
+    """
+    Validate the SBML document using the libSBML function.
 
+    Args:
+        sbmldoc (libsbml.SBMLDocument): The SBML document to validate.
+    """
     sbml_errors = sbmldoc.checkConsistency()
 
     if sbml_errors and not print_warnings:
@@ -481,6 +605,15 @@ def _validate_sbml(sbmldoc: libsbml.SBMLDocument) -> None:
 
 
 def _assign_ids_to_units(doc_units: List[UnitDefinition]) -> List[UnitDefinition]:
+    """
+    Assign unique IDs to units.
+
+    Args:
+        doc_units (List[UnitDefinition]): The list of units to assign IDs to.
+
+    Returns:
+        List[UnitDefinition]: The list of units with assigned IDs.
+    """
     ids = [unit.id for unit in doc_units if unit.id]
     unique_units = []
 
@@ -497,7 +630,15 @@ def _assign_ids_to_units(doc_units: List[UnitDefinition]) -> List[UnitDefinition
 
 
 def _id_generator(ids: list[str]):
-    """Generator for creating unique IDs that are not in unit_ids."""
+    """
+    Generator for creating unique IDs that are not in unit_ids.
+
+    Args:
+        ids (list[str]): The list of existing IDs.
+
+    Yields:
+        str: A unique ID.
+    """
     i = 0
     while True:
         potential_id = f"u{i}"
