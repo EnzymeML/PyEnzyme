@@ -77,7 +77,7 @@ vessel = enzmldoc.add_to_vessels(
     unit="l",  # Units are automatically converted to a UnitDefinition
 )
 
-# Add a species from Chebi
+# Add a protein from UniProt
 protein = pe.fetch_uniprot("P07327", vessel_id=vessel.id)
 enzmldoc.proteins.append(protein)
 
