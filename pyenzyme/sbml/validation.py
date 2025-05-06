@@ -1,6 +1,6 @@
 from loguru import logger
 
-import pyenzyme.model as pe
+import pyenzyme as pe
 import pyenzyme.tools as tools
 
 

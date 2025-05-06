@@ -5,6 +5,7 @@ from pydantic import computed_field
 from pydantic_xml import element, BaseXmlModel, attr, wrapped
 
 from pyenzyme import Measurement, UnitDefinition, DataTypes
+from pyenzyme.sbml.utils import _get_unit
 from pyenzyme.sbml.versions.v2 import VariableAnnot
 
 
@@ -53,6 +54,7 @@ class V1Annotation(
 class ParameterAnnot(
     BaseXmlModel,
     tag="parameter",
+    search_mode="unordered",
     nsmap={"": "https://www.enzymeml.org/v2"},
 ):
     """
@@ -190,7 +192,7 @@ class DataAnnot(
 
             for init_conc in meas_v1.init_concs:
                 measurement.add_to_species_data(
-                    data_unit=units[init_conc.unit],
+                    data_unit=_get_unit(init_conc.unit, units),
                     species_id=init_conc.species_id,
                     initial=init_conc.value,
                     data_type=DataTypes.CONCENTRATION,
@@ -200,7 +202,12 @@ class DataAnnot(
             file = next(f for f in self.files if f.id == meas_v1.file)
             file_format = next(f for f in self.formats if f.id == file.format)
 
-            self._map_columns(file_map[meas_v1.file], file_format, measurement, units)
+            self._map_columns(
+                file_map[meas_v1.file],
+                file_format,
+                measurement,
+                units,
+            )
 
             for species_data in measurement.species_data:
                 if not species_data.data:
@@ -228,7 +235,7 @@ class DataAnnot(
         """
 
         for col in file_format.columns:
-            unit = units[col.unit]
+            unit = _get_unit(col.unit, units)
             values = df.iloc[:, col.index].values.tolist()
 
             if col.type == "time":
@@ -257,11 +264,15 @@ class DataAnnot(
         assert len(species_data) == 1, f"Species data not found for {col.species_id}"
 
         species_data = species_data[0]
-        species_data.data_unit = unit
+        species_data.data_unit = unit  # type: ignore
         species_data.data = values
 
     @staticmethod
-    def _map_time_values(measurement, unit, values):
+    def _map_time_values(
+        measurement: Measurement,
+        unit: str,
+        values: list[float],
+    ):
         """
         Maps time values to the measurement.
 
@@ -273,7 +284,7 @@ class DataAnnot(
         # Map time to all species data
         for species_data in measurement.species_data:
             species_data.time = values
-            species_data.time_unit = unit
+            species_data.time_unit = unit  # type: ignore
 
 
 class FormatAnnot(
@@ -374,9 +385,9 @@ class InitConcAnnot(
         Returns:
             str: The species ID.
         """
-        assert bool(self.protein) != bool(
-            self.reactant
-        ), "Either protein or reactant must be set"
+        assert bool(self.protein) != bool(self.reactant), (
+            "Either protein or reactant must be set"
+        )
         return self.protein or self.reactant
 
 

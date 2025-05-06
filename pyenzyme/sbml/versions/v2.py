@@ -8,8 +8,10 @@ from __future__ import annotations
 import pandas as pd
 from pydantic import field_validator
 from pydantic_xml import element, attr, BaseXmlModel
+import rich
 
-from pyenzyme import UnitDefinition, DataTypes, Measurement
+from pyenzyme import DataTypes, Measurement, UnitDefinition
+from pyenzyme.sbml.utils import _get_unit
 
 
 class BaseAnnot(BaseXmlModel):
@@ -192,12 +194,35 @@ class MeasurementAnnot(
         units: dict[str, UnitDefinition],
     ):
         df_sub = meas_data[meas_data.id == self.id]
+
+        # Extract conditions data
+        ph = None
+        temperature = None
+        temperature_unit = None
+
+        # Python ☕️ Love it...
+        if self.conditions:
+            if self.conditions.ph:
+                ph = self.conditions.ph.value
+
+            if self.conditions.temperature:
+                temperature = self.conditions.temperature.value
+                if self.conditions.temperature.unit:
+                    temperature_unit = _get_unit(
+                        self.conditions.temperature.unit, units
+                    )
+
+        if not self.name:
+            name = self.id
+        else:
+            name = self.name
+
         measurement = Measurement(
             id=self.id,
-            name=self.name,
-            temperature=self.conditions.temperature.value,
-            temperature_unit=units.get(self.conditions.temperature.unit),
-            ph=self.conditions.ph.value,
+            name=name,
+            temperature=temperature,
+            temperature_unit=temperature_unit,
+            ph=ph,
         )
 
         if df_sub.empty:
@@ -219,13 +244,14 @@ class MeasurementAnnot(
             data = df_sub[species.species_id].to_list()
             time = df_sub["time"].to_list()
         else:
-            data, time = None, None
+            data, time = [], []
+
         measurement.add_to_species_data(
             data=data,
             time=time,
             species_id=species.species_id,
-            data_unit=units[species.unit],
-            time_unit=units[self.time_unit],
+            data_unit=_get_unit(species.unit, units),
+            time_unit=_get_unit(self.time_unit, units),
             initial=species.initial,
             data_type=self._map_data_type(species.type),
         )
@@ -327,8 +353,8 @@ class ParameterAnnot(
         stderr (float | None): The standard deviation of the parameter.
     """
 
-    lower: float | None = element(tag="lowerBound", default=None)
-    upper: float | None = element(tag="upperBound", default=None)
+    lower_bound: float | None = element(tag="lowerBound", default=None)
+    upper_bound: float | None = element(tag="upperBound", default=None)
     stderr: float | None = element(tag="stdDeviation", default=None)
 
 
