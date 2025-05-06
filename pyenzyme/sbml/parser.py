@@ -7,14 +7,18 @@ from typing import IO
 
 import libsbml as sbml  # type: ignore
 import pandas as pd
-from loguru import logger  # type: ignore
+from loguru import logger
+import rich  # type: ignore
 
 import pyenzyme as pe
+
 from pyenzyme import xmlutils
 from pyenzyme.logging import add_logger
+
 from . import read_sbml_omex
 from .ldutils import parse_sbml_rdf_annotation
 from .versions.handler import VersionHandler, SupportedVersions
+from .utils import _get_unit
 
 
 def read_sbml(cls, path: Path | str):
@@ -64,7 +68,9 @@ def read_sbml(cls, path: Path | str):
     enzmldoc.vessels = [_parse_vessel(comp) for comp in model.getListOfCompartments()]
 
     # Extract equations and parameters
-    enzmldoc.parameters = [_parse_parameter(param) for param in model.getListOfParameters()]  # type: ignore
+    enzmldoc.parameters = [
+        _parse_parameter(param) for param in model.getListOfParameters()
+    ]  # type: ignore
     enzmldoc.equations += [
         _parse_equation(rule, pe.EquationType.INITIAL_ASSIGNMENT)
         for rule in model.getListOfInitialAssignments()
@@ -128,19 +134,15 @@ def _parse_unit(unit: sbml.UnitDefinition):
         An EnzymeML unit definition.
     """
     enzml_unit = pe.UnitDefinition(
-        id=unit.getId(),
+        id=unit.getName(),
         name=unit.getName(),
     )
-
-    parse_sbml_rdf_annotation(unit, enzml_unit)
 
     for base_unit in unit.getListOfUnits():
         multiplier = base_unit.getMultiplier()
         kind = sbml.UnitKind_toString(base_unit.getKind())
 
         if math.isnan(multiplier):
-            multiplier = None
-        elif multiplier == 1.0:
             multiplier = None
 
         enzml_unit.add_to_base_units(
@@ -261,14 +263,14 @@ def _parse_vessel(compartment: sbml.Compartment):
     Args:
         compartment (sbml.Compartment): The SBML compartment.
 
-    Returns:
-        An EnzymeML vessel.
+    Ret
+    print(units[compartment.getUnits()])
     """
     vessel = pe.Vessel(
         id=compartment.getId(),
         name=compartment.getName(),
-        volume=_check_nan(compartment.getSize()),
-        unit=units[compartment.getUnits()],  # type: ignore
+        volume=_check_nan(compartment.getSize()),  # type: ignore
+        unit=_get_unit(compartment.getUnits(), units),  # type: ignore
     )
 
     parse_sbml_rdf_annotation(compartment, vessel)
@@ -286,6 +288,7 @@ def _parse_parameter(parameter: sbml.Parameter):
     Returns:
         An EnzymeML parameter.
     """
+    print("PARAMETER", parameter.getAnnotationString())
     parsed = version.parse_annotation(annotation=parameter.getAnnotationString())
     annots = version.extract(parsed, "parameter")
 
@@ -295,7 +298,7 @@ def _parse_parameter(parameter: sbml.Parameter):
         symbol=parameter.getId(),
         value=_check_nan(parameter.getValue()),
         constant=parameter.getConstant(),
-        unit=units.get(parameter.getUnits()),  # type: ignore
+        unit=_get_unit(parameter.getUnits(), units),  # type: ignore
         **annots,
     )
 
@@ -325,7 +328,7 @@ def _parse_equation(rule: sbml.Rule, rule_type: pe.EquationType):
             species_id = rule.getVariable()
         case pe.EquationType.RATE_LAW:
             equation = rule.getFormula()
-            species_id = None
+            species_id = "v"
         case _:
             raise ValueError(f"Unknown rule type: {rule_type}")
 
@@ -442,6 +445,7 @@ def _parse_measurements(
     Raises:
         ValueError: If the version is unknown.
     """
+
     match version.version:
         case SupportedVersions.VERSION1:
             parsed = version.parse_annotation(list_of_reactions.getAnnotationString())

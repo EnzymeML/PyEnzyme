@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Callable, List
@@ -8,7 +9,7 @@ import libsbml
 import pandas as pd
 from loguru import logger
 
-import pyenzyme.model as pe
+import pyenzyme as pe
 import pyenzyme.tools as tools
 from pyenzyme import rdf
 from pyenzyme import xmlutils as _xml
@@ -17,7 +18,6 @@ from pyenzyme.sbml import create_sbml_omex
 from pyenzyme.sbml.validation import validate_sbml_export
 from pyenzyme.sbml.versions import v2
 from pyenzyme.tabular import to_pandas
-from pyenzyme.tools import to_dict_wo_json_ld
 from pyenzyme.units.units import UnitDefinition
 
 MAPPINGS = tools.read_static_file("pyenzyme.sbml", "mappings.toml")
@@ -64,7 +64,7 @@ def to_sbml(
     global model
     global doc
 
-    doc = enzmldoc
+    doc = deepcopy(enzmldoc)
     sbmldoc = libsbml.SBMLDocument()
     model = sbmldoc.createModel()
     model.setName(doc.name)
@@ -130,7 +130,6 @@ def _add_unit_definitions(unit: UnitDefinition):
 
     sbml_unitdef.setId(unit.id)
     sbml_unitdef.setName(unit.name)
-    sbml_unitdef.setAnnotation(rdf.to_rdf_xml(unit))
 
     for base_unit in unit.base_units:
         sbml_unit = sbml_unitdef.createUnit()
@@ -333,8 +332,8 @@ def _add_parameter(parameter: pe.Parameter):
         sbml_param.setUnits(_get_unit_id(parameter.unit))
 
     annot = v2.ParameterAnnot(
-        lower=parameter.lower,
-        upper=parameter.upper,
+        lower_bound=parameter.lower_bound,
+        upper_bound=parameter.upper_bound,
         stderr=parameter.stderr,
     )
 
@@ -455,13 +454,7 @@ def _get_unit_id(unit: pe.UnitDefinition | None) -> str | None:
 def _same_unit(unit1: pe.UnitDefinition, unit2: pe.UnitDefinition) -> bool:
     """Check if two units are the same."""
 
-    unit1 = to_dict_wo_json_ld(unit1)
-    unit2 = to_dict_wo_json_ld(unit2)
-
-    del unit1["id"]
-    del unit2["id"]
-
-    return unit1 == unit2
+    return unit1.model_dump(exclude={"id"}) == unit2.model_dump(exclude={"id"})
 
 
 def _validate_sbml(sbmldoc: libsbml.SBMLDocument) -> None:
@@ -495,9 +488,8 @@ def _assign_ids_to_units(doc_units: List[UnitDefinition]) -> List[UnitDefinition
         if any(_same_unit(unit, u) for u in unique_units):
             continue
 
-        if unit.id is None:
-            new_id = next(_id_generator(ids))
-            unit.id = new_id
+        new_id = next(_id_generator(ids))
+        unit.id = new_id
 
         unique_units.append(unit)
 
