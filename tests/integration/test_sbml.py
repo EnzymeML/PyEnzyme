@@ -5,7 +5,6 @@ import pyenzyme as pe
 import pyenzyme.equations as peq
 from pyenzyme import EnzymeMLDocument
 from pyenzyme.tools import to_dict_wo_json_ld, get_all_parameters
-from pyenzyme.units import mM, s, K, ml
 
 
 class TestSBML:
@@ -27,9 +26,9 @@ class TestSBML:
             eq["equation"] = eq["equation"].replace(" * ", "*")
             eq["equation"] = eq["equation"].replace(" / ", "/")
 
-        assert (
-            parsed_doc == expected_doc
-        ), "Parsed document does not match expected document"
+        assert parsed_doc == expected_doc, (
+            "Parsed document does not match expected document"
+        )
 
     def test_v1_import(self):
         # Arrange
@@ -44,22 +43,22 @@ class TestSBML:
             EnzymeMLDocument.read("tests/fixtures/sbml/v1_example_enzml.json")
         )
 
-        assert (
-            parsed_doc == expected_doc
-        ), "Parsed document does not match expected document"
+        assert parsed_doc == expected_doc, (
+            "Parsed document does not match expected document"
+        )
 
     def test_end_to_end(self):
         # Arrange
 
         doc = pe.EnzymeMLDocument(name="Test")
 
-        ml.id = "u0"
-        s.id = "u1"
-        mM.id = "u2"
-        K.id = "u3"
-
         # Add Vessels
-        vessel = doc.add_to_vessels(name="Vessel 1", volume=10.0, unit=ml, id="v0")
+        vessel = doc.add_to_vessels(
+            name="Vessel 1",
+            volume=10.0,
+            unit="ml",  # type: ignore
+            id="v0",
+        )
 
         # Add Species
         substrate = doc.add_to_small_molecules(
@@ -99,24 +98,28 @@ class TestSBML:
         doc.equations += peq.build_equations(
             "s1'(t) = kcat * E_tot * s0(t) / (K_m + s0(t))",
             "E_tot = 100",
-            unit_mapping={"kcat": 1 / s, "K_m": mM, "E_tot": mM},
+            unit_mapping={
+                "kcat": "1 / s",
+                "K_m": "mmol / l",
+                "E_tot": "mmol / l",
+            },
             enzmldoc=doc,
         )
 
         doc.measurements += pe.read_excel(
             "tests/fixtures/tabular/data.xlsx",
-            data_unit=mM,
-            time_unit=s,
+            data_unit="mmol / l",
+            time_unit="s",
         )
 
         for parameter in get_all_parameters(doc):
-            parameter.lower = 0.0
-            parameter.upper = 100.0
+            parameter.lower_bound = 0.0
+            parameter.upper_bound = 100.0
             parameter.stderr = 0.1
 
         for meas in doc.measurements:
             meas.temperature = 298.15
-            meas.temperature_unit = K
+            meas.temperature_unit = "K"
             meas.ph = 7.0
 
         with tempfile.TemporaryDirectory() as dirname:
@@ -135,6 +138,6 @@ class TestSBML:
                 eq["equation"] = eq["equation"].replace(" * ", "*")
                 eq["equation"] = eq["equation"].replace(" / ", "/")
 
-            assert (
-                parsed_doc == expected_doc
-            ), "Parsed document does not match expected document"
+            assert parsed_doc == expected_doc, (
+                "Parsed document does not match expected document"
+            )

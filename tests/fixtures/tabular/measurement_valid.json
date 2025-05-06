@@ -60,7 +60,7 @@
           ],
           "species_id": "s1",
           "initial": 0.0,
-          "data_type": "http://purl.obolibrary.org/obo/PATO_0000033",
+          "data_type": "concentration",
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
@@ -172,7 +172,7 @@
           ],
           "species_id": "s2",
           "initial": 10.0,
-          "data_type": "http://purl.obolibrary.org/obo/PATO_0000033",
+          "data_type": "concentration",
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
@@ -199,7 +199,7 @@
                 "exponent": 1,
                 "scale": -3.0
               },
-              {
+              { 
                 "@context": {
                   "enzml": "http://www.enzymeml.org/v2/",
                   "OBO": "http://purl.obolibrary.org/obo/",
@@ -306,7 +306,7 @@
           ],
           "species_id": "s1",
           "initial": 0.0,
-          "data_type": "http://purl.obolibrary.org/obo/PATO_0000033",
+          "data_type": "concentration",
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",
@@ -418,7 +418,7 @@
           ],
           "species_id": "s2",
           "initial": 100.0,
-          "data_type": "http://purl.obolibrary.org/obo/PATO_0000033",
+          "data_type": "concentration",
           "data_unit": {
             "@context": {
               "enzml": "http://www.enzymeml.org/v2/",

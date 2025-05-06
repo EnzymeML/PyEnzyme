@@ -29,30 +29,33 @@ class TestTabularExport:
         # Act
         df = to_pandas(measurement_valid)
 
+        if df is None:
+            raise ValueError("DataFrame is None")
+
         # Assert
         total_time_len = sum(
             [len(m.species_data[0].time) for m in measurement_valid.measurements]
         )
 
-        assert (
-            df.shape[0] == total_time_len
-        ), f"Expected {total_time_len} rows. Got {df.shape[0]}"
+        assert df.shape[0] == total_time_len, (
+            f"Expected {total_time_len} rows. Got {df.shape[0]}"
+        )
         assert df.shape[1] == 4, f"Expected 4 columns. Got {df.shape[1]}"
         assert isinstance(df, pd.DataFrame), f"Expected a DataFrame. Got {type(df)}"
-        assert (
-            df["id"].nunique() == 2
-        ), f"Expected 2 unique IDs. Got {df['id'].nunique()}"
+        assert df["id"].nunique() == 2, (
+            f"Expected 2 unique IDs. Got {df['id'].nunique()}"
+        )
 
         for measurement in measurement_valid.measurements:
             df_sub = df[df["id"] == measurement.id]
-            assert df_sub.shape[0] == len(
-                measurement.species_data[0].time
-            ), f"Expected {len(measurement.species_data[0].time)} rows. Got {df_sub.shape[0]}"
+            assert df_sub.shape[0] == len(measurement.species_data[0].time), (
+                f"Expected {len(measurement.species_data[0].time)} rows. Got {df_sub.shape[0]}"
+            )
 
             for species in measurement.species_data:
-                assert (
-                    species.species_id in df.columns
-                ), f"Expected column for {species}"
+                assert species.species_id in df.columns, (
+                    f"Expected column for {species}"
+                )
 
 
 class TestTabularImport:
@@ -61,68 +64,71 @@ class TestTabularImport:
         # Act
         meas = pe.read_csv(
             "tests/fixtures/tabular/data.tsv",
-            data_unit=mM,
-            time_unit=s,
+            data_unit="mmol / l",
+            time_unit="s",
         )
 
         # Assert
         assert len(meas) == 2, f"Expected 2 measurements. Got {len(meas)}"
 
         for m in meas:
-            assert (
-                len(m.species_data) == 2
-            ), f"Expected 2 species. Got {len(m.species_data)}"
-            assert (
-                len(m.species_data[0].time) == 11
-            ), f"Expected 10 time points. Got {len(m.species_data[0].time)}"
-            assert (
-                len(m.species_data[1].time) == 11
-            ), f"Expected 10 time points. Got {len(m.species_data[1].time)}"
-            assert (
-                m.species_data[0].data_unit == mM
-            ), f"Expected mM. Got {m.species_data[0].data_unit}"
-            assert (
-                m.species_data[0].time_unit == s
-            ), f"Expected s. Got {m.species_data[0].time_unit}"
-            assert (
-                m.species_data[1].data_unit == mM
-            ), f"Expected mM. Got {m.species_data[1].data_unit}"
-            assert (
-                m.species_data[1].time_unit == s
-            ), f"Expected s. Got {m.species_data[1].time_unit}"
+            assert len(m.species_data) == 2, (
+                f"Expected 2 species. Got {len(m.species_data)}"
+            )
+            assert len(m.species_data[0].time) == 11, (
+                f"Expected 10 time points. Got {len(m.species_data[0].time)}"
+            )
+            assert len(m.species_data[1].time) == 11, (
+                f"Expected 10 time points. Got {len(m.species_data[1].time)}"
+            )
+            assert m.species_data[0].data_unit.name == "mmol / l", (
+                f"Expected mM. Got {m.species_data[0].data_unit}"
+            )
+            assert m.species_data[0].time_unit.name == "s", (
+                f"Expected s. Got {m.species_data[0].time_unit.name}"
+            )
+
+            assert m.species_data[1].data_unit.name == "mmol / l", (
+                f"Expected mM. Got {m.species_data[1].data_unit.name}"
+            )
+            assert m.species_data[1].time_unit.name == "s", (
+                f"Expected s. Got {m.species_data[1].time_unit.name}"
+            )
 
     def test_excel_import(self):
         """Test that a Excel file can be imported to a pandas DataFrame"""
         # Act
         meas = pe.read_excel(
-            "tests/fixtures/tabular/data.xlsx", data_unit=mM, time_unit=s
+            "tests/fixtures/tabular/data.xlsx",
+            data_unit="mmol / l",
+            time_unit="s",
         )
 
         # Assert
         assert len(meas) == 2, f"Expected 2 measurements. Got {len(meas)}"
 
         for m in meas:
-            assert (
-                len(m.species_data) == 2
-            ), f"Expected 2 species. Got {len(m.species_data)}"
-            assert (
-                len(m.species_data[0].time) == 11
-            ), f"Expected 10 time points. Got {len(m.species[0].time)}"
-            assert (
-                len(m.species_data[1].time) == 11
-            ), f"Expected 10 time points. Got {len(m.species[1].time)}"
-            assert (
-                m.species_data[0].data_unit == mM
-            ), f"Expected mM. Got {m.species[0].data_unit}"
-            assert (
-                m.species_data[0].time_unit == s
-            ), f"Expected s. Got {m.species[0].time_unit}"
-            assert (
-                m.species_data[1].data_unit == mM
-            ), f"Expected mM. Got {m.species[1].data_unit}"
-            assert (
-                m.species_data[1].time_unit == s
-            ), f"Expected s. Got {m.species[1].time_unit}"
+            assert len(m.species_data) == 2, (
+                f"Expected 2 species. Got {len(m.species_data)}"
+            )
+            assert len(m.species_data[0].time) == 11, (
+                f"Expected 10 time points. Got {len(m.species_data[0].time)}"
+            )
+            assert len(m.species_data[1].time) == 11, (
+                f"Expected 10 time points. Got {len(m.species_data[1].time)}"
+            )
+            assert m.species_data[0].data_unit.name == "mmol / l", (
+                f"Expected mM. Got {m.species_data[0].data_unit.name}"
+            )
+            assert m.species_data[0].time_unit.name == "s", (
+                f"Expected s. Got {m.species_data[0].time_unit.name}"
+            )
+            assert m.species_data[1].data_unit.name == "mmol / l", (
+                f"Expected mM. Got {m.species_data[1].data_unit.name}"
+            )
+            assert m.species_data[1].time_unit.name == "s", (
+                f"Expected s. Got {m.species_data[1].time_unit.name}"
+            )
 
     def test_invalid_types(self):
         """Test that an invalid CSV raises a ValueError"""

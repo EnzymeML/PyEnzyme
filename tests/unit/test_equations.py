@@ -2,7 +2,7 @@ import pytest
 
 from pyenzyme.equations._chem import build_reaction, build_reactions
 from pyenzyme.equations._math import build_equation, build_equations
-from pyenzyme.model import EquationType, EnzymeMLDocument
+from pyenzyme import EquationType, EnzymeMLDocument
 from pyenzyme.units import s
 
 
@@ -15,7 +15,7 @@ class TestMathEquations:
         # Act
         equation = build_equation(
             equation=equation,
-            unit_mapping={"kcat": 1 / s},
+            unit_mapping={"kcat": "1 / s"},
             enzmldoc=enzmldoc,
         )
 
@@ -23,12 +23,12 @@ class TestMathEquations:
         expected_vars = ["p0", "s0"]
         expected_params = ["kcat"]
 
-        assert (
-            equation.species_id == "s1"
-        ), f"Species ID is not correct. Got {equation.species_id}"
-        assert (
-            equation.equation == "kcat*p0*s0"
-        ), "Equation is not correct. Got {equation.equation.equation}"
+        assert equation.species_id == "s1", (
+            f"Species ID is not correct. Got {equation.species_id}"
+        )
+        assert equation.equation == "kcat*p0*s0", (
+            "Equation is not correct. Got {equation.equation.equation}"
+        )
 
         for var in equation.variables:
             assert var.name in expected_vars
@@ -49,7 +49,7 @@ class TestMathEquations:
         with pytest.raises(ValueError):
             build_equation(
                 equation=equation,
-                unit_mapping={"kcat": 1 / s},
+                unit_mapping={"kcat": "1 / s"},
                 enzmldoc=enzmldoc,
             )
 
@@ -62,7 +62,7 @@ class TestMathEquations:
         with pytest.raises(ValueError):
             build_equation(
                 equation=equation,
-                unit_mapping={"kcat": 1 / s},
+                unit_mapping={"kcat": "1 / s"},
                 enzmldoc=enzmldoc,
             )
 
@@ -74,17 +74,17 @@ class TestMathEquations:
         # Act
         equation = build_equation(
             equation=equation,
-            unit_mapping={"kcat": 1 / s},
+            unit_mapping={"kcat": "1 / s"},
             enzmldoc=enzmldoc,
         )
 
         # Assert
-        assert (
-            equation.species_id == "s1"
-        ), f"Species ID is not correct. Got {equation.species_id}"
-        assert (
-            equation.equation == "kcat*exp(p0*t)"
-        ), f"Equation is not correct. Got {equation.equation}"
+        assert equation.species_id == "s1", (
+            f"Species ID is not correct. Got {equation.species_id}"
+        )
+        assert equation.equation == "kcat*exp(p0*t)", (
+            f"Equation is not correct. Got {equation.equation}"
+        )
 
     def test_equation_with_fun_only_t(self):
         # Arrange
@@ -94,17 +94,17 @@ class TestMathEquations:
         # Act
         equation = build_equation(
             equation=equation,
-            unit_mapping={"kcat": 1 / s},
+            unit_mapping={"kcat": "1 / s"},
             enzmldoc=enzmldoc,
         )
 
         # Assert
-        assert (
-            equation.species_id == "s1"
-        ), f"Species ID is not correct. Got {equation.species_id}"
-        assert (
-            equation.equation == "kcat*exp(t)"
-        ), f"Equation is not correct. Got {equation.equation}"
+        assert equation.species_id == "s1", (
+            f"Species ID is not correct. Got {equation.species_id}"
+        )
+        assert equation.equation == "kcat*exp(t)", (
+            f"Equation is not correct. Got {equation.equation}"
+        )
 
     def test_multiple_equations(self):
         # Arrange
@@ -117,7 +117,7 @@ class TestMathEquations:
         # Act
         equations = build_equations(
             *equations,
-            unit_mapping={"kcat": 1 / s},
+            unit_mapping={"kcat": "1 / s"},
             enzmldoc=enzmldoc,
         )
 
@@ -136,15 +136,15 @@ class TestMathEquations:
         )
 
         # Assert
-        assert (
-            equation.species_id == "E_tot"
-        ), f"Species ID is not correct. Got {equation.species_id}"
-        assert (
-            equation.equation == "p0 + p1"
-        ), f"Equation is not correct. Got {equation.equation}"
-        assert (
-            equation.equation_type == EquationType.INITIAL_ASSIGNMENT
-        ), f"Equation type is not correct. Got {equation.equation_type}"
+        assert equation.species_id == "E_tot", (
+            f"Species ID is not correct. Got {equation.species_id}"
+        )
+        assert equation.equation == "p0 + p1", (
+            f"Equation is not correct. Got {equation.equation}"
+        )
+        assert equation.equation_type == EquationType.INITIAL_ASSIGNMENT, (
+            f"Equation type is not correct. Got {equation.equation_type}"
+        )
 
     def test_assigment_equation(self):
         # Arrange
@@ -158,15 +158,15 @@ class TestMathEquations:
         )
 
         # Assert
-        assert (
-            equation.species_id == "E_tot"
-        ), f"Species ID is not correct. Got {equation.species_id}"
-        assert (
-            equation.equation == "p0 + p1"
-        ), f"Equation is not correct. Got {equation.equation}"
-        assert (
-            equation.equation_type == EquationType.ASSIGNMENT
-        ), f"Equation type is not correct. Got {equation.equation_type}"
+        assert equation.species_id == "E_tot", (
+            f"Species ID is not correct. Got {equation.species_id}"
+        )
+        assert equation.equation == "p0 + p1", (
+            f"Equation is not correct. Got {equation.equation}"
+        )
+        assert equation.equation_type == EquationType.ASSIGNMENT, (
+            f"Equation type is not correct. Got {equation.equation_type}"
+        )
 
 
 class TestChemEqautions:
@@ -190,9 +190,9 @@ class TestChemEqautions:
         ]
 
         assert reac.id == "R1", f"Reaction ID is not correct. Got {reac.id}"
-        assert (
-            reac.name == "Reaction 1"
-        ), f"Reaction name is not correct. Got {reac.name}"
+        assert reac.name == "Reaction 1", (
+            f"Reaction name is not correct. Got {reac.name}"
+        )
 
         for stoich, species in expected:
             element = next(
@@ -202,13 +202,13 @@ class TestChemEqautions:
             if not element:
                 assert False, f"Species {species} not found in reaction"
 
-            assert (
-                element.stoichiometry == stoich
-            ), f"Stoichiometry for {species} is not correct. Got {element.stoichiometry}"
+            assert element.stoichiometry == stoich, (
+                f"Stoichiometry for {species} is not correct. Got {element.stoichiometry}"
+            )
 
-            assert (
-                element.species_id == species
-            ), f"Species ID for {species} is not correct. Got {element.species_id}"
+            assert element.species_id == species, (
+                f"Species ID for {species} is not correct. Got {element.species_id}"
+            )
 
     def test_build_rev_reaction(self):
         # Arrange
@@ -237,9 +237,9 @@ class TestChemEqautions:
         )
 
         # Assert
-        assert (
-            len(reac.modifiers) == 2
-        ), f"Expected 2 modifiers. Got {len(reac.modifiers)}"
+        assert len(reac.modifiers) == 2, (
+            f"Expected 2 modifiers. Got {len(reac.modifiers)}"
+        )
 
     def test_build_invalid_reaction(self):
         # Arrange

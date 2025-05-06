@@ -1,5 +1,6 @@
 import pandas as pd
 
+from mdmodels.units.converter import convert_unit
 from pyenzyme.sbml.versions.v1 import (
     DataAnnot,
     ReactantAnnot,
@@ -109,10 +110,10 @@ class TestSBMLAnnotV1:
         measurements = obj.to_measurements(
             meas_data={"./data/m0.csv": data},
             units={
-                "u1": M,
-                "u2": M,
-                "u3": M,
-                "u4": M,
+                "u1": convert_unit("mmol / l"),
+                "u2": convert_unit("mmol / l"),
+                "u3": convert_unit("mmol / l"),
+                "u4": convert_unit("mmol / l"),
             },
         )
 
@@ -132,9 +133,9 @@ class TestSBMLAnnotV1:
         }
 
         assert meas.id == "m0", "Expected id 'm0'"
-        assert (
-            meas.name == "Cephalexin synthesis 1"
-        ), "Expected name 'Cephalexin synthesis 1'"
+        assert meas.name == "Cephalexin synthesis 1", (
+            "Expected name 'Cephalexin synthesis 1'"
+        )
 
         for species, initial in expected_species.items():
             species_data = meas.filter_species_data(species_id=species)
@@ -143,9 +144,9 @@ class TestSBMLAnnotV1:
 
             species_data = species_data[0]
 
-            assert (
-                species_data.initial == initial
-            ), f"Expected initial concentration {initial} for {species}"
+            assert species_data.initial == initial, (
+                f"Expected initial concentration {initial} for {species}"
+            )
 
             if species == "p0":
                 assert len(species_data.data) == 0, f"Expected no values for {species}"

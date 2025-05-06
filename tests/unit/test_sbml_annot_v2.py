@@ -42,9 +42,9 @@ class TestSBMLAnnotsV2:
             ],
         )
 
-        assert (
-            variables.model_dump() == expected.model_dump()
-        ), "Variables annotation was not parsed correctly"
+        assert variables.model_dump() == expected.model_dump(), (
+            "Variables annotation was not parsed correctly"
+        )
 
     def test_parameter_annot(self):
         # Arrange
@@ -61,14 +61,14 @@ class TestSBMLAnnotsV2:
 
         # Assert
         expected = ParameterAnnot(
-            lower=0.0,
-            upper=100.0,
+            lower_bound=0.0,
+            upper_bound=100.0,
             stderr=0.1,
         )
 
-        assert (
-            parameter.model_dump() == expected.model_dump()
-        ), "Parameter annotation was not parsed correctly"
+        assert parameter.model_dump() == expected.model_dump(), (
+            "Parameter annotation was not parsed correctly"
+        )
 
     def test_protein_annot(self):
         # Arrange
@@ -92,9 +92,9 @@ class TestSBMLAnnotsV2:
             sequence="MTEY",
         )
 
-        assert (
-            protein.model_dump() == expected.model_dump()
-        ), "Protein annotation was not parsed correctly"
+        assert protein.model_dump() == expected.model_dump(), (
+            "Protein annotation was not parsed correctly"
+        )
 
     def test_small_mol_annot(self):
         # Arrange
@@ -114,9 +114,9 @@ class TestSBMLAnnotsV2:
             canonical_smiles="CC(=O)O",
         )
 
-        assert (
-            small_molecule.model_dump() == expected.model_dump()
-        ), "Small molecule annotation was not parsed correctly"
+        assert small_molecule.model_dump() == expected.model_dump(), (
+            "Small molecule annotation was not parsed correctly"
+        )
 
     def test_data_annot(self):
         # Arrange
@@ -205,6 +205,6 @@ class TestSBMLAnnotsV2:
             ],
         )
 
-        assert (
-            data.model_dump() == expected.model_dump()
-        ), "Data annotation was not parsed correctly"
+        assert data.model_dump() == expected.model_dump(), (
+            "Data annotation was not parsed correctly"
+        )
