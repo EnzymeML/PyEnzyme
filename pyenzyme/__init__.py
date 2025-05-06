@@ -5,7 +5,9 @@ from pathlib import Path
 
 from rich import print
 
-from .model import *  # noqa: F403
+from mdmodels.units.unit_definition import UnitDefinition  # noqa: F401
+
+from .versions.v2 import *  # noqa: F403
 from .sbml import to_sbml, read_sbml  # noqa: F401
 from .suite import EnzymeMLSuite  # noqa: F401
 from .tabular import to_pandas, read_csv, read_excel, from_dataframe  # noqa: F401

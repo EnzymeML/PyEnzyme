@@ -4,12 +4,13 @@ import pathlib as pl
 
 import pandas as pd
 
-from .model import (
+from mdmodels.units.unit_definition import UnitDefinition
+
+from .versions.v2 import (
     DataTypes,
     Measurement,
     EnzymeMLDocument,
     MeasurementData,
-    UnitDefinition,
 )
 
 
@@ -44,9 +45,9 @@ def to_pandas(
     if ignore is None:
         ignore = []
 
-    assert isinstance(
-        enzmldoc, EnzymeMLDocument
-    ), "The input must be an EnzymeMLDocument object"
+    assert isinstance(enzmldoc, EnzymeMLDocument), (
+        "The input must be an EnzymeMLDocument object"
+    )
 
     dfs = []
     for meas in enzmldoc.measurements:
@@ -70,8 +71,8 @@ def to_pandas(
 
 def read_excel(
     path: pl.Path | str,
-    data_unit: UnitDefinition,
-    time_unit: UnitDefinition,
+    data_unit: str,
+    time_unit: str,
     data_type: DataTypes = DataTypes.CONCENTRATION,
     sep: str = ";",
 ):
@@ -124,8 +125,8 @@ def read_excel(
 
 def read_csv(
     path: pl.Path | str,
-    data_unit: UnitDefinition,
-    time_unit: UnitDefinition,
+    data_unit: str,
+    time_unit: str,
     data_type: DataTypes = DataTypes.CONCENTRATION,
     sep: str = "\t",
 ):
@@ -178,8 +179,8 @@ def read_csv(
 
 def from_dataframe(
     df: pd.DataFrame,
-    data_unit: UnitDefinition,
-    time_unit: UnitDefinition,
+    data_unit: str,
+    time_unit: str,
     data_type: DataTypes = DataTypes.CONCENTRATION,
     meas_id: str | None = None,
 ) -> list[Measurement]:
@@ -222,8 +223,7 @@ def from_dataframe(
         )
     else:
         assert meas_id is not None, (
-            "The 'meas_id' argument must be provided "
-            "when parsing a single measurement"
+            "The 'meas_id' argument must be provided when parsing a single measurement"
         )
         return [
             _create_single_measurement(
@@ -239,13 +239,18 @@ def from_dataframe(
 def _create_single_measurement(
     df: pd.DataFrame,
     id: str,
-    data_unit: UnitDefinition,
-    time_unit: UnitDefinition,
+    data_unit: str | UnitDefinition,
+    time_unit: str | UnitDefinition,
     data_type: DataTypes,
 ) -> Measurement:
     data = df.to_dict(orient="list")
     time = data.pop("time")
     meas_data = []
+
+    if isinstance(data_unit, UnitDefinition):
+        data_unit = data_unit.name  # type: ignore
+    if isinstance(time_unit, UnitDefinition):
+        time_unit = time_unit.name  # type: ignore
 
     for species_id, species_data in data.items():
         if species_id == "id":
@@ -253,7 +258,7 @@ def _create_single_measurement(
 
         meas_data.append(
             MeasurementData(
-                species_id=species_id,
+                species_id=str(species_id),
                 data=species_data,
                 time=time,
                 data_unit=data_unit,
@@ -268,8 +273,8 @@ def _create_single_measurement(
 
 def _process_multiple_measurements(
     df: pd.DataFrame,
-    data_unit: UnitDefinition,
-    time_unit: UnitDefinition,
+    data_unit: str,
+    time_unit: str,
     data_type: DataTypes,
 ) -> list[Measurement]:
     ids = df["id"].unique()
@@ -298,9 +303,9 @@ def _validate_data(data: pd.DataFrame) -> None:
     for col in data.columns:
         if col == "id":
             continue
-        assert (
-            data[col].dtype == "float64" or data[col].dtype == "int64"
-        ), f"The column '{col}' must contain only numerical values"
+        assert data[col].dtype == "float64" or data[col].dtype == "int64", (
+            f"The column '{col}' must contain only numerical values"
+        )
 
 
 def _measurement_to_pandas(measurement: Measurement) -> pd.DataFrame:
@@ -315,10 +320,12 @@ def _measurement_to_pandas(measurement: Measurement) -> pd.DataFrame:
 
     return pd.DataFrame(data)
 
+
 def _get_time_array(measurement: Measurement):
     for meas_data in measurement.species_data:
         if len(meas_data.time) > 0:
             return meas_data.time
+
 
 def _validate_measurement(meas: Measurement) -> None:
     """Validates a Measurement object"""

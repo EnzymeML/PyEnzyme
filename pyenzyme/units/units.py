@@ -77,7 +77,6 @@ class Prefix(Enum):
         Raises:
             TypeError: If the other operand is not a BaseUnit.
         """
-        print(self.value)
         if isinstance(other, _BaseUnit):
             return self.value(other)
 

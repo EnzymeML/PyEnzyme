@@ -5,11 +5,11 @@ from loguru import logger
 from sympy import sympify
 
 from pyenzyme.logging import add_logger
-from pyenzyme.model import (
+from mdmodels.units.unit_definition import UnitDefinition
+from pyenzyme.versions.v2 import (
     EnzymeMLDocument,
     Equation,
     EquationType,
-    UnitDefinition,
     Variable,
     Parameter,
 )
@@ -24,7 +24,7 @@ ELEMENTAL_FUNCTIONS = ["exp", "log", "sin", "cos", "tan", "sqrt", "abs"]
 
 def build_equations(
     *equations: str,
-    unit_mapping: dict[str, UnitDefinition] | None = None,
+    unit_mapping: dict[str, str] | None = None,
     enzmldoc: EnzymeMLDocument,
 ) -> list[Equation]:
     """Builds a list of Equation objects from a list of string representations.
@@ -59,7 +59,7 @@ def build_equations(
 def build_equation(
     equation: str,
     enzmldoc: EnzymeMLDocument,
-    unit_mapping: dict[str, UnitDefinition] | None = None,
+    unit_mapping: dict[str, str] | None = None,
 ) -> Equation:
     """Builds an equation object from a string
 
@@ -118,7 +118,7 @@ def build_equation(
         parameters = parameters.union({left})
 
     eq = Equation(
-        species_id=left if left else None,
+        species_id=left,
         equation=str(right),
         variables=[_create_variable(name) for name in variables],
         equation_type=equation_type,
@@ -128,7 +128,7 @@ def build_equation(
         _add_to_parameters(
             enzmldoc,
             param,
-            unit_mapping.get(param),
+            unit_mapping.get(param, None),
         )
         for param in parameters
     ]
@@ -172,7 +172,7 @@ def _create_variable(name: str) -> Variable:
 def _add_to_parameters(
     enzmldoc: EnzymeMLDocument,
     name: str,
-    unit: UnitDefinition,
+    unit: str | UnitDefinition | None,
 ):
     """Adds a parameter to the EnzymeMLDocument"""
 
@@ -186,5 +186,5 @@ def _add_to_parameters(
         name=name,
         id=name,
         symbol=name,
-        unit=unit,
+        unit=unit,  # type: ignore
     )  # type: ignore
