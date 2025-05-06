@@ -1,12 +1,12 @@
 import pytest
-from pyenzyme.fetcher.chebi import fetch_chebi_to_small_molecule
-from pyenzyme.fetcher.rhea import fetch_rhea_to_reaction
-from pyenzyme.fetcher.uniprot import fetch_uniprot_to_protein
+from pyenzyme.fetcher.chebi import fetch_chebi
+from pyenzyme.fetcher.rhea import fetch_rhea
+from pyenzyme.fetcher.uniprot import fetch_uniprot
 
 
 class TestFetcher:
     def test_fetch_chebi_to_small_molecule(self):
-        small_molecule = fetch_chebi_to_small_molecule("CHEBI:15377")
+        small_molecule = fetch_chebi("CHEBI:15377")
         assert small_molecule is not None
         assert small_molecule.id == "CHEBI_15377"
         assert small_molecule.name == "water"
@@ -22,10 +22,10 @@ class TestFetcher:
 
     def test_fetch_chebi_to_small_molecule_invalid_id(self):
         with pytest.raises(ValueError):
-            fetch_chebi_to_small_molecule("INVALID_ID")
+            fetch_chebi("INVALID_ID")
 
     def test_fetch_uniprot_to_protein(self):
-        protein = fetch_uniprot_to_protein("P07327")
+        protein = fetch_uniprot("P07327")
         assert protein is not None
 
         assert protein.id == "P07327"
@@ -41,7 +41,7 @@ class TestFetcher:
         assert protein.references[0] == "https://www.uniprot.org/uniprotkb/P07327"
 
     def test_fetch_rhea_to_reaction(self):
-        reaction, small_molecules = fetch_rhea_to_reaction("RHEA:22864")
+        reaction, small_molecules = fetch_rhea("RHEA:22864")
 
         reaction.species.sort(key=lambda x: x.species_id)
         small_molecules.sort(key=lambda x: x.id)
@@ -64,4 +64,4 @@ class TestFetcher:
 
     def test_fetch_rhea_to_reaction_invalid_id(self):
         with pytest.raises(ValueError):
-            fetch_rhea_to_reaction("INVALID_ID")
+            fetch_rhea("INVALID_ID")

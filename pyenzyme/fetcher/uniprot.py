@@ -109,13 +109,16 @@ class UniProtClient:
             raise ConnectionError(f"Connection to UniProt server failed: {str(e)}")
 
 
-def fetch_uniprot_to_protein(uniprot_id: str) -> v2.Protein:
+def fetch_uniprot(
+    uniprot_id: str,
+    vessel_id: Optional[str] = None,
+) -> v2.Protein:
     """
     Fetch a UniProt entry by ID and convert it to a Protein object.
 
     Args:
         uniprot_id: The UniProt ID to fetch
-
+        vessel_id: The ID of the vessel to add the protein to
     Returns:
         A Protein object with data from UniProt
 
@@ -172,6 +175,7 @@ def fetch_uniprot_to_protein(uniprot_id: str) -> v2.Protein:
         organism_tax_id=organism_tax_id,
         ecnumber=ecnumber,
         constant=True,  # Default to constant
+        vessel_id=vessel_id,
     )
 
     # Add type term for UniProt source

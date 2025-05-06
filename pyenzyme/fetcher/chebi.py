@@ -7,7 +7,7 @@ ChEBI database by ID and map it to the PyEnzyme data model (v2).
 
 import requests
 import re
-from typing import List, Optional, Union
+from typing import Optional, Union
 from pydantic_xml import element, attr, BaseXmlModel
 from pyenzyme.versions import v2
 
@@ -166,13 +166,16 @@ class ChEBIClient:
             raise ConnectionError(f"Connection to ChEBI server failed: {str(e)}")
 
 
-def fetch_chebi_to_small_molecule(chebi_id: str) -> v2.SmallMolecule:
+def fetch_chebi(
+    chebi_id: str,
+    vessel_id: Optional[str] = None,
+) -> v2.SmallMolecule:
     """
     Fetch a ChEBI entry by ID and convert it to a SmallMolecule object.
 
     Args:
         chebi_id: The ChEBI ID to fetch
-
+        vessel_id: The ID of the vessel to add the small molecule to
     Returns:
         A SmallMolecule object with data from ChEBI
 
@@ -194,6 +197,7 @@ def fetch_chebi_to_small_molecule(chebi_id: str) -> v2.SmallMolecule:
         inchi=chebi_entity.inchi,
         inchikey=chebi_entity.inchikey,
         constant=False,  # Default to non-constant
+        vessel_id=vessel_id,
     )
 
     # Add type term for ChEBI source

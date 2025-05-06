@@ -4,6 +4,7 @@ from mdmodels.units.unit_definition import UnitDefinition
 
 from .versions.v2 import *  # noqa: F403
 from .versions.io import EnzymeMLHandler
+from .fetcher import *  # noqa: F403
 from .suite import EnzymeMLSuite
 
 # Input functions

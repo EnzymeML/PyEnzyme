@@ -8,11 +8,11 @@ Rhea database by ID and map it to the PyEnzyme data model (v2).
 from io import StringIO
 import pandas as pd
 from pydantic import BaseModel, ConfigDict
-from typing import List, ClassVar, Tuple
+from typing import List, ClassVar, Optional, Tuple
 
 import requests
 
-from pyenzyme.fetcher.chebi import fetch_chebi_to_small_molecule
+from pyenzyme.fetcher.chebi import fetch_chebi
 from pyenzyme.versions import v2
 
 
@@ -138,7 +138,10 @@ class RheaClient(BaseModel):
         return RheaQuery.model_validate(response.json())
 
 
-def fetch_rhea_to_reaction(rhea_id: str) -> Tuple[v2.Reaction, List[v2.SmallMolecule]]:
+def fetch_rhea(
+    rhea_id: str,
+    vessel_id: Optional[str] = None,
+) -> Tuple[v2.Reaction, List[v2.SmallMolecule]]:
     """
     Fetch a Rhea entry by ID and convert it to a Reaction object.
 
@@ -148,7 +151,7 @@ def fetch_rhea_to_reaction(rhea_id: str) -> Tuple[v2.Reaction, List[v2.SmallMole
 
     Args:
         rhea_id: The Rhea ID to fetch, can be with or without the 'RHEA:' prefix
-
+        vessel_id: The ID of the vessel to add the small molecules to
     Returns:
         A tuple containing:
             - A Reaction object with data from Rhea
@@ -170,7 +173,10 @@ def fetch_rhea_to_reaction(rhea_id: str) -> Tuple[v2.Reaction, List[v2.SmallMole
 
     # Process each chemical species in the reaction
     for i in range(n_reactants + n_products):
-        small_molecule = fetch_chebi_to_small_molecule(client.chebi_ids[i])
+        small_molecule = fetch_chebi(
+            client.chebi_ids[i],
+            vessel_id=vessel_id,
+        )
         small_molecules.append(small_molecule)
 
         if i < n_reactants:
