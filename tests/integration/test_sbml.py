@@ -1,5 +1,9 @@
+import json
 import tempfile
 from pathlib import Path
+
+from pydantic import BaseModel
+import rich
 
 import pyenzyme as pe
 import pyenzyme.equations as peq
@@ -19,11 +23,6 @@ class TestSBML:
         expected_doc = to_dict_wo_json_ld(
             pe.read_enzymeml("tests/fixtures/sbml/ode_example_enzml.json")
         )
-
-        # Remove spaces of equation
-        for eq in parsed_doc["equations"]:
-            eq["equation"] = eq["equation"].replace(" * ", "*")
-            eq["equation"] = eq["equation"].replace(" / ", "/")
 
         assert parsed_doc == expected_doc, (
             "Parsed document does not match expected document"
@@ -129,6 +128,8 @@ class TestSBML:
             enzmldoc = pe.from_sbml(path)
 
             # Assert
+            self.set_unit_name_as_id(enzmldoc)
+
             parsed_doc = to_dict_wo_json_ld(enzmldoc)
             expected_doc = to_dict_wo_json_ld(doc)
 
@@ -140,3 +141,15 @@ class TestSBML:
             assert parsed_doc == expected_doc, (
                 "Parsed document does not match expected document"
             )
+
+    def set_unit_name_as_id(self, obj):
+        for key, value in obj:
+            print(key, value)
+            if isinstance(value, pe.UnitDefinition):
+                value.id = value.name
+            elif isinstance(value, BaseModel):
+                self.set_unit_name_as_id(value)
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, BaseModel):
+                        self.set_unit_name_as_id(item)

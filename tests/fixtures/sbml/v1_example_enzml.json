@@ -15,7 +15,7 @@
           {
             "kind": "litre",
             "exponent": 1,
-            "multiplier": null,
+            "multiplier": 1.0,
             "scale": -3.0
           }
         ]
@@ -2230,13 +2230,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -2281,13 +2281,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -2354,13 +2354,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -2427,13 +2427,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -2500,13 +2500,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -2599,13 +2599,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -2650,13 +2650,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -2723,13 +2723,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -2796,13 +2796,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -2869,13 +2869,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -2968,13 +2968,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3019,13 +3019,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3092,13 +3092,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3165,13 +3165,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3238,13 +3238,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3337,13 +3337,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3388,13 +3388,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3461,13 +3461,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3534,13 +3534,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3607,13 +3607,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3706,13 +3706,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3757,13 +3757,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3830,13 +3830,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3903,13 +3903,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -3976,13 +3976,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4075,13 +4075,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4126,13 +4126,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4199,13 +4199,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4272,13 +4272,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4345,13 +4345,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4444,13 +4444,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4495,13 +4495,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4568,13 +4568,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4641,13 +4641,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4714,13 +4714,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4813,13 +4813,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4864,13 +4864,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -4937,13 +4937,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -5010,13 +5010,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -5083,13 +5083,13 @@
               {
                 "kind": "litre",
                 "exponent": -1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": 1.0
               },
               {
                 "kind": "mole",
                 "exponent": 1,
-                "multiplier": null,
+                "multiplier": 1.0,
                 "scale": -3.0
               }
             ]
@@ -5183,13 +5183,13 @@
           {
             "kind": "litre",
             "exponent": 1,
-            "multiplier": null,
+            "multiplier": 1.0,
             "scale": 1.0
           },
           {
             "kind": "mole",
             "exponent": -1,
-            "multiplier": null,
+            "multiplier": 1.0,
             "scale": -3.0
           },
           {
@@ -5231,13 +5231,13 @@
           {
             "kind": "litre",
             "exponent": -1,
-            "multiplier": null,
+            "multiplier": 1.0,
             "scale": 1.0
           },
           {
             "kind": "mole",
             "exponent": 1,
-            "multiplier": null,
+            "multiplier": 1.0,
             "scale": -3.0
           }
         ]
@@ -5273,13 +5273,13 @@
           {
             "kind": "litre",
             "exponent": -1,
-            "multiplier": null,
+            "multiplier": 1.0,
             "scale": 1.0
           },
           {
             "kind": "mole",
             "exponent": 1,
-            "multiplier": null,
+            "multiplier": 1.0,
             "scale": -3.0
           }
         ]
