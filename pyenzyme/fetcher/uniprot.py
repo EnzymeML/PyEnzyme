@@ -8,6 +8,7 @@ UniProt database by ID and map it to the PyEnzyme data model (v2).
 import requests
 from typing import List, Optional, Union
 from pydantic import BaseModel, Field
+from pyenzyme.fetcher.chebi import process_id
 from pyenzyme.versions import v2
 
 
@@ -111,6 +112,7 @@ class UniProtClient:
 
 def fetch_uniprot(
     uniprot_id: str,
+    protein_id: Optional[str] = None,
     vessel_id: Optional[str] = None,
 ) -> v2.Protein:
     """
@@ -167,8 +169,20 @@ def fetch_uniprot(
         ].value
 
     # Create a Protein instance
+    if protein_id is None:
+        if (
+            uniprot_entry.protein_description
+            and uniprot_entry.protein_description.recommended_name
+            and uniprot_entry.protein_description.recommended_name.full_name
+        ):
+            protein_id = process_id(
+                uniprot_entry.protein_description.recommended_name.full_name.value
+            )
+        else:
+            protein_id = uniprot_entry.accession
+
     protein = v2.Protein(
-        id=uniprot_entry.accession,
+        id=protein_id,
         name=name,
         sequence=sequence,
         organism=organism,

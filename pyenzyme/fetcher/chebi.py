@@ -168,6 +168,7 @@ class ChEBIClient:
 
 def fetch_chebi(
     chebi_id: str,
+    smallmol_id: Optional[str] = None,
     vessel_id: Optional[str] = None,
 ) -> v2.SmallMolecule:
     """
@@ -190,8 +191,11 @@ def fetch_chebi(
         raise ValueError(f"No data found for ChEBI ID {chebi_id}")
 
     # Create a SmallMolecule instance
+    if smallmol_id is None:
+        smallmol_id = process_id(chebi_entity.chebi_ascii_name)
+
     small_molecule = v2.SmallMolecule(
-        id=chebi_entity.chebi_id.replace(":", "_"),
+        id=smallmol_id,
         name=chebi_entity.chebi_ascii_name,
         canonical_smiles=chebi_entity.smiles,
         inchi=chebi_entity.inchi,
@@ -216,3 +220,14 @@ def fetch_chebi(
     )
 
     return small_molecule
+
+
+def process_id(name: str) -> str:
+    """
+    Process the ID of a ChEBI entity.
+
+    Replaces special characters and intial non-alpha characters with an underscore.
+    """
+    # Replace non-alphanumeric characters with underscore
+    # and then replace multiple consecutive underscores with a single one
+    return re.sub(r"_+", "_", re.sub(r"[^a-zA-Z0-9]+", "_", name)).lower().strip("_")
