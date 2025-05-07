@@ -8,7 +8,6 @@ from typing import IO
 import libsbml as sbml  # type: ignore
 import pandas as pd
 from loguru import logger
-import rich
 
 import pyenzyme as pe
 

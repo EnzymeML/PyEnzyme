@@ -1,9 +1,7 @@
-import json
 import tempfile
 from pathlib import Path
 
 from pydantic import BaseModel
-import rich
 
 import pyenzyme as pe
 import pyenzyme.equations as peq
