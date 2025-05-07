@@ -8,6 +8,7 @@ from typing import IO
 import libsbml as sbml  # type: ignore
 import pandas as pd
 from loguru import logger
+import rich
 
 import pyenzyme as pe
 
@@ -301,6 +302,7 @@ def _parse_vessel(compartment: sbml.Compartment):
     Note:
         The function prints the unit of the compartment for debugging purposes.
     """
+
     vessel = pe.Vessel(
         id=compartment.getId(),
         name=compartment.getName(),
@@ -330,7 +332,6 @@ def _parse_parameter(parameter: sbml.Parameter):
     Note:
         The function prints the parameter annotation string for debugging purposes.
     """
-    print("PARAMETER", parameter.getAnnotationString())
     parsed = version.parse_annotation(annotation=parameter.getAnnotationString())
     annots = version.extract(parsed, "parameter")
 
