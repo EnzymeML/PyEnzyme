@@ -1,6 +1,7 @@
 import functools as ft
 import importlib.resources as pkg_resources
 from enum import Enum
+import json
 
 import toml
 
@@ -22,7 +23,7 @@ def to_dict_wo_json_ld(enzmldoc: pe.EnzymeMLDocument):
         dict: The EnzymeMLDocument with JSON-LD fields removed.
     """
 
-    doc = enzmldoc.model_dump()
+    doc = json.loads(enzmldoc.model_dump_json())
     _recursive_key_removal(doc, "ld_id")
     _recursive_key_removal(doc, "ld_type")
     _recursive_key_removal(doc, "ld_context")

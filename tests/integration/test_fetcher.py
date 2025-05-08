@@ -1,5 +1,6 @@
 import pytest
 from pyenzyme.fetcher.chebi import fetch_chebi
+from pyenzyme.fetcher.pubchem import fetch_pubchem
 from pyenzyme.fetcher.rhea import fetch_rhea
 from pyenzyme.fetcher.uniprot import fetch_uniprot
 
@@ -74,7 +75,8 @@ class TestFetcher:
     def test_fetch_rhea_to_reaction(self):
         reaction, small_molecules = fetch_rhea("RHEA:22864")
 
-        reaction.species.sort(key=lambda x: x.species_id)
+        reaction.reactants.sort(key=lambda x: x.species_id)
+        reaction.products.sort(key=lambda x: x.species_id)
         small_molecules.sort(key=lambda x: x.id)
 
         assert reaction is not None
@@ -87,12 +89,30 @@ class TestFetcher:
         assert reaction.name == "RHEA:22864"
         assert reaction.reversible is True
 
-        assert len(reaction.species) == 2
-        assert reaction.species[0].stoichiometry == -1
-        assert reaction.species[0].species_id == small_molecules[0].id
-        assert reaction.species[1].stoichiometry == 1
-        assert reaction.species[1].species_id == small_molecules[1].id
+        assert len(reaction.reactants) == 1
+        assert reaction.reactants[0].stoichiometry == 1
+        assert reaction.reactants[0].species_id == small_molecules[1].id
+
+        assert len(reaction.products) == 1
+        assert reaction.products[0].stoichiometry == 1
+        assert reaction.products[0].species_id == small_molecules[0].id
 
     def test_fetch_rhea_to_reaction_invalid_id(self):
         with pytest.raises(ValueError):
             fetch_rhea("INVALID_ID")
+
+    def test_fetch_pubchem_to_small_molecule(self):
+        small_molecule = fetch_pubchem(cid=2244)
+        assert small_molecule is not None
+        assert small_molecule.id == "2_acetyloxybenzoic_acid"
+        assert small_molecule.name == "2-acetyloxybenzoic acid"
+        assert small_molecule.canonical_smiles == "CC(=O)OC1=CC=CC=C1C(=O)O"
+        assert small_molecule.inchikey == "BSYNRYMUTXBXSQ-UHFFFAOYSA-N"
+        assert (
+            small_molecule.inchi
+            == "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)"
+        )
+
+    def test_fetch_pubchem_to_small_molecule_invalid_id(self):
+        with pytest.raises(ValueError):
+            fetch_pubchem(cid=162176127617627)

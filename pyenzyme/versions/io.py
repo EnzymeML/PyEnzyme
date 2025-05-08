@@ -106,15 +106,18 @@ class EnzymeMLHandler:
     def to_sbml(
         cls,
         enzmldoc: v2.EnzymeMLDocument,
-        path: Path | str,
-    ) -> None:  # noqa: F405
+        path: Path | str | None = None,
+    ) -> tuple[str, pd.DataFrame | None]:  # noqa: F405
         """Convert an EnzymeML document to SBML format and write to a file.
 
         Args:
             enzmldoc: The EnzymeML document to convert
             path: Path to write the SBML document to
+
+        Returns:
+            Tuple of the SBML document and the measurement data, or None if path is None
         """
-        to_sbml(enzmldoc, path)
+        return to_sbml(enzmldoc, path)
 
     @classmethod
     def from_sbml(
@@ -135,7 +138,8 @@ class EnzymeMLHandler:
     def to_pandas(
         cls,
         enzmldoc: v2.EnzymeMLDocument,
-    ) -> pd.DataFrame | None:  # noqa: F405
+        per_measurement: bool = False,
+    ) -> pd.DataFrame | dict[str, pd.DataFrame]:  # noqa: F405
         """Convert an EnzymeML document to a pandas DataFrame.
 
         Args:
@@ -144,7 +148,15 @@ class EnzymeMLHandler:
         Returns:
             DataFrame containing the measurement data, or None if no measurements exist
         """
-        return to_pandas(enzmldoc)
+        df = to_pandas(enzmldoc)
+
+        if per_measurement and df is not None:
+            return split_by_measurement(df)
+
+        if df is None:
+            return pd.DataFrame()
+
+        return df
 
     @classmethod
     def from_csv(
@@ -235,3 +247,24 @@ def _pattern(s: str):
         return 2
     else:
         return 3
+
+
+def split_by_measurement(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    """Split a pandas DataFrame by measurement ID.
+
+    Args:
+        df: DataFrame to split
+
+    Returns:
+        Dictionary of DataFrames, keyed by measurement ID
+    """
+    measurement_dfs = {}
+    for measurement_id in df["id"].unique():
+        measurement = df[df["id"] == measurement_id].reset_index(drop=True)
+
+        # Remove ID column
+        measurement = measurement.drop(columns=["id"])
+
+        measurement_dfs[measurement_id] = measurement
+
+    return measurement_dfs

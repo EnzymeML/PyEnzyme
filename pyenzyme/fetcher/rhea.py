@@ -169,7 +169,8 @@ def fetch_rhea(
     n_products = len(equation.split("=")[1].split("+"))
 
     small_molecules = []
-    species = []
+    reactants = []
+    products = []
 
     # Process each chemical species in the reaction
     for i in range(n_reactants + n_products):
@@ -184,18 +185,19 @@ def fetch_rhea(
                 species_id=small_molecule.id,
                 stoichiometry=1,
             )
+            reactants.append(reaction_element)
         else:
             reaction_element = v2.ReactionElement(
                 species_id=small_molecule.id,
-                stoichiometry=-1,
+                stoichiometry=1,
             )
-
-        species.append(reaction_element)
+            products.append(reaction_element)
 
     reaction = v2.Reaction(
         id=f"RHEA:{client.json_content.id}",
         name=f"RHEA:{rhea_id}",
-        species=species,
+        reactants=reactants,
+        products=products,
         reversible=client.json_content.balanced,
     )
 

@@ -158,6 +158,21 @@ class ComplexAnnot(
     )
 
 
+class ModifierAnnot(
+    BaseAnnot,
+    tag="modifier",
+    nsmap={"": "https://www.enzymeml.org/v2"},
+    search_mode="unordered",
+):
+    """
+    Represents the annotation for a modifier in the EnzymeML format.
+
+    This class describes the modifier of a reaction, including its ID and name.
+    """
+
+    modifier_role: str = attr(name="modifierRole")
+
+
 class DataAnnot(
     BaseAnnot,
     tag="data",
@@ -394,7 +409,7 @@ class SpeciesDataAnnot(
     """
 
     species_id: str = attr(name="species")
-    initial: float = attr(name="value", default=0.0)
+    initial: float | None = attr(name="value", default=None)
     type: str | None = attr(name="type", default="CONCENTRATION")
     unit: str = attr(name="unit")
 
@@ -536,6 +551,7 @@ for cls in [
     TemperatureAnnot,
     ParameterAnnot,
     VariablesAnnot,
+    ModifierAnnot,
     VariableAnnot,
     V2Annotation,
 ]:

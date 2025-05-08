@@ -436,14 +436,11 @@ def _parse_reaction(reaction: sbml.Reaction):
     Returns:
         An EnzymeML reaction with properties extracted from the SBML reaction.
     """
-    # Get the reactants and products
-    products = [_parse_element(product, 1) for product in reaction.getListOfProducts()]
-    reactants = [
-        _parse_element(reactant, -1) for reactant in reaction.getListOfReactants()
+    products = [_parse_element(product) for product in reaction.getListOfProducts()]
+    reactants = [_parse_element(reactant) for reactant in reaction.getListOfReactants()]
+    modifiers = [
+        _parse_modifier(modifier) for modifier in reaction.getListOfModifiers()
     ]
-
-    # Get the modifiers
-    modifiers = [modifier.getSpecies() for modifier in reaction.getListOfModifiers()]
 
     # Get the kinetic law
     kinetic_law = _parse_equation(reaction.getKineticLaw(), pe.EquationType.RATE_LAW)
@@ -452,7 +449,8 @@ def _parse_reaction(reaction: sbml.Reaction):
     enzml_reaction = pe.Reaction(
         id=reaction.getId(),
         name=reaction.getName(),
-        species=reactants + products,
+        reactants=reactants,
+        products=products,
         modifiers=modifiers,
         kinetic_law=kinetic_law,
     )
@@ -460,7 +458,7 @@ def _parse_reaction(reaction: sbml.Reaction):
     return enzml_reaction
 
 
-def _parse_element(species, direction: int):
+def _parse_element(species: sbml.SpeciesReference):
     """
     Parse a species element from an SBML model into an EnzymeML reaction element.
 
@@ -469,14 +467,36 @@ def _parse_element(species, direction: int):
 
     Args:
         species: The SBML species element (SpeciesReference).
-        direction (int): The direction of the reaction (1 for product, -1 for reactant).
 
     Returns:
         An EnzymeML reaction element with the species ID and stoichiometry.
     """
     return pe.ReactionElement(
         species_id=species.getSpecies(),
-        stoichiometry=species.getStoichiometry() * direction,
+        stoichiometry=species.getStoichiometry(),
+    )
+
+
+def _parse_modifier(modifier: sbml.SpeciesReference):
+    """
+    Parse a modifier from an SBML model into an EnzymeML modifier.
+
+    This function extracts information from an SBML modifier and creates an equivalent
+    EnzymeML modifier entity.
+
+    Args:
+        modifier (sbml.SpeciesReference): The SBML modifier.
+
+    Returns:
+        An EnzymeML modifier with properties extracted from the SBML modifier.
+    """
+    parsed = version.parse_annotation(annotation=modifier.getAnnotationString())
+    annots = version.extract(parsed, "modifier")
+
+    return pe.ModifierElement(
+        species_id=modifier.getSpecies(),
+        role=pe.ModifierRole.CATALYST,
+        **annots,
     )
 
 

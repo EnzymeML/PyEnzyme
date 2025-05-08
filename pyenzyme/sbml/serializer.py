@@ -28,7 +28,7 @@ def to_sbml(
     enzmldoc: pe.EnzymeMLDocument,
     out: Path | str | None = None,
     verbose: bool = False,
-) -> tuple[str, pd.DataFrame] | None:
+) -> tuple[str, pd.DataFrame | None]:
     """This function converts an EnzymeML document to an SBML document.
 
     The systems biology markup language (SBML) is a machine-readable format for
@@ -48,7 +48,7 @@ def to_sbml(
         verbose (bool, optional): Whether to print warnings during SBML validation. Defaults to False.
 
     Returns:
-        tuple[str, pd.DataFrame] | None: The SBML document as a string and a DataFrame with the RDF triples.
+        tuple[str, pd.DataFrame]: The SBML document as a string and a DataFrame with the RDF triples.
 
     Raises:
         ValueError: If the EnzymeML document is not valid for SBML export.
@@ -92,25 +92,26 @@ def to_sbml(
     for parameter in enzmldoc.parameters:
         _add_parameter(parameter)
 
-    if out is None:
-        return libsbml.writeSBMLToString(sbmldoc), to_pandas(doc)  # type: ignore
-
     if isinstance(out, str):
         out = Path(out)
 
-    if out.is_dir():
+    if out and out.is_dir():
         out = out / "enzymeml_doc.omex"
-    else:
+    elif out:
         out = out.with_suffix(".omex")
 
-    _validate_sbml(sbmldoc)
-    create_sbml_omex(
-        sbml_doc=libsbml.writeSBMLToString(sbmldoc),
-        data=to_pandas(doc),
-        out=out,
-    )
+    xml_string = libsbml.writeSBMLToString(sbmldoc)
 
-    logger.info(f"OMEX archive written to {out}")
+    if out:
+        _validate_sbml(sbmldoc)
+        create_sbml_omex(
+            sbml_doc=libsbml.writeSBMLToString(sbmldoc),
+            data=to_pandas(doc),
+            out=out,
+        )
+        logger.info(f"OMEX archive written to {out}")
+
+    return xml_string, to_pandas(doc)
 
 
 def convert_unit_classes(doc: pe.EnzymeMLDocument, custom_units: list[UnitDefinition]):
@@ -312,26 +313,45 @@ def _add_reaction(reaction: pe.Reaction, index: int):
     sbml_reaction.setId(reaction.id)
     sbml_reaction.setReversible(reaction.reversible)
 
-    for species in reaction.species:
-        assert species.stoichiometry, f"Stoichiometry of species {species} is not set"
+    # Map reactants
+    for element in reaction.reactants:
+        _add_reaction_element(element, sbml_reaction.createReactant)
 
-        species_ref = _get_create_fun(
-            species.stoichiometry,
-            sbml_reaction,
-            species.species_id,
-        )()
-
-        species_ref.initDefaults()
-        species_ref.setConstant(True)
-        species_ref.setSpecies(species.species_id)
-        species_ref.setStoichiometry(abs(species.stoichiometry))
+    # Map products
+    for element in reaction.products:
+        _add_reaction_element(element, sbml_reaction.createProduct)
 
     for modifier in reaction.modifiers:
         modifier_ref = sbml_reaction.createModifier()
-        modifier_ref.setSpecies(modifier)
+        modifier_ref.setSpecies(modifier.species_id)
+
+        annot = v2.ModifierAnnot(
+            modifier_role=modifier.role.name,
+        )
+
+        if not annot.is_empty():
+            modifier_ref.setAnnotation(annot.to_xml(encoding="unicode"))
 
     if reaction.kinetic_law:
         _add_rate_law(reaction.kinetic_law, sbml_reaction)
+
+
+def _add_reaction_element(
+    element: pe.ReactionElement, create_fun: Callable[[], libsbml.SpeciesReference]
+):
+    """
+    Add a reaction element to the SBML reaction.
+
+    Args:
+        element (pe.ReactionElement): The reaction element to add.
+        create_fun (Callable[[], libsbml.SpeciesReference]): The function to create the species reference.
+    """
+
+    species_ref = create_fun()
+    species_ref.initDefaults()
+    species_ref.setConstant(True)
+    species_ref.setSpecies(element.species_id)
+    species_ref.setStoichiometry(abs(element.stoichiometry))
 
 
 def _add_rate_law(equation: pe.Equation, reac: libsbml.Reaction):
@@ -475,10 +495,15 @@ def _add_measurements(measurements: list[pe.Measurement]):
         )
 
         for species_data in measurement.species_data:
+            if species_data.data_type is None:
+                data_type = None
+            else:
+                data_type = species_data.data_type.name
+
             species_annot = v2.SpeciesDataAnnot(
                 species_id=species_data.species_id,
                 initial=species_data.initial,
-                type=species_data.data_type.name,
+                type=data_type,
                 unit=_get_unit_id(species_data.data_unit),  # type: ignore
             )
 

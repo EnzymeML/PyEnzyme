@@ -181,9 +181,12 @@ class TestChemEqautions:
         )
 
         # Assert
-        expected = [
-            (-2.0, "s1"),
-            (-1.0, "s2"),
+        expected_reactants = [
+            (2.0, "s1"),
+            (1.0, "s2"),
+        ]
+
+        expected_products = [
             (2.0, "s3"),
             (1.0, "s4"),
         ]
@@ -193,9 +196,9 @@ class TestChemEqautions:
             f"Reaction name is not correct. Got {reac.name}"
         )
 
-        for stoich, species in expected:
+        for stoich, species in expected_reactants:
             element = next(
-                filter(lambda x: x.species_id == species, reac.species), None
+                filter(lambda x: x.species_id == species, reac.reactants), None
             )
 
             if not element:
@@ -207,6 +210,18 @@ class TestChemEqautions:
 
             assert element.species_id == species, (
                 f"Species ID for {species} is not correct. Got {element.species_id}"
+            )
+
+        for stoich, species in expected_products:
+            element = next(
+                filter(lambda x: x.species_id == species, reac.products), None
+            )
+
+            if not element:
+                assert False, f"Species {species} not found in reaction"
+
+            assert element.stoichiometry == stoich, (
+                f"Stoichiometry for {species} is not correct. Got {element.stoichiometry}"
             )
 
     def test_build_rev_reaction(self):

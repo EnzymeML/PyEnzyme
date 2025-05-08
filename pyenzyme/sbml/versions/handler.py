@@ -7,8 +7,8 @@ from pyenzyme.sbml.versions.v2 import V2Annotation
 
 
 class SupportedVersions(Enum):
-    VERSION1: str = "http://sbml.org/enzymeml/version2"
-    VERSION2: str = "https://www.enzymeml.org/v2"
+    VERSION1 = "http://sbml.org/enzymeml/version2"
+    VERSION2 = "https://www.enzymeml.org/v2"
 
 
 class VersionHandler(BaseModel):

@@ -2,20 +2,9 @@ import re
 from enum import Enum
 
 from pyenzyme import Equation, ReactionElement, Reaction
+from pyenzyme.versions.v2 import ModifierElement, ModifierRole
 
 ELEMENT_PATTERN = r"(\d*)\s?([A-Za-z\d]+)"
-
-
-class EquationSide(Enum):
-    """Enum representing the side of a chemical equation.
-
-    Attributes:
-        LEFT: Represents the left side of the equation (reactants) with value -1.
-        RIGHT: Represents the right side of the equation (products) with value 1.
-    """
-
-    LEFT = -1
-    RIGHT = 1
 
 
 class EqDirection(Enum):
@@ -70,7 +59,21 @@ def build_reactions(
         except StopIteration:
             raise ValueError(f"Reaction with id {id} not found in list of reactions")
 
-        reaction.modifiers = modifier
+        if isinstance(modifier, list):
+            reaction.modifiers = [
+                ModifierElement(
+                    species_id=m,
+                    role=ModifierRole.CATALYST,
+                )
+                for m in modifier
+            ]
+        else:
+            reaction.modifiers = [
+                ModifierElement(
+                    species_id=modifier,
+                    role=ModifierRole.CATALYST,
+                )
+            ]
 
     return reactions
 
@@ -110,14 +113,21 @@ def build_reaction(
     left, right, reversible = _extract_left_right(scheme)
 
     # Initialize and build the reaction object
+    mod_objs = [
+        ModifierElement(
+            species_id=m,
+            role=ModifierRole.CATALYST,
+        )
+        for m in modifiers
+    ]
     reaction = Reaction(
         name=name,
         id=id,
         reversible=reversible,
-        modifiers=modifiers,
+        modifiers=mod_objs,
     )
-    reaction.species += _extract_elements(left, EquationSide.LEFT)
-    reaction.species += _extract_elements(right, EquationSide.RIGHT)
+    reaction.reactants += _extract_elements(left)
+    reaction.products += _extract_elements(right)
 
     return reaction
 
@@ -151,12 +161,11 @@ def _extract_left_right(reaction: str) -> tuple[str, str, bool]:
     return left.strip(), right.strip(), direction.value
 
 
-def _extract_elements(side_string: str, side: EquationSide) -> list[ReactionElement]:
+def _extract_elements(side_string: str) -> list[ReactionElement]:
     """Extracts the elements from a reaction string.
 
     Args:
         side_string (str): The string representing one side of the reaction (e.g., "2A + B")
-        side (EquationSide): Enum indicating whether this is the left or right side of the equation
 
     Returns:
         list[ReactionElement]: A list of ReactionElement objects representing the species and their stoichiometries
@@ -166,7 +175,7 @@ def _extract_elements(side_string: str, side: EquationSide) -> list[ReactionElem
         element = re.search(ELEMENT_PATTERN, element.strip())
         stoich, species = element.groups()  # type: ignore
 
-        elements.append(_create_reaction_element(stoich, species, side))
+        elements.append(_create_reaction_element(stoich, species))
 
     return elements
 
@@ -174,14 +183,12 @@ def _extract_elements(side_string: str, side: EquationSide) -> list[ReactionElem
 def _create_reaction_element(
     stoich: str | float,
     species: str,
-    side: EquationSide,
 ) -> ReactionElement:
     """Creates a ReactionElement object from stoichiometry, species ID, and equation side.
 
     Args:
         stoich (str | float): The stoichiometric coefficient (can be a string or float)
         species (str): The species ID
-        side (EquationSide): The side of the equation (LEFT or RIGHT)
 
     Returns:
         ReactionElement: A ReactionElement object with the appropriate stoichiometry and species ID
@@ -195,6 +202,6 @@ def _create_reaction_element(
         stoich = 1.0
 
     return ReactionElement(
-        stoichiometry=float(stoich) * side.value,
+        stoichiometry=float(stoich),
         species_id=species,
     )
