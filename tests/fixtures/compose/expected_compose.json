@@ -1,0 +1,240 @@
+{
+  "@context": {
+    "enzml": "http://www.enzymeml.org/v2/",
+    "OBO": "http://purl.obolibrary.org/obo/",
+    "schema": "https://schema.org/",
+    "name": "schema:title",
+    "created": "schema:dateCreated",
+    "modified": "schema:dateModified",
+    "creators": "schema:creator",
+    "references": {
+      "@id": "schema:citation",
+      "@type": "@id"
+    }
+  },
+  "@id": "enzml:EnzymeMLDocument/cd2b1ca9-9a3c-41b7-b88c-9947888b9cc7",
+  "@type": [
+    "enzml:EnzymeMLDocument"
+  ],
+  "name": "test",
+  "version": "2",
+  "creators": [],
+  "vessels": [
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "volume": "OBO:OBI_0002139"
+      },
+      "@id": "enzml:Vessel/1d11fa6a-7338-4933-b254-ee5b03fc1573",
+      "@type": [
+        "enzml:Vessel",
+        "OBO:OBI_0400081"
+      ],
+      "id": "vessel",
+      "name": "vessel",
+      "volume": 1.0,
+      "unit": {
+        "id": "ml",
+        "name": "ml",
+        "base_units": [
+          {
+            "kind": "litre",
+            "exponent": 1,
+            "multiplier": 1.0,
+            "scale": -3.0
+          }
+        ]
+      },
+      "constant": true
+    }
+  ],
+  "proteins": [
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "sequence": "OBO:GSSO_007262",
+        "vessel_id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "organism": "OBO:OBI_0100026",
+        "organism_tax_id": {
+          "@type": "@id"
+        },
+        "references": {
+          "@id": "schema:citation",
+          "@type": "@id"
+        },
+        "pdb": "https://www.rcsb.org/structure/"
+      },
+      "@id": "pdb:1A23",
+      "@type": [
+        "enzml:Protein",
+        "OBO:PR_000000001",
+        "pdb:1A23"
+      ],
+      "id": "1a23_1",
+      "name": "SOLUTION NMR STRUCTURE OF REDUCED DSBA FROM ESCHERICHIA COLI, MINIMIZED AVERAGE STRUCTURE",
+      "constant": true,
+      "sequence": "AQYEDGKQYTTLEKPVAGAPQVLEFFSFFCPHCYQFEEVLHISDNVKKKLPEGVKMTKYHVNFMGGDLGKDLTQAWAVAMALGVEDKVTVPLFEGVQKTQTIRSASDIRDVFINAGIKGEEYDAAWNSFVVKSLVAQQEKAAADVQLRGVPAMFVNGKYQLNPQGMDTSNMDVFVQQYADTVKYLSEKK",
+      "vessel_id": "vessel",
+      "references": [
+        "https://www.rcsb.org/structure/1A23"
+      ]
+    }
+  ],
+  "complexes": [],
+  "small_molecules": [
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "vessel_id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "references": {
+          "@id": "schema:citation",
+          "@type": "@id"
+        }
+      },
+      "@id": "OBO:CHEBI_32557",
+      "@type": [
+        "enzml:SmallMolecule",
+        "OBO:CHEBI_32557"
+      ],
+      "id": "d_lysinium_1",
+      "name": "D-lysinium(1+)",
+      "constant": false,
+      "vessel_id": "vessel",
+      "canonical_smiles": "[NH3+]CCCC[C@@H]([NH3+])C([O-])=O",
+      "inchi": "InChI=1S/C6H14N2O2/c7-4-2-1-3-5(8)6(9)10/h5H,1-4,7-8H2,(H,9,10)/p+1/t5-/m1/s1",
+      "inchikey": "KDXKERNSBIXSRK-RXMQYKEDSA-O",
+      "synonymous_names": [],
+      "references": [
+        "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:32557"
+      ]
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "vessel_id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "references": {
+          "@id": "schema:citation",
+          "@type": "@id"
+        }
+      },
+      "@id": "OBO:CHEBI_32551",
+      "@type": [
+        "enzml:SmallMolecule",
+        "OBO:CHEBI_32551"
+      ],
+      "id": "l_lysinium_1",
+      "name": "L-lysinium(1+)",
+      "constant": false,
+      "vessel_id": "vessel",
+      "canonical_smiles": "[NH3+]CCCC[C@H]([NH3+])C([O-])=O",
+      "inchi": "InChI=1S/C6H14N2O2/c7-4-2-1-3-5(8)6(9)10/h5H,1-4,7-8H2,(H,9,10)/p+1/t5-/m0/s1",
+      "inchikey": "KDXKERNSBIXSRK-YFKPBYRVSA-O",
+      "synonymous_names": [],
+      "references": [
+        "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:32551"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "schema": "https://schema.org/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "rhea": "http://www.rhea-db.org/rhea/"
+      },
+      "@id": "rhea:22864",
+      "@type": [
+        "enzml:Reaction",
+        "rhea:22864"
+      ],
+      "id": "RHEA:22864",
+      "name": "RHEA:22864",
+      "reversible": true,
+      "reactants": [
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
+            "species_id": {
+              "@id": "schema:identifier",
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:ReactionElement/4803525e-6bf6-4350-8bc6-5a99e08e358d",
+          "@type": [
+            "enzml:ReactionElement"
+          ],
+          "species_id": "l_lysinium_1",
+          "stoichiometry": 1.0
+        }
+      ],
+      "products": [
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
+            "species_id": {
+              "@id": "schema:identifier",
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:ReactionElement/95a275a4-8089-4ca8-a3e8-228431b66e92",
+          "@type": [
+            "enzml:ReactionElement"
+          ],
+          "species_id": "d_lysinium_1",
+          "stoichiometry": 1.0
+        }
+      ],
+      "modifiers": []
+    }
+  ],
+  "measurements": [],
+  "equations": [],
+  "parameters": [],
+  "references": []
+}
