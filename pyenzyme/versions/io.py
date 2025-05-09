@@ -53,6 +53,30 @@ class EnzymeMLHandler:
         raise ValueError(f"Invalid EnzymeML version: {path}")
 
     @classmethod
+    def read_enzymeml_from_string(cls, data: str) -> v2.EnzymeMLDocument:  # noqa: F405
+        """Read an EnzymeML document from a string.
+
+        Attempts to read the document using different version parsers until successful.
+
+        Args:
+            data: The EnzymeML document as a string
+
+        Returns:
+            An EnzymeMLDocument object
+
+        Raises:
+            ValueError: If the document cannot be parsed with any available version
+        """
+        for version in AVAILABLE_VERSIONS:
+            if version == "v2":
+                try:
+                    return v2.EnzymeMLDocument.model_validate(data)
+                except ValidationError:
+                    continue
+
+        raise ValueError("Could not parse EnzymeML document: Invalid JSON")
+
+    @classmethod
     def from_dataframe(
         cls,
         df: pd.DataFrame,
