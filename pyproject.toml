@@ -29,6 +29,7 @@ openpyxl = "^3.1.4"
 [tool.poetry.group.tests.dependencies]
 openpyxl = "^3.1.4"
 pytest = "^8.2.2"
+pytest-httpx = "^0.35.0"
 
 [build-system]
 requires = ["poetry-core"]
