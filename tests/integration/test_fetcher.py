@@ -1,5 +1,6 @@
 import pytest
 from pyenzyme.fetcher.chebi import fetch_chebi
+from pyenzyme.fetcher.pdb import fetch_pdb
 from pyenzyme.fetcher.pubchem import fetch_pubchem
 from pyenzyme.fetcher.rhea import fetch_rhea
 from pyenzyme.fetcher.uniprot import fetch_uniprot
@@ -116,3 +117,20 @@ class TestFetcher:
     def test_fetch_pubchem_to_small_molecule_invalid_id(self):
         with pytest.raises(ValueError):
             fetch_pubchem(cid=162176127617627)
+
+    def test_fetch_pdb_to_protein(self):
+        protein = fetch_pdb("1a23")
+        assert protein is not None
+        assert protein.id == "1a23_1"
+        assert (
+            protein.name
+            == "SOLUTION NMR STRUCTURE OF REDUCED DSBA FROM ESCHERICHIA COLI, MINIMIZED AVERAGE STRUCTURE"
+        )
+        assert (
+            protein.sequence
+            == "AQYEDGKQYTTLEKPVAGAPQVLEFFSFFCPHCYQFEEVLHISDNVKKKLPEGVKMTKYHVNFMGGDLGKDLTQAWAVAMALGVEDKVTVPLFEGVQKTQTIRSASDIRDVFINAGIKGEEYDAAWNSFVVKSLVAQQEKAAADVQLRGVPAMFVNGKYQLNPQGMDTSNMDVFVQQYADTVKYLSEKK"
+        )
+
+    def test_fetch_pdb_to_protein_invalid_id(self):
+        with pytest.raises(ValueError):
+            fetch_pdb("INVALID_ID")
