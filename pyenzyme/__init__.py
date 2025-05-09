@@ -13,6 +13,7 @@ from_dataframe = EnzymeMLHandler.from_dataframe
 from_excel = EnzymeMLHandler.from_excel
 from_sbml = EnzymeMLHandler.from_sbml
 read_enzymeml = EnzymeMLHandler.read_enzymeml
+read_enzymeml_from_string = EnzymeMLHandler.read_enzymeml_from_string
 
 # Output functions
 to_pandas = EnzymeMLHandler.to_pandas

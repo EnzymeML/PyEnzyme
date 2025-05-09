@@ -14,11 +14,11 @@ class EnzymeMLSuite:
         client (httpx.Client): The HTTP client for making requests to the EnzymeML service.
     """
 
-    def __init__(self):
+    def __init__(self, url: str = "http://localhost:13452"):
         """
         Initializes the EnzymeMLSuite with a base URL for the EnzymeML service.
         """
-        self.client = httpx.Client(base_url="http://localhost:13452")
+        self.client = httpx.Client(base_url=url)
 
     def get_current(self) -> pe.EnzymeMLDocument:
         """
@@ -45,7 +45,7 @@ class EnzymeMLSuite:
         if not isinstance(content["references"], list):
             content["references"] = []
 
-        return pe.EnzymeMLDocument.model_validate(content)
+        return pe.read_enzymeml_from_string(content)
 
     def update_current(self, doc: pe.EnzymeMLDocument):
         """
