@@ -105,7 +105,28 @@ enzmldoc = pe.read_enzymeml("enzmldoc.json")
 sbml_doc = pe.to_sbml(enzmldoc, "enzmldoc.omex")
 ```
 
-<sub>(Code should run as it is)</sup>
+<sub>(Code should run as it is)</sub>
+
+### Compose an EnzymeML document
+
+As an alternative to the manual creation of an EnzymeML document, you can use the `compose` function to create an EnzymeML document from a list of identifiers. This function will fetch the corresponding entities from the official databases and compose an EnzymeML document. Duplicate entities are removed to avoid redundancy.
+
+```python
+import pyenzyme as pe
+
+doc = pe.compose(
+    name="test",
+    proteins=["PDB:1A23"],
+    small_molecules=["CHEBI:32551"],
+    reactions=["RHEA:22864"],
+)
+
+pe.write_enzymeml(doc, "enzmldoc.json")
+```
+
+<sub>(Code should run as it is)</sub>
+
+Please note, that by providing [RHEA](https://www.ebi.ac.uk/rhea/) identifiers, the function will automatically fetch all associated [CheBI](https://www.ebi.ac.uk/chebi/) molecules that are part of the reaction.
 
 ## 📖 Documentation and more examples
 
