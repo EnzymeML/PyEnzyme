@@ -5,6 +5,7 @@ from typing import Optional
 import pandas as pd
 
 from pydantic import ValidationError
+import rich
 from pyenzyme.sbml.serializer import to_sbml
 from pyenzyme.tabular import from_dataframe, read_csv, read_excel, to_pandas
 from pyenzyme.versions import v2
@@ -124,7 +125,9 @@ class EnzymeMLHandler:
         with open(path, "w") as f:
             f.write(data)
 
-        print(f"\n  EnzymeML document written to [green][bold]{path}[/bold][/green]\n")
+        rich.print(
+            f"\n  EnzymeML document written to [green][bold]{path}[/bold][/green]\n"
+        )
 
     @classmethod
     def to_sbml(
