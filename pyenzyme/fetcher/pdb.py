@@ -194,6 +194,11 @@ def fetch_pdb(
     """
     # Get PDB data
     client = PDBClient()
+
+    # Allow prefixing with 'PDB:'
+    if pdb_id.lower().startswith("pdb:"):
+        pdb_id = pdb_id.split(":", 1)[-1]
+
     pdb_response = client.get_entry_by_id(pdb_id)
 
     if not pdb_response:

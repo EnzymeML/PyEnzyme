@@ -145,7 +145,7 @@ class PubChemClient(BaseModel):
 
 
 def fetch_pubchem(
-    cid: int,
+    cid: str,
     smallmol_id: Optional[str] = None,
     vessel_id: Optional[str] = None,
 ) -> v2.SmallMolecule:
@@ -163,9 +163,13 @@ def fetch_pubchem(
     Raises:
         ValueError: If the PubChem API request fails or required data is missing
     """
-    query = PubChemClient.from_cid(cid)
+    # Allow prefixing with 'CID:'
+    if cid.lower().startswith("pubchem:"):
+        cid = cid.split(":", 1)[-1]
+
+    query = PubChemClient.from_cid(int(cid))
     pc_compound = query.pc_compounds[0]
-    name = _extract_name(pc_compound, cid)
+    name = _extract_name(pc_compound, int(cid))
 
     if not smallmol_id:
         smallmol_id = process_id(name)

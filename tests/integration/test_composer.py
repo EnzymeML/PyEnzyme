@@ -23,6 +23,25 @@ class TestComposer:
         expected_doc = pe.read_enzymeml("tests/fixtures/compose/expected_compose.json")
         assert to_dict_wo_json_ld(doc) == to_dict_wo_json_ld(expected_doc)
 
+    def test_compose_with_prefix(self):
+        # Act
+        doc = pe.compose(
+            name="test",
+            vessel=pe.Vessel(
+                id="vessel",
+                name="vessel",
+                volume=1.0,
+                unit="ml",  # type: ignore
+            ),
+            proteins=["pdb:1A23"],
+            small_molecules=["CHEBI:32551"],
+            reactions=["RHEA:22864"],
+        )
+
+        # Assert
+        expected_doc = pe.read_enzymeml("tests/fixtures/compose/expected_compose.json")
+        assert to_dict_wo_json_ld(doc) == to_dict_wo_json_ld(expected_doc)
+
     def test_compose_no_vessel(self):
         # Act
         doc = pe.compose(

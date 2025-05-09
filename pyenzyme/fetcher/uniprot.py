@@ -129,6 +129,11 @@ def fetch_uniprot(
         ConnectionError: If the connection to the UniProt server fails
     """
     client = UniProtClient()
+
+    # Allow prefixing with 'uniprot:'
+    if uniprot_id.lower().startswith("uniprot:"):
+        uniprot_id = uniprot_id.split(":", 1)[-1]
+
     uniprot_entry = client.get_entry_by_id(uniprot_id)
 
     if not uniprot_entry:
