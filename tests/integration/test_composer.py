@@ -14,7 +14,7 @@ class TestComposer:
                 volume=1.0,
                 unit="ml",  # type: ignore
             ),
-            proteins=["1A23"],
+            proteins=["PDB:1a23"],
             small_molecules=["CHEBI:32551"],
             reactions=["RHEA:22864"],
         )
@@ -33,7 +33,7 @@ class TestComposer:
                 volume=1.0,
                 unit="ml",  # type: ignore
             ),
-            proteins=["pdb:1A23"],
+            proteins=["pdb:1a23"],
             small_molecules=["CHEBI:32551"],
             reactions=["RHEA:22864"],
         )
