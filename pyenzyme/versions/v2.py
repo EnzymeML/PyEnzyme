@@ -108,21 +108,83 @@ class EnzymeMLDocument(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    name: str
-    version: str = "2"
-    description: Optional[Optional[str]] = Field(default=None)
-    created: Optional[Optional[str]] = Field(default=None)
-    modified: Optional[Optional[str]] = Field(default=None)
-    creators: list[Creator] = Field(default_factory=list)
-    vessels: list[Vessel] = Field(default_factory=list)
-    proteins: list[Protein] = Field(default_factory=list)
-    complexes: list[Complex] = Field(default_factory=list)
-    small_molecules: list[SmallMolecule] = Field(default_factory=list)
-    reactions: list[Reaction] = Field(default_factory=list)
-    measurements: list[Measurement] = Field(default_factory=list)
-    equations: list[Equation] = Field(default_factory=list)
-    parameters: list[Parameter] = Field(default_factory=list)
-    references: list[str] = Field(default_factory=list)
+    name: str = Field(
+        default=...,
+        description="""Title of the EnzymeML Document.""",
+    )
+    version: str = Field(
+        default="2",
+        description="""The version of the EnzymeML Document.""",
+    )
+    description: Optional[Optional[str]] = Field(
+        default=None,
+        description="""Description of the EnzymeML Document.""",
+    )
+    created: Optional[Optional[str]] = Field(
+        default=None,
+        description="""Date the EnzymeML Document was created.""",
+    )
+    modified: Optional[Optional[str]] = Field(
+        default=None,
+        description="""Date the EnzymeML Document was modified.""",
+    )
+    creators: list[Creator] = Field(
+        default_factory=list,
+        description="""Contains descriptions of all authors that are part
+        of the experiment.""",
+    )
+    vessels: list[Vessel] = Field(
+        default_factory=list,
+        description="""Contains descriptions of all vessels that are part
+        of the experiment.""",
+    )
+    proteins: list[Protein] = Field(
+        default_factory=list,
+        description="""Contains descriptions of all proteins that
+        are part of the experiment that may be
+        referenced in reactions, measurements,
+        and equations.""",
+    )
+    complexes: list[Complex] = Field(
+        default_factory=list,
+        description="""Contains descriptions of all complexes that
+        are part of the experiment that may be
+        referenced in reactions, measurements,
+        and equations.""",
+    )
+    small_molecules: list[SmallMolecule] = Field(
+        default_factory=list,
+        description="""Contains descriptions of all reactants that
+        are part of the experiment that may be
+        referenced in reactions, measurements,
+        and equations.""",
+    )
+    reactions: list[Reaction] = Field(
+        default_factory=list,
+        description="""Contains descriptions of all reactions that are
+        part of the experiment.""",
+    )
+    measurements: list[Measurement] = Field(
+        default_factory=list,
+        description="""Contains descriptions of all measurements that are
+        part of the experiment.""",
+    )
+    equations: list[Equation] = Field(
+        default_factory=list,
+        description="""Contains descriptions of all equations that are
+        part of the experiment.""",
+    )
+    parameters: list[Parameter] = Field(
+        default_factory=list,
+        description="""Contains descriptions of all parameters that are
+        part of the experiment and may be used
+        in equations.""",
+    )
+    references: list[str] = Field(
+        default_factory=list,
+        description="""Contains references to publications, databases,
+        and arbitrary links to the web.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -139,8 +201,8 @@ class EnzymeMLDocument(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "name": "schema:title",
             "created": "schema:dateCreated",
             "modified": "schema:dateModified",
@@ -571,9 +633,18 @@ class Creator(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    given_name: str
-    family_name: str
-    mail: str
+    given_name: str = Field(
+        default=...,
+        description="""Given name of the author or contributor.""",
+    )
+    family_name: str = Field(
+        default=...,
+        description="""Family name of the author or contributor.""",
+    )
+    mail: str = Field(
+        default=...,
+        description="""Email address of the author or contributor.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -588,8 +659,8 @@ class Creator(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "given_name": "schema:givenName",
             "family_name": "schema:familyName",
             "mail": "schema:email",
@@ -667,11 +738,27 @@ class Vessel(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    id: str
-    name: str
-    volume: float
-    unit: UnitDefinitionAnnot
-    constant: bool = True
+    id: str = Field(
+        default=...,
+        description="""Unique identifier of the vessel.""",
+    )
+    name: str = Field(
+        default=...,
+        description="""Name of the used vessel.""",
+    )
+    volume: float = Field(
+        default=...,
+        description="""Volumetric value of the vessel.""",
+    )
+    unit: UnitDefinitionAnnot = Field(
+        default=...,
+        description="""Volumetric unit of the vessel.""",
+    )
+    constant: bool = Field(
+        default=True,
+        description="""Whether the volume of the vessel is constant or
+        not. Default is True.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -686,8 +773,8 @@ class Vessel(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -768,15 +855,48 @@ class Protein(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    id: str
-    name: str
-    constant: bool = True
-    sequence: Optional[Optional[str]] = Field(default=None)
-    vessel_id: Optional[Optional[str]] = Field(default=None)
-    ecnumber: Optional[Optional[str]] = Field(default=None)
-    organism: Optional[Optional[str]] = Field(default=None)
-    organism_tax_id: Optional[Optional[str]] = Field(default=None)
-    references: list[str] = Field(default_factory=list)
+    id: str = Field(
+        default=...,
+        description="""Identifier of the protein, such as a UniProt ID,
+        or a custom identifier.""",
+    )
+    name: str = Field(
+        default=...,
+        description="""Name of the protein.""",
+    )
+    constant: bool = Field(
+        default=True,
+        description="""Whether the concentration of the protein is
+        constant through the experiment or not.
+        Default is True.""",
+    )
+    sequence: Optional[Optional[str]] = Field(
+        default=None,
+        description="""Amino acid sequence of the protein""",
+    )
+    vessel_id: Optional[Optional[str]] = Field(
+        default=None,
+        description="""Identifier of the vessel this protein has been
+        applied to.""",
+    )
+    ecnumber: Optional[Optional[str]] = Field(
+        default=None,
+        description="""EC number of the protein.""",
+    )
+    organism: Optional[Optional[str]] = Field(
+        default=None,
+        description="""Expression host organism of the protein.""",
+    )
+    organism_tax_id: Optional[Optional[str]] = Field(
+        default=None,
+        description="""Taxonomy identifier of the expression host.""",
+    )
+    references: list[str] = Field(
+        default_factory=list,
+        description="""List of references to publications, database
+        entries, etc. that describe or reference
+        the protein.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -791,8 +911,8 @@ class Protein(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -885,11 +1005,29 @@ class Complex(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    id: str
-    name: str
-    constant: bool = False
-    vessel_id: Optional[Optional[str]] = Field(default=None)
-    participants: list[str] = Field(default_factory=list)
+    id: str = Field(
+        default=...,
+        description="""Unique identifier of the complex.""",
+    )
+    name: str = Field(
+        default=...,
+        description="""Name of the complex.""",
+    )
+    constant: bool = Field(
+        default=False,
+        description="""Whether the concentration of the complex is
+        constant through the experiment or not.
+        Default is False.""",
+    )
+    vessel_id: Optional[Optional[str]] = Field(
+        default=None,
+        description="""Unique identifier of the vessel this complex has
+        been used in.""",
+    )
+    participants: list[str] = Field(
+        default_factory=list,
+        description="""Array of IDs the complex contains""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -906,8 +1044,8 @@ class Complex(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -994,15 +1132,53 @@ class SmallMolecule(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    id: str
-    name: str
-    constant: bool = False
-    vessel_id: Optional[Optional[str]] = Field(default=None)
-    canonical_smiles: Optional[Optional[str]] = Field(default=None)
-    inchi: Optional[Optional[str]] = Field(default=None)
-    inchikey: Optional[Optional[str]] = Field(default=None)
-    synonymous_names: list[str] = Field(default_factory=list)
-    references: list[str] = Field(default_factory=list)
+    id: str = Field(
+        default=...,
+        description="""Identifier of the small molecule, such as
+        a Pubchem ID, ChEBI ID, or a custom
+        identifier.""",
+    )
+    name: str = Field(
+        default=...,
+        description="""Name of the small molecule.""",
+    )
+    constant: bool = Field(
+        default=False,
+        description="""Whether the concentration of the small molecule
+        is constant through the experiment or not.
+        Default is False.""",
+    )
+    vessel_id: Optional[Optional[str]] = Field(
+        default=None,
+        description="""Identifier of the vessel this small molecule has
+        been used in.""",
+    )
+    canonical_smiles: Optional[Optional[str]] = Field(
+        default=None,
+        description="""Canonical Simplified Molecular-Input Line-Entry
+        System (SMILES) encoding of the small
+        molecule.""",
+    )
+    inchi: Optional[Optional[str]] = Field(
+        default=None,
+        description="""International Chemical Identifier (InChI) encoding
+        of the small molecule.""",
+    )
+    inchikey: Optional[Optional[str]] = Field(
+        default=None,
+        description="""Hashed International Chemical Identifier
+        (InChIKey) encoding of the small molecule.""",
+    )
+    synonymous_names: list[str] = Field(
+        default_factory=list,
+        description="""List of synonymous names for the small molecule.""",
+    )
+    references: list[str] = Field(
+        default_factory=list,
+        description="""List of references to publications, database
+        entries, etc. that describe or reference
+        the small molecule.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -1019,8 +1195,8 @@ class SmallMolecule(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1108,13 +1284,36 @@ class Reaction(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    id: str
-    name: str
-    reversible: bool = False
-    kinetic_law: Optional[Optional[Equation]] = Field(default=None)
-    reactants: list[ReactionElement] = Field(default_factory=list)
-    products: list[ReactionElement] = Field(default_factory=list)
-    modifiers: list[ModifierElement] = Field(default_factory=list)
+    id: str = Field(
+        default=...,
+        description="""Unique identifier of the reaction.""",
+    )
+    name: str = Field(
+        default=...,
+        description="""Name of the reaction.""",
+    )
+    reversible: bool = Field(
+        default=False,
+        description="""Whether the reaction is reversible or
+        irreversible. Default is False.""",
+    )
+    kinetic_law: Optional[Optional[Equation]] = Field(
+        default=None,
+        description="""Mathematical expression of the reaction.""",
+    )
+    reactants: list[ReactionElement] = Field(
+        default_factory=list,
+        description="""List of reactants that are part of the reaction.""",
+    )
+    products: list[ReactionElement] = Field(
+        default_factory=list,
+        description="""List of products that are part of the reaction.""",
+    )
+    modifiers: list[ModifierElement] = Field(
+        default_factory=list,
+        description="""List of reaction elements that are not part of the
+        reaction but influence it.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -1131,8 +1330,8 @@ class Reaction(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1292,8 +1491,16 @@ class ReactionElement(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    species_id: str
-    stoichiometry: float = 1
+    species_id: str = Field(
+        default=...,
+        description="""Internal identifier to either a protein or
+        reactant defined in the EnzymeML Document.""",
+    )
+    stoichiometry: float = Field(
+        default=1,
+        description="""Float number representing the associated
+        stoichiometry.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -1310,8 +1517,8 @@ class ReactionElement(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "species_id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1390,8 +1597,15 @@ class ModifierElement(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    species_id: str
-    role: ModifierRole
+    species_id: str = Field(
+        default=...,
+        description="""Internal identifier to either a protein or
+        reactant defined in the EnzymeML Document.""",
+    )
+    role: ModifierRole = Field(
+        default=...,
+        description="""Role of the modifier in the reaction.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -1408,8 +1622,8 @@ class ModifierElement(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "species_id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1488,10 +1702,26 @@ class Equation(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    species_id: str
-    equation: str
-    equation_type: EquationType
-    variables: list[Variable] = Field(default_factory=list)
+    species_id: str = Field(
+        default=...,
+        description="""Identifier of a defined species (SmallMolecule,
+        Protein, Complex). Represents the left
+        hand side of the equation.""",
+    )
+    equation: str = Field(
+        default=...,
+        description="""Mathematical expression of the equation.
+        Represents the right hand side of the
+        equation.""",
+    )
+    equation_type: EquationType = Field(
+        default=...,
+        description="""Type of the equation.""",
+    )
+    variables: list[Variable] = Field(
+        default_factory=list,
+        description="""List of variables that are part of the equation""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -1508,8 +1738,8 @@ class Equation(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "species_id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1616,9 +1846,18 @@ class Variable(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    id: str
-    name: str
-    symbol: str
+    id: str = Field(
+        default=...,
+        description="""Identifier of the variable.""",
+    )
+    name: str = Field(
+        default=...,
+        description="""Name of the variable.""",
+    )
+    symbol: str = Field(
+        default=...,
+        description="""Equation symbol of the variable.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -1635,8 +1874,8 @@ class Variable(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1715,16 +1954,50 @@ class Parameter(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    id: str
-    name: str
-    symbol: str
-    value: Optional[Optional[float]] = Field(default=None)
-    unit: Optional[Optional[UnitDefinitionAnnot]] = Field(default=None)
-    initial_value: Optional[Optional[float]] = Field(default=None)
-    upper_bound: Optional[Optional[float]] = Field(default=None)
-    lower_bound: Optional[Optional[float]] = Field(default=None)
-    stderr: Optional[Optional[float]] = Field(default=None)
-    constant: Optional[bool] = True
+    id: str = Field(
+        default=...,
+        description="""Identifier of the parameter.""",
+    )
+    name: str = Field(
+        default=...,
+        description="""Name of the parameter.""",
+    )
+    symbol: str = Field(
+        default=...,
+        description="""Equation symbol of the parameter.""",
+    )
+    value: Optional[Optional[float]] = Field(
+        default=None,
+        description="""Numerical value of the estimated parameter.""",
+    )
+    unit: Optional[Optional[UnitDefinitionAnnot]] = Field(
+        default=None,
+        description="""Unit of the estimated parameter.""",
+    )
+    initial_value: Optional[Optional[float]] = Field(
+        default=None,
+        description="""Initial value that was used for the parameter
+        estimation.""",
+    )
+    upper_bound: Optional[Optional[float]] = Field(
+        default=None,
+        description="""Upper bound for the parameter value that was used
+        for the parameter estimation""",
+    )
+    lower_bound: Optional[Optional[float]] = Field(
+        default=None,
+        description="""Lower bound for the parameter value that was used
+        for the parameter estimation""",
+    )
+    stderr: Optional[Optional[float]] = Field(
+        default=None,
+        description="""Standard error of the estimated parameter.""",
+    )
+    constant: Optional[bool] = Field(
+        default=True,
+        description="""Specifies if this parameter is constant. Default
+        is True.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -1741,8 +2014,8 @@ class Parameter(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1821,13 +2094,37 @@ class Measurement(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    id: str
-    name: str
-    species_data: list[MeasurementData] = Field(default_factory=list)
-    group_id: Optional[Optional[str]] = Field(default=None)
-    ph: Optional[Optional[float]] = Field(default=None)
-    temperature: Optional[Optional[float]] = Field(default=None)
-    temperature_unit: Optional[Optional[UnitDefinitionAnnot]] = Field(default=None)
+    id: str = Field(
+        default=...,
+        description="""Unique identifier of the measurement.""",
+    )
+    name: str = Field(
+        default=...,
+        description="""Name of the measurement""",
+    )
+    species_data: list[MeasurementData] = Field(
+        default_factory=list,
+        description="""Measurement data of all species that were part
+        of the measurement. A species refers to a
+        Protein, Complex, or SmallMolecule.""",
+    )
+    group_id: Optional[Optional[str]] = Field(
+        default=None,
+        description="""User-defined group ID to signal relationships
+        between measurements.""",
+    )
+    ph: Optional[Optional[float]] = Field(
+        default=None,
+        description="""pH value of the measurement.""",
+    )
+    temperature: Optional[Optional[float]] = Field(
+        default=None,
+        description="""Temperature of the measurement.""",
+    )
+    temperature_unit: Optional[Optional[UnitDefinitionAnnot]] = Field(
+        default=None,
+        description="""Unit of the temperature of the measurement.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -1844,8 +2141,8 @@ class Measurement(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1971,15 +2268,52 @@ class MeasurementData(BaseModel):
         validate_assignment=True,
     )  # type: ignore
 
-    species_id: str
-    prepared: Optional[Optional[float]] = Field(default=None)
-    initial: Optional[Optional[float]] = Field(default=None)
-    data_unit: Optional[Optional[UnitDefinitionAnnot]] = Field(default=None)
-    data: list[float] = Field(default_factory=list)
-    time: list[float] = Field(default_factory=list)
-    time_unit: Optional[Optional[UnitDefinitionAnnot]] = Field(default=None)
-    data_type: Optional[Optional[DataTypes]] = Field(default=None)
-    is_simulated: Optional[bool] = False
+    species_id: str = Field(
+        default=...,
+        description="""The identifier for the described reactant.""",
+    )
+    prepared: Optional[Optional[float]] = Field(
+        default=None,
+        description="""Amount of the the species before starting the
+        measurement. This field can be used
+        for specifying the prepared amount
+        of a species in the reaction mix. Not
+        to be confused with , specifying the
+        concentration of a species at the first
+        data point from the array.""",
+    )
+    initial: Optional[Optional[float]] = Field(
+        default=None,
+        description="""Initial amount of the measurement data. This must
+        be the same as the first data point in
+        the array.""",
+    )
+    data_unit: Optional[Optional[UnitDefinitionAnnot]] = Field(
+        default=None,
+        description="""SI unit of the data that was measured.""",
+    )
+    data: list[float] = Field(
+        default_factory=list,
+        description="""Data that was measured.""",
+    )
+    time: list[float] = Field(
+        default_factory=list,
+        description="""Corresponding time points of the .""",
+    )
+    time_unit: Optional[Optional[UnitDefinitionAnnot]] = Field(
+        default=None,
+        description="""Unit of the time points of the .""",
+    )
+    data_type: Optional[Optional[DataTypes]] = Field(
+        default=None,
+        description="""Type of data that was measured (e.g.
+        concentration, absorbance, etc.)""",
+    )
+    is_simulated: Optional[bool] = Field(
+        default=False,
+        description="""Whether or not the data has been generated by
+        simulation. Default is False.""",
+    )
 
     # JSON-LD fields
     ld_id: str = Field(
@@ -1996,8 +2330,8 @@ class MeasurementData(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "OBO": "http://purl.obolibrary.org/obo/",
             "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
             "species_id": {
                 "@type": "@id",
             },
