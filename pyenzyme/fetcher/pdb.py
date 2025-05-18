@@ -244,11 +244,13 @@ def fetch_pdb(
     )
 
     # Add metadata
-    protein.add_type_term(f"pdb:{pdb_id}", "pdb", "https://www.rcsb.org/structure/")
-    protein.ld_id = f"pdb:{pdb_id}"
+    protein.add_type_term(
+        f"pdb:{pdb_id.upper()}", "pdb", "https://www.rcsb.org/structure/"
+    )
+    protein.ld_id = f"pdb:{pdb_id.upper()}"
 
     # Add references
-    protein.references.append(f"https://www.rcsb.org/structure/{pdb_id}")
+    protein.references.append(f"https://www.rcsb.org/structure/{pdb_id.upper()}")
 
     # Add citation if available
     if pdb_response.citation and pdb_response.citation[0].doi:
