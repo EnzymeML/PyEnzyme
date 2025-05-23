@@ -7,7 +7,7 @@ from .versions.io import EnzymeMLHandler
 from .fetcher import *  # noqa: F403
 from .composer import compose
 from .suite import EnzymeMLSuite
-from .plotting import plot
+from .plotting import plot, plot_interactive
 
 # Input functions
 from_csv = EnzymeMLHandler.from_csv

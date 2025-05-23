@@ -1,3 +1,4 @@
+import os
 import tempfile
 
 import pytest
@@ -61,6 +62,21 @@ class TestPsycesThinLayer:
 
             assert fig is not None, "Figure is not created"
             assert axs is not None, "Axes are not created"
+
+    def test_plot_interactive(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            doc = pe.read_enzymeml("tests/fixtures/modeling/enzmldoc_reaction.json")
+            layer = ThinLayerPysces(doc, tmp_dir)
+            layer.optimize()
+
+            out_file = "test.html"
+            pe.plot_interactive(
+                layer.enzmldoc,
+                thinlayer=layer,
+                output_nb=False,
+                show=False,
+                out=out_file,
+            )
 
     def test_compliance(self):
         doc = pe.read_enzymeml("tests/fixtures/modeling/enzmldoc.json")
