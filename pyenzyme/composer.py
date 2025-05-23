@@ -1,3 +1,4 @@
+import re
 from typing import List, Optional, Tuple, Callable, Any
 
 from rich.console import Console
@@ -32,6 +33,7 @@ def compose(
     small_molecules: Optional[list[str]] = None,
     reactions: Optional[list[str]] = None,
     vessel: Optional[v2.Vessel] = None,
+    id_mapping: Optional[dict[str, str]] = None,
 ) -> v2.EnzymeMLDocument:
     """
     Compose an EnzymeML document from proteins, small molecules, and reactions.
@@ -46,6 +48,7 @@ def compose(
     Returns:
         A complete EnzymeML document with fetched entities
     """
+
     proteins = proteins or []
     small_molecules = small_molecules or []
     reactions = reactions or []
@@ -93,6 +96,23 @@ def compose(
     small_molecule_objects.sort(key=lambda x: x.id)
     protein_objects.sort(key=lambda x: x.id)
     reaction_objects.sort(key=lambda x: x.id)
+
+    if id_mapping:
+        small_molecule_objects = _apply_id_mapping(
+            small_molecule_objects,
+            id_mapping,
+            r"CHEBI|PUBCHEM",
+        )
+        protein_objects = _apply_id_mapping(
+            protein_objects,
+            id_mapping,
+            r"UNIPROT|PDB",
+        )
+        reaction_objects = _apply_id_mapping(
+            reaction_objects,
+            id_mapping,
+            r"RHEA",
+        )
 
     # Set vessel IDs if vessel is provided
     vessels = []
@@ -212,3 +232,34 @@ def _remove_duplicates(objects: List[Any]) -> List[Any]:
             unique_objects.append(obj)
 
     return unique_objects
+
+
+def _apply_id_mapping(
+    objects: List[Any],
+    id_mapping: dict[str, str],
+    prefix: str,
+) -> List[Any]:
+    """
+    Apply ID mapping to objects based on the provided mapping.
+
+    Args:
+        objects: List of objects to apply ID mapping to
+        id_mapping: Dictionary mapping old IDs to new IDs
+        prefix: Regex pattern to match ID prefixes
+
+    Returns:
+        List of objects with updated IDs
+    """
+    for obj in objects:
+        key = next(
+            (
+                k
+                for k in id_mapping
+                if re.sub(prefix + ":", "", k) in obj.ld_id.replace("_", ":")
+            ),
+            None,
+        )
+        if key:
+            obj.id = id_mapping[key]
+
+    return objects
