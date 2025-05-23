@@ -37,24 +37,9 @@ python3 setup.py install
 PyEnzyme comes with many flavors, choose whether you want only the base installation, the modeling package or all of it
 using the following options.
 
-```
-# COPASI - modeling
-python -m pip install "pyenzyme[copasi]"
-
+```bash
 # PySCeS - modeling
 python -m pip install "pyenzyme[pysces]"
-
-# Modeling package
-python -m pip install "pyenzyme[modeling]"
-
-# REST API
-python -m pip install "pyenzyme[rest]"
-
-# Dataverse
-python -m pip install "pyenzyme[dataverse]"
-
-# Complete
-python -m pip install "pyenzyme[all]"
 ```
 
 ## ⚙️ Example code
