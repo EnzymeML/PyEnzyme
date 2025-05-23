@@ -1,0 +1,4416 @@
+{
+    "name": "ABTS measurement",
+    "references": [],
+    "created": null,
+    "modified": null,
+    "creators": [],
+    "vessels": [
+        {
+            "id": "vessel0",
+            "name": "vessel0",
+            "volume": 1.0,
+            "unit": {
+                "id": "l",
+                "name": "l",
+                "base_units": [
+                    {
+                        "kind": "litre",
+                        "exponent": 1,
+                        "multiplier": 1.0,
+                        "scale": 0.0
+                    }
+                ]
+            }
+        }
+    ],
+    "proteins": [
+      {
+        "id": "slac",
+        "name": "slac",
+        "constant": false,
+        "sequence": null,
+        "vessel_id": "vessel0",
+        "ecnumber": null,
+        "organism": null,
+        "organism_tax_id": null,
+        "references": []
+      },
+      {
+        "id": "slac_inactive",
+        "name": "slac_inactive",
+        "constant": false,
+        "sequence": null,
+        "vessel_id": "vessel0",
+        "ecnumber": null,
+        "organism": null,
+        "organism_tax_id": null,
+        "references": []
+      }
+    ],
+    "small_molecules": [
+      {
+        "id": "abts",
+        "name": "abts",
+        "constant": false,
+        "vessel_id": "vessel0",
+        "canonical_smiles": null,
+        "inchi": null,
+        "inchikey": null,
+        "references": []
+      },
+      {
+        "id": "buffer",
+        "name": "buffer",
+        "constant": false,
+        "vessel_id": "vessel0",
+        "canonical_smiles": null,
+        "inchi": null,
+        "inchikey": null,
+        "references": []
+      },
+      {
+        "id": "abts_radical",
+        "name": "abts_radical",
+        "constant": false,
+        "vessel_id": "vessel0",
+        "canonical_smiles": null,
+        "inchi": null,
+        "inchikey": null,
+        "references": []
+      }
+    ],
+    "reactions": [
+      {
+        "id": "reaction0",
+        "name": "reaction0",
+        "reversible": false,
+        "reactants": [
+          {
+            "species_id": "abts",
+            "stoichiometry": 1.0
+          }
+        ],
+        "products": [
+          {
+            "species_id": "abts_radical",
+            "stoichiometry": 1.0
+          }
+        ],
+        "kinetic_law": {
+          "species_id": "slac_oxidation",
+          "equation": "k_cat * slac * abts / (K_M + abts)",
+          "equation_type": "rateLaw"
+        }
+      },
+      {
+        "id": "reaction1",
+        "name": "reaction1",
+        "reversible": false,
+        "reactants": [
+          {
+            "species_id": "slac",
+            "stoichiometry": 1.0
+          }
+        ],
+        "products": [
+          {
+            "species_id": "slac_inactive",
+            "stoichiometry": 1.0
+          }
+        ],
+        "kinetic_law": {
+          "species_id": "slac_inactivation",
+          "equation": "k_ie * slac",
+          "equation_type": "rateLaw"
+        }
+      }
+    ],
+    "parameters": [
+      {
+        "id": "k_cat",
+        "name": "k_cat",
+        "symbol": "k_cat",
+        "value": 1.85,
+        "unit": null,
+        "initial_value": 0.01,
+        "upper_bound": 2.0,
+        "lower_bound": 1e-06,
+        "stderr": null,
+        "constant": true
+      },
+      {
+        "id": "K_M",
+        "name": "K_M",
+        "symbol": "K_M",
+        "value": 20.0,
+        "unit": null,
+        "initial_value": 120.0,
+        "upper_bound": 150.0,
+        "lower_bound": 1e-06,
+        "stderr": null,
+        "constant": true
+      },
+      {
+        "id": "k_ie",
+        "name": "k_ie",
+        "symbol": "k_ie",
+        "value": 0.001,
+        "unit": null,
+        "initial_value": 0.01,
+        "upper_bound": 0.05,
+        "lower_bound": 1e-06,
+        "stderr": null,
+        "constant": true
+      }
+    ],
+    "measurements": [
+      {
+        "id": "measurement0",
+        "name": "measurement0 - A2",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 4.372881218445347,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              4.372881218445347,
+              4.051411953466072,
+              3.9623896954718116,
+              3.640920430492537,
+              3.482658638502741,
+              3.230428907519002,
+              3.116678244526336,
+              3.00292758153367,
+              2.8051003415464244,
+              2.6171644635585407,
+              2.458902671568744
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement1",
+        "name": "measurement0 - B2",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 4.595436863430999,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              4.595436863430999,
+              4.595436863430999,
+              4.550925734433868,
+              4.160216935459058,
+              3.507387043501147,
+              3.3145054845135817,
+              3.428256147506248,
+              3.3145054845135817,
+              3.3145054845135817,
+              3.185917778521872,
+              2.9732534955355834
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement2",
+        "name": "measurement0 - C2",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 4.397609623443753,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              4.397609623443753,
+              4.1701082974584205,
+              3.937661290473406,
+              3.6656488354909427,
+              3.4925500005021024,
+              3.166135054523147,
+              2.993036219534307,
+              2.844665789543873,
+              2.6418928685569467,
+              2.5281422055642806,
+              2.364934732574802
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement3",
+        "name": "measurement1 - A3",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 9.288888132128404,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              9.288888132128404,
+              8.700352093166348,
+              8.245349441195682,
+              7.780455427225656,
+              7.340289818254034,
+              6.939689657279861,
+              6.5737092633034555,
+              6.227511593325777,
+              6.039575715337892,
+              5.7972373463535165,
+              5.465876719374879
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement4",
+        "name": "measurement1 - B3",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 9.194920193134463,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              9.194920193134463,
+              8.631112559170813,
+              8.161272864201104,
+              7.760672703226931,
+              7.350181180253396,
+              6.949581019279223,
+              6.613274711300906,
+              6.281914084322269,
+              5.9851732243414,
+              5.7428348553570245,
+              5.4906051243732845
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement5",
+        "name": "measurement1 - C3",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 9.13557202113829,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              9.13557202113829,
+              8.680569369167623,
+              8.289860570192813,
+              7.864532004220235,
+              7.4540404812467,
+              7.1127884922687015,
+              7.038603277273484,
+              6.529198134306326,
+              6.474795643309832,
+              6.28685976532195,
+              6.07419548233566
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement6",
+        "name": "measurement2 - A4",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 14.259297536807956,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              14.259297536807956,
+              13.289944060870454,
+              12.602494401914774,
+              11.924936104958455,
+              11.445205047989386,
+              10.802266518030835,
+              10.292861375063678,
+              9.87742417109046,
+              9.536172182112463,
+              9.130626340138608,
+              8.769591627161885
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement7",
+        "name": "measurement2 - B4",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 14.120818468816886,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              14.120818468816886,
+              13.354237913866307,
+              12.651951211911586,
+              12.058469491949845,
+              11.60346683997918,
+              11.059441930014255,
+              10.589602235044547,
+              10.119762540074838,
+              9.694433974102258,
+              9.353181985124259,
+              9.056441125143392
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement8",
+        "name": "measurement2 - C4",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 13.838914651835061,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              13.838914651835061,
+              13.171247716878106,
+              12.572820315916687,
+              12.004067000953354,
+              11.450150728989065,
+              10.891288776025094,
+              10.451123167053474,
+              9.976337791084084,
+              9.555954906111188,
+              9.22459427913255,
+              8.858613885156146
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement9",
+        "name": "measurement3 - A5",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 23.567069178207873,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              23.567069178207873,
+              22.543313211273876,
+              21.52450292533956,
+              20.52547536340397,
+              19.75394912745371,
+              18.88845495250951,
+              18.651062264524814,
+              17.587740849593366,
+              16.97942208663259,
+              16.51947375366224,
+              16.024905653694127
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement10",
+        "name": "measurement3 - B5",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 23.893484124186827,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              23.893484124186827,
+              22.765868856259527,
+              21.78662401832266,
+              20.87167303338165,
+              20.06552703043362,
+              19.269272389484957,
+              18.527420239532788,
+              17.84491626157679,
+              17.25143454161505,
+              16.732138036648532,
+              16.217787212681692
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement11",
+        "name": "measurement3 - C5",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 23.631363031203726,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              23.631363031203726,
+              22.483965039277702,
+              21.509665882340517,
+              20.678791474394085,
+              19.857808428447015,
+              19.041771063499624,
+              18.359267085543628,
+              17.706437193585717,
+              17.093172749625253,
+              16.608496011656502,
+              16.089199506689983
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement12",
+        "name": "measurement4 - A6",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 48.3498766676101,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              48.3498766676101,
+              45.980895468762824,
+              44.333983695869,
+              42.88984484396211,
+              41.64847891304214,
+              40.35765617212536,
+              39.29928043819359,
+              38.24090470426183,
+              37.32595371932082,
+              36.45056818237725,
+              35.62958513643019
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement13",
+        "name": "measurement4 - B6",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 48.15204942762285,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              48.15204942762285,
+              45.99078683076219,
+              44.29936392887124,
+              42.756311456970714,
+              41.46548871605394,
+              40.20928574213493,
+              39.032213664210815,
+              38.038131783274906,
+              37.133072160333256,
+              36.35165456238363,
+              35.580128326433375
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement14",
+        "name": "measurement4 - C6",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 48.2954741766136,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              48.2954741766136,
+              46.27269064774401,
+              44.73458385684318,
+              43.27066228093756,
+              42.04413339301664,
+              40.94124653008773,
+              39.783957176162346,
+              38.78987529522644,
+              37.84030454328766,
+              36.94019060134569,
+              36.27746934738842
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement15",
+        "name": "measurement5 - A7",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 72.99420508902124,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              72.99420508902124,
+              69.77456675822881,
+              67.65781529036528,
+              65.85758740648134,
+              64.19583859058848,
+              62.64784043768828,
+              61.149299094784894,
+              59.84363931086907,
+              58.64183882794656,
+              57.59830013701383,
+              56.539924403082075
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement16",
+        "name": "measurement5 - B7",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 72.67768150504163,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              72.67768150504163,
+              69.7003815432336,
+              67.56384735137134,
+              65.78340219148612,
+              64.22551267658658,
+              62.6181663516902,
+              61.20370158578138,
+              59.93760724986302,
+              59.02760194592169,
+              57.77139897200267,
+              56.68334915207282
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement17",
+        "name": "measurement5 - C7",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 72.92001987402602,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              72.92001987402602,
+              70.04163353221159,
+              67.85069684935284,
+              66.06036032746827,
+              64.57171034656425,
+              62.949526978668835,
+              61.6982696857495,
+              60.63000258981838,
+              59.279831676905424,
+              58.18189049497621,
+              57.222428381038064
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement18",
+        "name": "measurement6 - A8",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 97.33190128845216,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              97.33190128845216,
+              93.6226405386913,
+              91.03604937585806,
+              88.7709274780041,
+              86.79265507813163,
+              84.86383948825599,
+              83.06855728537174,
+              81.57990730446771,
+              80.17038821955859,
+              78.82516298764531,
+              77.54423160872788
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement19",
+        "name": "measurement6 - B8",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 95.83830562654845,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              95.83830562654845,
+              92.89562543173817,
+              90.46729606089472,
+              88.45934957502418,
+              86.50085989915044,
+              84.79954563526013,
+              82.9745893463778,
+              81.61452707146547,
+              80.20006230555667,
+              78.96858773663607,
+              77.61841682372311
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement20",
+        "name": "measurement6 - C8",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 97.50994580444068,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              97.50994580444068,
+              93.7264998396846,
+              91.20914821084689,
+              89.09734242398305,
+              87.19820092010549,
+              85.40291871722123,
+              83.74611558232806,
+              82.38605330741574,
+              81.06555648050087,
+              79.75495101558536,
+              78.5135850846654
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement21",
+        "name": "measurement7 - A9",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 146.36832840029072,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              146.36832840029072,
+              140.82421999964814,
+              137.31278648987453,
+              135.01799050602247,
+              133.3908614571274,
+              131.01693457728044,
+              128.06436302047078,
+              127.05544409653582,
+              125.32940142764711,
+              123.811077360745,
+              121.50144433389391
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement22",
+        "name": "measurement7 - B9",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 143.79162859945683,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              143.79162859945683,
+              140.4137284766746,
+              137.27816672287676,
+              135.12679548801546,
+              133.257328070136,
+              131.09111979227566,
+              128.6430076974335,
+              127.28294542252118,
+              125.39864096164266,
+              123.60830443975809,
+              122.04546924385885
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      },
+      {
+        "id": "measurement23",
+        "name": "measurement7 - C9",
+        "species_data": [
+          {
+            "species_id": "buffer",
+            "prepared": null,
+            "initial": 100.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac",
+            "prepared": null,
+            "initial": 0.079037949,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts",
+            "prepared": null,
+            "initial": 145.94299983431813,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data": [
+              145.94299983431813,
+              141.17041766962583,
+              137.8963768478369,
+              135.79446242297243,
+              133.34635032813026,
+              131.29883839426228,
+              129.33540303738883,
+              127.21370588852562,
+              125.517337305635,
+              124.16716639272205,
+              122.65378800681961
+            ],
+            "time": [
+              0.0,
+              87.0,
+              175.0,
+              262.0,
+              350.0,
+              449.0,
+              540.0,
+              629.0,
+              720.0,
+              809.0,
+              899.0
+            ],
+            "time_unit": {
+              "id": "s",
+              "name": "s",
+              "base_units": [
+                {
+                  "kind": "second",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "abts_radical",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "umol / l",
+              "name": "umol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -6.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          },
+          {
+            "species_id": "slac_inactive",
+            "prepared": null,
+            "initial": 0.0,
+            "data_unit": {
+              "id": "mmol / l",
+              "name": "mmol / l",
+              "base_units": [
+                {
+                  "kind": "mole",
+                  "exponent": 1,
+                  "multiplier": 1.0,
+                  "scale": -3.0
+                },
+                {
+                  "kind": "litre",
+                  "exponent": -1,
+                  "multiplier": 1.0,
+                  "scale": 0.0
+                }
+              ]
+            },
+            "time_unit": null,
+            "data_type": "concentration",
+            "is_simulated": false
+          }
+        ],
+        "group_id": null,
+        "ph": null,
+        "temperature": null,
+        "temperature_unit": null
+      }
+    ]
+  }
