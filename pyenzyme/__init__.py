@@ -7,6 +7,7 @@ from .versions.io import EnzymeMLHandler
 from .fetcher import *  # noqa: F403
 from .composer import compose
 from .suite import EnzymeMLSuite
+from .plotting import plot
 
 # Input functions
 from_csv = EnzymeMLHandler.from_csv
@@ -34,4 +35,5 @@ __all__ = [
     "to_sbml",
     "write_enzymeml",
     "compose",
+    "plot",
 ]
