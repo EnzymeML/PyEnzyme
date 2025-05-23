@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install pytest-cov openpyxl pytest-httpx
+          python3 -m pip install pytest-cov openpyxl pytest-httpx pysces
           pip3 install -e .
 
       - name: Test with pytest
