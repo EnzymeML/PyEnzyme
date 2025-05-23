@@ -150,7 +150,7 @@ def _is_notebook() -> bool:
         from IPython.core.getipython import get_ipython
 
         return get_ipython() is not None
-    except NameError:
+    except ModuleNotFoundError:
         return False
 
 
