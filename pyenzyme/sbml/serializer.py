@@ -352,6 +352,7 @@ def _add_reaction_element(
     species_ref.setConstant(True)
     species_ref.setSpecies(element.species_id)
     species_ref.setStoichiometry(abs(element.stoichiometry))
+    species_ref.setConstant(False)
 
 
 def _add_rate_law(equation: pe.Equation, reac: libsbml.Reaction):
