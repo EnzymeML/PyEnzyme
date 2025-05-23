@@ -1,4 +1,6 @@
 import tempfile
+
+import pytest
 import pyenzyme as pe
 from pyenzyme.thinlayers import ThinLayerPysces
 from pyenzyme.versions import v2
@@ -59,6 +61,13 @@ class TestPsycesThinLayer:
 
             assert fig is not None, "Figure is not created"
             assert axs is not None, "Axes are not created"
+
+    def test_compliance(self):
+        doc = pe.read_enzymeml("tests/fixtures/modeling/enzmldoc.json")
+
+        with pytest.raises(ValueError):
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                ThinLayerPysces(doc, tmp_dir)
 
     @staticmethod
     def _extract_parameter(doc: v2.EnzymeMLDocument, symbol: str) -> v2.Parameter:

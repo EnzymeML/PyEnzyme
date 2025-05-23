@@ -73,6 +73,11 @@ class ThinLayerPysces(BaseThinLayer):
             >>> doc = pe.read_enzymeml("path/to/enzmldoc.json")
             >>> tl = tls.ThinLayerPysces(doc)
         """
+
+        # Currently, the ThinLayerPysces only supports the reaction model
+        # TODO: Add support for Rate Rules
+        self._check_compliance(enzmldoc)
+
         super().__init__(
             enzmldoc=enzmldoc,
             measurement_ids=measurement_ids,
@@ -88,6 +93,25 @@ class ThinLayerPysces(BaseThinLayer):
 
         # Convert model to PSC
         self._get_pysces_model(model_dir)
+
+    def _check_compliance(self, enzmldoc: v2.EnzymeMLDocument):
+        """
+        Check if the EnzymeML document is compliant with the PySCeS model.
+        """
+        has_kinetic_laws = any(m.kinetic_law is not None for m in enzmldoc.reactions)
+
+        has_odes = any(
+            m.equation_type == v2.EquationType.ODE for m in enzmldoc.equations
+        )
+
+        if not has_kinetic_laws:
+            raise ValueError("EnzymeML document must contain kinetic laws")
+
+        if has_odes:
+            raise ValueError(
+                "The PySCeS thinlayer only supports Kinetic Laws, not ODEs",
+                "Support for ODEs will be added in the future.",
+            )
 
     def integrate(
         self,
