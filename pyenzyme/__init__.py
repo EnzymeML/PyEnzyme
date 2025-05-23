@@ -36,4 +36,5 @@ __all__ = [
     "write_enzymeml",
     "compose",
     "plot",
+    "plot_interactive",
 ]
