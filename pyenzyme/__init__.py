@@ -20,6 +20,7 @@ read_enzymeml_from_string = EnzymeMLHandler.read_enzymeml_from_string
 # Output functions
 to_pandas = EnzymeMLHandler.to_pandas
 to_sbml = EnzymeMLHandler.to_sbml
+to_petab = EnzymeMLHandler.to_petab
 write_enzymeml = EnzymeMLHandler.write_enzymeml
 
 __all__ = [

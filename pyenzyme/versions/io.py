@@ -6,6 +6,8 @@ import pandas as pd
 
 from pydantic import ValidationError
 import rich
+from pyenzyme.petab.io import to_petab
+from pyenzyme.petab.petab import PEtab
 from pyenzyme.sbml.serializer import to_sbml
 from pyenzyme.tabular import from_dataframe, read_csv, read_excel, to_pandas
 from pyenzyme.versions import v2
@@ -145,6 +147,20 @@ class EnzymeMLHandler:
             Tuple of the SBML document and the measurement data, or None if path is None
         """
         return to_sbml(enzmldoc, path)
+
+    @classmethod
+    def to_petab(
+        cls,
+        enzmldoc: v2.EnzymeMLDocument,
+        path: Path | str,
+    ) -> PEtab:  # noqa: F405
+        """Convert an EnzymeML document to PEtab format and write to a file.
+
+        Args:
+            enzmldoc: The EnzymeML document to convert
+            path: Path to write the PEtab document to
+        """
+        return to_petab(enzmldoc, path)
 
     @classmethod
     def from_sbml(
