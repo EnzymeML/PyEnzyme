@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, Self
+from typing import List, Optional
 from pydantic import ConfigDict, Field
 
 from pyenzyme.versions import v2
@@ -38,7 +38,7 @@ class ObservableRow(BaseRow):
     )
 
     @classmethod
-    def from_enzymeml(cls, enzmldoc: v2.EnzymeMLDocument) -> list[Self]:
+    def from_enzymeml(cls, enzmldoc: v2.EnzymeMLDocument) -> List["ObservableRow"]:
         """Extract observable rows from an EnzymeML document.
 
         Collects all species with data across measurements and creates observable rows.

@@ -1,4 +1,4 @@
-from typing import Dict, Self, Any
+from typing import Dict, Any
 from pydantic import Field
 
 from pyenzyme.versions import v2
@@ -35,14 +35,16 @@ class ConditionRow(BaseRow):
         }
 
     @classmethod
-    def from_measurements(cls, measurements: list[v2.Measurement]) -> list[Self]:
+    def from_measurements(
+        cls, measurements: list[v2.Measurement]
+    ) -> list["ConditionRow"]:
         """
         Creates a list of ConditionRow objects from a list of PyEnzyme Measurement objects.
         """
         return [cls.from_measurement(measurement) for measurement in measurements]
 
     @classmethod
-    def from_measurement(cls, measurement: v2.Measurement) -> Self:
+    def from_measurement(cls, measurement: v2.Measurement) -> "ConditionRow":
         """
         Creates a ConditionRow from a PyEnzyme Measurement object.
 

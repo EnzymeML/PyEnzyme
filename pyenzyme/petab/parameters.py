@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional, Self
+from typing import List, Optional
 from pydantic import ConfigDict, Field, field_serializer, field_validator
 
 from pyenzyme.versions import v2
@@ -108,14 +108,14 @@ class ParameterRow(BaseRow):
         return [float(x) for x in v.split(";")]
 
     @classmethod
-    def from_parameters(cls, parameters: list[v2.Parameter]) -> list[Self]:
+    def from_parameters(cls, parameters: List[v2.Parameter]) -> List["ParameterRow"]:
         """
         Creates a list of ParameterRow objects from a list of PyEnzyme Parameter objects.
         """
         return [cls.from_parameter(parameter) for parameter in parameters]
 
     @classmethod
-    def from_parameter(cls, parameter: v2.Parameter) -> Self:
+    def from_parameter(cls, parameter: v2.Parameter) -> "ParameterRow":
         """
         Creates a ParameterRow from a PyEnzyme Parameter object.
         """

@@ -1,4 +1,4 @@
-from typing import List, Self, Union
+from typing import List, Union
 from pydantic import Field
 
 from pyenzyme.versions import v2
@@ -58,7 +58,9 @@ class MeasurementRow(BaseRow):
     replicate_id: str | None = Field(alias="replicateId", default=None)
 
     @classmethod
-    def from_measurements(cls, measurements: list[v2.Measurement]) -> List[Self]:
+    def from_measurements(
+        cls, measurements: list[v2.Measurement]
+    ) -> List["MeasurementRow"]:
         """
         Convert a list of EnzymeML Measurement objects to a list of PEtab MeasurementRow objects.
         """
@@ -69,7 +71,7 @@ class MeasurementRow(BaseRow):
         ]
 
     @classmethod
-    def from_measurement(cls, measurement: v2.Measurement) -> List[Self]:
+    def from_measurement(cls, measurement: v2.Measurement) -> List["MeasurementRow"]:
         """
         Convert an EnzymeML Measurement object to a list of PEtab MeasurementRow objects.
 
@@ -81,7 +83,7 @@ class MeasurementRow(BaseRow):
                 species concentration time series data.
 
         Returns:
-            List[Self]: A list of MeasurementRow objects, each representing a single
+            List["MeasurementRow"]: A list of MeasurementRow objects, each representing a single
                 data point from the original measurement. Each row contains the species ID,
                 measurement condition ID, the measured value, and the time point.
 
