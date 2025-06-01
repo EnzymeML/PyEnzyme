@@ -137,3 +137,9 @@ docker run pyenzyme
 
 `PyEnzyme` is free and open-source software licensed under
 the [BSD 2-Clause License](https://github.com/EnzymeML/PyEnzyme/blob/main/LICENSE).
+
+---
+
+<div align="center">
+<strong>Made with ❤️ by the EnzymeML Team</strong>
+</div>
