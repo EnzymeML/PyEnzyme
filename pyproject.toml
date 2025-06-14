@@ -21,6 +21,7 @@ httpx = ">=0.27"
 mdmodels = "^0.2.1"
 joblib = "^1.5.0"
 bokeh = "^3.7.3"
+matplotlib = "^3.10"
 
 [tool.poetry.group.psyces.dependencies]
 pysces = "^1.2.3"
