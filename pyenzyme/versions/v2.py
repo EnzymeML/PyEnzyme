@@ -2431,23 +2431,3 @@ class DataTypes(Enum):
     TRANSMITTANCE = "transmittance"
     TURNOVER = "turnover"
     YIELD = "yield"
-
-
-# Rebuild all the classes within this file
-for cls in [
-    EnzymeMLDocument,
-    Creator,
-    Vessel,
-    Protein,
-    Complex,
-    SmallMolecule,
-    Reaction,
-    ReactionElement,
-    ModifierElement,
-    Equation,
-    Variable,
-    Parameter,
-    Measurement,
-    MeasurementData,
-]:
-    cls.model_rebuild()
