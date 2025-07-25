@@ -42,9 +42,6 @@ class EnzymeMLSuite:
 
         content = response.json()["data"]["content"]
 
-        if not isinstance(content["references"], list):
-            content["references"] = []
-
         return pe.read_enzymeml_from_string(content)
 
     def update_current(self, doc: pe.EnzymeMLDocument):
