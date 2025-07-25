@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
+<sbml xmlns:enzymeml="https://www.enzymeml.org/v2" xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
   <model name="ABTS measurement" volumeUnits="u4">
     <annotation>
       <data xmlns="https://www.enzymeml.org/v2" file="./data.tsv">
@@ -8,264 +8,264 @@
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="4.372881218445347" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="4.372881218445347" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement1" name="measurement0 - B2">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="4.595436863430999" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="4.595436863430999" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement2" name="measurement0 - C2">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="4.397609623443753" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="4.397609623443753" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement3" name="measurement1 - A3">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="9.288888132128404" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="9.288888132128404" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement4" name="measurement1 - B3">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="9.194920193134463" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="9.194920193134463" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement5" name="measurement1 - C3">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="9.13557202113829" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="9.13557202113829" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement6" name="measurement2 - A4">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="14.259297536807956" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="14.259297536807956" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement7" name="measurement2 - B4">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="14.120818468816886" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="14.120818468816886" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement8" name="measurement2 - C4">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="13.838914651835061" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="13.838914651835061" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement9" name="measurement3 - A5">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="23.567069178207873" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="23.567069178207873" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement10" name="measurement3 - B5">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="23.893484124186827" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="23.893484124186827" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement11" name="measurement3 - C5">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="23.631363031203726" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="23.631363031203726" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement12" name="measurement4 - A6">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="48.3498766676101" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="48.3498766676101" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement13" name="measurement4 - B6">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="48.15204942762285" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="48.15204942762285" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement14" name="measurement4 - C6">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="48.2954741766136" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="48.2954741766136" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement15" name="measurement5 - A7">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="72.99420508902124" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="72.99420508902124" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement16" name="measurement5 - B7">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="72.67768150504163" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="72.67768150504163" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement17" name="measurement5 - C7">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="72.92001987402602" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="72.92001987402602" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement18" name="measurement6 - A8">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="97.33190128845216" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="97.33190128845216" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement19" name="measurement6 - B8">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="95.83830562654845" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="95.83830562654845" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement20" name="measurement6 - C8">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="97.50994580444068" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="97.50994580444068" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement21" name="measurement7 - A9">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="146.36832840029072" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="146.36832840029072" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement22" name="measurement7 - B9">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="143.79162859945683" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="143.79162859945683" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
         <measurement id="measurement23" name="measurement7 - C9">
           <conditions>
             <ph/>
             <temperature/>
           </conditions>
-          <speciesData species="buffer" value="100.0" type="CONCENTRATION" unit="u5"/>
-          <speciesData species="slac" value="0.079037949" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts" value="145.94299983431813" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="abts_radical" value="0.0" type="CONCENTRATION" unit="u6"/>
-          <speciesData species="slac_inactive" value="0.0" type="CONCENTRATION" unit="u5"/>
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="145.94299983431813" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
         </measurement>
       </data>
     </annotation>
