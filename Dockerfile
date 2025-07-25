@@ -1,4 +1,5 @@
-FROM python:3.11.9-slim-bullseye
+ARG PYTHON_VERSION=3.11.9
+FROM python:${PYTHON_VERSION}-slim-bullseye
 
 RUN apt-get update
 RUN pip install poetry
