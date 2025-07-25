@@ -143,7 +143,7 @@ def extract_namespaces(xml_string: str | None) -> set[str]:
         set[str]: A set of namespace URIs.
     """
 
-    if xml_string is None:
+    if xml_string is None or xml_string == "":
         raise ValueError("No XML string provided")
 
     pattern = r"\{(.*)\}"
