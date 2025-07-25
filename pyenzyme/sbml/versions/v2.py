@@ -370,7 +370,7 @@ class MeasurementAnnot(
         )
 
     @staticmethod
-    def _map_data_type(dtype: str):
+    def _map_data_type(dtype: str) -> str:
         """
         Maps a string data type to a DataTypes enum value.
 
@@ -383,10 +383,10 @@ class MeasurementAnnot(
         Raises:
             ValueError: If the data type is not supported.
         """
-        if data_type := getattr(DataTypes, dtype, None):
-            return data_type
-        else:
-            raise ValueError(f"Data type '{dtype}' not supported")
+        for data_type in DataTypes:
+            if data_type.value == dtype or data_type.name == dtype:
+                return data_type.value
+        raise ValueError(f"Data type '{dtype}' not supported")
 
 
 class SpeciesDataAnnot(
@@ -410,7 +410,7 @@ class SpeciesDataAnnot(
 
     species_id: str = attr(name="species")
     initial: float | None = attr(name="value", default=None)
-    type: str | None = attr(name="type", default="CONCENTRATION")
+    type: str | None = attr(name="type", default=DataTypes.CONCENTRATION.value)
     unit: str = attr(name="unit")
 
 

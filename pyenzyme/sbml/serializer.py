@@ -66,6 +66,13 @@ def to_sbml(
 
     doc = deepcopy(enzmldoc)
     sbmldoc = libsbml.SBMLDocument()
+
+    ns = libsbml.XMLNamespaces()
+    ns.add(NSMAP["enzymeml"], "enzymeml")
+
+    sbmldoc.setNamespaces(ns)
+    sbmldoc.setPackageRequired("enzymeml", True)
+
     model = sbmldoc.createModel()
     model.setName(doc.name)
     units = _assign_ids_to_units(tools.find_unique(doc, pe.UnitDefinition))
@@ -499,7 +506,8 @@ def _add_measurements(measurements: list[pe.Measurement]):
             if species_data.data_type is None:
                 data_type = None
             else:
-                data_type = species_data.data_type.name
+                print(species_data.data_type)
+                data_type = species_data.data_type.value
 
             species_annot = v2.SpeciesDataAnnot(
                 species_id=species_data.species_id,
@@ -513,7 +521,7 @@ def _add_measurements(measurements: list[pe.Measurement]):
         annot.measurements.append(meas_annot)
 
     if not annot.is_empty():
-        model.appendAnnotation(annot.to_xml(encoding="unicode"))
+        model.appendAnnotation(annot.to_xml(encoding="unicode", exclude_none=True))
 
 
 def _create_condition_element(
