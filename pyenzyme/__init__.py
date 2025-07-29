@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from mdmodels.units.unit_definition import UnitDefinition
+from mdmodels.units.unit_definition import UnitDefinition, UnitType
 
 from .versions.v2 import *  # noqa: F403
 from .versions.io import EnzymeMLHandler
@@ -8,6 +8,7 @@ from .fetcher import *  # noqa: F403
 from .composer import compose
 from .suite import EnzymeMLSuite
 from .plotting import plot, plot_interactive
+from .pretty import summary
 
 # Input functions
 from_csv = EnzymeMLHandler.from_csv
@@ -25,6 +26,7 @@ write_enzymeml = EnzymeMLHandler.write_enzymeml
 
 __all__ = [
     "UnitDefinition",
+    "UnitType",
     "EnzymeMLSuite",
     "EnzymeMLHandler",
     "from_csv",
@@ -38,4 +40,5 @@ __all__ = [
     "compose",
     "plot",
     "plot_interactive",
+    "summary",
 ]
