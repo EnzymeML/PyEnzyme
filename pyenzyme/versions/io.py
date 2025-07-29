@@ -159,6 +159,9 @@ class EnzymeMLHandler:
         Args:
             enzmldoc: The EnzymeML document to convert
             path: Path to write the PEtab document to
+
+        Returns:
+            The PEtab object
         """
         return to_petab(enzmldoc, path)
 
