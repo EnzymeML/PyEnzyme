@@ -118,6 +118,12 @@ Explore all the features of **PyEnzyme** in our [documentation](https://pyenzyme
 and take part in [Discussions](https://github.com/EnzymeML/PyEnzyme/discussions)
 and/or [Issues](https://github.com/EnzymeML/PyEnzyme/issues).
 
+## 🔙 Backwards compatibility
+
+For backward compatibility with previous versions of PyEnzyme, this release includes the original `v1.1.5` version of the package under the `v1` subpackage. Users may continue to utilize the legacy API by importing from `pyenzyme.v1` instead of `pyenzyme`. Please be aware that the dependencies for the current `v2` implementation differ from those of `v1` and must be installed separately using `poetry install --with v1`.
+
+For new projects, we recommend utilizing the updated API available in the package root. Existing users of the legacy API are encouraged to migrate to the current version to benefit from the latest features and improvements.
+
 ## 🧪 Testing
 
 In order to run tests there are two different ways. First you can utilize `pytest` directly by running the following:
