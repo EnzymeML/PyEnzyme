@@ -14,6 +14,7 @@ import requests
 
 from pyenzyme.fetcher.chebi import fetch_chebi
 from pyenzyme.versions import v2
+import re
 
 
 class RheaResult(BaseModel):
@@ -165,8 +166,14 @@ def fetch_rhea(
     rhea_id = client.json_content.id
 
     equation = client.json_content.equation
-    n_reactants = len(equation.split("=")[0].split("+"))
-    n_products = len(equation.split("=")[1].split("+"))
+
+    # Split equation into reactants and products sides
+    equation_sides = equation.split("=")
+    reactant_species = _split_chemical_equation_side(equation_sides[0])
+    product_species = _split_chemical_equation_side(equation_sides[1])
+
+    n_reactants = len(reactant_species)
+    n_products = len(product_species)
 
     small_molecules = []
     reactants = []
@@ -212,3 +219,24 @@ def fetch_rhea(
     reaction.ld_id = f"rhea:{rhea_id}"
 
     return reaction, small_molecules
+
+
+def _split_chemical_equation_side(equation_side: str) -> List[str]:
+    """
+    Split a chemical equation side on '+' while respecting parentheses.
+
+    This function properly handles chemical formulas like 'NAD(+)' and 'H(+)'
+    where the '+' is part of the chemical formula, not a separator.
+
+    Args:
+        equation_side: One side of a chemical equation (e.g., "ethanol + NAD(+)")
+
+    Returns:
+        List of chemical species as strings
+    """
+    # Use regex to split on '+' that are not inside parentheses
+    # This pattern matches '+' that are not preceded by an opening parenthesis
+    # without a closing parenthesis in between
+    pattern = r"\+(?![^()]*\))"
+    species = re.split(pattern, equation_side)
+    return [species.strip() for species in species if species.strip()]
