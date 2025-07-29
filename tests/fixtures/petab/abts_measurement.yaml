@@ -1,0 +1,11 @@
+format_version: 1
+parameter_file: tests/fixtures/petab/abts_measurement_parameters.tsv
+problems:
+- condition_files:
+  - tests/fixtures/petab/abts_measurement_conditions.tsv
+  measurement_files:
+  - tests/fixtures/petab/abts_measurement_measurements.tsv
+  observable_files:
+  - tests/fixtures/petab/abts_measurement_observables.tsv
+  sbml_files:
+  - tests/fixtures/petab/abts_measurement_model.xml

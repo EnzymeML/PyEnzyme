@@ -1,23 +1,23 @@
 <h1 align="center">
   PyEnzyme<br>
   <img src="https://img.shields.io/badge/PyEnzyme-1.1.5-blue" alt="v1.1.5">
-  <img src="https://github.com/EnzymeML/PyENzyme/actions/workflows/build.yml/badge.svg" alt="Build Badge"> <img src='https://readthedocs.org/projects/pyenzyme/badge/?version=latest' alt='Documentation Status' />
+  <img src="https://github.com/EnzymeML/PyENzyme/actions/workflows/build.yml/badge.svg" alt="Build Badge"> 
 </a>
 <a href="https://www.codacy.com/gh/EnzymeML/PyEnzyme/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EnzymeML/PyEnzyme&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/4ceb8d010e7b456c926c8b18737ff102"/></a>
 </h1>
-<p align="center"> 
+<p align="center">
 PyEnzyme is the interface to the data model <b>EnzymeML</b> and offers a convenient way to document and model research data. Lightweight syntax for rapid development of data management solution in enzymology and biocatalysis.</p>
 
 ### 🧬 Features
 
 - Reproducible **documentation** of enzymatic and biocatalytic experiments.
 - **Import** from and **export** to the SBML-based markup language **EnzymeML** and more.
-- Perform **database-specific validation** prior to database upload.
-- Model your data using a **Thin Layer**  to popular modeling platforms.
+- **Fetch** entities from [CheBI](https://www.ebi.ac.uk/chebi/), [UniProt](https://www.uniprot.org/), [PubChem](https://www.ncbi.nlm.nih.gov/pubchem/), [RHEA](https://www.ebi.ac.uk/rhea/) and [PDB](https://www.rcsb.org/) databases.
 - **Visualize** experimental results for inspection and publication.
 
 ## ⚡️ Quick start
-Get started with PyEnzyme by running the following command 
+
+Get started with PyEnzyme by running the following command
 
 ```
 # Using PyPI
@@ -25,6 +25,7 @@ python -m pip install pyenzyme
 ```
 
 Or build by source
+
 ```
 git clone https://github.com/EnzymeML/PyEnzyme.git
 cd PyEnzyme
@@ -32,92 +33,119 @@ python3 setup.py install
 ```
 
 ### ⚙️ Package Options
-PyEnzyme comes with many flavors, choose whether you want only the base installation, the modeling package or all of it using the following options.
-```
-# COPASI - modeling
-python -m pip install "pyenzyme[copasi]"
 
-# PySCeS - modeling
-python -m pip install "pyenzyme[pysces]"
-
-# Modeling package
-python -m pip install "pyenzyme[modeling]"
-
-# REST API
-python -m pip install "pyenzyme[rest]"
-
-# Dataverse
-python -m pip install "pyenzyme[dataverse]"
-
-# Complete
-python -m pip install "pyenzyme[all]"
-```
-
-### 🚀 PyEnzyme's REST-API
-
-If you want to deploy PyEnzyme as a server and use our REST-API to access PyEnzyme from any HTTP-capable programming language, use our official [docker image](https://hub.docker.com/r/enzymeml/pyenzyme/tags) or simply copy and past the following.
+PyEnzyme comes with many flavors, choose whether you want only the base installation, the modeling package or all of it
+using the following options.
 
 ```bash
-docker pull enzymeml/pyenzyme:latest
-docker run -p 8000:8000 enzymeml/pyenzyme:latest
+# PySCeS - modeling
+python -m pip install "pyenzyme[pysces]"
 ```
-See the [API documentation](https://api.enzymeml.org) for details on our endpoints. You can also use our self-hosted PyEnzyme instance if you have no server space - Use https://api.enzymeml.org as base URL to the endpoints.
 
 ## ⚙️ Example code
 
-This example will demonstrate how to create a simple EnzymeML document using PyEnzyme and how to use initializers from official databases **Chebi** and **UniProt** to gather metadata. For more examples, please visit our [documentation](https://pyenzyme.readthedocs.io/en/latest/index.html#) (Work in progress)
+This example will demonstrate how to create a simple EnzymeML document using PyEnzyme and how to use initializers from official databases **Chebi** and **UniProt** to gather metadata.
+
+### Create a simple EnzymeML document
 
 ```python
 import pyenzyme as pe
 
-# Initialize your document
-enzmldoc = pe.EnzymeMLDocument(name="MyDoc")
+# Create a simple EnzymeML document
+enzmldoc = pe.EnzymeMLDocument(name="Test")
 
-# Create a vessel and add it to the document
-vessel = pe.Vessel(name="Falcon Tube", volume=10.0, unit="ml")
-vessel_id = enzmldoc.addVessel(vessel)
-
-# Set up reactants and proteins from databases
-protein = pe.Protein.fromUniProtID(
-    uniprotid="P07327", vessel_id=vessel_id,
-    init_conc=10.0, unit="fmole / l"
+vessel = enzmldoc.add_to_vessels(
+    id="vessel_1",
+    name="Vessel 1",
+    volume=1.0,
+    unit="l",  # Units are automatically converted to a UnitDefinition
 )
 
-substrate = pe.Reactant.fromChebiID(
-    chebi_id="CHEBI:16236", vessel_id=vessel_id,
-    init_conc=200.0, unit="mmole / l"
-) 
+# Add a protein from UniProt
+protein = pe.fetch_uniprot("P07327", vessel_id=vessel.id)
+enzmldoc.proteins.append(protein)
 
-product = pe.Reactant.fromChebiID(
-    chebi_id="CHEBI:15343", vessel_id=vessel_id,
-    init_conc=0.0, unit="mmole / l"
+# Add a reaction from RHEA DB
+reaction, participants = pe.fetch_rhea("RHEA:22864", vessel_id=vessel.id)
+enzmldoc.small_molecules += participants
+enzmldoc.reactions.append(reaction)
+
+# Parse a tabular file to a measurement
+measurements = pe.from_excel(
+    path="measurements.xlsx",
+    data_unit="mmol / l",
+    time_unit="h",
 )
 
-# ... and add each to the document
-protein_id = enzmldoc.addProtein(protein)
-substrate_id = enzmldoc.addReactant(substrate)
-product_id = enzmldoc.addReactant(product)
+enzmldoc.measurements += measurements
 
-# Build the reaction
-reaction = pe.EnzymeReaction.fromEquation(
-    equation="ethanol -> acetaldehyde",
-    modifiers=[protein_id],
-    name="Alocohol dehydrogenation",
-    enzmldoc=enzmldoc
-)
+# Serialize to EnzymeML
+pe.write_enzymeml(enzmldoc, "enzmldoc.json")
 
-# ... and add it to the document
-reaction_id = enzmldoc.addReaction(reaction)
+# Deserialize from EnzymeML
+enzmldoc = pe.read_enzymeml("enzmldoc.json")
 
-# Finally, save the document to an OMEX archive
-enzmldoc.toFile(".", name="ADH Experiment")
+# Convert to SBML
+sbml_doc = pe.to_sbml(enzmldoc, "enzmldoc.omex")
 ```
-<sub>(Code should run as it is)</sup>
+
+<sub>(Code should run as it is)</sub>
+
+### Compose an EnzymeML document
+
+As an alternative to the manual creation of an EnzymeML document, you can use the `compose` function to create an EnzymeML document from a list of identifiers. This function will fetch the corresponding entities from the official databases and compose an EnzymeML document. Duplicate entities are removed to avoid redundancy.
+
+```python
+import pyenzyme as pe
+
+doc = pe.compose(
+    name="test",
+    proteins=["PDB:1A23"],
+    small_molecules=["CHEBI:32551"],
+    reactions=["RHEA:22864"],
+)
+
+pe.write_enzymeml(doc, "enzmldoc.json")
+```
+
+<sub>(Code should run as it is)</sub>
+
+Please note, that by providing [RHEA](https://www.ebi.ac.uk/rhea/) identifiers, the function will automatically fetch all associated [CheBI](https://www.ebi.ac.uk/chebi/) molecules that are part of the reaction.
 
 ## 📖 Documentation and more examples
 
-Explore all the features of **PyEnzyme** in our [documentation](https://pyenzyme.readthedocs.io/en/latest/index.html#) and take part in [Discussions](https://github.com/EnzymeML/PyEnzyme/discussions) and/or [Issues](https://github.com/EnzymeML/PyEnzyme/issues). 
+Explore all the features of **PyEnzyme** in our [documentation](https://pyenzyme.readthedocs.io/en/latest/index.html#)
+and take part in [Discussions](https://github.com/EnzymeML/PyEnzyme/discussions)
+and/or [Issues](https://github.com/EnzymeML/PyEnzyme/issues).
+
+## 🔙 Backwards compatibility
+
+For backward compatibility with previous versions of PyEnzyme, this release includes the original `v1.1.5` version of the package under the `v1` subpackage. Users may continue to utilize the legacy API by importing from `pyenzyme.v1` instead of `pyenzyme`. Please be aware that the dependencies for the current `v2` implementation differ from those of `v1` and must be installed separately using `poetry install --with v1`.
+
+For new projects, we recommend utilizing the updated API available in the package root. Existing users of the legacy API are encouraged to migrate to the current version to benefit from the latest features and improvements.
+
+## 🧪 Testing
+
+In order to run tests there are two different ways. First you can utilize `pytest` directly by running the following:
+
+```bash
+python -m pytest -vv
+```
+
+Or you can the provided Dockerfile to run the tests in a containerized environment.
+
+```bash
+docker build -t pyenzyme .
+docker run pyenzyme
+```
 
 ## ⚠️ License
 
-`PyEnzyme` is free and open-source software licensed under the [BSD 2-Clause License](https://github.com/EnzymeML/PyEnzyme/blob/main/LICENSE). 
+`PyEnzyme` is free and open-source software licensed under
+the [BSD 2-Clause License](https://github.com/EnzymeML/PyEnzyme/blob/main/LICENSE).
+
+---
+
+<div align="center">
+<strong>Made with ❤️ by the EnzymeML Team</strong>
+</div>

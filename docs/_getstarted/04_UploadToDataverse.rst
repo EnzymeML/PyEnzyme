@@ -25,7 +25,7 @@ in this example:
     # Upload it to Dataverse (Dataset is private)
     enzmldoc.uploadToDataverse(dataverse_name="playground")
 
-For reasons of data quality, the resulting dataset cant be viewed on the
+For reasons of data quality, the resulting dataset can't be viewed on the
 web. In order to visit examples that have utilized the method, see the
 `EnzymeML at
 Work <https://darus.uni-stuttgart.de/dataverse/enzymeml_at_work>`__

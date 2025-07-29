@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns:enzymeml="https://www.enzymeml.org/v2" xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
+  <model name="ABTS measurement" volumeUnits="u4">
+    <annotation>
+      <data xmlns="https://www.enzymeml.org/v2" file="./data.tsv">
+        <measurement id="measurement0" name="measurement0 - A2">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="4.372881218445347" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement1" name="measurement0 - B2">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="4.595436863430999" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement2" name="measurement0 - C2">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="4.397609623443753" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement3" name="measurement1 - A3">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="9.288888132128404" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement4" name="measurement1 - B3">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="9.194920193134463" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement5" name="measurement1 - C3">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="9.13557202113829" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement6" name="measurement2 - A4">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="14.259297536807956" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement7" name="measurement2 - B4">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="14.120818468816886" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement8" name="measurement2 - C4">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="13.838914651835061" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement9" name="measurement3 - A5">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="23.567069178207873" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement10" name="measurement3 - B5">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="23.893484124186827" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement11" name="measurement3 - C5">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="23.631363031203726" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement12" name="measurement4 - A6">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="48.3498766676101" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement13" name="measurement4 - B6">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="48.15204942762285" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement14" name="measurement4 - C6">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="48.2954741766136" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement15" name="measurement5 - A7">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="72.99420508902124" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement16" name="measurement5 - B7">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="72.67768150504163" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement17" name="measurement5 - C7">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="72.92001987402602" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement18" name="measurement6 - A8">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="97.33190128845216" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement19" name="measurement6 - B8">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="95.83830562654845" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement20" name="measurement6 - C8">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="97.50994580444068" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement21" name="measurement7 - A9">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="146.36832840029072" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement22" name="measurement7 - B9">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="143.79162859945683" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+        <measurement id="measurement23" name="measurement7 - C9">
+          <speciesData species="buffer" value="100.0" type="concentration" unit="u5"/>
+          <speciesData species="slac" value="0.079037949" type="concentration" unit="u6"/>
+          <speciesData species="abts" value="145.94299983431813" type="concentration" unit="u6"/>
+          <speciesData species="abts_radical" value="0.0" type="concentration" unit="u6"/>
+          <speciesData species="slac_inactive" value="0.0" type="concentration" unit="u5"/>
+        </measurement>
+      </data>
+    </annotation>
+    <listOfUnitDefinitions>
+      <unitDefinition id="u4" name="l">
+        <listOfUnits>
+          <unit kind="litre" exponent="1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="u5" name="mmol / l">
+        <listOfUnits>
+          <unit kind="mole" exponent="1" scale="-3" multiplier="1"/>
+          <unit kind="litre" exponent="-1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="u6" name="umol / l">
+        <listOfUnits>
+          <unit kind="mole" exponent="1" scale="-6" multiplier="1"/>
+          <unit kind="litre" exponent="-1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="u7" name="s">
+        <listOfUnits>
+          <unit kind="second" exponent="1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="vessel0" name="vessel0" spatialDimensions="3" size="1" units="u4" constant="true">
+        <annotation>
+          <rdf:RDF xmlns:OBO="http://purl.obolibrary.org/obo/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Vessel/79b926ec-6278-43ec-b135-d3a0e30ec5ba">
+              <schema:name>vessel0</schema:name>
+              <OBO:OBI_0002139 rdf:datatype="http://www.w3.org/2001/XMLSchema#double">1.0</OBO:OBI_0002139>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Vessel"/>
+              <rdf:type rdf:resource="http://purl.obolibrary.org/obo/OBI_0400081"/>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species sboTerm="SBO:0000252" id="slac" name="slac" compartment="vessel0" initialConcentration="0.079037949" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Protein/8fc838cc-55c5-4ee0-ba13-7011a6fae094">
+              <schema:name>slac</schema:name>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Protein"/>
+              <rdf:type rdf:resource="http://purl.obolibrary.org/obo/PR_000000001"/>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species sboTerm="SBO:0000252" id="slac_inactive" name="slac_inactive" compartment="vessel0" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Protein/8c94097f-f06a-4ba1-89f5-17d67bebe4a6">
+              <schema:name>slac_inactive</schema:name>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Protein"/>
+              <rdf:type rdf:resource="http://purl.obolibrary.org/obo/PR_000000001"/>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species sboTerm="SBO:0000247" id="abts" name="abts" compartment="vessel0" initialConcentration="4.37288121844535" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/f790a43b-4bcd-4c5e-b272-4dba3a995e11">
+              <schema:name>abts</schema:name>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species sboTerm="SBO:0000247" id="buffer" name="buffer" compartment="vessel0" initialConcentration="100" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/a04b7c7e-292b-4096-857a-f65df5d93c0a">
+              <schema:name>buffer</schema:name>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+      <species sboTerm="SBO:0000247" id="abts_radical" name="abts_radical" compartment="vessel0" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/7b4d0da7-bba9-4854-831b-0be4ed1906b0">
+              <schema:name>abts_radical</schema:name>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </species>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="k_cat" name="k_cat" value="1.85" constant="true">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/d0cb729a-b5cf-42e8-a837-f423ebc56676">
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <parameter xmlns="https://www.enzymeml.org/v2">
+            <lowerBound>1e-06</lowerBound>
+            <upperBound>2.0</upperBound>
+            <stdDeviation/>
+          </parameter>
+        </annotation>
+      </parameter>
+      <parameter id="K_M" name="K_M" value="20" constant="true">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/6e85535c-c19f-4555-ab47-19c8f7a40a04">
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <parameter xmlns="https://www.enzymeml.org/v2">
+            <lowerBound>1e-06</lowerBound>
+            <upperBound>150.0</upperBound>
+            <stdDeviation/>
+          </parameter>
+        </annotation>
+      </parameter>
+      <parameter id="k_ie" name="k_ie" value="0.001" constant="true">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/0ca6e0f7-b51b-4815-be14-a0f5860d612c">
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <parameter xmlns="https://www.enzymeml.org/v2">
+            <lowerBound>1e-06</lowerBound>
+            <upperBound>0.05</upperBound>
+            <stdDeviation/>
+          </parameter>
+        </annotation>
+      </parameter>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="reaction0" name="reaction0" reversible="false">
+        <listOfReactants>
+          <speciesReference species="abts" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="abts_radical" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> k_cat </ci>
+                <ci> slac </ci>
+                <ci> abts </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K_M </ci>
+                <ci> abts </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction1" name="reaction1" reversible="false">
+        <listOfReactants>
+          <speciesReference species="slac" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="slac_inactive" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_ie </ci>
+              <ci> slac </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

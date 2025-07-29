@@ -1,0 +1,1074 @@
+{
+  "@context": {
+    "enzml": "http://www.enzymeml.org/v2/",
+    "schema": "https://schema.org/",
+    "OBO": "http://purl.obolibrary.org/obo/",
+    "name": "schema:title",
+    "created": "schema:dateCreated",
+    "modified": "schema:dateModified",
+    "creators": "schema:creator",
+    "references": {
+      "@id": "schema:citation",
+      "@type": "@id"
+    }
+  },
+  "@id": "enzml:EnzymeMLDocument/191c7942-4c51-4ded-a7e1-18c1251d6b63",
+  "@type": [
+    "enzml:EnzymeMLDocument"
+  ],
+  "name": "Ethanol degradation",
+  "version": "2",
+  "creators": [],
+  "vessels": [
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "volume": "OBO:OBI_0002139"
+      },
+      "@id": "enzml:Vessel/b6c5ef2e-ca73-42e6-a986-2cd10109d5ad",
+      "@type": [
+        "enzml:Vessel",
+        "OBO:OBI_0400081"
+      ],
+      "id": "v1",
+      "name": "Eppendorf tube",
+      "volume": 10.0,
+      "unit": {
+        "id": "ml",
+        "name": "ml",
+        "base_units": [
+          {
+            "kind": "litre",
+            "exponent": 1,
+            "multiplier": 1.0,
+            "scale": -3.0
+          }
+        ]
+      },
+      "constant": true
+    }
+  ],
+  "proteins": [
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "sequence": "OBO:GSSO_007262",
+        "vessel_id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "organism": "OBO:OBI_0100026",
+        "organism_tax_id": {
+          "@type": "@id"
+        },
+        "references": {
+          "@id": "schema:citation",
+          "@type": "@id"
+        },
+        "uniprot": "https://www.uniprot.org/uniprotkb/"
+      },
+      "@id": "uniprot:P07327",
+      "@type": [
+        "enzml:Protein",
+        "OBO:PR_000000001",
+        "uniprot:P07327"
+      ],
+      "id": "alcohol_dehydrogenase_1a",
+      "name": "Alcohol dehydrogenase 1A",
+      "constant": true,
+      "sequence": "MSTAGKVIKCKAAVLWELKKPFSIEEVEVAPPKAHEVRIKMVAVGICGTDDHVVSGTMVTPLPVILGHEAAGIVESVGEGVTTVKPGDKVIPLAIPQCGKCRICKNPESNYCLKNDVSNPQGTLQDGTSRFTCRRKPIHHFLGISTFSQYTVVDENAVAKIDAASPLEKVCLIGCGFSTGYGSAVNVAKVTPGSTCAVFGLGGVGLSAIMGCKAAGAARIIAVDINKDKFAKAKELGATECINPQDYKKPIQEVLKEMTDGGVDFSFEVIGRLDTMMASLLCCHEACGTSVIVGVPPDSQNLSMNPMLLLTGRTWKGAILGGFKSKECVPKLVADFMAKKFSLDALITHVLPFEKINEGFDLLHSGKSIRTILMF",
+      "vessel_id": "v1",
+      "ecnumber": "1.1.1.1",
+      "organism": "Homo sapiens",
+      "organism_tax_id": "9606",
+      "references": [
+        "https://www.uniprot.org/uniprotkb/P07327"
+      ]
+    }
+  ],
+  "complexes": [],
+  "small_molecules": [
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "vessel_id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "references": {
+          "@id": "schema:citation",
+          "@type": "@id"
+        }
+      },
+      "@id": "OBO:CHEBI_16236",
+      "@type": [
+        "enzml:SmallMolecule",
+        "OBO:CHEBI_16236"
+      ],
+      "id": "ethanol",
+      "name": "ethanol",
+      "constant": false,
+      "vessel_id": "v1",
+      "canonical_smiles": "CCO",
+      "inchi": "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3",
+      "inchikey": "LFQSCWFLJHTTHZ-UHFFFAOYSA-N",
+      "synonymous_names": [],
+      "references": [
+        "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:16236"
+      ]
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "vessel_id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "references": {
+          "@id": "schema:citation",
+          "@type": "@id"
+        }
+      },
+      "@id": "OBO:CHEBI_57540",
+      "@type": [
+        "enzml:SmallMolecule",
+        "OBO:CHEBI_57540"
+      ],
+      "id": "nad_1",
+      "name": "NAD(1-)",
+      "constant": false,
+      "vessel_id": "v1",
+      "canonical_smiles": "NC(=O)c1ccc[n+](c1)[C@@H]1O[C@H](COP([O-])(=O)OP([O-])(=O)OC[C@H]2O[C@H]([C@H](O)[C@@H]2O)n2cnc3c(N)ncnc23)[C@@H](O)[C@H]1O",
+      "inchi": "InChI=1S/C21H27N7O14P2/c22-17-12-19(25-7-24-17)28(8-26-12)21-16(32)14(30)11(41-21)6-39-44(36,37)42-43(34,35)38-5-10-13(29)15(31)20(40-10)27-3-1-2-9(4-27)18(23)33/h1-4,7-8,10-11,13-16,20-21,29-32H,5-6H2,(H5-,22,23,24,25,33,34,35,36,37)/p-1/t10-,11-,13-,14-,15-,16-,20-,21-/m1/s1",
+      "inchikey": "BAWFJGJZGIEFAR-NNYOXOHSSA-M",
+      "synonymous_names": [],
+      "references": [
+        "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:57540"
+      ]
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "vessel_id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "references": {
+          "@id": "schema:citation",
+          "@type": "@id"
+        }
+      },
+      "@id": "OBO:CHEBI_15343",
+      "@type": [
+        "enzml:SmallMolecule",
+        "OBO:CHEBI_15343"
+      ],
+      "id": "acetaldehyde",
+      "name": "acetaldehyde",
+      "constant": false,
+      "vessel_id": "v1",
+      "canonical_smiles": "[H]C(C)=O",
+      "inchi": "InChI=1S/C2H4O/c1-2-3/h2H,1H3",
+      "inchikey": "IKHGUXGNUITLKF-UHFFFAOYSA-N",
+      "synonymous_names": [],
+      "references": [
+        "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:15343"
+      ]
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "vessel_id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "references": {
+          "@id": "schema:citation",
+          "@type": "@id"
+        }
+      },
+      "@id": "OBO:CHEBI_57945",
+      "@type": [
+        "enzml:SmallMolecule",
+        "OBO:CHEBI_57945"
+      ],
+      "id": "nadh_2",
+      "name": "NADH(2-)",
+      "constant": false,
+      "vessel_id": "v1",
+      "canonical_smiles": "NC(=O)C1=CN(C=CC1)[C@@H]1O[C@H](COP([O-])(=O)OP([O-])(=O)OC[C@H]2O[C@H]([C@H](O)[C@@H]2O)n2cnc3c(N)ncnc23)[C@@H](O)[C@H]1O",
+      "inchi": "InChI=1S/C21H29N7O14P2/c22-17-12-19(25-7-24-17)28(8-26-12)21-16(32)14(30)11(41-21)6-39-44(36,37)42-43(34,35)38-5-10-13(29)15(31)20(40-10)27-3-1-2-9(4-27)18(23)33/h1,3-4,7-8,10-11,13-16,20-21,29-32H,2,5-6H2,(H2,23,33)(H,34,35)(H,36,37)(H2,22,24,25)/p-2/t10-,11-,13-,14-,15-,16-,20-,21-/m1/s1",
+      "inchikey": "BOPGDPNILDQYTO-NNYOXOHSSA-L",
+      "synonymous_names": [],
+      "references": [
+        "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:57945"
+      ]
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "name": "schema:name",
+        "vessel_id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "references": {
+          "@id": "schema:citation",
+          "@type": "@id"
+        }
+      },
+      "@id": "OBO:CHEBI_15378",
+      "@type": [
+        "enzml:SmallMolecule",
+        "OBO:CHEBI_15378"
+      ],
+      "id": "hydron",
+      "name": "hydron",
+      "constant": false,
+      "vessel_id": "v1",
+      "canonical_smiles": "[H+]",
+      "inchi": "InChI=1S/p+1",
+      "inchikey": "GPRLSGONYQIRFK-UHFFFAOYSA-N",
+      "synonymous_names": [],
+      "references": [
+        "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:15378"
+      ]
+    }
+  ],
+  "reactions": [
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "rhea": "http://www.rhea-db.org/rhea/"
+      },
+      "@id": "rhea:25290",
+      "@type": [
+        "enzml:Reaction",
+        "rhea:25290"
+      ],
+      "id": "RHEA:25290",
+      "name": "RHEA:25290",
+      "reversible": true,
+      "kinetic_law": {
+        "@context": {
+          "enzml": "http://www.enzymeml.org/v2/",
+          "schema": "https://schema.org/",
+          "OBO": "http://purl.obolibrary.org/obo/",
+          "species_id": {
+            "@id": "schema:identifier",
+            "@type": "@id"
+          }
+        },
+        "@id": "enzml:Equation/5e893b88-bc2a-4865-ab00-dc3fb3ef9af3",
+        "@type": [
+          "enzml:Equation"
+        ],
+        "species_id": "",
+        "equation": "ethanol*v_max/(K_m + ethanol)",
+        "equation_type": "rateLaw",
+        "variables": [
+          {
+            "@context": {
+              "enzml": "http://www.enzymeml.org/v2/",
+              "schema": "https://schema.org/",
+              "OBO": "http://purl.obolibrary.org/obo/",
+              "id": {
+                "@id": "schema:identifier",
+                "@type": "@id"
+              }
+            },
+            "@id": "enzml:Variable/e37ee551-9f81-49ef-92f5-17b0293ac425",
+            "@type": [
+              "enzml:Variable"
+            ],
+            "id": "ethanol",
+            "name": "ethanol",
+            "symbol": "ethanol"
+          }
+        ]
+      },
+      "reactants": [
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "species_id": {
+              "@id": "schema:identifier",
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:ReactionElement/d3543d0b-0f6c-40b9-bd8e-4ab551e70c52",
+          "@type": [
+            "enzml:ReactionElement"
+          ],
+          "species_id": "ethanol",
+          "stoichiometry": 1.0
+        },
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "species_id": {
+              "@id": "schema:identifier",
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:ReactionElement/b9695bf6-ba9e-41db-94be-58c8c59bfa64",
+          "@type": [
+            "enzml:ReactionElement"
+          ],
+          "species_id": "nad_1",
+          "stoichiometry": 1.0
+        }
+      ],
+      "products": [
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "species_id": {
+              "@id": "schema:identifier",
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:ReactionElement/b9b0a3b5-40bf-417e-9028-fb7c8064fbca",
+          "@type": [
+            "enzml:ReactionElement"
+          ],
+          "species_id": "acetaldehyde",
+          "stoichiometry": 1.0
+        },
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "species_id": {
+              "@id": "schema:identifier",
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:ReactionElement/8e38177f-51ee-47f9-8dfd-8258fd5b86a0",
+          "@type": [
+            "enzml:ReactionElement"
+          ],
+          "species_id": "nadh_2",
+          "stoichiometry": 1.0
+        },
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "species_id": {
+              "@id": "schema:identifier",
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:ReactionElement/420bd4b0-9ee7-4b78-af0b-d9e7c140cb0c",
+          "@type": [
+            "enzml:ReactionElement"
+          ],
+          "species_id": "hydron",
+          "stoichiometry": 1.0
+        }
+      ],
+      "modifiers": [
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "species_id": {
+              "@id": "schema:identifier",
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:ModifierElement/981c4564-be0f-4938-aad9-d436c45590ef",
+          "@type": [
+            "enzml:ModifierElement"
+          ],
+          "species_id": "alcohol_dehydrogenase_1a",
+          "role": "biocatalyst"
+        }
+      ]
+    }
+  ],
+  "measurements": [
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "group_id": {
+          "@type": "@id"
+        }
+      },
+      "@id": "enzml:Measurement/520bfd58-2b06-438c-81e5-4d0b2d9b5952",
+      "@type": [
+        "enzml:Measurement"
+      ],
+      "id": "Measurement 1",
+      "name": "Measurement 1",
+      "species_data": [
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "species_id": {
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:MeasurementData/a83a481c-3dd3-4bb6-ba8d-e14ef189ba9f",
+          "@type": [
+            "enzml:MeasurementData"
+          ],
+          "species_id": "ethanol",
+          "initial": 199.43391,
+          "data_unit": {
+            "id": "mmol / l",
+            "name": "mmol / l",
+            "base_units": [
+              {
+                "kind": "mole",
+                "exponent": 1,
+                "multiplier": 1.0,
+                "scale": -3.0
+              },
+              {
+                "kind": "litre",
+                "exponent": -1,
+                "multiplier": 1.0,
+                "scale": 0.0
+              }
+            ]
+          },
+          "data": [
+            199.43391,
+            173.75531,
+            138.42398,
+            107.41329,
+            79.49529,
+            60.24965,
+            35.51362,
+            30.16122,
+            19.21987,
+            12.59325,
+            6.852986,
+            4.8234572,
+            2.978874,
+            1.7217097,
+            0.9185278,
+            0.5975988,
+            0.34241349,
+            0.19606765,
+            0.0970064,
+            0.07217329
+          ],
+          "time": [
+            0.0,
+            5.263158,
+            10.526316,
+            15.789474,
+            21.052631,
+            26.315788,
+            31.578947,
+            36.842106,
+            42.105263,
+            47.36842,
+            52.631577,
+            57.894737,
+            63.157894,
+            68.42105,
+            73.68421,
+            78.947365,
+            84.210526,
+            89.47369,
+            94.73684,
+            100.0
+          ],
+          "time_unit": {
+            "id": "min",
+            "name": "min",
+            "base_units": [
+              {
+                "kind": "second",
+                "exponent": 1,
+                "multiplier": 60.0,
+                "scale": 1.0
+              }
+            ]
+          },
+          "data_type": "concentration",
+          "is_simulated": false
+        }
+      ]
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "group_id": {
+          "@type": "@id"
+        }
+      },
+      "@id": "enzml:Measurement/b643e1ed-a9b3-4cd9-a6c5-d17fd68bb06a",
+      "@type": [
+        "enzml:Measurement"
+      ],
+      "id": "Measurement 2",
+      "name": "Measurement 2",
+      "species_data": [
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "species_id": {
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:MeasurementData/7d098f77-4648-43ad-bce7-b7ea6186f0ea",
+          "@type": [
+            "enzml:MeasurementData"
+          ],
+          "species_id": "ethanol",
+          "initial": 99.71696,
+          "data_unit": {
+            "id": "mmol / l",
+            "name": "mmol / l",
+            "base_units": [
+              {
+                "kind": "mole",
+                "exponent": 1,
+                "multiplier": 1.0,
+                "scale": -3.0
+              },
+              {
+                "kind": "litre",
+                "exponent": -1,
+                "multiplier": 1.0,
+                "scale": 0.0
+              }
+            ]
+          },
+          "data": [
+            99.71696,
+            79.01433,
+            56.45118,
+            38.825493,
+            25.308987,
+            16.93379,
+            8.913357,
+            6.888039,
+            4.082348,
+            2.5399823,
+            1.3349848,
+            0.9188723,
+            0.5596379,
+            0.32072204,
+            0.17023185,
+            0.11041565,
+            0.06315049,
+            0.036119953,
+            0.017859416,
+            0.013284102
+          ],
+          "time": [
+            0.0,
+            5.263158,
+            10.526316,
+            15.789474,
+            21.052631,
+            26.315788,
+            31.578947,
+            36.842106,
+            42.105263,
+            47.36842,
+            52.631577,
+            57.894737,
+            63.157894,
+            68.42105,
+            73.68421,
+            78.947365,
+            84.210526,
+            89.47369,
+            94.73684,
+            100.0
+          ],
+          "time_unit": {
+            "id": "min",
+            "name": "min",
+            "base_units": [
+              {
+                "kind": "second",
+                "exponent": 1,
+                "multiplier": 60.0,
+                "scale": 1.0
+              }
+            ]
+          },
+          "data_type": "concentration",
+          "is_simulated": false
+        }
+      ]
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "group_id": {
+          "@type": "@id"
+        }
+      },
+      "@id": "enzml:Measurement/e2772b60-f666-44a8-b788-9c9679938726",
+      "@type": [
+        "enzml:Measurement"
+      ],
+      "id": "Measurement 3",
+      "name": "Measurement 3",
+      "species_data": [
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "species_id": {
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:MeasurementData/15560566-571b-4b12-8d79-c3585cd3cb99",
+          "@type": [
+            "enzml:MeasurementData"
+          ],
+          "species_id": "ethanol",
+          "initial": 49.85848,
+          "data_unit": {
+            "id": "mmol / l",
+            "name": "mmol / l",
+            "base_units": [
+              {
+                "kind": "mole",
+                "exponent": 1,
+                "multiplier": 1.0,
+                "scale": -3.0
+              },
+              {
+                "kind": "litre",
+                "exponent": -1,
+                "multiplier": 1.0,
+                "scale": 0.0
+              }
+            ]
+          },
+          "data": [
+            49.85848,
+            36.10481,
+            23.562765,
+            14.902602,
+            9.048929,
+            5.730562,
+            2.899854,
+            2.182323,
+            1.271552,
+            0.78279436,
+            0.40877226,
+            0.28026262,
+            0.17029496,
+            0.09745796,
+            0.05168567,
+            0.03350948,
+            0.019160355,
+            0.010955721,
+            0.005418029,
+            0.0040294025
+          ],
+          "time": [
+            0.0,
+            5.263158,
+            10.526316,
+            15.789474,
+            21.052631,
+            26.315788,
+            31.578947,
+            36.842106,
+            42.105263,
+            47.36842,
+            52.631577,
+            57.894737,
+            63.157894,
+            68.42105,
+            73.68421,
+            78.947365,
+            84.210526,
+            89.47369,
+            94.73684,
+            100.0
+          ],
+          "time_unit": {
+            "id": "min",
+            "name": "min",
+            "base_units": [
+              {
+                "kind": "second",
+                "exponent": 1,
+                "multiplier": 60.0,
+                "scale": 1.0
+              }
+            ]
+          },
+          "data_type": "concentration",
+          "is_simulated": false
+        }
+      ]
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "group_id": {
+          "@type": "@id"
+        }
+      },
+      "@id": "enzml:Measurement/a09b7544-b9d9-4e70-b9c1-6d00938156ea",
+      "@type": [
+        "enzml:Measurement"
+      ],
+      "id": "Measurement 4",
+      "name": "Measurement 4",
+      "species_data": [
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "species_id": {
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:MeasurementData/62bc8059-673c-451b-a2d2-172105d37407",
+          "@type": [
+            "enzml:MeasurementData"
+          ],
+          "species_id": "ethanol",
+          "initial": 201.5041,
+          "data_unit": {
+            "id": "mmol / l",
+            "name": "mmol / l",
+            "base_units": [
+              {
+                "kind": "mole",
+                "exponent": 1,
+                "multiplier": 1.0,
+                "scale": -3.0
+              },
+              {
+                "kind": "litre",
+                "exponent": -1,
+                "multiplier": 1.0,
+                "scale": 0.0
+              }
+            ]
+          },
+          "data": [
+            201.5041,
+            168.85484,
+            145.75659,
+            99.613686,
+            79.60519,
+            50.016018,
+            46.282806,
+            28.767124,
+            18.18425,
+            11.129094,
+            6.7067246,
+            4.258887,
+            2.389293,
+            1.6633037,
+            1.0483507,
+            0.4913183,
+            0.3630078,
+            0.20949526,
+            0.121762455,
+            0.07709566
+          ],
+          "time": [
+            0.0,
+            5.263158,
+            10.526316,
+            15.789474,
+            21.052631,
+            26.315788,
+            31.578947,
+            36.842106,
+            42.105263,
+            47.36842,
+            52.631577,
+            57.894737,
+            63.157894,
+            68.42105,
+            73.68421,
+            78.947365,
+            84.210526,
+            89.47369,
+            94.73684,
+            100.0
+          ],
+          "time_unit": {
+            "id": "min",
+            "name": "min",
+            "base_units": [
+              {
+                "kind": "second",
+                "exponent": 1,
+                "multiplier": 60.0,
+                "scale": 1.0
+              }
+            ]
+          },
+          "data_type": "concentration",
+          "is_simulated": false
+        }
+      ]
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        },
+        "group_id": {
+          "@type": "@id"
+        }
+      },
+      "@id": "enzml:Measurement/af694904-b39f-43a3-b0ec-5458dbfa5f12",
+      "@type": [
+        "enzml:Measurement"
+      ],
+      "id": "Measurement 5",
+      "name": "Measurement 5",
+      "species_data": [
+        {
+          "@context": {
+            "enzml": "http://www.enzymeml.org/v2/",
+            "schema": "https://schema.org/",
+            "OBO": "http://purl.obolibrary.org/obo/",
+            "species_id": {
+              "@type": "@id"
+            }
+          },
+          "@id": "enzml:MeasurementData/8bce292a-24b1-4d04-8cf8-1c5f37cd5df4",
+          "@type": [
+            "enzml:MeasurementData"
+          ],
+          "species_id": "ethanol",
+          "initial": 100.75205,
+          "data_unit": {
+            "id": "mmol / l",
+            "name": "mmol / l",
+            "base_units": [
+              {
+                "kind": "mole",
+                "exponent": 1,
+                "multiplier": 1.0,
+                "scale": -3.0
+              },
+              {
+                "kind": "litre",
+                "exponent": -1,
+                "multiplier": 1.0,
+                "scale": 0.0
+              }
+            ]
+          },
+          "data": [
+            100.75205,
+            76.785866,
+            59.441517,
+            36.006256,
+            25.343971,
+            14.057522,
+            11.616253,
+            6.5696635,
+            3.8623793,
+            2.2446709,
+            1.3064926,
+            0.8113212,
+            0.4488739,
+            0.3098421,
+            0.19429208,
+            0.09077868,
+            0.06694865,
+            0.038593613,
+            0.022417141,
+            0.014190107
+          ],
+          "time": [
+            0.0,
+            5.263158,
+            10.526316,
+            15.789474,
+            21.052631,
+            26.315788,
+            31.578947,
+            36.842106,
+            42.105263,
+            47.36842,
+            52.631577,
+            57.894737,
+            63.157894,
+            68.42105,
+            73.68421,
+            78.947365,
+            84.210526,
+            89.47369,
+            94.73684,
+            100.0
+          ],
+          "time_unit": {
+            "id": "min",
+            "name": "min",
+            "base_units": [
+              {
+                "kind": "second",
+                "exponent": 1,
+                "multiplier": 60.0,
+                "scale": 1.0
+              }
+            ]
+          },
+          "data_type": "concentration",
+          "is_simulated": false
+        }
+      ]
+    }
+  ],
+  "equations": [],
+  "parameters": [
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        }
+      },
+      "@id": "enzml:Parameter/7231702a-60a2-4547-82f1-fb8145bbaeb0",
+      "@type": [
+        "enzml:Parameter"
+      ],
+      "id": "v_max",
+      "name": "v_max",
+      "symbol": "v_max",
+      "initial_value": 7.0,
+      "upper_bound": 20.0,
+      "lower_bound": 2.0,
+      "constant": true
+    },
+    {
+      "@context": {
+        "enzml": "http://www.enzymeml.org/v2/",
+        "schema": "https://schema.org/",
+        "OBO": "http://purl.obolibrary.org/obo/",
+        "id": {
+          "@id": "schema:identifier",
+          "@type": "@id"
+        }
+      },
+      "@id": "enzml:Parameter/92e93bfa-0c00-4146-ac62-5c518f6dfdd5",
+      "@type": [
+        "enzml:Parameter"
+      ],
+      "id": "K_m",
+      "name": "K_m",
+      "symbol": "K_m",
+      "initial_value": 80.0,
+      "upper_bound": 200.0,
+      "lower_bound": 20.0,
+      "constant": true
+    }
+  ],
+  "references": []
+}

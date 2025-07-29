@@ -5,7 +5,7 @@ This notebook is part of the publication “EnzymeML at Work” from
 Lauterbach et al. 2022 and adds a given micro-kinetic model to an
 EnzymeML document. Prior to this, experimental data was collected using
 the EnzymeML spreadsheet and converted to EnzymeML. The following
-notebook adresses the following key procedures using PyEnzyme:
+notebook addresses the following key procedures using PyEnzyme:
 
 -  Editing existing species
 -  Adding new species from scratch or by DB-fetch
@@ -184,20 +184,20 @@ which requires an equation string for each model. This can become quite
 tedious and for models, where most reactions share the same rate law
 quite error prone if done manually. Hence, the
 ``createGenerator``-initializer of the ``KineticModel`` offers a
-convinient way to generalize models and ensure consistency as well as
+convenient way to generalize models and ensure consistency as well as
 re-usability.
 
 Excursion: Setting up a model generator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In order to set up a model generator it requires a ``name``, an
-``equation`` and an explicit description of the used parameters occuring
+``equation`` and an explicit description of the used parameters occurring
 in the equation. For instance, lets set up an ``Example-Model`` with
 equation ``param * substrate`` and parameter ``param`` for simplicity.
 
 The algorithm will detect parameters based on the keyword arguments
-passed to the generator. In addtion, these keyword arguments should
-include a dicitonary that can optionally be equipped with all prossible
+passed to the generator. In addition, these keyword arguments should
+include a dictionary that can optionally be equipped with all prossible
 attributes the ``KineticParameter`` class can hold.
 
 .. code:: ipython3
@@ -238,9 +238,9 @@ Adding rate laws
 ~~~~~~~~~~~~~~~~
 
 As previously discussed, all rate laws will be set up as generator
-objects that are assigned to each reaction using the corrsponding
+objects that are assigned to each reaction using the corresponding
 educts/products. In addition, parameters that occur in more than one
-reaction, are defined as gobal parameters.
+reaction, are defined as global parameters.
 
 Finally, after that has been done, all reactions will be added to the
 ``EnzymeMLDocument`` object and an overview generated to control the
@@ -446,11 +446,11 @@ But before optimization, it might be necessary to define initial values.
 Since manipulating the KineticParameter initial_values attributes inside
 the script that generates the EnzymeMLDocument can get quite tedious,
 PyEnzyme offers an external data structure from within initial values
-can be applied. This way, the EnzymeML document is only modifed at
+can be applied. This way, the EnzymeML document is only modified at
 optimization and remains untouched until then.
 
 The initialization file is in the YAML format and contains all reactions
-and their parameters. In addtion, PyEnzyme offers a method to generate
+and their parameters. In addition, PyEnzyme offers a method to generate
 such a YAML file, which can be edited manually with the initial
 parameter values for the optimization.
 

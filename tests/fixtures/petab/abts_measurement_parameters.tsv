@@ -1,0 +1,4 @@
+parameterId	parameterName	parameterScale	lowerBound	upperBound	nominalValue	estimate	initializationPriorType	initializationPriorParameters	objectivePriorType	objectivePriorParameters
+k_cat	k_cat	lin	1e-06	2.0	1.85	True	parameterScaleUniform		parameterScaleUniform	
+K_M	K_M	lin	1e-06	150.0	20.0	True	parameterScaleUniform		parameterScaleUniform	
+k_ie	k_ie	lin	1e-06	0.05	0.001	True	parameterScaleUniform		parameterScaleUniform	

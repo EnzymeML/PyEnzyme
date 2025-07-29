@@ -131,6 +131,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# pyrightconfig
+pyrightconfig.json
+
 # pytype static type analyzer
 .pytype/
 
@@ -138,8 +141,14 @@ dmypy.json
 cython_debug/
 pyenzyme/Examples/getJSONValid.py
 
-# test dirs 
+# test dirs
 tests/tmp
 
 # PyCharm IDE
 .idea/
+
+# Mac OS
+.DS_Store
+
+# Poetry
+poetry.lock

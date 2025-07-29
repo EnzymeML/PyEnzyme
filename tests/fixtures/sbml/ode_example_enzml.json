@@ -1,0 +1,474 @@
+{
+    "name": "Test",
+    "created": null,
+    "modified": null,
+    "creators": [],
+    "vessels": [
+        {
+            "id": "v0",
+            "name": "Vessel 1",
+            "volume": 10.0,
+            "unit": {
+                "id": "u5",
+                "name": "ml",
+                "base_units": [
+                    {
+                        "kind": "litre",
+                        "exponent": 1,
+                        "multiplier": 1.0,
+                        "scale": -3.0
+                    }
+                ]
+            },
+            "constant": true
+        }
+    ],
+    "proteins": [
+        {
+            "id": "p0",
+            "name": "Enzyme",
+            "constant": true,
+            "sequence": "MTEY",
+            "vessel_id": "v0",
+            "ecnumber": "1.1.1.1",
+            "organism": "E.coli",
+            "organism_tax_id": "12345",
+            "references": []
+        }
+    ],
+    "complexes": [
+        {
+            "id": "c0",
+            "name": "Enzyme-Substrate Complex",
+            "constant": false,
+            "vessel_id": "v0",
+            "participants": [
+                "p0",
+                "s0"
+            ]
+        }
+    ],
+    "small_molecules": [
+        {
+            "id": "s0",
+            "name": "Substrate",
+            "constant": false,
+            "vessel_id": "v0",
+            "canonical_smiles": "CC(=O)O",
+            "inchi": null,
+            "inchikey": "QTBSBXVTEAMEQO-UHFFFAOYSA-N",
+            "references": []
+        },
+        {
+            "id": "s1",
+            "name": "Product",
+            "constant": false,
+            "vessel_id": "v0",
+            "canonical_smiles": "CC(=O)O",
+            "inchi": null,
+            "inchikey": "QTBSBXVTEAMEQO-UHFFFAOYSA-N",
+            "references": []
+        }
+    ],
+    "reactions": [],
+    "measurements": [
+        {
+            "id": "m0",
+            "name": "m0",
+            "species_data": [
+                {
+                    "species_id": "s0",
+                    "initial": 0.0,
+                    "data_unit": {
+                        "id": "u6",
+                        "name": "mmol / l",
+                        "base_units": [
+                            {
+                                "kind": "litre",
+                                "exponent": -1,
+                                "multiplier": 1.0,
+                                "scale": 0.0
+                            },
+                            {
+                                "kind": "mole",
+                                "exponent": 1,
+                                "multiplier": 1.0,
+                                "scale": -3.0
+                            }
+                        ]
+                    },
+                    "data_type": "concentration",
+                    "prepared": null,
+                    "data": [
+                        0.0,
+                        1.0,
+                        10.0,
+                        2.0,
+                        3.0,
+                        4.0,
+                        5.0,
+                        6.0,
+                        7.0,
+                        8.0,
+                        9.0
+                    ],
+                    "time": [
+                        0.0,
+                        1.0,
+                        10.0,
+                        2.0,
+                        3.0,
+                        4.0,
+                        5.0,
+                        6.0,
+                        7.0,
+                        8.0,
+                        9.0
+                    ],
+                    "time_unit": {
+                        "id": "u7",
+                        "name": "s",
+                        "base_units": [
+                            {
+                                "kind": "second",
+                                "exponent": 1,
+                                "multiplier": 1.0,
+                                "scale": 0.0
+                            }
+                        ]
+                    },
+                    "is_simulated": false
+                },
+                {
+                    "species_id": "s1",
+                    "initial": 10.0,
+                    "data_unit": {
+                        "id": "u6",
+                        "name": "mmol / l",
+                        "base_units": [
+                            {
+                                "kind": "litre",
+                                "exponent": -1,
+                                "multiplier": 1.0,
+                                "scale": 0.0
+                            },
+                            {
+                                "kind": "mole",
+                                "exponent": 1,
+                                "multiplier": 1.0,
+                                "scale": -3.0
+                            }
+                        ]
+                    },
+                    "data_type": "concentration",
+                    "prepared": null,
+                    "data": [
+                        0.0,
+                        1.0,
+                        10.0,
+                        2.0,
+                        3.0,
+                        4.0,
+                        5.0,
+                        6.0,
+                        7.0,
+                        8.0,
+                        9.0
+                    ],
+                    "time": [
+                        0.0,
+                        1.0,
+                        10.0,
+                        2.0,
+                        3.0,
+                        4.0,
+                        5.0,
+                        6.0,
+                        7.0,
+                        8.0,
+                        9.0
+                    ],
+                    "time_unit": {
+                        "id": "u7",
+                        "name": "s",
+                        "base_units": [
+                            {
+                                "kind": "second",
+                                "exponent": 1,
+                                "multiplier": 1.0,
+                                "scale": 0.0
+                            }
+                        ]
+                    },
+                    "is_simulated": false
+                }
+            ],
+            "group_id": null,
+            "ph": 7.0,
+            "temperature": 298.15,
+            "temperature_unit": {
+                "id": "u8",
+                "name": "K",
+                "base_units": [
+                    {
+                        "kind": "kelvin",
+                        "exponent": 1,
+                        "multiplier": 1.0,
+                        "scale": 0.0
+                    }
+                ]
+            }
+        },
+        {
+            "id": "m1",
+            "name": "m1",
+            "species_data": [
+                {
+                    "species_id": "s0",
+                    "initial": 0.0,
+                    "data_unit": {
+                        "id": "u6",
+                        "name": "mmol / l",
+                        "base_units": [
+                            {
+                                "kind": "litre",
+                                "exponent": -1,
+                                "multiplier": 1.0,
+                                "scale": 0.0
+                            },
+                            {
+                                "kind": "mole",
+                                "exponent": 1,
+                                "multiplier": 1.0,
+                                "scale": -3.0
+                            }
+                        ]
+                    },
+                    "data_type": "concentration",
+                    "prepared": null,
+                    "data": [
+                        0.0,
+                        1.0,
+                        10.0,
+                        2.0,
+                        3.0,
+                        4.0,
+                        5.0,
+                        6.0,
+                        7.0,
+                        8.0,
+                        9.0
+                    ],
+                    "time": [
+                        0.0,
+                        1.0,
+                        10.0,
+                        2.0,
+                        3.0,
+                        4.0,
+                        5.0,
+                        6.0,
+                        7.0,
+                        8.0,
+                        9.0
+                    ],
+                    "time_unit": {
+                        "id": "u7",
+                        "name": "s",
+                        "base_units": [
+                            {
+                                "kind": "second",
+                                "exponent": 1,
+                                "multiplier": 1.0,
+                                "scale": 0.0
+                            }
+                        ]
+                    },
+                    "is_simulated": false
+                },
+                {
+                    "species_id": "s1",
+                    "initial": 10.0,
+                    "data_unit": {
+                        "id": "u6",
+                        "name": "mmol / l",
+                        "base_units": [
+                            {
+                                "kind": "litre",
+                                "exponent": -1,
+                                "multiplier": 1.0,
+                                "scale": 0.0
+                            },
+                            {
+                                "kind": "mole",
+                                "exponent": 1,
+                                "multiplier": 1.0,
+                                "scale": -3.0
+                            }
+                        ]
+                    },
+                    "data_type": "concentration",
+                    "prepared": null,
+                    "data": [
+                        0.0,
+                        1.0,
+                        10.0,
+                        2.0,
+                        3.0,
+                        4.0,
+                        5.0,
+                        6.0,
+                        7.0,
+                        8.0,
+                        9.0
+                    ],
+                    "time": [
+                        0.0,
+                        1.0,
+                        10.0,
+                        2.0,
+                        3.0,
+                        4.0,
+                        5.0,
+                        6.0,
+                        7.0,
+                        8.0,
+                        9.0
+                    ],
+                    "time_unit": {
+                        "id": "u7",
+                        "name": "s",
+                        "base_units": [
+                            {
+                                "kind": "second",
+                                "exponent": 1,
+                                "multiplier": 1.0,
+                                "scale": 0.0
+                            }
+                        ]
+                    },
+                    "is_simulated": false
+                }
+            ],
+            "group_id": null,
+            "ph": 7.0,
+            "temperature": 298.15,
+            "temperature_unit": {
+                "id": "u8",
+                "name": "K",
+                "base_units": [
+                    {
+                        "kind": "kelvin",
+                        "exponent": 1,
+                        "multiplier": 1.0,
+                        "scale": 0.0
+                    }
+                ]
+            }
+        }
+    ],
+    "equations": [
+        {
+            "species_id": "E_tot",
+            "equation": "100",
+            "equation_type": "initialAssignment",
+            "variables": []
+        },
+        {
+            "species_id": "s1",
+            "equation": "E_tot * kcat * s0 / (K_m + s0)",
+            "equation_type": "ode",
+            "variables": [
+                {
+                    "id": "s0",
+                    "name": "s0",
+                    "symbol": "s0"
+                }
+            ]
+        }
+    ],
+    "parameters": [
+        {
+            "id": "E_tot",
+            "name": "E_tot",
+            "symbol": "E_tot",
+            "value": null,
+            "unit": {
+                "id": "u6",
+                "name": "mmol / l",
+                "base_units": [
+                    {
+                        "kind": "litre",
+                        "exponent": -1,
+                        "multiplier": 1.0,
+                        "scale": 0.0
+                    },
+                    {
+                        "kind": "mole",
+                        "exponent": 1,
+                        "multiplier": 1.0,
+                        "scale": -3.0
+                    }
+                ]
+            },
+            "initial_value": null,
+            "upper_bound": 100.0,
+            "lower_bound": 0.0,
+            "stderr": 0.1,
+            "constant": true
+        },
+        {
+            "id": "K_m",
+            "name": "K_m",
+            "symbol": "K_m",
+            "value": null,
+            "unit": {
+                "id": "u6",
+                "name": "mmol / l",
+                "base_units": [
+                    {
+                        "kind": "litre",
+                        "exponent": -1,
+                        "multiplier": 1.0,
+                        "scale": 0.0
+                    },
+                    {
+                        "kind": "mole",
+                        "exponent": 1,
+                        "multiplier": 1.0,
+                        "scale": -3.0
+                    }
+                ]
+            },
+            "initial_value": null,
+            "upper_bound": 100.0,
+            "lower_bound": 0.0,
+            "stderr": 0.1,
+            "constant": true
+        },
+        {
+            "id": "kcat",
+            "name": "kcat",
+            "symbol": "kcat",
+            "value": null,
+            "unit": {
+                "id": "u9",
+                "name": "1 / s",
+                "base_units": [
+                    {
+                        "kind": "second",
+                        "exponent": -1,
+                        "multiplier": 1.0,
+                        "scale": 0.0
+                    }
+                ]
+            },
+            "initial_value": null,
+            "upper_bound": 100.0,
+            "lower_bound": 0.0,
+            "stderr": 0.1,
+            "constant": true
+        }
+    ],
+    "references": []
+}
