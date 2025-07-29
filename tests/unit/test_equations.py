@@ -9,7 +9,10 @@ class TestMathEquations:
     def test_parse_equation(self):
         # Arrange
         enzmldoc = EnzymeMLDocument(name="Test")
-        equation = "s1'(t) = kcat * p0(t) * s0(t)"
+        enzmldoc.add_to_proteins(id="p0", name="Protein 0")
+        enzmldoc.add_to_small_molecules(id="s0", name="Species 0")
+
+        equation = "s1'(t) = kcat * p0 * s0"
 
         # Act
         equation = build_equation(

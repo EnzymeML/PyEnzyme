@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
+  <model id="EnzymeML_Lagerman" name="EnzymeML_Lagerman">
+    <listOfUnitDefinitions>
+      <unitDefinition metaid="METAID_U0" id="u0" name="ml">
+        <listOfUnits>
+          <unit kind="litre" exponent="1" scale="-3" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition metaid="METAID_U1" id="u1" name="mmole / l">
+        <listOfUnits>
+          <unit kind="litre" exponent="-1" scale="1" multiplier="1"/>
+          <unit kind="mole" exponent="1" scale="-3" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition metaid="METAID_U2" id="u2" name="umole / l">
+        <listOfUnits>
+          <unit kind="litre" exponent="-1" scale="1" multiplier="1"/>
+          <unit kind="mole" exponent="1" scale="-6" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition metaid="METAID_U3" id="u3" name="K">
+        <listOfUnits>
+          <unit kind="kelvin" exponent="1" scale="1" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition metaid="METAID_U4" id="u4" name="min">
+        <listOfUnits>
+          <unit kind="second" exponent="1" scale="1" multiplier="60"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition metaid="METAID_U5" id="u5" name="l / min mmole">
+        <listOfUnits>
+          <unit kind="litre" exponent="1" scale="1" multiplier="1"/>
+          <unit kind="mole" exponent="-1" scale="-3" multiplier="1"/>
+          <unit kind="second" exponent="-1" scale="1" multiplier="60"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition metaid="METAID_U6" id="u6" name="1 / min">
+        <listOfUnits>
+          <unit kind="second" exponent="-1" scale="1" multiplier="60"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="v0" name="Falcon Tube" spatialDimensions="3" size="5" units="u0" constant="true"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species metaid="METAID_P0" sboTerm="SBO:0000252" id="p0" name="E" compartment="v0" initialConcentration="0.0002" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:protein xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:sequence>MRRLAACLLATAVAAATSAALAQTSPMTPDITGKPFVAGDAANDYVKREVMIPMRDGVKLHTVIVLPKGARNAPIVLTRTPYDASGRTERLASPHMKDLLSAGDDVFVEGGYIRVFQDVRGKYGSEGDYVMTRPLRGPLNPSEVDHATDAWDTIDWLVKNVKESNGKVGMIGSSYEGFTVVMALTNPHPALKVAAPESPMIDGWMGDDWFNYGAFRQVNFDYFTGQLSKRGKGAGIPRQGHDDYSNFLQAGSAGDFAKAAGLEQLPWWHKLTEHAAYDSFWQEQALDKVMARTPLKVPTMWLQGLWDQEDMWGAIHSYAAMEPRDKSNKLNYLVMGPWRHSQVNSDASSLGALNFDGDTARQFRRDVLRPFFDQYLVDGAPKAATPPVFIYNTGENHWDRLQAWPRSCDKGCAAKSKPLYLQAGGKLSFQAPTAAQPAFEEYVSDPAKPVPFVPRPVDFGDRSMWTTWLVHDQRFVDGRPDVLTFVTEPLTAPLQIAGAPDVHLQASTSGSDSDWVVKLIDVYPDEMAADPKMGGYELPVSMAIFRGRYRESFSTPAPLAANQPLAFQFGLPTANHTFQPGHRVMVQVQSSLFPLYDRNPQTYVPNVFFAKPGDYQKATQRVYVAPGQGSYISLPVR</enzymeml:sequence>
+            <enzymeml:ECnumber>3.1.1.43</enzymeml:ECnumber>
+            <enzymeml:uniprotID>B0RS62</enzymeml:uniprotID>
+            <enzymeml:organism>Xanthomonas campestris pv. campestris</enzymeml:organism>
+          </enzymeml:protein>
+        </annotation>
+      </species>
+      <species metaid="METAID_P1" sboTerm="SBO:0000252" id="p1" name="EA" compartment="v0" initialConcentration="0" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:protein xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:sequence>MRRLAACLLATAVAAATSAALAQTSPMTPDITGKPFVAGDAANDYVKREVMIPMRDGVKLHTVIVLPKGARNAPIVLTRTPYDASGRTERLASPHMKDLLSAGDDVFVEGGYIRVFQDVRGKYGSEGDYVMTRPLRGPLNPSEVDHATDAWDTIDWLVKNVKESNGKVGMIGSSYEGFTVVMALTNPHPALKVAAPESPMIDGWMGDDWFNYGAFRQVNFDYFTGQLSKRGKGAGIPRQGHDDYSNFLQAGSAGDFAKAAGLEQLPWWHKLTEHAAYDSFWQEQALDKVMARTPLKVPTMWLQGLWDQEDMWGAIHSYAAMEPRDKSNKLNYLVMGPWRHSQVNSDASSLGALNFDGDTARQFRRDVLRPFFDQYLVDGAPKAATPPVFIYNTGENHWDRLQAWPRSCDKGCAAKSKPLYLQAGGKLSFQAPTAAQPAFEEYVSDPAKPVPFVPRPVDFGDRSMWTTWLVHDQRFVDGRPDVLTFVTEPLTAPLQIAGAPDVHLQASTSGSDSDWVVKLIDVYPDEMAADPKMGGYELPVSMAIFRGRYRESFSTPAPLAANQPLAFQFGLPTANHTFQPGHRVMVQVQSSLFPLYDRNPQTYVPNVFFAKPGDYQKATQRVYVAPGQGSYISLPVR</enzymeml:sequence>
+            <enzymeml:ECnumber>3.1.1.43</enzymeml:ECnumber>
+            <enzymeml:uniprotID>B0RS62</enzymeml:uniprotID>
+            <enzymeml:organism>Xanthomonas campestris pv. campestris</enzymeml:organism>
+          </enzymeml:protein>
+        </annotation>
+      </species>
+      <species metaid="METAID_P2" sboTerm="SBO:0000252" id="p2" name="ED" compartment="v0" initialConcentration="0" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:protein xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:sequence>MRRLAACLLATAVAAATSAALAQTSPMTPDITGKPFVAGDAANDYVKREVMIPMRDGVKLHTVIVLPKGARNAPIVLTRTPYDASGRTERLASPHMKDLLSAGDDVFVEGGYIRVFQDVRGKYGSEGDYVMTRPLRGPLNPSEVDHATDAWDTIDWLVKNVKESNGKVGMIGSSYEGFTVVMALTNPHPALKVAAPESPMIDGWMGDDWFNYGAFRQVNFDYFTGQLSKRGKGAGIPRQGHDDYSNFLQAGSAGDFAKAAGLEQLPWWHKLTEHAAYDSFWQEQALDKVMARTPLKVPTMWLQGLWDQEDMWGAIHSYAAMEPRDKSNKLNYLVMGPWRHSQVNSDASSLGALNFDGDTARQFRRDVLRPFFDQYLVDGAPKAATPPVFIYNTGENHWDRLQAWPRSCDKGCAAKSKPLYLQAGGKLSFQAPTAAQPAFEEYVSDPAKPVPFVPRPVDFGDRSMWTTWLVHDQRFVDGRPDVLTFVTEPLTAPLQIAGAPDVHLQASTSGSDSDWVVKLIDVYPDEMAADPKMGGYELPVSMAIFRGRYRESFSTPAPLAANQPLAFQFGLPTANHTFQPGHRVMVQVQSSLFPLYDRNPQTYVPNVFFAKPGDYQKATQRVYVAPGQGSYISLPVR</enzymeml:sequence>
+            <enzymeml:ECnumber>3.1.1.43</enzymeml:ECnumber>
+            <enzymeml:uniprotID>B0RS62</enzymeml:uniprotID>
+            <enzymeml:organism>Xanthomonas campestris pv. campestris</enzymeml:organism>
+          </enzymeml:protein>
+        </annotation>
+      </species>
+      <species metaid="METAID_C0" sboTerm="SBO:0000296" id="c0" name="E·PGME" compartment="v0" initialConcentration="0" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:complex xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:participant>p0</enzymeml:participant>
+            <enzymeml:participant>s0</enzymeml:participant>
+          </enzymeml:complex>
+        </annotation>
+      </species>
+      <species metaid="METAID_C1" sboTerm="SBO:0000296" id="c1" name="E·7-ADCA" compartment="v0" initialConcentration="0" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:complex xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:participant>p0</enzymeml:participant>
+            <enzymeml:participant>s1</enzymeml:participant>
+          </enzymeml:complex>
+        </annotation>
+      </species>
+      <species metaid="METAID_C2" sboTerm="SBO:0000296" id="c2" name="E·PG" compartment="v0" initialConcentration="0" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:complex xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:participant>p0</enzymeml:participant>
+            <enzymeml:participant>s3</enzymeml:participant>
+          </enzymeml:complex>
+        </annotation>
+      </species>
+      <species metaid="METAID_C3" sboTerm="SBO:0000296" id="c3" name="E·PGME·PGME" compartment="v0" initialConcentration="0" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:complex xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:participant>p0</enzymeml:participant>
+            <enzymeml:participant>s0</enzymeml:participant>
+            <enzymeml:participant>s0</enzymeml:participant>
+          </enzymeml:complex>
+        </annotation>
+      </species>
+      <species metaid="METAID_C4" sboTerm="SBO:0000296" id="c4" name="EA·7-ADCA" compartment="v0" initialConcentration="0" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:complex xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:participant>p1</enzymeml:participant>
+            <enzymeml:participant>s1</enzymeml:participant>
+          </enzymeml:complex>
+        </annotation>
+      </species>
+      <species metaid="METAID_C5" sboTerm="SBO:0000296" id="c5" name="EA·PGME" compartment="v0" initialConcentration="0" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:complex xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:participant>p1</enzymeml:participant>
+            <enzymeml:participant>s0</enzymeml:participant>
+          </enzymeml:complex>
+        </annotation>
+      </species>
+      <species metaid="METAID_C6" sboTerm="SBO:0000296" id="c6" name="E·CEX" compartment="v0" initialConcentration="0" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:complex xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:participant>p0</enzymeml:participant>
+            <enzymeml:participant>s2</enzymeml:participant>
+          </enzymeml:complex>
+        </annotation>
+      </species>
+      <species metaid="METAID_S0" sboTerm="SBO:0000247" id="s0" name="PGME" compartment="v0" initialConcentration="20" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:reactant xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:inchi>1S/C9H11NO2/c1-12-9(11)7-10-8-5-3-2-4-6-8/h2-6,10H,7H2,1H3</enzymeml:inchi>
+            <enzymeml:smiles>O(C([C@@H](C1=CC=CC=C1)N([H])[H])=O)C</enzymeml:smiles>
+          </enzymeml:reactant>
+        </annotation>
+      </species>
+      <species metaid="METAID_S1" sboTerm="SBO:0000247" id="s1" name="7-ADCA" compartment="v0" initialConcentration="42" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:reactant xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:inchi>1S/C8H10N2O3S/c1-3-2-14-7-4(9)6(11)10(7)5(3)8(12)13/h4,7H,2,9H2,1H3,(H,12,13)/t4-,7-/m1/s1</enzymeml:inchi>
+            <enzymeml:smiles>CC1=C(N2[C@H](SC1)[C@H](N)C2=O)C(O)=O</enzymeml:smiles>
+          </enzymeml:reactant>
+        </annotation>
+      </species>
+      <species metaid="METAID_S2" sboTerm="SBO:0000247" id="s2" name="CEX" compartment="v0" initialConcentration="0" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:reactant xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:inchi>1S/C16H17N3O4S/c1-8-7-24-15-11(14(21)19(15)12(8)16(22)23)18-13(20)10(17)9-5-3-2-4-6-9/h2-6,10-11,15H,7,17H2,1H3,(H,18,20)(H,22,23)/t10-,11-,15-/m1/s1</enzymeml:inchi>
+            <enzymeml:smiles>CC1=C(N2[C@@H]([C@@H](C2=O)NC(=O)[C@@H](C3=CC=CC=C3)N)SC1)C(=O)O</enzymeml:smiles>
+          </enzymeml:reactant>
+        </annotation>
+      </species>
+      <species metaid="METAID_S3" sboTerm="SBO:0000247" id="s3" name="PG" compartment="v0" initialConcentration="0" substanceUnits="u1" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <enzymeml:reactant xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+            <enzymeml:inchi>1S/C8H9NO2/c9-7(8(10)11)6-4-2-1-3-5-6/h1-5,7H,9H2,(H,10,11)</enzymeml:inchi>
+            <enzymeml:smiles>C1=CC=C(C=C1)[C@H](C(=O)O)N</enzymeml:smiles>
+          </enzymeml:reactant>
+        </annotation>
+      </species>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="v_r" units="u5" constant="true"/>
+      <parameter id="K_si" units="u1" constant="false"/>
+      <parameter id="K_n" units="u1" constant="false"/>
+    </listOfParameters>
+    <listOfReactions>
+      <annotation>
+        <enzymeml:data xmlns:enzymeml="http://sbml.org/enzymeml/version2">
+          <enzymeml:formats>
+            <enzymeml:format id="format0">
+              <enzymeml:column type="time" unit="u4" index="0"/>
+              <enzymeml:column replica="sub1_repl1" species="s0" type="conc" unit="u1" index="1" isCalculated="False"/>
+              <enzymeml:column replica="sub2_repl1" species="s1" type="conc" unit="u1" index="2" isCalculated="False"/>
+              <enzymeml:column replica="prod1_repl1" species="s2" type="conc" unit="u1" index="3" isCalculated="False"/>
+              <enzymeml:column replica="prod2_repl1" species="s3" type="conc" unit="u1" index="4" isCalculated="False"/>
+            </enzymeml:format>
+            <enzymeml:format id="format1">
+              <enzymeml:column type="time" unit="u4" index="0"/>
+              <enzymeml:column replica="sub1_repl2" species="s0" type="conc" unit="u1" index="1" isCalculated="False"/>
+              <enzymeml:column replica="sub2_repl2" species="s1" type="conc" unit="u1" index="2" isCalculated="False"/>
+              <enzymeml:column replica="prod1_repl2" species="s2" type="conc" unit="u1" index="3" isCalculated="False"/>
+              <enzymeml:column replica="prod2_repl2" species="s3" type="conc" unit="u1" index="4" isCalculated="False"/>
+            </enzymeml:format>
+            <enzymeml:format id="format2">
+              <enzymeml:column type="time" unit="u4" index="0"/>
+              <enzymeml:column replica="sub1_repl3" species="s0" type="conc" unit="u1" index="1" isCalculated="False"/>
+              <enzymeml:column replica="sub2_repl3" species="s1" type="conc" unit="u1" index="2" isCalculated="False"/>
+              <enzymeml:column replica="prod1_repl3" species="s2" type="conc" unit="u1" index="3" isCalculated="False"/>
+              <enzymeml:column replica="prod2_repl3" species="s3" type="conc" unit="u1" index="4" isCalculated="False"/>
+            </enzymeml:format>
+            <enzymeml:format id="format3">
+              <enzymeml:column type="time" unit="u4" index="0"/>
+              <enzymeml:column replica="sub1_repl4" species="s0" type="conc" unit="u1" index="1" isCalculated="False"/>
+              <enzymeml:column replica="sub2_repl4" species="s1" type="conc" unit="u1" index="2" isCalculated="False"/>
+              <enzymeml:column replica="prod1_repl4" species="s2" type="conc" unit="u1" index="3" isCalculated="False"/>
+              <enzymeml:column replica="prod2_repl4" species="s3" type="conc" unit="u1" index="4" isCalculated="False"/>
+            </enzymeml:format>
+            <enzymeml:format id="format4">
+              <enzymeml:column type="time" unit="u4" index="0"/>
+              <enzymeml:column replica="sub1_repl5" species="s0" type="conc" unit="u1" index="1" isCalculated="False"/>
+              <enzymeml:column replica="sub2_repl5" species="s1" type="conc" unit="u1" index="2" isCalculated="False"/>
+              <enzymeml:column replica="prod1_repl5" species="s2" type="conc" unit="u1" index="3" isCalculated="False"/>
+              <enzymeml:column replica="prod2_repl5" species="s3" type="conc" unit="u1" index="4" isCalculated="False"/>
+            </enzymeml:format>
+            <enzymeml:format id="format5">
+              <enzymeml:column type="time" unit="u4" index="0"/>
+              <enzymeml:column replica="sub1_repl6" species="s0" type="conc" unit="u1" index="1" isCalculated="False"/>
+              <enzymeml:column replica="sub2_repl6" species="s1" type="conc" unit="u1" index="2" isCalculated="False"/>
+              <enzymeml:column replica="prod1_repl6" species="s2" type="conc" unit="u1" index="3" isCalculated="False"/>
+              <enzymeml:column replica="prod2_repl6" species="s3" type="conc" unit="u1" index="4" isCalculated="False"/>
+            </enzymeml:format>
+            <enzymeml:format id="format6">
+              <enzymeml:column type="time" unit="u4" index="0"/>
+              <enzymeml:column replica="sub1_repl7" species="s0" type="conc" unit="u1" index="1" isCalculated="False"/>
+              <enzymeml:column replica="sub2_repl7" species="s1" type="conc" unit="u1" index="2" isCalculated="False"/>
+              <enzymeml:column replica="prod1_repl7" species="s2" type="conc" unit="u1" index="3" isCalculated="False"/>
+              <enzymeml:column replica="prod2_repl7" species="s3" type="conc" unit="u1" index="4" isCalculated="False"/>
+            </enzymeml:format>
+            <enzymeml:format id="format7">
+              <enzymeml:column type="time" unit="u4" index="0"/>
+              <enzymeml:column replica="sub1_repl8" species="s0" type="conc" unit="u1" index="1" isCalculated="False"/>
+              <enzymeml:column replica="sub2_repl8" species="s1" type="conc" unit="u1" index="2" isCalculated="False"/>
+              <enzymeml:column replica="prod1_repl8" species="s2" type="conc" unit="u1" index="3" isCalculated="False"/>
+              <enzymeml:column replica="prod2_repl8" species="s3" type="conc" unit="u1" index="4" isCalculated="False"/>
+            </enzymeml:format>
+          </enzymeml:formats>
+          <enzymeml:listOfMeasurements>
+            <enzymeml:measurement file="file0" id="m0" name="Cephalexin synthesis 1">
+              <enzymeml:initConc protein="p0" value="0.0002" unit="u1"/>
+              <enzymeml:initConc reactant="s0" value="20.0" unit="u1"/>
+              <enzymeml:initConc reactant="s1" value="10.0" unit="u1"/>
+              <enzymeml:initConc reactant="s2" value="0.0" unit="u1"/>
+              <enzymeml:initConc reactant="s3" value="2.0" unit="u1"/>
+            </enzymeml:measurement>
+            <enzymeml:measurement file="file1" id="m1" name="Cephalexin synthesis 2">
+              <enzymeml:initConc protein="p0" value="0.0002" unit="u1"/>
+              <enzymeml:initConc reactant="s0" value="20.0" unit="u1"/>
+              <enzymeml:initConc reactant="s1" value="20.0" unit="u1"/>
+              <enzymeml:initConc reactant="s2" value="0.0" unit="u1"/>
+              <enzymeml:initConc reactant="s3" value="1.3" unit="u1"/>
+            </enzymeml:measurement>
+            <enzymeml:measurement file="file2" id="m2" name="Cephalexin synthesis 3">
+              <enzymeml:initConc protein="p0" value="0.0002" unit="u1"/>
+              <enzymeml:initConc reactant="s0" value="20.0" unit="u1"/>
+              <enzymeml:initConc reactant="s1" value="40.0" unit="u1"/>
+              <enzymeml:initConc reactant="s2" value="0.0" unit="u1"/>
+              <enzymeml:initConc reactant="s3" value="5.1" unit="u1"/>
+            </enzymeml:measurement>
+            <enzymeml:measurement file="file3" id="m3" name="Cephalexin synthesis 4">
+              <enzymeml:initConc protein="p0" value="0.0002" unit="u1"/>
+              <enzymeml:initConc reactant="s0" value="20.0" unit="u1"/>
+              <enzymeml:initConc reactant="s1" value="60.0" unit="u1"/>
+              <enzymeml:initConc reactant="s2" value="0.0" unit="u1"/>
+              <enzymeml:initConc reactant="s3" value="1.9" unit="u1"/>
+            </enzymeml:measurement>
+            <enzymeml:measurement file="file4" id="m4" name="Cephalexin synthesis 5">
+              <enzymeml:initConc protein="p0" value="0.0002" unit="u1"/>
+              <enzymeml:initConc reactant="s0" value="20.0" unit="u1"/>
+              <enzymeml:initConc reactant="s1" value="42.0" unit="u1"/>
+              <enzymeml:initConc reactant="s2" value="0.0" unit="u1"/>
+              <enzymeml:initConc reactant="s3" value="1.5" unit="u1"/>
+            </enzymeml:measurement>
+            <enzymeml:measurement file="file5" id="m5" name="Cephalexin synthesis 6">
+              <enzymeml:initConc protein="p0" value="0.0002" unit="u1"/>
+              <enzymeml:initConc reactant="s0" value="40.0" unit="u1"/>
+              <enzymeml:initConc reactant="s1" value="42.0" unit="u1"/>
+              <enzymeml:initConc reactant="s2" value="0.0" unit="u1"/>
+              <enzymeml:initConc reactant="s3" value="3.3" unit="u1"/>
+            </enzymeml:measurement>
+            <enzymeml:measurement file="file6" id="m6" name="Cephalexin synthesis 7">
+              <enzymeml:initConc protein="p0" value="0.0002" unit="u1"/>
+              <enzymeml:initConc reactant="s0" value="76.0" unit="u1"/>
+              <enzymeml:initConc reactant="s1" value="40.0" unit="u1"/>
+              <enzymeml:initConc reactant="s2" value="0.0" unit="u1"/>
+              <enzymeml:initConc reactant="s3" value="5.7" unit="u1"/>
+            </enzymeml:measurement>
+            <enzymeml:measurement file="file7" id="m7" name="Cephalexin synthesis 8">
+              <enzymeml:initConc protein="p0" value="0.0002" unit="u1"/>
+              <enzymeml:initConc reactant="s0" value="140.0" unit="u1"/>
+              <enzymeml:initConc reactant="s1" value="40.0" unit="u1"/>
+              <enzymeml:initConc reactant="s2" value="0.0" unit="u1"/>
+              <enzymeml:initConc reactant="s3" value="14.0" unit="u1"/>
+            </enzymeml:measurement>
+          </enzymeml:listOfMeasurements>
+          <enzymeml:files>
+            <enzymeml:file file="./data/m0.csv" format="format0" id="file0"/>
+            <enzymeml:file file="./data/m1.csv" format="format1" id="file1"/>
+            <enzymeml:file file="./data/m2.csv" format="format2" id="file2"/>
+            <enzymeml:file file="./data/m3.csv" format="format3" id="file3"/>
+            <enzymeml:file file="./data/m4.csv" format="format4" id="file4"/>
+            <enzymeml:file file="./data/m5.csv" format="format5" id="file5"/>
+            <enzymeml:file file="./data/m6.csv" format="format6" id="file6"/>
+            <enzymeml:file file="./data/m7.csv" format="format7" id="file7"/>
+          </enzymeml:files>
+        </enzymeml:data>
+      </annotation>
+      <reaction metaid="METAID_R0" sboTerm="SBO:0000176" id="r0" name="reaction-1" reversible="true">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="c1" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="p0" stoichiometry="1" constant="false"/>
+          <speciesReference sboTerm="SBO:0000011" species="s1" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Keq">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> v_r </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> K_n </ci>
+                  <ci> c1 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> p0 </ci>
+                  <ci> s1 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R1" sboTerm="SBO:0000176" id="r1" name="reaction-2" reversible="true">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="c0" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="p0" stoichiometry="1" constant="false"/>
+          <speciesReference sboTerm="SBO:0000011" species="s0" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Keq">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> v_r </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> K_s </ci>
+                  <ci> c0 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> p0 </ci>
+                  <ci> s0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+          <listOfLocalParameters>
+            <localParameter id="K_s" units="u1"/>
+          </listOfLocalParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R2" sboTerm="SBO:0000176" id="r2" name="reaction-3" reversible="false">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="c0" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="p1" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Irreversible">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_2 </ci>
+              <ci> c0 </ci>
+            </apply>
+          </math>
+          <listOfLocalParameters>
+            <localParameter id="k_2" units="u6"/>
+          </listOfLocalParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R3" sboTerm="SBO:0000176" id="r3" name="reaction-4" reversible="true">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="c3" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="c0" stoichiometry="1" constant="false"/>
+          <speciesReference sboTerm="SBO:0000011" species="s0" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Keq">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> v_r </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> K_si </ci>
+                  <ci> c3 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> c0 </ci>
+                  <ci> s0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R4" sboTerm="SBO:0000176" id="r4" name="reaction-5" reversible="true">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="c5" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="p1" stoichiometry="1" constant="false"/>
+          <speciesReference sboTerm="SBO:0000011" species="s0" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Keq">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> v_r </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> K_si </ci>
+                  <ci> c5 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> p1 </ci>
+                  <ci> s0 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R5" sboTerm="SBO:0000176" id="r5" name="reaction-6" reversible="false">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="c5" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="p0" stoichiometry="1" constant="false"/>
+          <speciesReference sboTerm="SBO:0000011" species="s3" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Irreversible">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_6 </ci>
+              <ci> c5 </ci>
+            </apply>
+          </math>
+          <listOfLocalParameters>
+            <localParameter id="k_6" units="u6"/>
+          </listOfLocalParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R6" sboTerm="SBO:0000176" id="r6" name="reaction-7" reversible="false">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="p1" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="p0" stoichiometry="1" constant="false"/>
+          <speciesReference sboTerm="SBO:0000011" species="s3" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Irreversible">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_3 </ci>
+              <ci> p1 </ci>
+            </apply>
+          </math>
+          <listOfLocalParameters>
+            <localParameter id="k_3" units="u6"/>
+          </listOfLocalParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R7" sboTerm="SBO:0000176" id="r7" name="reaction-8" reversible="true">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="c2" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="p0" stoichiometry="1" constant="false"/>
+          <speciesReference sboTerm="SBO:0000011" species="s3" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Keq">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> v_r </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> K_pg </ci>
+                  <ci> c2 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> p0 </ci>
+                  <ci> s3 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+          <listOfLocalParameters>
+            <localParameter id="K_pg" units="u1"/>
+          </listOfLocalParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R8" sboTerm="SBO:0000176" id="r8" name="reaction-9" reversible="true">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="c4" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="p1" stoichiometry="1" constant="false"/>
+          <speciesReference sboTerm="SBO:0000011" species="s1" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Keq">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> v_r </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> K_n </ci>
+                  <ci> c4 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> p1 </ci>
+                  <ci> s1 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R9" sboTerm="SBO:0000176" id="r9" name="reaction-10" reversible="false">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="c4" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="p0" stoichiometry="1" constant="false"/>
+          <speciesReference sboTerm="SBO:0000011" species="s3" stoichiometry="1" constant="false"/>
+          <speciesReference sboTerm="SBO:0000011" species="s1" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Irreversible">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_5 </ci>
+              <ci> c4 </ci>
+            </apply>
+          </math>
+          <listOfLocalParameters>
+            <localParameter id="k_5" units="u6"/>
+          </listOfLocalParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R10" sboTerm="SBO:0000176" id="r10" name="reaction-11" reversible="true">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="c4" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="c6" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Reversible">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <minus/>
+              <apply>
+                <times/>
+                <ci> k_4 </ci>
+                <ci> c4 </ci>
+              </apply>
+              <apply>
+                <times/>
+                <ci> k_4b </ci>
+                <ci> c6 </ci>
+              </apply>
+            </apply>
+          </math>
+          <listOfLocalParameters>
+            <localParameter id="k_4" units="u6"/>
+            <localParameter id="k_4b" units="u6"/>
+          </listOfLocalParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R11" sboTerm="SBO:0000176" id="r11" name="reaction-12" reversible="true">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="c6" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="p0" stoichiometry="1" constant="false"/>
+          <speciesReference sboTerm="SBO:0000011" species="s2" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Keq">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> v_r </ci>
+              <apply>
+                <minus/>
+                <apply>
+                  <times/>
+                  <ci> K_p </ci>
+                  <ci> c6 </ci>
+                </apply>
+                <apply>
+                  <times/>
+                  <ci> p0 </ci>
+                  <ci> s2 </ci>
+                </apply>
+              </apply>
+            </apply>
+          </math>
+          <listOfLocalParameters>
+            <localParameter id="K_p" units="u1"/>
+          </listOfLocalParameters>
+        </kineticLaw>
+      </reaction>
+      <reaction metaid="METAID_R12" sboTerm="SBO:0000176" id="r12" name="Enzyme deactivation" reversible="false">
+        <listOfReactants>
+          <speciesReference sboTerm="SBO:0000015" species="p0" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference sboTerm="SBO:0000011" species="p2" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <kineticLaw name="MassAction Irreversible">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k_d </ci>
+              <ci> p0 </ci>
+            </apply>
+          </math>
+          <listOfLocalParameters>
+            <localParameter id="k_d" units="u6"/>
+          </listOfLocalParameters>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
