@@ -13,6 +13,8 @@ from joblib import Parallel, delayed
 import numpy as np
 import pandas as pd
 import os
+import contextlib
+import io
 
 from typing import Dict, List, Optional, Tuple
 
@@ -20,11 +22,16 @@ from pyenzyme.thinlayers.base import BaseThinLayer, SimResult, Time, InitCondDic
 from pyenzyme.versions import v2
 
 try:
-    import pysces
+    # Suppress PySCeS import output by redirecting stdout and stderr
+    with (
+        contextlib.redirect_stdout(io.StringIO()),
+        contextlib.redirect_stderr(io.StringIO()),
+    ):
+        import pysces
     import lmfit
 except ModuleNotFoundError as e:
     raise ModuleNotFoundError(
-        "ThinLayerPysces is not available. "
+        "ThinLayerPySces is not available. "
         "To use it, please install the following dependencies: "
         f"{e}"
     )
@@ -250,12 +257,12 @@ class ThinLayerPysces(BaseThinLayer):
         results = self.minimizer.result.params.valuesdict()  # type: ignore
 
         for name, value in results.items():
-            parameter = next(
-                (p for p in nu_enzmldoc.parameters if p.symbol == name), None
-            )
-            if parameter is None:
+            query = nu_enzmldoc.filter_parameters(symbol=name)
+
+            if len(query) == 0:
                 raise ValueError(f"Parameter {name} not found")
 
+            parameter = query[0]
             parameter.value = value
 
         return nu_enzmldoc
@@ -378,7 +385,9 @@ class ThinLayerPysces(BaseThinLayer):
 
         if psc_needs_update:
             pysces.interface.convertSBML2PSC(
-                sbmlfile_name, sbmldir=model_dir, pscdir=model_dir
+                sbmlfile_name,
+                sbmldir=model_dir,
+                pscdir=model_dir,
             )
 
     def _load_pysces_model(self, sbmlfile_name: str, model_dir: str):
