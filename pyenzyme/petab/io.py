@@ -65,11 +65,21 @@ def to_petab(doc: v2.EnzymeMLDocument, path: Union[Path, str]) -> PEtab:
     # Create paths for all PEtab files
     name = doc.name.replace(" ", "_").lower()
     meta_path = path / f"{name}.yaml"
-    condition_path = path / f"{name}_{CONDITION_FILENAME}"
-    observable_path = path / f"{name}_{OBSERVABLE_FILENAME}"
-    measurement_path = path / f"{name}_{MEASUREMENT_FILENAME}"
-    parameter_path = path / f"{name}_{PARAMETER_FILENAME}"
-    sbml_path = path / f"{name}_{SBML_FILENAME}"
+
+    condition_name = f"{name}_{CONDITION_FILENAME}"
+    condition_path = path / condition_name
+
+    observable_name = f"{name}_{OBSERVABLE_FILENAME}"
+    observable_path = path / observable_name
+
+    measurement_name = f"{name}_{MEASUREMENT_FILENAME}"
+    measurement_path = path / measurement_name
+
+    parameter_name = f"{name}_{PARAMETER_FILENAME}"
+    parameter_path = path / parameter_name
+
+    sbml_name = f"{name}_{SBML_FILENAME}"
+    sbml_path = path / sbml_name
 
     # Write SBML model file
     with open(sbml_path, "w") as f:
@@ -105,7 +115,9 @@ def to_petab(doc: v2.EnzymeMLDocument, path: Union[Path, str]) -> PEtab:
                 sbml_files=[sbml_path],
                 measurement_files=[measurement_path],
                 condition_files=[condition_path],
-                observable_files=[observable_path],
+                observable_files=[
+                    observable_path,
+                ],
             )
         ],
     )
