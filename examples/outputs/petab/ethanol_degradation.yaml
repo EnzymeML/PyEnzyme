@@ -1,0 +1,11 @@
+format_version: 1
+parameter_file: outputs/petab/ethanol_degradation_parameters.tsv
+problems:
+- condition_files:
+  - outputs/petab/ethanol_degradation_conditions.tsv
+  measurement_files:
+  - outputs/petab/ethanol_degradation_measurements.tsv
+  observable_files:
+  - outputs/petab/ethanol_degradation_observables.tsv
+  sbml_files:
+  - outputs/petab/ethanol_degradation_model.xml

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns:enzymeml="https://www.enzymeml.org/v2" xmlns="http://www.sbml.org/sbml/level3/version2/core" level="3" version="2">
+  <model name="Ethanol degradation" volumeUnits="u3">
+    <annotation>
+      <data xmlns="https://www.enzymeml.org/v2" file="./data.tsv">
+        <measurement id="Measurement 1" name="Measurement 1" timeUnit="u5">
+          <speciesData species="ethanol" value="199.43391" type="concentration" unit="u4"/>
+        </measurement>
+        <measurement id="Measurement 2" name="Measurement 2" timeUnit="u5">
+          <speciesData species="ethanol" value="99.71696" type="concentration" unit="u4"/>
+        </measurement>
+        <measurement id="Measurement 3" name="Measurement 3" timeUnit="u5">
+          <speciesData species="ethanol" value="49.85848" type="concentration" unit="u4"/>
+        </measurement>
+        <measurement id="Measurement 4" name="Measurement 4" timeUnit="u5">
+          <speciesData species="ethanol" value="201.5041" type="concentration" unit="u4"/>
+        </measurement>
+        <measurement id="Measurement 5" name="Measurement 5" timeUnit="u5">
+          <speciesData species="ethanol" value="100.75205" type="concentration" unit="u4"/>
+        </measurement>
+      </data>
+    </annotation>
+    <listOfUnitDefinitions>
+      <unitDefinition id="u3" name="ml">
+        <listOfUnits>
+          <unit kind="litre" exponent="1" scale="-3" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="u4" name="mmol / l">
+        <listOfUnits>
+          <unit kind="mole" exponent="1" scale="-3" multiplier="1"/>
+          <unit kind="litre" exponent="-1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="u5" name="min">
+        <listOfUnits>
+          <unit kind="second" exponent="1" scale="1" multiplier="60"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="v1" name="Eppendorf tube" spatialDimensions="3" size="10" units="u3" constant="true">
+        <annotation>
+          <rdf:RDF xmlns:OBO="http://purl.obolibrary.org/obo/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Vessel/b6c5ef2e-ca73-42e6-a986-2cd10109d5ad">
+              <schema:name>Eppendorf tube</schema:name>
+              <OBO:OBI_0002139 rdf:datatype="http://www.w3.org/2001/XMLSchema#double">10.0</OBO:OBI_0002139>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Vessel"/>
+              <rdf:type rdf:resource="http://purl.obolibrary.org/obo/OBI_0400081"/>
+            </rdf:Description>
+          </rdf:RDF>
+        </annotation>
+      </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species sboTerm="SBO:0000252" id="alcohol_dehydrogenase_1a" name="Alcohol dehydrogenase 1A" compartment="v1" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="true">
+        <annotation>
+          <rdf:RDF xmlns:OBO="http://purl.obolibrary.org/obo/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="https://www.uniprot.org/uniprotkb/P07327">
+              <schema:name>Alcohol dehydrogenase 1A</schema:name>
+              <OBO:GSSO_007262>MSTAGKVIKCKAAVLWELKKPFSIEEVEVAPPKAHEVRIKMVAVGICGTDDHVVSGTMVTPLPVILGHEAAGIVESVGEGVTTVKPGDKVIPLAIPQCGKCRICKNPESNYCLKNDVSNPQGTLQDGTSRFTCRRKPIHHFLGISTFSQYTVVDENAVAKIDAASPLEKVCLIGCGFSTGYGSAVNVAKVTPGSTCAVFGLGGVGLSAIMGCKAAGAARIIAVDINKDKFAKAKELGATECINPQDYKKPIQEVLKEMTDGGVDFSFEVIGRLDTMMASLLCCHEACGTSVIVGVPPDSQNLSMNPMLLLTGRTWKGAILGGFKSKECVPKLVADFMAKKFSLDALITHVLPFEKINEGFDLLHSGKSIRTILMF</OBO:GSSO_007262>
+              <OBO:OBI_0100026>Homo sapiens</OBO:OBI_0100026>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Protein"/>
+              <rdf:type rdf:resource="http://purl.obolibrary.org/obo/PR_000000001"/>
+              <rdf:type rdf:resource="https://www.uniprot.org/uniprotkb/P07327"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <protein xmlns="https://www.enzymeml.org/v2">
+            <ecnumber>1.1.1.1</ecnumber>
+            <organism>Homo sapiens</organism>
+            <organismTaxId>9606</organismTaxId>
+            <sequence>MSTAGKVIKCKAAVLWELKKPFSIEEVEVAPPKAHEVRIKMVAVGICGTDDHVVSGTMVTPLPVILGHEAAGIVESVGEGVTTVKPGDKVIPLAIPQCGKCRICKNPESNYCLKNDVSNPQGTLQDGTSRFTCRRKPIHHFLGISTFSQYTVVDENAVAKIDAASPLEKVCLIGCGFSTGYGSAVNVAKVTPGSTCAVFGLGGVGLSAIMGCKAAGAARIIAVDINKDKFAKAKELGATECINPQDYKKPIQEVLKEMTDGGVDFSFEVIGRLDTMMASLLCCHEACGTSVIVGVPPDSQNLSMNPMLLLTGRTWKGAILGGFKSKECVPKLVADFMAKKFSLDALITHVLPFEKINEGFDLLHSGKSIRTILMF</sequence>
+          </protein>
+        </annotation>
+      </species>
+      <species sboTerm="SBO:0000247" id="ethanol" name="ethanol" compartment="v1" initialConcentration="199.43391" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://purl.obolibrary.org/obo/CHEBI_16236">
+              <schema:name>ethanol</schema:name>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
+              <rdf:type rdf:resource="http://purl.obolibrary.org/obo/CHEBI_16236"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <smallMolecule xmlns="https://www.enzymeml.org/v2">
+            <inchiKey>LFQSCWFLJHTTHZ-UHFFFAOYSA-N</inchiKey>
+            <smiles>CCO</smiles>
+          </smallMolecule>
+        </annotation>
+      </species>
+      <species sboTerm="SBO:0000247" id="nad_1" name="NAD(1-)" compartment="v1" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://purl.obolibrary.org/obo/CHEBI_57540">
+              <schema:name>NAD(1-)</schema:name>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
+              <rdf:type rdf:resource="http://purl.obolibrary.org/obo/CHEBI_57540"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <smallMolecule xmlns="https://www.enzymeml.org/v2">
+            <inchiKey>BAWFJGJZGIEFAR-NNYOXOHSSA-M</inchiKey>
+            <smiles>NC(=O)c1ccc[n+](c1)[C@@H]1O[C@H](COP([O-])(=O)OP([O-])(=O)OC[C@H]2O[C@H]([C@H](O)[C@@H]2O)n2cnc3c(N)ncnc23)[C@@H](O)[C@H]1O</smiles>
+          </smallMolecule>
+        </annotation>
+      </species>
+      <species sboTerm="SBO:0000247" id="acetaldehyde" name="acetaldehyde" compartment="v1" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://purl.obolibrary.org/obo/CHEBI_15343">
+              <schema:name>acetaldehyde</schema:name>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
+              <rdf:type rdf:resource="http://purl.obolibrary.org/obo/CHEBI_15343"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <smallMolecule xmlns="https://www.enzymeml.org/v2">
+            <inchiKey>IKHGUXGNUITLKF-UHFFFAOYSA-N</inchiKey>
+            <smiles>[H]C(C)=O</smiles>
+          </smallMolecule>
+        </annotation>
+      </species>
+      <species sboTerm="SBO:0000247" id="nadh_2" name="NADH(2-)" compartment="v1" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://purl.obolibrary.org/obo/CHEBI_57945">
+              <schema:name>NADH(2-)</schema:name>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
+              <rdf:type rdf:resource="http://purl.obolibrary.org/obo/CHEBI_57945"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <smallMolecule xmlns="https://www.enzymeml.org/v2">
+            <inchiKey>BOPGDPNILDQYTO-NNYOXOHSSA-L</inchiKey>
+            <smiles>NC(=O)C1=CN(C=CC1)[C@@H]1O[C@H](COP([O-])(=O)OP([O-])(=O)OC[C@H]2O[C@H]([C@H](O)[C@@H]2O)n2cnc3c(N)ncnc23)[C@@H](O)[C@H]1O</smiles>
+          </smallMolecule>
+        </annotation>
+      </species>
+      <species sboTerm="SBO:0000247" id="hydron" name="hydron" compartment="v1" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://purl.obolibrary.org/obo/CHEBI_15378">
+              <schema:name>hydron</schema:name>
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
+              <rdf:type rdf:resource="http://purl.obolibrary.org/obo/CHEBI_15378"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <smallMolecule xmlns="https://www.enzymeml.org/v2">
+            <inchiKey>GPRLSGONYQIRFK-UHFFFAOYSA-N</inchiKey>
+            <smiles>[H+]</smiles>
+          </smallMolecule>
+        </annotation>
+      </species>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="v_max" name="v_max" value="7" constant="true">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/7231702a-60a2-4547-82f1-fb8145bbaeb0">
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <parameter xmlns="https://www.enzymeml.org/v2">
+            <lowerBound>2.0</lowerBound>
+            <upperBound>20.0</upperBound>
+            <stdDeviation/>
+          </parameter>
+        </annotation>
+      </parameter>
+      <parameter id="K_m" name="K_m" value="80" constant="true">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/92e93bfa-0c00-4146-ac62-5c518f6dfdd5">
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <parameter xmlns="https://www.enzymeml.org/v2">
+            <lowerBound>20.0</lowerBound>
+            <upperBound>200.0</upperBound>
+            <stdDeviation/>
+          </parameter>
+        </annotation>
+      </parameter>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction name="RHEA:25290" reversible="true">
+        <listOfReactants>
+          <speciesReference species="ethanol" stoichiometry="1" constant="false"/>
+          <speciesReference species="nad_1" stoichiometry="1" constant="false"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="acetaldehyde" stoichiometry="1" constant="false"/>
+          <speciesReference species="nadh_2" stoichiometry="1" constant="false"/>
+          <speciesReference species="hydron" stoichiometry="1" constant="false"/>
+        </listOfProducts>
+        <listOfModifiers>
+          <modifierSpeciesReference species="alcohol_dehydrogenase_1a">
+            <annotation>
+              <modifier xmlns="https://www.enzymeml.org/v2" modifierRole="biocatalyst"/>
+            </annotation>
+          </modifierSpeciesReference>
+        </listOfModifiers>
+        <kineticLaw>
+          <annotation>
+            <variables xmlns="https://www.enzymeml.org/v2">
+              <variable id="ethanol" name="ethanol" symbol="ethanol"/>
+            </variables>
+          </annotation>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> ethanol </ci>
+                <ci> v_max </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <ci> K_m </ci>
+                <ci> ethanol </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>
