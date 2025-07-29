@@ -17,6 +17,7 @@ DEFAULT_HEIGHT = 3
 def plot(
     enzmldoc: v2.EnzymeMLDocument,
     columns: int = 2,
+    show: bool = False,
     measurement_ids: Optional[list[str]] = None,
     marker_size: int = 6,
     marker_style: str = "o",
@@ -79,6 +80,19 @@ def plot(
     ... )
     >>> fig.savefig("with_fits.png", dpi=300)
     """
+
+    # Check if we're in a Jupyter environment and set up matplotlib backend
+    try:
+        from IPython.core.getipython import get_ipython
+
+        ipython = get_ipython()
+        if ipython is not None:
+            # We're in IPython/Jupyter
+            ipython.run_line_magic("matplotlib", "inline")
+    except ImportError:
+        # IPython not available, continue normally
+        pass
+
     # Filter measurements based on provided IDs
     if measurement_ids is None:
         measurements = enzmldoc.measurements
@@ -121,6 +135,9 @@ def plot(
 
     if out:
         fig.savefig(out, dpi=dpi, format=img_format)
+
+    if show:
+        plt.show()
 
     return fig, axs  # type: ignore
 
