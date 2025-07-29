@@ -39,6 +39,7 @@ def build_equations(
     *equations: str,
     unit_mapping: dict[str, str] | None = None,
     enzmldoc: EnzymeMLDocument,
+    equation_type: EquationType | None = None,
 ) -> list[Equation]:
     """Builds a list of Equation objects from a list of string representations.
 
@@ -67,6 +68,7 @@ def build_equations(
             equation=eq,
             unit_mapping=unit_mapping,
             enzmldoc=enzmldoc,
+            equation_type=equation_type,
         )
         for eq in equations
     ]  # type: ignore
@@ -75,6 +77,7 @@ def build_equations(
 def build_equation(
     equation: str,
     enzmldoc: EnzymeMLDocument,
+    equation_type: EquationType | None = None,
     unit_mapping: dict[str, str] | None = None,
 ) -> Equation:
     """Builds an equation object from a string representation.
@@ -82,6 +85,13 @@ def build_equation(
     This function takes an equation string and converts it into an Equation object.
     It identifies the equation type (ODE, assignment, or initial assignment) based on the pattern,
     extracts variables and parameters, and creates the appropriate Equation object.
+
+    Equation types can be explicitly provided, otherwise they will be inferred from the equation, following the following rules:
+
+    - ODE: y'(t) = 2 * x
+    - Assignment: y(t) = 2 * x
+    - Initial Assignment: y = 2 * x
+    - Rate Law: 2 * x (no left-hand side)
 
     Args:
         equation (str): The equation to be converted into an Equation object
@@ -103,33 +113,37 @@ def build_equation(
         unit_mapping = {}
 
     left, right = _extract_sides(equation)
-    variables = set(re.findall(VARIABLE_PATTERN, right))
 
-    if bool(re.match(DERIVATIVE_PATTERN, left)):
-        equation_type = EquationType.ODE
-    elif bool(re.match(VARIABLE_PATTERN, left)):
-        equation_type = EquationType.ASSIGNMENT
-    elif bool(re.match(INIT_ASSIGNMENT_PATTERN, left)):
-        equation_type = EquationType.INITIAL_ASSIGNMENT
-    elif left.strip() == "":
-        equation_type = EquationType.RATE_LAW
-    else:
-        rich.print(
-            "\n".join(
-                [
-                    "There are three types equations that follow a certain pattern:\n",
-                    "  [bold]1. ODE: y'(t) = 2 * x(t)[/bold]",
-                    "  [bold]2. Assignment: y(t) = 2 * x(t)[/bold]",
-                    "  [bold]3. Initial Assignment: y = 2 * x(t)[/bold]",
-                    "\nPlease make sure your equation follows one of these patterns.\n",
-                ]
+    if equation_type is None:
+        if bool(re.match(DERIVATIVE_PATTERN, left)):
+            equation_type = EquationType.ODE
+        elif bool(re.match(VARIABLE_PATTERN, left)):
+            equation_type = EquationType.ASSIGNMENT
+        elif bool(re.match(INIT_ASSIGNMENT_PATTERN, left)):
+            equation_type = EquationType.INITIAL_ASSIGNMENT
+        elif left.strip() == "":
+            equation_type = EquationType.RATE_LAW
+        else:
+            rich.print(
+                "\n".join(
+                    [
+                        "Cannot infer equation type. There are three types equations that follow a certain pattern:\n",
+                        "  [bold]1. ODE: y'(t) = 2 * x[/bold]",
+                        "  [bold]2. Assignment: y(t) = 2 * x[/bold]",
+                        "  [bold]3. Initial Assignment: y = 2 * x[/bold]",
+                        "\nPlease make sure your equation follows one of these patterns or explicitly provide the equation type.\n",
+                    ]
+                )
             )
-        )
-        raise ValueError("Equation type not recognized")
+            raise ValueError("Equation type not recognized")
 
     right = sympify(_clean_and_trim(right))
     left = _clean_and_trim(left)
-    parameters = {str(symbol) for symbol in right.free_symbols} - variables  # type: ignore
+    all_ids = _extract_all_ids(enzmldoc)
+    variables = {str(symbol) for symbol in right.free_symbols if str(symbol) in all_ids}
+    parameters = {
+        str(symbol) for symbol in right.free_symbols if str(symbol) not in all_ids
+    }
 
     if equation_type == EquationType.ASSIGNMENT:
         parameters = parameters.union({left})
@@ -249,3 +263,24 @@ def _add_to_parameters(
         symbol=name,
         unit=unit,  # type: ignore
     )  # type: ignore
+
+
+def _extract_all_ids(enzmldoc: EnzymeMLDocument) -> set[str]:
+    """Extracts all IDs from the EnzymeMLDocument.
+
+    Args:
+        enzmldoc (EnzymeMLDocument): The document to extract the IDs from
+
+    Returns:
+        list[str]: A list of all IDs in the EnzymeMLDocument
+    """
+    assignments = [
+        eq.species_id
+        for eq in enzmldoc.equations
+        if eq.equation_type != EquationType.ODE
+    ]
+    species = [
+        obj.id
+        for obj in enzmldoc.small_molecules + enzmldoc.proteins + enzmldoc.complexes
+    ]
+    return set(assignments + species)
