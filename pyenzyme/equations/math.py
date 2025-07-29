@@ -11,7 +11,6 @@ from pyenzyme.versions.v2 import (
     Equation,
     EquationType,
     Variable,
-    Parameter,
 )
 
 # Regular expression patterns for parsing different parts of equations
@@ -212,19 +211,6 @@ def _clean_and_trim(eq: str) -> str:
             eq = re.sub(rf"{var}\'?\(t\)", var, eq)
 
     return eq.strip()
-
-
-def _create_parameter(name: str, unit: UnitDefinition | None) -> Parameter:
-    """Creates a Parameter object with the given name and unit.
-
-    Args:
-        name (str): The name of the parameter
-        unit (UnitDefinition | None): The unit of the parameter
-
-    Returns:
-        Parameter: The created Parameter object
-    """
-    return Parameter(id=name, name=name, symbol=name, unit=unit)
 
 
 def _create_variable(name: str) -> Variable:
