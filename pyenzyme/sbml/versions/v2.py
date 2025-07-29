@@ -273,6 +273,16 @@ class MeasurementAnnot(
         default_factory=list,
     )
 
+    @field_validator("conditions")
+    @classmethod
+    def _check_conditions(cls, value: ConditionsAnnot):
+        """
+        Check if the conditions are empty.
+        """
+        if value.ph is None and value.temperature is None:
+            return None
+        return value
+
     def to_measurement(
         self,
         meas_data: pd.DataFrame,
@@ -433,6 +443,26 @@ class ConditionsAnnot(
 
     ph: PHAnnot | None = element(tag="ph")
     temperature: TemperatureAnnot | None = element(tag="temperature", default=None)
+
+    @field_validator("ph")
+    @classmethod
+    def _check_ph(cls, value: PHAnnot):
+        """
+        Check if the conditions are empty.
+        """
+        if value.value is None:
+            return None
+        return value
+
+    @field_validator("temperature")
+    @classmethod
+    def _check_temperature(cls, value: TemperatureAnnot):
+        """
+        Check if the temperature is empty.
+        """
+        if value.value is None and value.unit is None:
+            return None
+        return value
 
 
 class PHAnnot(
