@@ -22,6 +22,7 @@ from pyenzyme.tabular import to_pandas
 from pyenzyme import UnitDefinition
 
 NSMAP = {"enzymeml": "https://www.enzymeml.org/v2"}
+CELSIUS_CONVERSION_FACTOR = 273.15
 
 
 def to_sbml(
@@ -333,7 +334,7 @@ def _add_reaction(reaction: pe.Reaction, index: int):
         modifier_ref.setSpecies(modifier.species_id)
 
         annot = v2.ModifierAnnot(
-            modifier_role=modifier.role.name,
+            modifier_role=modifier.role.value,
         )
 
         if not annot.is_empty():
@@ -379,33 +380,6 @@ def _add_rate_law(equation: pe.Equation, reac: libsbml.Reaction):
 
     if not annot.is_empty():
         law.setAnnotation(annot.to_xml(encoding="unicode"))
-
-
-def _get_create_fun(
-    stoichiometry: float,
-    reaction: libsbml.Reaction,
-    species: str,
-) -> Callable[[], libsbml.SpeciesReference]:
-    """
-    Helper function to retrieve the appropriate create function based on stoichiometry.
-
-    Args:
-        stoichiometry (float): The stoichiometry of the species.
-        reaction (libsbml.Reaction): The SBML reaction.
-        species (str): The species ID.
-
-    Returns:
-        Callable[[], libsbml.SpeciesReference]: The appropriate create function.
-
-    Raises:
-        ValueError: If the stoichiometry is 0.
-    """
-    if stoichiometry > 0:
-        return reaction.createProduct
-    elif stoichiometry < 0:
-        return reaction.createReactant
-
-    raise ValueError(f"Stoichiometry of species {species} is 0")
 
 
 def _add_parameter(parameter: pe.Parameter):
@@ -481,10 +455,11 @@ def _add_measurements(measurements: list[pe.Measurement]):
     annot = v2.DataAnnot(file="./data.tsv")
 
     for measurement in measurements:
-        if not measurement.species_data:
-            continue
+        measurement = deepcopy(measurement)
 
         time_unit = _get_unit_id(measurement.species_data[0].time_unit)
+        _convert_temperature_to_kelvin(measurement)
+
         conditions = v2.ConditionsAnnot(
             ph=v2.PHAnnot(
                 value=measurement.ph,
@@ -506,7 +481,6 @@ def _add_measurements(measurements: list[pe.Measurement]):
             if species_data.data_type is None:
                 data_type = None
             else:
-                print(species_data.data_type)
                 data_type = species_data.data_type.value
 
             species_annot = v2.SpeciesDataAnnot(
@@ -522,6 +496,34 @@ def _add_measurements(measurements: list[pe.Measurement]):
 
     if not annot.is_empty():
         model.appendAnnotation(annot.to_xml(encoding="unicode", exclude_none=True))
+
+
+def _convert_temperature_to_kelvin(measurement: pe.Measurement) -> None:
+    """
+    Converts measurement temperature from Celsius to Kelvin if needed.
+
+    Args:
+        measurement (pe.Measurement): The measurement object to potentially convert.
+                                    Modified in place if conversion is needed.
+    """
+    temp_unit = measurement.temperature_unit
+
+    if temp_unit and any(
+        unit.kind == pe.UnitType.CELSIUS for unit in temp_unit.base_units
+    ):
+        # Find the base unit that is celsius and convert to kelvin
+        temp_unit = next(
+            unit for unit in temp_unit.base_units if unit.kind == pe.UnitType.CELSIUS
+        )
+        convert_to_kelvin = True
+    else:
+        convert_to_kelvin = False
+
+    if convert_to_kelvin and measurement.temperature:
+        logger.warning(
+            f"Converting measurement ({measurement.id}) temperature from Celsius to Kelvin. This is not supported by SBML."
+        )
+        measurement.temperature = measurement.temperature + CELSIUS_CONVERSION_FACTOR
 
 
 def _create_condition_element(
