@@ -5,6 +5,7 @@ description = "A Python library for EnzymeML"
 authors = ["Jan Range <range.jan@web.de>"]
 license = "BSD 2-Clause License"
 readme = "README.md"
+repository = "https://github.com/EnzymeML/pyenzyme"
 
 [tool.poetry.dependencies]
 python = "^3.10"
