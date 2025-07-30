@@ -1,0 +1,16 @@
+name: Publish to TestPyPi
+
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Build and publish to TestPyPi'
+        uses: JRubics/poetry-publish@v2.0
+        with:
+          pypi_token: ${{ secrets.TEST_PYPI_TOKEN }}
+          repository_name: 'testpypi'
+          repository_url: 'https://test.pypi.org/legacy/'
