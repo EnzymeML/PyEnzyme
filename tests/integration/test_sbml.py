@@ -140,9 +140,27 @@ class TestSBML:
                 "Parsed document does not match expected document"
             )
 
+    def test_temperature_conversion(self):
+        enzmldoc = pe.read_enzymeml("tests/fixtures/modeling/enzmldoc_reaction.json")
+        enzmldoc.measurements = [enzmldoc.measurements[0]]
+        enzmldoc.measurements[0].temperature = 0.0
+        enzmldoc.measurements[0].temperature_unit = "°C"  # type: ignore
+
+        with tempfile.TemporaryDirectory() as dirname:
+            # Write to OMEX and read again
+            path = Path(dirname) / "test.omex"
+            pe.to_sbml(enzmldoc, path)
+            enzmldoc = pe.from_sbml(path)
+
+            assert enzmldoc.measurements[0].temperature == 273.15
+
+            if enzmldoc.measurements[0].temperature_unit is not None:
+                assert enzmldoc.measurements[0].temperature_unit.name == "Kelvin"
+            else:
+                raise ValueError("Temperature unit is None")
+
     def set_unit_name_as_id(self, obj):
         for key, value in obj:
-            print(key, value)
             if isinstance(value, pe.UnitDefinition):
                 value.id = value.name
             elif isinstance(value, BaseModel):
