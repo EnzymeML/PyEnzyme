@@ -201,7 +201,7 @@
       <compartment id="vessel0" name="vessel0" spatialDimensions="3" size="1" units="u4" constant="true">
         <annotation>
           <rdf:RDF xmlns:OBO="http://purl.obolibrary.org/obo/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Vessel/1de9dc23-d5b6-4db6-912a-d1ae364d12d6">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Vessel/72eec2c7-dfb8-4000-ac47-da82c6e22fb1">
               <schema:name>vessel0</schema:name>
               <OBO:OBI_0002139 rdf:datatype="http://www.w3.org/2001/XMLSchema#double">1.0</OBO:OBI_0002139>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Vessel"/>
@@ -215,7 +215,7 @@
       <species sboTerm="SBO:0000252" id="slac" name="slac" compartment="vessel0" initialConcentration="0.079037949" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Protein/24ef4a0e-0a27-4604-8cf2-2d49dc50aac5">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Protein/85ba0f19-441c-452c-8697-8c4e480a8fd9">
               <schema:name>slac</schema:name>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Protein"/>
               <rdf:type rdf:resource="http://purl.obolibrary.org/obo/PR_000000001"/>
@@ -226,7 +226,7 @@
       <species sboTerm="SBO:0000252" id="slac_inactive" name="slac_inactive" compartment="vessel0" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Protein/f68ffef2-7c04-495d-b18d-94690ef6d9b7">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Protein/5496331d-cde3-4a7c-8ba3-08d28e8e1066">
               <schema:name>slac_inactive</schema:name>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Protein"/>
               <rdf:type rdf:resource="http://purl.obolibrary.org/obo/PR_000000001"/>
@@ -237,7 +237,7 @@
       <species sboTerm="SBO:0000247" id="abts" name="abts" compartment="vessel0" initialConcentration="4.37288121844535" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/16168a94-8a81-40d0-b7b4-d8a19cf17d94">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/b87bd227-5a3c-49af-b0e9-0df852325e30">
               <schema:name>abts</schema:name>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
             </rdf:Description>
@@ -247,7 +247,7 @@
       <species sboTerm="SBO:0000247" id="buffer" name="buffer" compartment="vessel0" initialConcentration="100" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/2ce599b1-91a4-4fee-b207-cfa97eeb14eb">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/1a424885-5241-4a84-b699-5d42349ae7ba">
               <schema:name>buffer</schema:name>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
             </rdf:Description>
@@ -257,7 +257,7 @@
       <species sboTerm="SBO:0000247" id="abts_radical" name="abts_radical" compartment="vessel0" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/340295ca-bbee-4ff6-aaf4-3780c58ac79b">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/749e527e-b968-4202-bd20-8c8705cc7b57">
               <schema:name>abts_radical</schema:name>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
             </rdf:Description>
@@ -269,7 +269,7 @@
       <parameter id="k_cat" name="k_cat" value="1.85" constant="true">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/b0280e80-bde8-420b-99fc-8b36de9fe967">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/1832c6d8-e6f9-4859-b89b-5367c2e72074">
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
             </rdf:Description>
           </rdf:RDF>
@@ -283,7 +283,7 @@
       <parameter id="K_M" name="K_M" value="20" constant="true">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/348dac90-2259-4746-81fd-857e653c5e7f">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/9eedf54c-9441-4915-8e46-4ae4e2a78f19">
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
             </rdf:Description>
           </rdf:RDF>
@@ -297,7 +297,7 @@
       <parameter id="k_ie" name="k_ie" value="0.001" constant="true">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/c76d1270-e93a-4890-88c3-b311675f73d7">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/97387c64-ef81-4a9c-87b7-8494c9d28098">
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
             </rdf:Description>
           </rdf:RDF>

@@ -12,7 +12,7 @@
       "@type": "@id"
     }
   },
-  "@id": "enzml:EnzymeMLDocument/191c7942-4c51-4ded-a7e1-18c1251d6b63",
+  "@id": "enzml:EnzymeMLDocument/5c5f6234-4bd4-4502-8419-56a46443147f",
   "@type": [
     "enzml:EnzymeMLDocument"
   ],
@@ -32,7 +32,7 @@
         "name": "schema:name",
         "volume": "OBO:OBI_0002139"
       },
-      "@id": "enzml:Vessel/b6c5ef2e-ca73-42e6-a986-2cd10109d5ad",
+      "@id": "enzml:Vessel/fac38216-5e3d-45db-9454-03fdaf57d8c7",
       "@type": [
         "enzml:Vessel",
         "OBO:OBI_0400081"
@@ -313,7 +313,7 @@
             "@type": "@id"
           }
         },
-        "@id": "enzml:Equation/5e893b88-bc2a-4865-ab00-dc3fb3ef9af3",
+        "@id": "enzml:Equation/2b23b81b-84aa-4e8b-8122-9a9053de0878",
         "@type": [
           "enzml:Equation"
         ],
@@ -331,7 +331,7 @@
                 "@type": "@id"
               }
             },
-            "@id": "enzml:Variable/e37ee551-9f81-49ef-92f5-17b0293ac425",
+            "@id": "enzml:Variable/357b5b51-79dd-4a70-a3b9-a04895e62e86",
             "@type": [
               "enzml:Variable"
             ],
@@ -352,7 +352,7 @@
               "@type": "@id"
             }
           },
-          "@id": "enzml:ReactionElement/d3543d0b-0f6c-40b9-bd8e-4ab551e70c52",
+          "@id": "enzml:ReactionElement/86e621f9-5bc6-4ac6-a075-e02b2669a459",
           "@type": [
             "enzml:ReactionElement"
           ],
@@ -369,7 +369,7 @@
               "@type": "@id"
             }
           },
-          "@id": "enzml:ReactionElement/b9695bf6-ba9e-41db-94be-58c8c59bfa64",
+          "@id": "enzml:ReactionElement/b29a2c62-434e-4598-a2b5-3177641fead8",
           "@type": [
             "enzml:ReactionElement"
           ],
@@ -388,7 +388,7 @@
               "@type": "@id"
             }
           },
-          "@id": "enzml:ReactionElement/b9b0a3b5-40bf-417e-9028-fb7c8064fbca",
+          "@id": "enzml:ReactionElement/efd94cfb-4118-4957-af4c-149dea044f08",
           "@type": [
             "enzml:ReactionElement"
           ],
@@ -405,7 +405,7 @@
               "@type": "@id"
             }
           },
-          "@id": "enzml:ReactionElement/8e38177f-51ee-47f9-8dfd-8258fd5b86a0",
+          "@id": "enzml:ReactionElement/56500350-87a1-409f-bf61-d0c9a8013683",
           "@type": [
             "enzml:ReactionElement"
           ],
@@ -422,7 +422,7 @@
               "@type": "@id"
             }
           },
-          "@id": "enzml:ReactionElement/420bd4b0-9ee7-4b78-af0b-d9e7c140cb0c",
+          "@id": "enzml:ReactionElement/2773e17b-fb47-4cfd-a021-d3aed12c2367",
           "@type": [
             "enzml:ReactionElement"
           ],
@@ -441,7 +441,7 @@
               "@type": "@id"
             }
           },
-          "@id": "enzml:ModifierElement/981c4564-be0f-4938-aad9-d436c45590ef",
+          "@id": "enzml:ModifierElement/65ef57a1-c7a1-4a29-ad11-b5f81835781c",
           "@type": [
             "enzml:ModifierElement"
           ],
@@ -465,7 +465,7 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:Measurement/520bfd58-2b06-438c-81e5-4d0b2d9b5952",
+      "@id": "enzml:Measurement/9046f5b2-32dd-4dc3-9e19-d0e81cc103f9",
       "@type": [
         "enzml:Measurement"
       ],
@@ -481,7 +481,7 @@
               "@type": "@id"
             }
           },
-          "@id": "enzml:MeasurementData/a83a481c-3dd3-4bb6-ba8d-e14ef189ba9f",
+          "@id": "enzml:MeasurementData/aceae647-3f9d-48ba-b9c7-2e1a3ec9c1c6",
           "@type": [
             "enzml:MeasurementData"
           ],
@@ -579,7 +579,7 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:Measurement/b643e1ed-a9b3-4cd9-a6c5-d17fd68bb06a",
+      "@id": "enzml:Measurement/fe60e437-f899-4e95-8412-0196243a1c3a",
       "@type": [
         "enzml:Measurement"
       ],
@@ -595,7 +595,7 @@
               "@type": "@id"
             }
           },
-          "@id": "enzml:MeasurementData/7d098f77-4648-43ad-bce7-b7ea6186f0ea",
+          "@id": "enzml:MeasurementData/5da6dd33-1bb0-43ca-8190-a88fe93c3b84",
           "@type": [
             "enzml:MeasurementData"
           ],
@@ -693,7 +693,7 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:Measurement/e2772b60-f666-44a8-b788-9c9679938726",
+      "@id": "enzml:Measurement/1211542e-97fd-4839-92b0-4ae20d2e24f5",
       "@type": [
         "enzml:Measurement"
       ],
@@ -709,7 +709,7 @@
               "@type": "@id"
             }
           },
-          "@id": "enzml:MeasurementData/15560566-571b-4b12-8d79-c3585cd3cb99",
+          "@id": "enzml:MeasurementData/d0262806-c9f1-4a12-8ecd-9241e48918a5",
           "@type": [
             "enzml:MeasurementData"
           ],
@@ -807,7 +807,7 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:Measurement/a09b7544-b9d9-4e70-b9c1-6d00938156ea",
+      "@id": "enzml:Measurement/799e7ecc-814f-4e27-9b0a-38359cd5163a",
       "@type": [
         "enzml:Measurement"
       ],
@@ -823,7 +823,7 @@
               "@type": "@id"
             }
           },
-          "@id": "enzml:MeasurementData/62bc8059-673c-451b-a2d2-172105d37407",
+          "@id": "enzml:MeasurementData/609ade3f-3529-4791-8b18-db8b769199ee",
           "@type": [
             "enzml:MeasurementData"
           ],
@@ -921,7 +921,7 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:Measurement/af694904-b39f-43a3-b0ec-5458dbfa5f12",
+      "@id": "enzml:Measurement/4f8a3c90-3256-4cc3-ba05-d1353f0068cc",
       "@type": [
         "enzml:Measurement"
       ],
@@ -937,7 +937,7 @@
               "@type": "@id"
             }
           },
-          "@id": "enzml:MeasurementData/8bce292a-24b1-4d04-8cf8-1c5f37cd5df4",
+          "@id": "enzml:MeasurementData/1692de96-4faa-4d32-a5b6-4b1506d967b5",
           "@type": [
             "enzml:MeasurementData"
           ],
@@ -1035,16 +1035,16 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:Parameter/7231702a-60a2-4547-82f1-fb8145bbaeb0",
+      "@id": "enzml:Parameter/20215b33-8582-4bde-b06f-336faaffa8c0",
       "@type": [
         "enzml:Parameter"
       ],
-      "id": "v_max",
-      "name": "v_max",
-      "symbol": "v_max",
-      "initial_value": 7.0,
-      "upper_bound": 20.0,
-      "lower_bound": 2.0,
+      "id": "K_m",
+      "name": "K_m",
+      "symbol": "K_m",
+      "initial_value": 80.0,
+      "upper_bound": 200.0,
+      "lower_bound": 20.0,
       "constant": true
     },
     {
@@ -1057,16 +1057,16 @@
           "@type": "@id"
         }
       },
-      "@id": "enzml:Parameter/92e93bfa-0c00-4146-ac62-5c518f6dfdd5",
+      "@id": "enzml:Parameter/c977cf88-6793-4013-b9d4-93156354a9b9",
       "@type": [
         "enzml:Parameter"
       ],
-      "id": "K_m",
-      "name": "K_m",
-      "symbol": "K_m",
-      "initial_value": 80.0,
-      "upper_bound": 200.0,
-      "lower_bound": 20.0,
+      "id": "v_max",
+      "name": "v_max",
+      "symbol": "v_max",
+      "initial_value": 7.0,
+      "upper_bound": 20.0,
+      "lower_bound": 2.0,
       "constant": true
     }
   ],

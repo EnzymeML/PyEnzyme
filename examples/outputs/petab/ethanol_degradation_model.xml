@@ -42,7 +42,7 @@
       <compartment id="v1" name="Eppendorf tube" spatialDimensions="3" size="10" units="u3" constant="true">
         <annotation>
           <rdf:RDF xmlns:OBO="http://purl.obolibrary.org/obo/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Vessel/b6c5ef2e-ca73-42e6-a986-2cd10109d5ad">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Vessel/fac38216-5e3d-45db-9454-03fdaf57d8c7">
               <schema:name>Eppendorf tube</schema:name>
               <OBO:OBI_0002139 rdf:datatype="http://www.w3.org/2001/XMLSchema#double">10.0</OBO:OBI_0002139>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Vessel"/>
@@ -150,30 +150,30 @@
       </species>
     </listOfSpecies>
     <listOfParameters>
-      <parameter id="v_max" name="v_max" value="7" constant="true">
-        <annotation>
-          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/7231702a-60a2-4547-82f1-fb8145bbaeb0">
-              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
-            </rdf:Description>
-          </rdf:RDF>
-          <parameter xmlns="https://www.enzymeml.org/v2">
-            <lowerBound>2.0</lowerBound>
-            <upperBound>20.0</upperBound>
-            <stdDeviation/>
-          </parameter>
-        </annotation>
-      </parameter>
       <parameter id="K_m" name="K_m" value="80" constant="true">
         <annotation>
           <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/92e93bfa-0c00-4146-ac62-5c518f6dfdd5">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/20215b33-8582-4bde-b06f-336faaffa8c0">
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
             </rdf:Description>
           </rdf:RDF>
           <parameter xmlns="https://www.enzymeml.org/v2">
             <lowerBound>20.0</lowerBound>
             <upperBound>200.0</upperBound>
+            <stdDeviation/>
+          </parameter>
+        </annotation>
+      </parameter>
+      <parameter id="v_max" name="v_max" value="7" constant="true">
+        <annotation>
+          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/c977cf88-6793-4013-b9d4-93156354a9b9">
+              <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
+            </rdf:Description>
+          </rdf:RDF>
+          <parameter xmlns="https://www.enzymeml.org/v2">
+            <lowerBound>2.0</lowerBound>
+            <upperBound>20.0</upperBound>
             <stdDeviation/>
           </parameter>
         </annotation>
