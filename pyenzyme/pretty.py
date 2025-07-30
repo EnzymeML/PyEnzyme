@@ -1,28 +1,46 @@
-"""
-EnzymeML Document Pretty Printing Utilities
-
-This module provides functions to create visually appealing summaries
-of EnzymeML documents using rich formatting.
-"""
-
+from typing import TYPE_CHECKING
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 from rich.columns import Columns
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from pyenzyme.versions.v2 import EnzymeMLDocument
 
 
-def summary(doc: "EnzymeMLDocument", console: Console | None = None) -> None:
+def summary(
+    doc: "EnzymeMLDocument",
+    console: Console | None = None,
+    interactive: bool = True,
+) -> None:
     """
     Create a comprehensive visual summary of an EnzymeML document.
 
+    In Jupyter notebooks, creates interactive widgets with dropdowns and selection.
+    In terminal, creates rich formatted tables and panels.
+
     Args:
         doc: EnzymeMLDocument to summarize
-        console: Rich console instance (creates new one if None)
+        console: Rich console instance (creates new one if None) - only used for terminal
+        interactive: Whether to create interactive widgets in Jupyter notebooks
     """
+    try:
+        from . import widgets
+
+        if widgets._is_notebook() and interactive:
+            widgets.create_interactive_summary(doc)
+            return
+    except ImportError:
+        pass
+
+    # Fall back to terminal summary
+    _create_terminal_summary(doc, console)
+
+
+def _create_terminal_summary(
+    doc: "EnzymeMLDocument", console: Console | None = None
+) -> None:
+    """Create terminal summary using rich formatting."""
     if console is None:
         console = Console()
 
@@ -60,21 +78,14 @@ def summary(doc: "EnzymeMLDocument", console: Console | None = None) -> None:
     spaced_content = []
     for i, content in enumerate(content_panels):
         spaced_content.append(content)
-        if i < len(content_panels) - 1:  # Don't add space after last item
-            spaced_content.append("")  # Empty string for spacing
+        if i < len(content_panels) - 1:
+            spaced_content.append("")
 
-    # Combine all content into a single container panel
+    # Print title and content separately
+    console.print("📋 [bold blue]EnzymeML Document Summary[/bold blue]")
+
     content_group = Group(*spaced_content)
-
-    container_panel = Panel(
-        content_group,
-        title="📋 EnzymeML Document Summary",
-        title_align="left",
-        border_style="bold blue",
-        padding=(1, 2),
-    )
-
-    console.print(container_panel)
+    console.print(content_group)
 
 
 def _create_overview_panel(doc: "EnzymeMLDocument") -> Panel:
@@ -116,8 +127,8 @@ def _create_counts_table(doc: "EnzymeMLDocument") -> Table:
     counts_table = Table(
         title="📊 Component Counts", show_header=True, header_style="bold magenta"
     )
-    counts_table.add_column("Component", style="cyan", no_wrap=True)
-    counts_table.add_column("Count", justify="right", style="yellow")
+    counts_table.add_column("Component", no_wrap=True)
+    counts_table.add_column("Count", justify="right")
 
     # Add all component counts
     component_counts = [
@@ -142,10 +153,10 @@ def _create_species_table(doc: "EnzymeMLDocument") -> Table:
     species_table = Table(
         title="🧬 Species Details", show_header=True, header_style="bold green"
     )
-    species_table.add_column("Type", style="cyan", min_width=12)
+    species_table.add_column("Type", min_width=12)
     species_table.add_column("ID", style="magenta", min_width=15)
-    species_table.add_column("Name", style="white", min_width=20)
-    species_table.add_column("Details", style="dim white")
+    species_table.add_column("Name", min_width=20)
+    species_table.add_column("Details")
 
     _add_proteins_to_species_table(doc, species_table)
     _add_molecules_to_species_table(doc, species_table)
@@ -166,7 +177,10 @@ def _add_proteins_to_species_table(doc: "EnzymeMLDocument", table: Table) -> Non
             details.append(f"Vessel: {protein.vessel_id}")
 
         table.add_row(
-            "Protein", protein.id, protein.name, " | ".join(details) if details else "—"
+            "Protein",
+            f"[magenta]{protein.id}[/magenta]",
+            protein.name,
+            " | ".join(details) if details else "—",
         )
 
     if len(doc.proteins) > 5:
@@ -184,7 +198,7 @@ def _add_molecules_to_species_table(doc: "EnzymeMLDocument", table: Table) -> No
 
         table.add_row(
             "Small Molecule",
-            molecule.id,
+            f"[magenta]{molecule.id}[/magenta]",
             molecule.name,
             " | ".join(details) if details else "—",
         )
@@ -204,7 +218,7 @@ def _add_complexes_to_species_table(doc: "EnzymeMLDocument", table: Table) -> No
 
         table.add_row(
             "Complex",
-            complex_obj.id,
+            f"[magenta]{complex_obj.id}[/magenta]",
             complex_obj.name,
             " | ".join(details) if details else "—",
         )
@@ -230,9 +244,9 @@ def _create_vessels_content(doc: "EnzymeMLDocument"):
         title="🧪 Vessels", show_header=True, header_style="bold yellow"
     )
     vessels_table.add_column("ID", style="magenta")
-    vessels_table.add_column("Name", style="white")
-    vessels_table.add_column("Volume", style="yellow")
-    vessels_table.add_column("Constant", justify="center", style="green")
+    vessels_table.add_column("Name")
+    vessels_table.add_column("Volume")
+    vessels_table.add_column("Constant", justify="center")
 
     for vessel in doc.vessels:
         unit_str = vessel.unit.name if vessel.unit else "L"
@@ -252,9 +266,9 @@ def _create_reactions_content(doc: "EnzymeMLDocument"):
         title="⚡ Reactions", show_header=True, header_style="bold red"
     )
     reactions_table.add_column("ID", style="magenta", min_width=12)
-    reactions_table.add_column("Name", style="white", min_width=20)
-    reactions_table.add_column("Reversible", justify="center", style="yellow")
-    reactions_table.add_column("Reaction Schema", style="dim white", min_width=30)
+    reactions_table.add_column("Name", min_width=20)
+    reactions_table.add_column("Reversible", justify="center")
+    reactions_table.add_column("Reaction Schema", min_width=30)
 
     for reaction in doc.reactions[:5]:  # Limit to first 5
         schema = _format_reaction_schema(reaction)
@@ -316,9 +330,9 @@ def _create_measurements_content(doc: "EnzymeMLDocument"):
         title="📈 Measurements", show_header=True, header_style="bold cyan"
     )
     measurements_table.add_column("ID", style="magenta", min_width=12)
-    measurements_table.add_column("Name", style="white", min_width=20)
-    measurements_table.add_column("Species Data", justify="center", style="yellow")
-    measurements_table.add_column("Conditions", style="dim white")
+    measurements_table.add_column("Name", min_width=20)
+    measurements_table.add_column("Species Data", justify="center")
+    measurements_table.add_column("Conditions")
 
     for measurement in doc.measurements[:5]:  # Limit to first 5
         conditions = _format_measurement_conditions(measurement)
@@ -356,12 +370,12 @@ def _create_parameters_content(doc: "EnzymeMLDocument"):
         title="🔢 Parameters", show_header=True, header_style="bold purple"
     )
     parameters_table.add_column("Symbol", style="magenta")
-    parameters_table.add_column("Name", style="white")
-    parameters_table.add_column("Value", style="yellow")
-    parameters_table.add_column("Initial Value", style="yellow")
-    parameters_table.add_column("Bounds", style="yellow")
-    parameters_table.add_column("Unit", style="cyan")
-    parameters_table.add_column("Constant", justify="center", style="green")
+    parameters_table.add_column("Name")
+    parameters_table.add_column("Value")
+    parameters_table.add_column("Initial Value")
+    parameters_table.add_column("Bounds")
+    parameters_table.add_column("Unit")
+    parameters_table.add_column("Constant", justify="center")
 
     for param in doc.parameters[:8]:  # Limit to first 8
         # Pre-populate all data for the parameter
@@ -385,7 +399,6 @@ def _create_parameters_content(doc: "EnzymeMLDocument"):
         unit_str = param.unit.name if param.unit else "—"
         constant_str = "✓" if param.constant else "✗"
 
-        # Single add_row call with all columns properly populated
         parameters_table.add_row(
             symbol,
             name,
