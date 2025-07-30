@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install pytest-cov openpyxl pytest-httpx  pysces lmfit seaborn numexpr python-libcombine deepdiff
+          python3 -m pip install pytest-cov openpyxl pytest-httpx  pysces lmfit seaborn numexpr python-libcombine deepdiff deprecation
           pip3 install -e .
 
       - name: Test with pytest
