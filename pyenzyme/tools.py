@@ -1,9 +1,7 @@
 import functools as ft
-import importlib.resources as pkg_resources
 from enum import Enum
 import json
 from pydantic import BaseModel
-import toml
 
 import pyenzyme as pe
 
