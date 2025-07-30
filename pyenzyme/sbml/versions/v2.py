@@ -266,7 +266,7 @@ class MeasurementAnnot(
 
     id: str = attr(name="id")
     name: str | None = attr(name="name", default=None)
-    time_unit: str | None = attr(name="timeUnit")
+    time_unit: str | None = attr(name="timeUnit", default=None)
     conditions: ConditionsAnnot | None = element(tag="conditions", default=None)
     species_data: list[SpeciesDataAnnot] = element(
         tag="speciesData",
@@ -374,7 +374,7 @@ class MeasurementAnnot(
             time=time,
             species_id=species.species_id,
             data_unit=_get_unit(species.unit, units),  # type: ignore
-            time_unit=_get_unit(self.time_unit, units),  # type: ignore
+            time_unit=_get_unit(self.time_unit, units) if self.time_unit else None,  # type: ignore
             initial=species.initial,
             data_type=self._map_data_type(species.type),  # type: ignore
         )
@@ -441,7 +441,7 @@ class ConditionsAnnot(
         temperature (TemperatureAnnot | None): The temperature conditions.
     """
 
-    ph: PHAnnot | None = element(tag="ph")
+    ph: PHAnnot | None = element(tag="ph", default=None)
     temperature: TemperatureAnnot | None = element(tag="temperature", default=None)
 
     @field_validator("ph")

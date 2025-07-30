@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from copy import deepcopy
-import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Callable, List
 
@@ -73,6 +72,9 @@ def to_sbml(
 
     sbmldoc.setNamespaces(ns)
     sbmldoc.setPackageRequired("enzymeml", True)
+
+    for measurement in doc.measurements:
+        _convert_temperature_to_kelvin(measurement)
 
     model = sbmldoc.createModel()
     model.setName(doc.name)
@@ -456,10 +458,6 @@ def _add_measurements(measurements: list[pe.Measurement]):
 
     for measurement in measurements:
         measurement = deepcopy(measurement)
-
-        time_unit = _get_unit_id(measurement.species_data[0].time_unit)
-        _convert_temperature_to_kelvin(measurement)
-
         conditions = v2.ConditionsAnnot(
             ph=v2.PHAnnot(
                 value=measurement.ph,
@@ -469,6 +467,11 @@ def _add_measurements(measurements: list[pe.Measurement]):
                 unit=_get_unit_id(measurement.temperature_unit),
             ),
         )
+
+        if len(measurement.species_data) > 0:
+            time_unit = _get_unit_id(measurement.species_data[0].time_unit)
+        else:
+            time_unit = None
 
         meas_annot = v2.MeasurementAnnot(
             id=measurement.id,
@@ -506,55 +509,43 @@ def _convert_temperature_to_kelvin(measurement: pe.Measurement) -> None:
         measurement (pe.Measurement): The measurement object to potentially convert.
                                     Modified in place if conversion is needed.
     """
+    if measurement.temperature_unit is None:
+        return
+
     temp_unit = measurement.temperature_unit
 
-    if temp_unit and any(
-        unit.kind == pe.UnitType.CELSIUS for unit in temp_unit.base_units
-    ):
-        # Find the base unit that is celsius and convert to kelvin
-        temp_unit = next(
-            unit for unit in temp_unit.base_units if unit.kind == pe.UnitType.CELSIUS
-        )
-        convert_to_kelvin = True
-    else:
-        convert_to_kelvin = False
+    # Extract the base unit with Celsius
+    celsius_unit = next(
+        (unit for unit in temp_unit.base_units if unit.kind == pe.UnitType.CELSIUS),
+        None,
+    )
 
-    if convert_to_kelvin and measurement.temperature:
+    if celsius_unit and measurement.temperature is not None:
+        # Store the properties of the Celsius unit before replacing
+        celsius_exponent = celsius_unit.exponent
+        celsius_scale = celsius_unit.scale
+        celsius_multiplier = celsius_unit.multiplier
+
+        # Remove the Celsius unit from base_units
+        measurement.temperature_unit.base_units.remove(celsius_unit)
+        measurement.temperature_unit.name = "Kelvin"
+
+        # Add a new Kelvin unit with the same properties
+        measurement.temperature_unit.add_to_base_units(
+            kind=pe.UnitType.KELVIN,
+            exponent=celsius_exponent,
+            scale=celsius_scale,
+            multiplier=celsius_multiplier,
+        )
+
         logger.warning(
             f"Converting measurement ({measurement.id}) temperature from Celsius to Kelvin. This is not supported by SBML."
         )
-        measurement.temperature = measurement.temperature + CELSIUS_CONVERSION_FACTOR
 
-
-def _create_condition_element(
-    ph: float | None,
-    temperature: float | None,
-    temperature_unit: UnitDefinition | None,
-):
-    """
-    Set the conditions of the reaction in the SBML model.
-
-    Args:
-        ph (float | None): The pH value.
-        temperature (float | None): The temperature value.
-        temperature_unit (UnitDefinition | None): The unit of the temperature.
-
-    Returns:
-        ET.Element: The XML element representing the conditions.
-    """
-    element = ET.Element(f"{{{NSMAP['enzymeml']}}}conditions")
-    mappings = {
-        "ph": {"@value": ph},
-        "temperature": {"@value": temperature, "@unit": temperature_unit},
-    }
-
-    _xml.map_to_xml(
-        root=element,
-        mappings=mappings,
-        namespace=NSMAP["enzymeml"],
-    )
-
-    return element
+        if measurement.temperature is not None:
+            measurement.temperature = (
+                measurement.temperature + CELSIUS_CONVERSION_FACTOR
+            )
 
 
 def _get_sbml_kind(unit_type):
