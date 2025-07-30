@@ -39,7 +39,7 @@ def to_pandas(
         ValueError: If the measurement does not contain species data.
     """
 
-    if not enzmldoc.measurements:
+    if not _has_measurement_data(enzmldoc):
         return None
 
     if ignore is None:
@@ -67,6 +67,15 @@ def to_pandas(
         return pd.concat(dfs, ignore_index=True).reset_index(drop=True)
     else:
         return pd.DataFrame()
+
+
+def _has_measurement_data(enzmldoc: EnzymeMLDocument) -> bool:
+    """Checks if the measurement contains species data."""
+    for meas in enzmldoc.measurements:
+        for meas_data in meas.species_data:
+            if meas_data.data is not None and len(meas_data.data) > 0:
+                return True
+    return False
 
 
 def read_excel(
@@ -330,7 +339,6 @@ def _validate_measurement(meas: Measurement) -> None:
     """Validates a Measurement object"""
 
     # Check if the length of time is consistent
-
     try:
         times = pd.DataFrame(
             {
