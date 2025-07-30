@@ -1,15 +1,14 @@
 [tool.poetry]
 name = "pyenzyme"
 version = "2.0.0"
-description = ""
+description = "A Python library for EnzymeML"
 authors = ["Jan Range <range.jan@web.de>"]
-license = "MIT"
+license = "BSD 2-Clause License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
 python-libsbml = "^5.20.2"
-toml = "^0.10.2"
 rich = "^13.7.1"
 pandas = ">=2.0.0"
 pydantic-xml = "^2.17.0"
@@ -23,7 +22,6 @@ mdmodels = "^0.2.1"
 joblib = "^1.5.0"
 bokeh = "^3.7.3"
 matplotlib = "^3.10"
-deprecation = "^2.1.0"
 
 [tool.poetry.group.psyces.dependencies]
 pysces = "^1.2.3"
@@ -43,6 +41,7 @@ seaborn = "^0.13.2"
 numexpr = "^2.11.0"
 python-libcombine = "^0.2.20"
 deepdiff = "^8.5.0"
+deprecation = "^2.1.0"
 
 [build-system]
 requires = ["poetry-core"]
