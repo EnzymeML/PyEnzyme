@@ -42,3 +42,5 @@ __all__ = [
     "plot_interactive",
     "summary",
 ]
+
+__version__ = "2.0.0"
