@@ -32,6 +32,14 @@ cd PyEnzyme
 python3 setup.py install
 ```
 
+### 🚀 Try PyEnzyme in Google Colab
+
+Get hands-on experience with PyEnzyme without any local installation! Try our interactive Google Colab notebook by clicking the badge below:
+
+<a target="_blank" href="https://colab.research.google.com/github/EnzymeML/PyEnzyme/blob/main/examples/Basic.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
 ### ⚙️ Package Options
 
 PyEnzyme comes with many flavors, choose whether you want only the base installation, the modeling package or all of it
