@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from mdmodels.units.unit_definition import UnitDefinition, UnitType
 
-from .versions.v2 import *  # noqa: F403
-from .versions.io import EnzymeMLHandler
-from .fetcher import *  # noqa: F403
 from .composer import compose
-from .suite import EnzymeMLSuite
+from .fetcher import *  # noqa: F403
 from .plotting import plot, plot_interactive
 from .pretty import summary
+from .suite import EnzymeMLSuite
+from .tools import group_measurements
+from .versions.io import EnzymeMLHandler
+from .versions.v2 import *  # noqa: F403
 
 # Input functions
 from_csv = EnzymeMLHandler.from_csv
@@ -41,6 +42,7 @@ __all__ = [
     "plot",
     "plot_interactive",
     "summary",
+    "group_measurements",
 ]
 
 __version__ = "2.0.0"

@@ -1,9 +1,10 @@
 import functools as ft
-from enum import Enum
 import json
+from enum import Enum
+
 from pydantic import BaseModel
 
-import pyenzyme as pe
+from pyenzyme.versions.v2 import EnzymeMLDocument, Measurement, Parameter
 
 
 def to_dict_wo_json_ld(obj: BaseModel):
@@ -56,7 +57,7 @@ def _recursive_key_removal(obj: dict | list, key: str):
             _recursive_key_removal(entry, key)
 
 
-def get_all_parameters(enzmldoc):
+def get_all_parameters(enzmldoc: EnzymeMLDocument):
     """Extracts all parameters from an EnzymeMLDocument.
 
     Args:
@@ -65,7 +66,7 @@ def get_all_parameters(enzmldoc):
     Returns:
         list[Parameter]: A list of all parameters in the EnzymeMLDocument.
     """
-    return find_unique(enzmldoc, target=pe.Parameter)
+    return find_unique(enzmldoc, target=Parameter)
 
 
 def find_unique(obj, target):
@@ -147,6 +148,86 @@ def extract(obj, target) -> list:
                 result += extract(item, target)
 
     return result
+
+
+def group_measurements(enzymemldoc: EnzymeMLDocument) -> EnzymeMLDocument:
+    """
+    Groups measurements by their conditions and assigns for each unique set of conditions
+    a `group_id` attribute.
+
+    Args:
+        enzymemldoc (EnzymeMLDocument): The EnzymeMLDocument to group measurements from.
+
+    Returns:
+        EnzymeMLDocument: The EnzymeMLDocument with grouped measurements.
+    """
+
+    # Create a mapping from conditions to group_id
+    conditions_to_group = {}
+    group_counter = 0
+
+    for measurement in enzymemldoc.measurements:
+        # Get conditions as a hashable representation
+        conditions = _get_measurement_conditions(measurement)
+        conditions_hash = _conditions_to_hashable(conditions)
+
+        # Assign group_id based on conditions
+        if conditions_hash not in conditions_to_group:
+            conditions_to_group[conditions_hash] = f"group_{group_counter}"
+            group_counter += 1
+
+        measurement.group_id = conditions_to_group[conditions_hash]
+
+    return enzymemldoc
+
+
+def _get_measurement_conditions(measurement: Measurement) -> dict:
+    """
+    Extract measurement conditions as a dictionary.
+
+    Returns a hashable representation of conditions including:
+    - Species initial concentrations (key: species_id, value: prepared or initial concentration)
+    - pH and temperature values
+
+    Args:
+        measurement: The measurement to extract conditions from
+
+    Returns:
+        dict: Conditions dictionary
+    """
+    conditions = {}
+
+    # Add species conditions
+    for species_data in measurement.species_data:
+        # Use prepared value if available, otherwise initial value
+        if species_data.prepared is not None:
+            value = species_data.prepared
+        else:
+            value = species_data.initial
+
+        conditions[species_data.species_id] = value
+
+    # Add environmental conditions
+    if measurement.ph is not None:
+        conditions["ph"] = measurement.ph
+    if measurement.temperature is not None:
+        conditions["temperature"] = measurement.temperature
+
+    print(f"Conditions: {conditions}")
+    return conditions
+
+
+def _conditions_to_hashable(conditions: dict) -> tuple:
+    """
+    Convert conditions dictionary to a hashable tuple for comparison.
+
+    Args:
+        conditions: Dictionary of conditions
+
+    Returns:
+        tuple: Sorted tuple of (key, value) pairs.
+    """
+    return tuple(sorted(conditions.items()))
 
 
 def _is_subclass(obj, target):
