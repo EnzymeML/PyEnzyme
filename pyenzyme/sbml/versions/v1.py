@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import pandas as pd
 from pydantic import computed_field
-from pydantic_xml import element, BaseXmlModel, attr, wrapped
+from pydantic_xml import BaseXmlModel, attr, element, wrapped
 
-from pyenzyme import Measurement, UnitDefinition, DataTypes
 from pyenzyme.sbml.utils import _get_unit
 from pyenzyme.sbml.versions.v2 import VariableAnnot
+from pyenzyme.versions.v2 import DataTypes, Measurement, UnitDefinitionAnnot
 
 
 class V1Annotation(
@@ -199,7 +199,7 @@ class DataAnnot(
     def to_measurements(
         self,
         meas_data: dict[str, pd.DataFrame],
-        units: dict[str, UnitDefinition],
+        units: dict[str, UnitDefinitionAnnot],
     ) -> list[Measurement]:
         """
         Converts the data annotation to version 2 format.
@@ -209,7 +209,7 @@ class DataAnnot(
 
         Args:
             meas_data (dict[str, pd.DataFrame]): A dictionary of dataframes.
-            units (dict[str, UnitDefinition]): A dictionary of unit definitions.
+            units (dict[str, UnitDefinitionAnnot]): A dictionary of unit definitions.
 
         Returns:
             list[Measurement]: A list of measurements.
@@ -256,7 +256,7 @@ class DataAnnot(
         df: pd.DataFrame,
         file_format: FormatAnnot,
         measurement: Measurement,
-        units: dict[str, UnitDefinition],
+        units: dict[str, UnitDefinitionAnnot],
     ) -> None:
         """
         Maps columns from the dataframe to the measurement.
@@ -269,7 +269,7 @@ class DataAnnot(
             df (pd.DataFrame): The dataframe containing the data.
             file_format (FormatAnnot): The format annotation.
             measurement (Measurement): The measurement to map the columns to.
-            units (dict[str, UnitDefinition]): A dictionary of unit definitions.
+            units (dict[str, UnitDefinitionAnnot]): A dictionary of unit definitions.
         """
 
         for col in file_format.columns:
@@ -294,7 +294,7 @@ class DataAnnot(
     def _map_species_values(
         col: ColumnAnnot,
         measurement: Measurement,
-        unit: UnitDefinition,
+        unit: UnitDefinitionAnnot,
         values: list[float],
     ):
         """
@@ -306,7 +306,7 @@ class DataAnnot(
         Args:
             col (ColumnAnnot): The column annotation.
             measurement (Measurement): The measurement to map the values to.
-            unit (UnitDefinition): The unit definition.
+            unit (UnitDefinitionAnnot): The unit definition.
             values (list[float]): The list of values.
         """
         species_data = measurement.filter_species_data(species_id=col.species_id)
@@ -331,7 +331,7 @@ class DataAnnot(
 
         Args:
             measurement (Measurement): The measurement to map the values to.
-            unit (UnitDefinition): The unit definition.
+            unit (UnitDefinitionAnnot): The unit definition.
             values (list[float]): The list of time values.
         """
         # Map time to all species data
