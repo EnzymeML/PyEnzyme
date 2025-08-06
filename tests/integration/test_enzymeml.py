@@ -1,9 +1,9 @@
 import os
 import tempfile
+
 import pyenzyme as pe
 import pyenzyme.equations as peq
-
-from pyenzyme.tools import get_all_parameters, to_dict_wo_json_ld
+from pyenzyme.tools import to_dict_wo_json_ld
 
 
 class TestEnzymeML:
@@ -71,7 +71,7 @@ class TestEnzymeML:
             time_unit="s",
         )
 
-        for parameter in get_all_parameters(doc):
+        for parameter in doc.parameters:
             parameter.lower_bound = 0.0
             parameter.upper_bound = 100.0
             parameter.stderr = 0.1

@@ -3,7 +3,8 @@ import json
 import httpx
 import rich
 
-import pyenzyme as pe
+from pyenzyme.versions.io import EnzymeMLHandler
+from pyenzyme.versions.v2 import EnzymeMLDocument
 
 
 class EnzymeMLSuite:
@@ -20,7 +21,7 @@ class EnzymeMLSuite:
         """
         self.client = httpx.Client(base_url=url)
 
-    def get_current(self) -> pe.EnzymeMLDocument:
+    def get_current(self) -> EnzymeMLDocument:
         """
         Retrieves the current EnzymeML document from the service.
 
@@ -42,9 +43,9 @@ class EnzymeMLSuite:
 
         content = response.json()["data"]["content"]
 
-        return pe.read_enzymeml_from_string(content)
+        return EnzymeMLHandler.read_enzymeml_from_string(content)
 
-    def update_current(self, doc: pe.EnzymeMLDocument):
+    def update_current(self, doc: EnzymeMLDocument):
         """
         Updates the current EnzymeML document on the service.
 

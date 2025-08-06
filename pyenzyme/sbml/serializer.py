@@ -10,15 +10,13 @@ from loguru import logger
 
 import pyenzyme as pe
 import pyenzyme.tools as tools
-
-from pyenzyme import rdf
+from pyenzyme import UnitDefinition, rdf
 from pyenzyme import xmlutils as _xml
 from pyenzyme.logging import add_logger
 from pyenzyme.sbml import create_sbml_omex
 from pyenzyme.sbml.validation import validate_sbml_export
 from pyenzyme.sbml.versions import v2
 from pyenzyme.tabular import to_pandas
-from pyenzyme import UnitDefinition
 
 NSMAP = {"enzymeml": "https://www.enzymeml.org/v2"}
 CELSIUS_CONVERSION_FACTOR = 273.15

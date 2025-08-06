@@ -1,9 +1,11 @@
 import functools as ft
-from enum import Enum
 import json
+from enum import Enum
+from typing import Literal
+
 from pydantic import BaseModel
 
-import pyenzyme as pe
+from pyenzyme.versions.v2 import EnzymeMLDocument, Measurement
 
 
 def to_dict_wo_json_ld(obj: BaseModel):
@@ -54,18 +56,6 @@ def _recursive_key_removal(obj: dict | list, key: str):
         obj.sort(key=lambda x: str(x))
         for entry in obj:
             _recursive_key_removal(entry, key)
-
-
-def get_all_parameters(enzmldoc):
-    """Extracts all parameters from an EnzymeMLDocument.
-
-    Args:
-        enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to extract parameters from.
-
-    Returns:
-        list[Parameter]: A list of all parameters in the EnzymeMLDocument.
-    """
-    return find_unique(enzmldoc, target=pe.Parameter)
 
 
 def find_unique(obj, target):
@@ -147,6 +137,191 @@ def extract(obj, target) -> list:
                 result += extract(item, target)
 
     return result
+
+
+def group_measurements(
+    enzymemldoc: EnzymeMLDocument,
+    attribute: Literal["initial", "prepared"] = "initial",
+    tolerance: float = 0.0,
+) -> EnzymeMLDocument:
+    """
+    Groups measurements by their conditions and assigns for each unique set of conditions
+    a `group_id` attribute.
+
+    Args:
+        enzymemldoc (EnzymeMLDocument): The EnzymeMLDocument to group measurements from.
+        attribute (Literal["initial", "prepared"]): Which concentration attribute to use for grouping.
+        tolerance (float): Percentage tolerance for numerical comparison (e.g., 0.05 for 5%) for matching groups.
+
+    Returns:
+        EnzymeMLDocument: The EnzymeMLDocument with grouped measurements.
+    """
+
+    # Create a mapping from conditions to group_id
+    conditions_to_group: dict[tuple, str] = {}
+    group_counter = 0
+
+    for measurement in enzymemldoc.measurements:
+        # Get conditions as a hashable representation
+        conditions = _get_measurement_conditions(measurement, attribute)
+
+        # Find matching group with tolerance
+        matching_group = _find_matching_group(
+            conditions, conditions_to_group, tolerance
+        )
+
+        if matching_group is None:
+            # Create new group
+            group_id = f"group_{group_counter}"
+            conditions_hash = _conditions_to_hashable(conditions)
+            conditions_to_group[conditions_hash] = group_id
+            group_counter += 1
+            measurement.group_id = group_id
+        else:
+            measurement.group_id = matching_group
+
+    return enzymemldoc
+
+
+def _get_measurement_conditions(
+    measurement: Measurement,
+    attribute: Literal["initial", "prepared"] = "initial",
+) -> dict:
+    """
+    Extract measurement conditions as a dictionary, including pH and temperature.
+    Does not account for variation in units.
+
+    Args:
+        measurement: The measurement to extract conditions from
+        attribute: Which concentration attribute to use ("initial" or "prepared")
+
+    Returns:
+        dict: Conditions dictionary with species concentrations and environmental conditions
+    """
+    conditions = {}
+
+    # Add species conditions using the specified attribute
+    for species_data in measurement.species_data:
+        value = getattr(species_data, attribute)
+        if value is not None:
+            conditions[species_data.species_id] = value
+
+    # Add environmental conditions
+    if measurement.ph is not None:
+        conditions["ph"] = measurement.ph
+    if measurement.temperature is not None:
+        conditions["temperature"] = measurement.temperature
+
+    return conditions
+
+
+def _find_matching_group(
+    conditions: dict,
+    conditions_to_group: dict,
+    tolerance: float,
+) -> str | None:
+    """
+    Find a matching group for given conditions within tolerance.
+
+    Args:
+        conditions: Current measurement conditions
+        conditions_to_group: Mapping of condition hashes to group IDs
+        tolerance: Percentage tolerance for numerical comparison
+
+    Returns:
+        str | None: Group ID if match found, None otherwise
+    """
+    # Exact matching
+    if tolerance == 0.0:
+        conditions_hash = _conditions_to_hashable(conditions)
+        return conditions_to_group.get(conditions_hash)
+
+    # Tolerance-based matching
+    for existing_conditions_hash, group_id in conditions_to_group.items():
+        existing_conditions = dict(existing_conditions_hash)
+
+        if _conditions_match_with_tolerance(conditions, existing_conditions, tolerance):
+            return group_id
+
+    return None
+
+
+def _conditions_match_with_tolerance(
+    conditions1: dict,
+    conditions2: dict,
+    tolerance: float,
+) -> bool:
+    """
+    Check if two condition dictionaries match within tolerance.
+
+    Args:
+        conditions1: First conditions dictionary
+        conditions2: Second conditions dictionary
+        tolerance: Percentage tolerance for numerical comparison
+
+    Returns:
+        bool: True if conditions match within tolerance
+    """
+    # Must have same keys
+    if set(conditions1.keys()) != set(conditions2.keys()):
+        return False
+
+    # Check each value
+    for key in conditions1:
+        val1, val2 = conditions1[key], conditions2[key]
+
+        # Handle None values
+        if val1 is None or val2 is None:
+            if val1 != val2:
+                return False
+            continue
+
+        # Check tolerance
+        if isinstance(val1, (int, float)) and isinstance(val2, (int, float)):
+            if not _values_match_with_tolerance(val1, val2, tolerance):
+                return False
+
+    return True
+
+
+def _values_match_with_tolerance(
+    val1: float,
+    val2: float,
+    tolerance: float,
+) -> bool:
+    """
+    Check if two numerical values match within percentage tolerance.
+
+    Args:
+        val1: First value
+        val2: Second value
+        tolerance: Percentage tolerance (e.g., 0.05 for 5%)
+
+    Returns:
+        bool: True if values match within tolerance
+    """
+    if val1 == 0 and val2 == 0:
+        return True
+
+    if val1 == 0 or val2 == 0:
+        return abs(val1 - val2) <= tolerance
+
+    # Percentage difference
+    relative_diff = abs(val1 - val2) / max(abs(val1), abs(val2))
+    return relative_diff <= tolerance
+
+
+def _conditions_to_hashable(conditions: dict) -> tuple:
+    """
+    Convert conditions dictionary to a hashable tuple for comparison.
+
+    Args:
+        conditions: Dictionary of conditions
+
+    Returns:
+        tuple: Sorted tuple of (key, value) pairs.
+    """
+    return tuple(sorted(conditions.items()))
 
 
 def _is_subclass(obj, target):

@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import pandas as pd
+from mdmodels.units.unit_definition import UnitDefinition
 from pydantic import computed_field
-from pydantic_xml import element, BaseXmlModel, attr, wrapped
+from pydantic_xml import BaseXmlModel, attr, element, wrapped
 
-from pyenzyme import Measurement, UnitDefinition, DataTypes
 from pyenzyme.sbml.utils import _get_unit
 from pyenzyme.sbml.versions.v2 import VariableAnnot
+from pyenzyme.versions.v2 import DataTypes, Measurement
 
 
 class V1Annotation(

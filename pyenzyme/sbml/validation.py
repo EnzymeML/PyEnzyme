@@ -1,10 +1,17 @@
 from loguru import logger
+from mdmodels.units.unit_definition import UnitDefinition
 
-import pyenzyme as pe
 import pyenzyme.tools as tools
+from pyenzyme.versions.v2 import (
+    EnzymeMLDocument,
+    EquationType,
+    MeasurementData,
+    Parameter,
+    ReactionElement,
+)
 
 
-def validate_sbml_export(doc: pe.EnzymeMLDocument) -> bool:
+def validate_sbml_export(doc: EnzymeMLDocument) -> bool:
     """This function validates the SBML export of an EnzymeML document.
 
     Args:
@@ -26,7 +33,7 @@ def validate_sbml_export(doc: pe.EnzymeMLDocument) -> bool:
     return result
 
 
-def _check_consistent_vessel_ids(doc: pe.EnzymeMLDocument) -> bool:
+def _check_consistent_vessel_ids(doc: EnzymeMLDocument) -> bool:
     """This validator checks whether all species have a vessel id that exists in the document.
 
     SBML documents require that all species have a vessel id that exists in the document and
@@ -62,7 +69,7 @@ def _check_consistent_vessel_ids(doc: pe.EnzymeMLDocument) -> bool:
     return all(result)
 
 
-def _check_equation_either_rule_or_reaction(doc: pe.EnzymeMLDocument) -> bool:
+def _check_equation_either_rule_or_reaction(doc: EnzymeMLDocument) -> bool:
     """This validator checks whether there are either rules or reactions in the document.
 
     SBML documents require that there are either rules or reactions in the document. For instance,
@@ -78,10 +85,10 @@ def _check_equation_either_rule_or_reaction(doc: pe.EnzymeMLDocument) -> bool:
     """
 
     species_w_rate = {
-        eq.species_id for eq in doc.equations if eq.equation_type == pe.EquationType.ODE
+        eq.species_id for eq in doc.equations if eq.equation_type == EquationType.ODE
     }
 
-    all_reaction_elements = tools.extract(obj=doc, target=pe.ReactionElement)
+    all_reaction_elements = tools.extract(obj=doc, target=ReactionElement)
     result, validated = [], set()
 
     for element in all_reaction_elements:
@@ -98,7 +105,7 @@ def _check_equation_either_rule_or_reaction(doc: pe.EnzymeMLDocument) -> bool:
     return all(result)
 
 
-def _check_units_exist(doc: pe.EnzymeMLDocument) -> bool:
+def _check_units_exist(doc: EnzymeMLDocument) -> bool:
     """This validator checks whether all units in the document are defined in the SBML standard.
 
     Args:
@@ -109,26 +116,26 @@ def _check_units_exist(doc: pe.EnzymeMLDocument) -> bool:
     """
 
     mandatory_unit_objects = [
-        *tools.extract(obj=doc, target=pe.MeasurementData),
+        *tools.extract(obj=doc, target=MeasurementData),
     ]
 
     optional_unit_objects = [
-        *tools.extract(obj=doc, target=pe.Parameter),
+        *tools.extract(obj=doc, target=Parameter),
     ]
 
     result = []
 
     for unit_obj in mandatory_unit_objects:
-        units = tools.extract(obj=unit_obj, target=pe.UnitDefinition)
+        units = tools.extract(obj=unit_obj, target=UnitDefinition)
 
         if len(units) == 0:
             logger.error(
-                f"Object of type '{type(unit_obj).__name__}' with id '{unit_obj.id}' does not have a unit defined."
+                f"Object of type '{type(unit_obj).__name__}' with id '{unit_obj.species_id}' does not have a unit defined."
             )
             result.append(False)
 
     for unit_obj in optional_unit_objects:
-        units = tools.extract(obj=unit_obj, target=pe.UnitDefinition)
+        units = tools.extract(obj=unit_obj, target=UnitDefinition)
 
         if len(units) == 0:
             logger.warning(
@@ -140,7 +147,7 @@ def _check_units_exist(doc: pe.EnzymeMLDocument) -> bool:
     return all(result)
 
 
-def _check_assigned_params_are_not_constant(doc: pe.EnzymeMLDocument) -> bool:
+def _check_assigned_params_are_not_constant(doc: EnzymeMLDocument) -> bool:
     """This validator checks whether all assigned parameters are not constant.
 
     If a parameter is assigned a value through an assignment rule, it should not be constant.
@@ -154,7 +161,7 @@ def _check_assigned_params_are_not_constant(doc: pe.EnzymeMLDocument) -> bool:
         bool: True if all assigned parameters are valid, False otherwise.
     """
 
-    assignments = doc.filter_equations(equation_type=pe.EquationType.ASSIGNMENT)
+    assignments = doc.filter_equations(equation_type=EquationType.ASSIGNMENT)
     result = []
 
     for assignment in assignments:

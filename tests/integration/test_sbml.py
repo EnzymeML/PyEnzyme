@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 import pyenzyme as pe
 import pyenzyme.equations as peq
-from pyenzyme.tools import to_dict_wo_json_ld, get_all_parameters
+from pyenzyme.tools import to_dict_wo_json_ld
 
 
 class TestSBML:
@@ -108,7 +108,7 @@ class TestSBML:
             time_unit="s",
         )
 
-        for parameter in get_all_parameters(doc):
+        for parameter in doc.parameters:
             parameter.lower_bound = 0.0
             parameter.upper_bound = 100.0
             parameter.stderr = 0.1

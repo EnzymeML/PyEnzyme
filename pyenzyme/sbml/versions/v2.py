@@ -13,11 +13,12 @@ small molecules, proteins, complexes, experimental measurements, and parameters.
 from __future__ import annotations
 
 import pandas as pd
+from mdmodels.units.unit_definition import UnitDefinition
 from pydantic import field_validator
-from pydantic_xml import element, attr, BaseXmlModel
+from pydantic_xml import BaseXmlModel, attr, element
 
-from pyenzyme import DataTypes, Measurement, UnitDefinition
 from pyenzyme.sbml.utils import _get_unit
+from pyenzyme.versions.v2 import DataTypes, Measurement
 
 
 class BaseAnnot(BaseXmlModel):
