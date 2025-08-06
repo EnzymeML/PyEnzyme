@@ -10,19 +10,19 @@ from pyenzyme.tools import (
 class TestGetMeasurementConditions:
     """Test suite for _get_measurement_conditions function"""
 
-    def test_with_prepared_values(self):
-        """Test extracting conditions from measurement with prepared values"""
+    def test_with_initial_as_default(self):
+        """Test extracting conditions using initial values (default behavior)"""
         # Arrange
         species_data = [
-            Mock(species_id="s1", prepared=10.0, initial=None),
-            Mock(species_id="s2", prepared=5.0, initial=None),
+            Mock(species_id="s1", prepared=15.0, initial=10.0),
+            Mock(species_id="s2", prepared=8.0, initial=5.0),
         ]
         measurement = Mock(species_data=species_data, ph=7.4, temperature=25.0)
 
-        # Act
+        # Act - default uses "initial"
         conditions = _get_measurement_conditions(measurement)
 
-        # Assert
+        # Assert - should use initial values
         expected = {"s1": 10.0, "s2": 5.0, "ph": 7.4, "temperature": 25.0}
         assert conditions == expected
 
@@ -42,8 +42,8 @@ class TestGetMeasurementConditions:
         expected = {"s1": 8.0, "s2": 3.0, "ph": 6.8, "temperature": 30.0}
         assert conditions == expected
 
-    def test_prepared_takes_precedence_over_initial(self):
-        """Test that prepared values take precedence over initial values"""
+    def test_attribute_selection_prepared(self):
+        """Test using prepared attribute over initial"""
         # Arrange
         species_data = [
             Mock(species_id="s1", prepared=15.0, initial=10.0),
@@ -51,13 +51,12 @@ class TestGetMeasurementConditions:
         ]
         measurement = Mock(species_data=species_data, ph=None, temperature=None)
 
-        # Act
-        conditions = _get_measurement_conditions(measurement)
+        # Act - explicitly use "prepared" attribute
+        conditions = _get_measurement_conditions(measurement, attribute="prepared")
 
-        # Assert
+        # Assert - only s1 included since s2 has no prepared value
         expected = {
             "s1": 15.0,  # prepared value used
-            "s2": 5.0,  # initial value used since prepared is None
         }
         assert conditions == expected
 
@@ -66,16 +65,16 @@ class TestGetMeasurementConditions:
         # Arrange
         species_data = [
             Mock(species_id="s1", prepared=None, initial=None),
-            Mock(species_id="s2", prepared=12.0, initial=None),
+            Mock(species_id="s2", prepared=12.0, initial=5.0),
         ]
         measurement = Mock(species_data=species_data, ph=7.0, temperature=None)
 
-        # Act
+        # Act - using default "initial" attribute
         conditions = _get_measurement_conditions(measurement)
 
-        # Assert
+        # Assert - only s2 included since s1 has no initial value
         expected = {
-            "s2": 12.0,  # only s2 included since s1 has no values
+            "s2": 5.0,  # initial value used
             "ph": 7.0,
         }
         assert conditions == expected
@@ -84,7 +83,7 @@ class TestGetMeasurementConditions:
         """Test with measurement having no pH or temperature"""
         # Arrange
         species_data = [
-            Mock(species_id="enzyme", prepared=1.0, initial=None),
+            Mock(species_id="enzyme", initial=1.0, prepared=None),
         ]
         measurement = Mock(species_data=species_data, ph=None, temperature=None)
 
@@ -207,7 +206,7 @@ class TestGroupMeasurements:
         enzmldoc = Mock(measurements=[measurement1, measurement2])
 
         # Act
-        result = group_measurements(enzmldoc)
+        result = group_measurements(enzmldoc, attribute="prepared")
 
         # Assert
         assert result == enzmldoc
@@ -299,7 +298,7 @@ class TestGroupMeasurements:
         )
 
         # Act
-        group_measurements(enzmldoc)
+        group_measurements(enzmldoc, attribute="prepared")
 
         # Assert
         # measurement1, measurement2, and measurement4 should have the same group_id
@@ -311,10 +310,10 @@ class TestGroupMeasurements:
     def test_group_id_format(self):
         """Test that group IDs follow the expected format"""
         # Arrange
-        species_data1 = [Mock(species_id="s1", prepared=10.0, initial=None)]
-        species_data2 = [Mock(species_id="s1", prepared=15.0, initial=None)]
-        species_data3 = [Mock(species_id="s1", prepared=20.0, initial=None)]
-        species_data4 = [Mock(species_id="s1", prepared=20.0, initial=None)]
+        species_data1 = [Mock(species_id="s1", initial=10.0, prepared=None)]
+        species_data2 = [Mock(species_id="s1", initial=15.0, prepared=None)]
+        species_data3 = [Mock(species_id="s1", initial=20.0, prepared=None)]
+        species_data4 = [Mock(species_id="s1", initial=20.0, prepared=None)]
 
         measurement1 = Mock(
             species_data=species_data1, ph=7.4, temperature=25.0, group_id=None
@@ -362,3 +361,132 @@ class TestGroupMeasurementsIntegration:
         for measurement in measurement_valid.measurements:
             assert measurement.group_id is not None
             assert measurement.group_id.startswith("group_")
+
+
+class TestGroupMeasurementsWithTolerance:
+    """Test suite for group_measurements function with tolerance"""
+
+    def test_tolerance_exact_match(self):
+        """Test that identical values are grouped even with tolerance"""
+        # Arrange
+        species_data1 = [Mock(species_id="s1", prepared=None, initial=200.0)]
+        species_data2 = [Mock(species_id="s1", prepared=None, initial=200.0)]
+
+        measurement1 = Mock(
+            species_data=species_data1, ph=7.0, temperature=25.0, group_id=None
+        )
+        measurement2 = Mock(
+            species_data=species_data2, ph=7.0, temperature=25.0, group_id=None
+        )
+
+        enzmldoc = Mock(measurements=[measurement1, measurement2])
+
+        # Act
+        group_measurements(enzmldoc, tolerance=0.05)
+
+        # Assert
+        assert measurement1.group_id == "group_0"
+        assert measurement2.group_id == "group_0"
+
+    def test_tolerance_within_range(self):
+        """Test that values within tolerance are grouped together"""
+        # Arrange - 200 and 201 should be grouped with 5% tolerance
+        species_data1 = [Mock(species_id="s1", prepared=None, initial=200.0)]
+        species_data2 = [Mock(species_id="s1", prepared=None, initial=201.0)]
+
+        measurement1 = Mock(
+            species_data=species_data1, ph=7.0, temperature=25.0, group_id=None
+        )
+        measurement2 = Mock(
+            species_data=species_data2, ph=7.0, temperature=25.0, group_id=None
+        )
+
+        enzmldoc = Mock(measurements=[measurement1, measurement2])
+
+        # Act - 1% difference should be within 5% tolerance
+        group_measurements(enzmldoc, tolerance=0.05)
+
+        # Assert
+        assert measurement1.group_id == measurement2.group_id
+        assert measurement1.group_id == "group_0"
+
+    def test_tolerance_outside_range(self):
+        """Test that values outside tolerance are grouped separately"""
+        # Arrange - 200 and 220 should NOT be grouped with 5% tolerance
+        species_data1 = [Mock(species_id="s1", prepared=None, initial=200.0)]
+        species_data2 = [Mock(species_id="s1", prepared=None, initial=220.0)]
+
+        measurement1 = Mock(
+            species_data=species_data1, ph=7.0, temperature=25.0, group_id=None
+        )
+        measurement2 = Mock(
+            species_data=species_data2, ph=7.0, temperature=25.0, group_id=None
+        )
+
+        enzmldoc = Mock(measurements=[measurement1, measurement2])
+
+        # Act - 10% difference should be outside 5% tolerance
+        group_measurements(enzmldoc, tolerance=0.05)
+
+        # Assert
+        assert measurement1.group_id != measurement2.group_id
+        assert measurement1.group_id == "group_0"
+        assert measurement2.group_id == "group_1"
+
+    def test_tolerance_with_prepared_attribute(self):
+        """Test tolerance functionality with prepared attribute"""
+        # Arrange
+        species_data1 = [Mock(species_id="s1", prepared=100.0, initial=50.0)]
+        species_data2 = [Mock(species_id="s1", prepared=102.0, initial=60.0)]
+
+        measurement1 = Mock(
+            species_data=species_data1, ph=7.0, temperature=25.0, group_id=None
+        )
+        measurement2 = Mock(
+            species_data=species_data2, ph=7.0, temperature=25.0, group_id=None
+        )
+
+        enzmldoc = Mock(measurements=[measurement1, measurement2])
+
+        # Act - using prepared attribute with tolerance
+        group_measurements(enzmldoc, attribute="prepared", tolerance=0.05)
+
+        # Assert - 2% difference in prepared values should be within 5% tolerance
+        assert measurement1.group_id == measurement2.group_id
+        assert measurement1.group_id == "group_0"
+
+    def test_tolerance_zero_values(self):
+        """Test tolerance handling with zero values"""
+        # Arrange
+        species_data1 = [Mock(species_id="s1", prepared=None, initial=0.0)]
+        species_data2 = [Mock(species_id="s1", prepared=None, initial=0.01)]
+
+        measurement1 = Mock(
+            species_data=species_data1, ph=7.0, temperature=25.0, group_id=None
+        )
+        measurement2 = Mock(
+            species_data=species_data2, ph=7.0, temperature=25.0, group_id=None
+        )
+
+        enzmldoc = Mock(measurements=[measurement1, measurement2])
+
+        # Act - 0.01 difference should be outside 0.005 tolerance for zero values
+        group_measurements(enzmldoc, tolerance=0.005)
+
+        # Assert
+        assert measurement1.group_id != measurement2.group_id
+
+    def test_attribute_selection_default_initial(self):
+        """Test that default attribute is 'initial'"""
+        # Arrange
+        species_data = [Mock(species_id="s1", prepared=15.0, initial=10.0)]
+        measurement = Mock(
+            species_data=species_data, ph=7.0, temperature=25.0, group_id=None
+        )
+        enzmldoc = Mock(measurements=[measurement])
+
+        # Act - no attribute specified, should default to "initial"
+        group_measurements(enzmldoc)
+
+        # Assert - verify the function was called and measurement got grouped
+        assert measurement.group_id == "group_0"
