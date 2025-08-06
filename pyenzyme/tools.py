@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from pyenzyme.versions.v2 import EnzymeMLDocument, Measurement, Parameter
+from pyenzyme.versions.v2 import EnzymeMLDocument, Measurement
 
 
 def to_dict_wo_json_ld(obj: BaseModel):
@@ -56,18 +56,6 @@ def _recursive_key_removal(obj: dict | list, key: str):
         obj.sort(key=lambda x: str(x))
         for entry in obj:
             _recursive_key_removal(entry, key)
-
-
-def get_all_parameters(enzmldoc: EnzymeMLDocument):
-    """Extracts all parameters from an EnzymeMLDocument.
-
-    Args:
-        enzmldoc (EnzymeMLDocument): The EnzymeMLDocument to extract parameters from.
-
-    Returns:
-        list[Parameter]: A list of all parameters in the EnzymeMLDocument.
-    """
-    return find_unique(enzmldoc, target=Parameter)
 
 
 def find_unique(obj, target):
@@ -200,7 +188,7 @@ def _get_measurement_conditions(
     attribute: Literal["initial", "prepared"] = "initial",
 ) -> dict:
     """
-    Extract measurement conditions as a dictionary, inclding pH and temperature.
+    Extract measurement conditions as a dictionary, including pH and temperature.
     Does not account for variation in units.
 
     Args:
@@ -214,15 +202,7 @@ def _get_measurement_conditions(
 
     # Add species conditions using the specified attribute
     for species_data in measurement.species_data:
-        if attribute == "initial":
-            value = species_data.initial
-        elif attribute == "prepared":
-            value = species_data.prepared
-        else:
-            raise ValueError(
-                f"Invalid attribute: {attribute}. Attribute must be 'initial' or 'prepared'."
-            )
-
+        value = getattr(species_data, attribute)
         if value is not None:
             conditions[species_data.species_id] = value
 
