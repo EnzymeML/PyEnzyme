@@ -118,7 +118,6 @@ def _check_units_exist(doc: EnzymeMLDocument) -> bool:
     mandatory_unit_objects = [
         *tools.extract(obj=doc, target=MeasurementData),
     ]
-    print(f"Found {len(mandatory_unit_objects)} mandatory unit objects.")
 
     optional_unit_objects = [
         *tools.extract(obj=doc, target=Parameter),
