@@ -7,11 +7,11 @@ import yaml
 from pyenzyme.sbml.serializer import to_sbml
 from pyenzyme.versions import v2
 
-from .petab import PEtab, Problem
 from .conditions import ConditionRow
-from .observables import ObservableRow
 from .measurements import MeasurementRow
+from .observables import ObservableRow
 from .parameters import ParameterRow
+from .petab import PEtab, Problem
 
 # Default filenames for PEtab format components
 PARAMETER_FILENAME = "parameters.tsv"
