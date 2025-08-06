@@ -1,4 +1,5 @@
 from loguru import logger
+from mdmodels.units.unit_definition import UnitDefinition
 
 import pyenzyme.tools as tools
 from pyenzyme.versions.v2 import (
@@ -7,7 +8,6 @@ from pyenzyme.versions.v2 import (
     MeasurementData,
     Parameter,
     ReactionElement,
-    UnitDefinitionAnnot,
 )
 
 
@@ -118,6 +118,7 @@ def _check_units_exist(doc: EnzymeMLDocument) -> bool:
     mandatory_unit_objects = [
         *tools.extract(obj=doc, target=MeasurementData),
     ]
+    print(f"Found {len(mandatory_unit_objects)} mandatory unit objects.")
 
     optional_unit_objects = [
         *tools.extract(obj=doc, target=Parameter),
@@ -126,16 +127,16 @@ def _check_units_exist(doc: EnzymeMLDocument) -> bool:
     result = []
 
     for unit_obj in mandatory_unit_objects:
-        units = tools.extract(obj=unit_obj, target=UnitDefinitionAnnot)
+        units = tools.extract(obj=unit_obj, target=UnitDefinition)
 
         if len(units) == 0:
             logger.error(
-                f"Object of type '{type(unit_obj).__name__}' with id '{unit_obj.id}' does not have a unit defined."
+                f"Object of type '{type(unit_obj).__name__}' with id '{unit_obj.species_id}' does not have a unit defined."
             )
             result.append(False)
 
     for unit_obj in optional_unit_objects:
-        units = tools.extract(obj=unit_obj, target=UnitDefinitionAnnot)
+        units = tools.extract(obj=unit_obj, target=UnitDefinition)
 
         if len(units) == 0:
             logger.warning(
