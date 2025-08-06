@@ -13,11 +13,12 @@ small molecules, proteins, complexes, experimental measurements, and parameters.
 from __future__ import annotations
 
 import pandas as pd
+from mdmodels.units.unit_definition import UnitDefinition
 from pydantic import field_validator
 from pydantic_xml import BaseXmlModel, attr, element
 
 from pyenzyme.sbml.utils import _get_unit
-from pyenzyme.versions.v2 import DataTypes, Measurement, UnitDefinitionAnnot
+from pyenzyme.versions.v2 import DataTypes, Measurement
 
 
 class BaseAnnot(BaseXmlModel):
@@ -215,7 +216,7 @@ class DataAnnot(
     def to_measurements(
         self,
         meas_data: dict[str, pd.DataFrame],
-        units: dict[str, UnitDefinitionAnnot],
+        units: dict[str, UnitDefinition],
     ) -> list[Measurement]:
         """
         Converts data annotations to Measurement objects.
@@ -225,7 +226,7 @@ class DataAnnot(
 
         Args:
             meas_data (dict[str, pd.DataFrame]): Dictionary mapping file paths to data frames.
-            units (dict[str, UnitDefinitionAnnot]): Dictionary mapping unit IDs to UnitDefinitionAnnot objects.
+            units (dict[str, UnitDefinition]): Dictionary mapping unit IDs to UnitDefinition objects.
 
         Returns:
             list[Measurement]: List of created Measurement objects.
@@ -286,7 +287,7 @@ class MeasurementAnnot(
     def to_measurement(
         self,
         meas_data: pd.DataFrame,
-        units: dict[str, UnitDefinitionAnnot],
+        units: dict[str, UnitDefinition],
     ):
         """
         Converts a measurement annotation to a Measurement object.
@@ -296,7 +297,7 @@ class MeasurementAnnot(
 
         Args:
             meas_data (pd.DataFrame): The data frame containing measurement data.
-            units (dict[str, UnitDefinitionAnnot]): Dictionary mapping unit IDs to UnitDefinitionAnnot objects.
+            units (dict[str, UnitDefinition]): Dictionary mapping unit IDs to UnitDefinition objects.
 
         Returns:
             Measurement: The created Measurement object.
@@ -349,7 +350,7 @@ class MeasurementAnnot(
         df_sub: pd.DataFrame,
         measurement: Measurement,
         species: SpeciesDataAnnot,
-        units: dict[str, UnitDefinitionAnnot],
+        units: dict[str, UnitDefinition],
     ):
         """
         Maps species data from a data frame to a Measurement object.
@@ -361,7 +362,7 @@ class MeasurementAnnot(
             df_sub (pd.DataFrame): The filtered data frame for the current measurement.
             measurement (Measurement): The Measurement object to add data to.
             species (SpeciesDataAnnot): The species data annotation.
-            units (dict[str, UnitDefinitionAnnot]): Dictionary mapping unit IDs to UnitDefinitionAnnot objects.
+            units (dict[str, UnitDefinition]): Dictionary mapping unit IDs to UnitDefinition objects.
         """
         if species.species_id in df_sub.columns:
             data = df_sub[species.species_id].to_list()
