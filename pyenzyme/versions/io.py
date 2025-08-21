@@ -86,15 +86,30 @@ class EnzymeMLHandler:
         data_unit: str,
         time_unit: str,
     ) -> list[v2.Measurement]:  # noqa: F405
-        """Create measurements from a pandas DataFrame.
+        """Parse a pandas DataFrame into a list of measurements.
+
+        This function expects the DataFrame to have the following structure:
+
+            - time: The time points of the measurements. Should start at 0.
+            - id: The ID of the measurement. Only needed in case of multiple measurements.
+            - [species_id]: Per column, the data of a species.
+
+        If there is no 'id' column, the function assumes that there is only one measurement
+        in the file. If there is an 'id' column, the function assumes that there are multiple
+        measurements in the file. Hence, if you want to have multiple measurements in the same
+        file, you need to have an 'id' column. Otherwise, it will return a single measurement.
 
         Args:
-            df: DataFrame containing measurement data
-            data_unit: Unit for the measurement data
-            time_unit: Unit for the time data
+            df (pd.DataFrame): The DataFrame to parse.
+            data_unit (str): The unit of the data.
+            time_unit (str): The unit of the time.
 
         Returns:
-            List of Measurement objects
+            list[Measurement]: A list of Measurement objects.
+
+        Raises:
+            FileNotFoundError: If the file does not exist.
+            ValueError: If the path is not a file.
         """
         return from_dataframe(df, data_unit, time_unit)
 
@@ -136,17 +151,33 @@ class EnzymeMLHandler:
         cls,
         enzmldoc: v2.EnzymeMLDocument,
         path: Path | str | None = None,
+        verbose: bool = False,
     ) -> tuple[str, pd.DataFrame | None]:  # noqa: F405
-        """Convert an EnzymeML document to SBML format and write to a file.
+        """Convert an EnzymeML document to SBML format and write it to a file.
+
+        The systems biology markup language (SBML) is a machine-readable format for
+        representing models of biochemical reaction networks. This function converts
+        an EnzymeML document to an SBML document. Prior to serialization the EnzymeML
+        document is validated for SBML export.
+
+        Example:
+            >> import pyenzyme as pe
+            >> doc = pe.EnzymeMLDocument()
+            >> [add entities to doc]
+            >> to_sbml(doc, "example.xml")
 
         Args:
-            enzmldoc: The EnzymeML document to convert
-            path: Path to write the SBML document to
+            enzmldoc (pe.EnzymeMLDocument): The EnzymeML document to convert.
+            path (Path | str | None, optional): The output file to write the SBML document to. Defaults to None.
+            verbose (bool, optional): Whether to print warnings during SBML validation. Defaults to False.
 
         Returns:
-            Tuple of the SBML document and the measurement data, or None if path is None
+            tuple[str, pd.DataFrame]: The SBML document as a string, and a DataFrame with the measurement data.
+
+        Raises:
+            ValueError: If the EnzymeML document is not valid for SBML export.
         """
-        return to_sbml(enzmldoc, path)
+        return to_sbml(enzmldoc, path, verbose)
 
     @classmethod
     def to_petab(
@@ -154,14 +185,38 @@ class EnzymeMLHandler:
         enzmldoc: v2.EnzymeMLDocument,
         path: Path | str,
     ) -> PEtab:  # noqa: F405
-        """Convert an EnzymeML document to PEtab format and write to a file.
+        """
+        Convert an EnzymeML document to a PEtab parameter estimation problem and write to file.
 
-        Args:
-            enzmldoc: The EnzymeML document to convert
-            path: Path to write the PEtab document to
+        This function exports an EnzymeML document to the PEtab format, which is a
+        standardized format for specifying parameter estimation problems in systems biology.
+        The function creates all necessary PEtab files:
 
-        Returns:
-            The PEtab object
+        1. SBML model file: Contains the mathematical model specification
+        2. Condition table: Specifies experimental conditions
+        3. Observable table: Defines model outputs that correspond to measurements
+        4. Measurement table: Contains experimental data points
+        5. Parameter table: Defines model parameters and their estimation settings
+        6. YAML configuration file: Links all files together in a PEtab problem definition
+
+        Args
+        ----
+        enzmldoc : v2.EnzymeMLDocument
+            The EnzymeML document to convert, containing all model information,
+            measurements, and parameters.
+        path : Union[Path, str]
+            Directory path where PEtab files will be written. If the directory
+            doesn't exist, it will be created.
+
+        Returns
+        -------
+        None
+            Files are written to the specified path.
+
+        Notes
+        -----
+        The file naming convention is based on the EnzymeML document name,
+        with spaces replaced by underscores and converted to lowercase.
         """
         return to_petab(enzmldoc, path)
 
@@ -170,13 +225,20 @@ class EnzymeMLHandler:
         cls,
         path: Path | str,
     ) -> v2.EnzymeMLDocument:  # noqa: F405
-        """Read an EnzymeML document from an SBML file.
+        """
+        Read an SBML file and initialize an EnzymeML document.
+
+        This function reads an SBML file from an OMEX archive, extracts all relevant
+        information, and creates an EnzymeML document with the extracted data. It handles
+        different versions of the EnzymeML format and maps SBML elements to their
+        corresponding EnzymeML entities.
 
         Args:
-            path: Path to the SBML file
+            path (Path | str): The path to the OMEX archive containing the SBML file.
 
         Returns:
-            An EnzymeMLDocument object
+            An initialized EnzymeMLDocument object with extracted units, species, vessels,
+            equations, parameters, reactions, and measurements.
         """
         return read_sbml(v2.EnzymeMLDocument, path)
 
@@ -188,11 +250,20 @@ class EnzymeMLHandler:
     ) -> pd.DataFrame | dict[str, pd.DataFrame]:  # noqa: F405
         """Convert an EnzymeML document to a pandas DataFrame.
 
+        The resulting DataFrame contains the following columns:
+
+            - time: The time values of the measurement.
+            - id: The ID of the measurement.
+            - [species]: The species data of the measurement per column.
+
         Args:
-            enzmldoc: The EnzymeML document to convert
+            enzmldoc (EnzymeMLDocument): The EnzymeMLDocument object to convert
+            per_measurement (bool): If True, returns a dictionary of DataFrames keyed by measurement ID.
+                If False, returns a single DataFrame containing all measurements.
 
         Returns:
-            DataFrame containing the measurement data, or None if no measurements exist
+            pd.DataFrame or dictionary of DataFrames containing the measurement data,
+                or None if no measurements exist
         """
         df = to_pandas(enzmldoc)
 
@@ -213,17 +284,32 @@ class EnzymeMLHandler:
         data_type: v2.DataTypes = v2.DataTypes.CONCENTRATION,
         sep: str = "\t",
     ) -> list[v2.Measurement]:  # noqa: F405
-        """Create measurements from a CSV file.
+        """Reads a CSV file from the specified path into a measurement.
+
+        This function expects the CSV file to have the following structure:
+
+            - time: The time points of the measurements. Should start at 0.
+            - id: The ID of the measurement. Only needed in case of multiple measurements.
+            - [species_id]: Per column, the data of a species.
+
+        If there is no 'id' column, the function assumes that there is only one measurement
+        in the file. If there is an 'id' column, the function assumes that there are multiple
+        measurements in the file. Hence, if you want to have multiple measurements in the same
+        file, you need to have an 'id' column. Otherwise it will return a single measurement.
 
         Args:
-            path: Path to the CSV file
-            data_unit: Unit for the measurement data
-            time_unit: Unit for the time data
-            data_type: Type of data (default: CONCENTRATION)
-            sep: Separator used in the CSV file (default: tab)
+            path (str, pathlib.Path): The path to the CSV file.
+            data_unit (str): The unit of the data.
+            time_unit (str): The unit of the time.
+            data_type (DataTypes): The type of the data. Default is DataTypes.CONCENTRATION.
+            sep (str): The separator of the CSV file. Default is '\t'.
 
         Returns:
-            List of Measurement objects
+            list[Measurement]: A list of Measurement objects.
+
+        Raises:
+            FileNotFoundError: If the file does not exist.
+            ValueError: If the path is not a file.
         """
         return read_csv(path, data_unit, time_unit, data_type, sep)
 
@@ -235,16 +321,31 @@ class EnzymeMLHandler:
         time_unit: str,
         data_type: v2.DataTypes = v2.DataTypes.CONCENTRATION,
     ) -> list[v2.Measurement]:  # noqa: F405
-        """Create measurements from an Excel file.
+        """Reads an Excel file from the specified path into Measurement objects.
+
+        This function expects the Excel file to have the following structure:
+
+            - time: The time points of the measurements. Should start at 0.
+            - id: The ID of the measurement. Only needed in case of multiple measurements.
+            - [species_id]: Per column, the data of a species.
+
+        If there is no 'id' column, the function assumes that there is only one measurement
+        in the file. If there is an 'id' column, the function assumes that there are multiple
+        measurements in the file. Hence, if you want to have multiple measurements in the same
+        file, you need to have an 'id' column. Otherwise it will return a single measurement.
 
         Args:
-            path: Path to the Excel file
-            data_unit: Unit for the measurement data
-            time_unit: Unit for the time data
-            data_type: Type of data (default: CONCENTRATION)
+            path (str, pathlib.Path): The path to the Excel file.
+            data_unit (str): The unit of the data.
+            time_unit (str): The unit of the time.
+            data_type (DataTypes): The type of the data. Default is DataTypes.CONCENTRATION.
 
         Returns:
-            List of Measurement objects
+            list[Measurement]: A list of measurements.
+
+        Raises:
+            FileNotFoundError: If the file does not exist.
+            ValueError: If the path is not a file.
         """
         return read_excel(path, data_unit, time_unit, data_type)
 
