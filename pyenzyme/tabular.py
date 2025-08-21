@@ -84,9 +84,9 @@ def read_excel(
     time_unit: str,
     data_type: DataTypes = DataTypes.CONCENTRATION,
 ):
-    """Reads a CSV file from the specified path into a measurement.
+    """Reads an Excel file from the specified path into a measurement.
 
-    This function expects the CSV file to have the following structure:
+    This function expects the Excel file to have the following structure:
 
         - time: The time points of the measurements. Should start at 0.
         - id: The ID of the measurement. Only needed in case of multiple measurements.
@@ -98,11 +98,10 @@ def read_excel(
     file, you need to have an 'id' column. Otherwise it will return a single measurement.
 
     Args:
-        path (str, pathlib.Path): The path to the CSV file.
+        path (str, pathlib.Path): The path to the Excel file.
         data_unit (str): The unit of the data.
         time_unit (str): The unit of the time.
         data_type (DataTypes): The type of the data. Default is DataTypes.CONCENTRATION.
-        sep (str): The separator of the CSV file. Default is ';'.
 
     Returns:
         list[Measurement]: A list of measurements.
@@ -156,7 +155,7 @@ def read_csv(
         data_unit (str): The unit of the data.
         time_unit (str): The unit of the time.
         data_type (DataTypes): The type of the data. Default is DataTypes.CONCENTRATION.
-        sep (str): The separator of the CSV file. Default is ';'.
+        sep (str): The separator of the CSV file. Default is '\t'.
 
     Returns:
         list[Measurement]: A list of measurements.
