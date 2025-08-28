@@ -6,10 +6,10 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
 from joblib import Parallel, delayed
+import dill
 import numpy as np
 import pandas as pd
 import os
@@ -526,7 +526,7 @@ class InitMap:
         Returns:
             pysces.model: The updated model with initial conditions set.
         """
-        model = deepcopy(model)
+        model = dill.loads(dill.dumps(model))
         model.sim_time = np.array(self.time)
         model.__dict__.update(
             {
