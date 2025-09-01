@@ -36,7 +36,6 @@ class BaseThinLayer(ABC):
         enzmldoc: v2.EnzymeMLDocument,
         measurement_ids: Optional[List[str]] = None,
         df_per_measurement: bool = False,
-        remove_unmodeled_species: bool = True,
     ):
         assert isinstance(enzmldoc, v2.EnzymeMLDocument)
         assert isinstance(measurement_ids, list) or measurement_ids is None
@@ -48,9 +47,6 @@ class BaseThinLayer(ABC):
 
         if measurement_ids is None:
             measurement_ids = [meas.id for meas in enzmldoc.measurements]
-
-        if remove_unmodeled_species:
-            enzmldoc = self._remove_unmodeled_species(enzmldoc)
 
         self.enzmldoc = enzmldoc.model_copy(deep=True)
         self.fitted_doc = enzmldoc.model_copy(deep=True)

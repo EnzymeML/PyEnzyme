@@ -309,9 +309,10 @@ class ThinLayerPysces(BaseThinLayer):
 
         Populates the inits, experimental_data, and cols attributes.
         """
+        enzmldoc = self._remove_unmodeled_species(self.enzmldoc)
         self.inits = [
             InitMap.from_measurement(measurement, self.df_map[measurement.id])
-            for measurement in self.enzmldoc.measurements
+            for measurement in enzmldoc.measurements
             if measurement.id in self.measurement_ids
         ]
 

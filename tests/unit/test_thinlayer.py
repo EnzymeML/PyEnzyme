@@ -29,18 +29,19 @@ class TestThinLayer:
         reaction.add_to_products(species_id="Product", stoichiometry=1)
 
         # Remove unmodeled species
-        thinlayer = MockThinLayer(enzmldoc, remove_unmodeled_species=True)
+        thinlayer = MockThinLayer(enzmldoc)
+        tl_enzmldoc = thinlayer.optimize()
 
-        assert len(thinlayer.enzmldoc.small_molecules) == 2, (
-            f"Unmodeled small molecules should be removed, but {len(thinlayer.enzmldoc.small_molecules)} remain."
+        assert len(tl_enzmldoc.small_molecules) == 2, (
+            f"Unmodeled small molecules should be removed, but {len(tl_enzmldoc.small_molecules)} remain."
         )
-        assert len(thinlayer.enzmldoc.measurements) == 2, (
-            f"Unmodeled measurements should be removed, but {len(thinlayer.enzmldoc.measurements)} remain."
+        assert len(tl_enzmldoc.measurements) == 2, (
+            f"Unmodeled measurements should be removed, but {len(tl_enzmldoc.measurements)} remain."
         )
 
         measurement_has_unmodeled: list[str] = []
 
-        for measurement in thinlayer.enzmldoc.measurements:
+        for measurement in tl_enzmldoc.measurements:
             for species_data in measurement.species_data:
                 if species_data.species_id == "Unmodeled":
                     measurement_has_unmodeled.append(measurement.id)
@@ -74,62 +75,25 @@ class TestThinLayer:
         )
 
         # Remove unmodeled species
-        thinlayer = MockThinLayer(enzmldoc, remove_unmodeled_species=True)
+        thinlayer = MockThinLayer(enzmldoc)
+        tl_enzmldoc = thinlayer.optimize()
 
-        assert len(thinlayer.enzmldoc.small_molecules) == 2, (
-            f"Unmodeled small molecules should be removed, but {len(thinlayer.enzmldoc.small_molecules)} remain."
+        assert len(tl_enzmldoc.small_molecules) == 2, (
+            f"Unmodeled small molecules should be removed, but {len(tl_enzmldoc.small_molecules)} remain."
         )
-        assert len(thinlayer.enzmldoc.measurements) == 2, (
-            f"Unmodeled measurements should be removed, but {len(thinlayer.enzmldoc.measurements)} remain."
+        assert len(tl_enzmldoc.measurements) == 2, (
+            f"Unmodeled measurements should be removed, but {len(tl_enzmldoc.measurements)} remain."
         )
 
         measurement_has_unmodeled: list[str] = []
 
-        for measurement in thinlayer.enzmldoc.measurements:
+        for measurement in tl_enzmldoc.measurements:
             for species_data in measurement.species_data:
                 if species_data.species_id == "Unmodeled":
                     measurement_has_unmodeled.append(measurement.id)
 
         assert len(measurement_has_unmodeled) == 0, (
             f"Unmodeled species should be removed, but appears in measurements {measurement_has_unmodeled}."
-        )
-
-    def test_leave_unmodeled_species(self):
-        """
-        Test that unmodeled species are preserved when remove_unmodeled_species=False.
-
-        This test verifies that:
-        - All species are kept in the document regardless of modeling status
-        - Empty measurements are still removed
-        - Measurements with unmodeled species are preserved
-        """
-        enzmldoc = self._create_enzmldoc()
-
-        # Add reaction with only Substrate and Product (Unmodeled remains unmodeled)
-        reaction = enzmldoc.add_to_reactions(id="R1", name="R1")
-        reaction.add_to_reactants(species_id="Substrate", stoichiometry=1)
-        reaction.add_to_products(species_id="Product", stoichiometry=1)
-
-        # Keep unmodeled species
-        thinlayer = MockThinLayer(enzmldoc, remove_unmodeled_species=False)
-
-        assert len(thinlayer.enzmldoc.small_molecules) == 3, (
-            f"Unmodeled small molecules should not be removed, but {len(thinlayer.enzmldoc.small_molecules)} remain."
-        )
-
-        assert len(thinlayer.enzmldoc.measurements) == 3, (
-            f"Empty measurements should be removed, but {len(thinlayer.enzmldoc.measurements)} remain."
-        )
-
-        measurement_has_unmodeled: list[str] = []
-
-        for measurement in thinlayer.enzmldoc.measurements:
-            for species_data in measurement.species_data:
-                if species_data.species_id == "Unmodeled":
-                    measurement_has_unmodeled.append(measurement.id)
-
-        assert len(measurement_has_unmodeled) == 2, (
-            f"Unmodeled species should not be removed, but appears in measurements {measurement_has_unmodeled}."
         )
 
     def _create_enzmldoc(self) -> EnzymeMLDocument:
@@ -190,7 +154,7 @@ class MockThinLayer(BaseThinLayer):
 
     def optimize(self, *args, **kwargs):
         """Mock optimization method that does nothing."""
-        pass
+        return self._remove_unmodeled_species(self.enzmldoc)
 
     def write(self, *args, **kwargs):
         """Mock write method that does nothing."""
