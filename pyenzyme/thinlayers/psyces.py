@@ -89,6 +89,7 @@ class ThinLayerPysces(BaseThinLayer):
             enzmldoc=enzmldoc,
             measurement_ids=measurement_ids,
             df_per_measurement=False,
+            exclude_unmodeled_species=True,
         )
 
         if not isinstance(model_dir, Path):

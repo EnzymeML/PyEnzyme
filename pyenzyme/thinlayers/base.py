@@ -30,12 +30,14 @@ class BaseThinLayer(ABC):
 
     enzmldoc: v2.EnzymeMLDocument
     measurement_ids: List[str]
+    exclude_unmodeled_species: bool = True
 
     def __init__(
         self,
         enzmldoc: v2.EnzymeMLDocument,
         measurement_ids: Optional[List[str]] = None,
         df_per_measurement: bool = False,
+        exclude_unmodeled_species: bool = True,
     ):
         assert isinstance(enzmldoc, v2.EnzymeMLDocument)
         assert isinstance(measurement_ids, list) or measurement_ids is None
@@ -52,6 +54,7 @@ class BaseThinLayer(ABC):
         self.fitted_doc = enzmldoc.model_copy(deep=True)
         self.measurement_ids = measurement_ids
         self.df_per_measurement = df_per_measurement
+        self.exclude_unmodeled_species = exclude_unmodeled_species
 
     @staticmethod
     def _remove_unmodeled_species(enzmldoc: v2.EnzymeMLDocument) -> v2.EnzymeMLDocument:
@@ -258,7 +261,12 @@ class BaseThinLayer(ABC):
         Raises:
             ValueError: If the conversion doesn't return a DataFrame.
         """
-        df = pe.to_pandas(self.enzmldoc, per_measurement=False)
+        if self.exclude_unmodeled_species:
+            enzmldoc = self._remove_unmodeled_species(self.enzmldoc)
+        else:
+            enzmldoc = self.enzmldoc
+
+        df = pe.to_pandas(enzmldoc, per_measurement=False)
 
         # Drop all this rows where "id" is within measurement_ids
         df = (
