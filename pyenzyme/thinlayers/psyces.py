@@ -6,10 +6,10 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
 from joblib import Parallel, delayed
+import dill
 import numpy as np
 import pandas as pd
 import os
@@ -89,6 +89,7 @@ class ThinLayerPysces(BaseThinLayer):
             enzmldoc=enzmldoc,
             measurement_ids=measurement_ids,
             df_per_measurement=False,
+            exclude_unmodeled_species=True,
         )
 
         if not isinstance(model_dir, Path):
@@ -309,9 +310,10 @@ class ThinLayerPysces(BaseThinLayer):
 
         Populates the inits, experimental_data, and cols attributes.
         """
+        enzmldoc = self._remove_unmodeled_species(self.enzmldoc)
         self.inits = [
             InitMap.from_measurement(measurement, self.df_map[measurement.id])
-            for measurement in self.enzmldoc.measurements
+            for measurement in enzmldoc.measurements
             if measurement.id in self.measurement_ids
         ]
 
@@ -526,7 +528,7 @@ class InitMap:
         Returns:
             pysces.model: The updated model with initial conditions set.
         """
-        model = deepcopy(model)
+        model = dill.loads(dill.dumps(model))
         model.sim_time = np.array(self.time)
         model.__dict__.update(
             {

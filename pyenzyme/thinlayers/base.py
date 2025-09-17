@@ -30,23 +30,107 @@ class BaseThinLayer(ABC):
 
     enzmldoc: v2.EnzymeMLDocument
     measurement_ids: List[str]
+    exclude_unmodeled_species: bool = True
 
     def __init__(
         self,
         enzmldoc: v2.EnzymeMLDocument,
         measurement_ids: Optional[List[str]] = None,
         df_per_measurement: bool = False,
+        exclude_unmodeled_species: bool = True,
     ):
         assert isinstance(enzmldoc, v2.EnzymeMLDocument)
         assert isinstance(measurement_ids, list) or measurement_ids is None
 
+        # Remove empty measurements
+        enzmldoc.measurements = [
+            meas for meas in enzmldoc.measurements if meas.species_data
+        ]
+
         if measurement_ids is None:
             measurement_ids = [meas.id for meas in enzmldoc.measurements]
 
-        self.enzmldoc = enzmldoc
+        self.enzmldoc = enzmldoc.model_copy(deep=True)
         self.fitted_doc = enzmldoc.model_copy(deep=True)
         self.measurement_ids = measurement_ids
         self.df_per_measurement = df_per_measurement
+        self.exclude_unmodeled_species = exclude_unmodeled_species
+
+    @staticmethod
+    def _remove_unmodeled_species(enzmldoc: v2.EnzymeMLDocument) -> v2.EnzymeMLDocument:
+        """
+        Removes species that are not modeled from the EnzymeML document.
+
+        This method filters out species that are not referenced in any reactions or ODEs,
+        cleaning up the document to only include modeled species. It also removes
+        measurements that have no remaining species data after filtering.
+
+        Args:
+            enzmldoc (v2.EnzymeMLDocument): The EnzymeML document to filter.
+
+        Returns:
+            v2.EnzymeMLDocument: A deep copy of the document with unmodeled species removed.
+
+        Note:
+            - Creates a deep copy to avoid modifying the original document
+            - Removes measurements that become empty after species filtering
+            - Only considers species from reactions (reactants/products) and ODE equations
+        """
+        enzmldoc = enzmldoc.model_copy(deep=True)
+
+        # Collect all species that are explicitly modeled
+        modeled_species = set()
+
+        # Add species from reactions (reactants and products)
+        for reaction in enzmldoc.reactions:
+            modeled_species.update(
+                reactant.species_id for reactant in reaction.reactants
+            )
+            modeled_species.update(product.species_id for product in reaction.products)
+
+        # Add species from ODE equations
+        modeled_species.update(
+            equation.species_id
+            for equation in enzmldoc.equations
+            if equation.equation_type == v2.EquationType.ODE
+        )
+
+        if not modeled_species:
+            enzmldoc.measurements = []
+            enzmldoc.small_molecules = []
+            enzmldoc.proteins = []
+            enzmldoc.complexes = []
+            return enzmldoc
+
+        filtered_measurements = []
+        for measurement in enzmldoc.measurements:
+            # Filter species data to only include modeled species
+            filtered_species_data = [
+                data
+                for data in measurement.species_data
+                if data.species_id in modeled_species
+            ]
+
+            # Only keep measurements that still have species data
+            if filtered_species_data:
+                measurement.species_data = filtered_species_data
+                filtered_measurements.append(measurement)
+
+        # Update all collections to only include modeled species
+        enzmldoc.measurements = filtered_measurements
+        enzmldoc.small_molecules = [
+            species
+            for species in enzmldoc.small_molecules
+            if species.id in modeled_species
+        ]
+        enzmldoc.proteins = [
+            protein for protein in enzmldoc.proteins if protein.id in modeled_species
+        ]
+        enzmldoc.complexes = [
+            complex for complex in enzmldoc.complexes if complex.id in modeled_species
+        ]
+
+        return enzmldoc
 
     @abstractmethod
     def integrate(
@@ -177,7 +261,12 @@ class BaseThinLayer(ABC):
         Raises:
             ValueError: If the conversion doesn't return a DataFrame.
         """
-        df = pe.to_pandas(self.enzmldoc, per_measurement=False)
+        if self.exclude_unmodeled_species:
+            enzmldoc = self._remove_unmodeled_species(self.enzmldoc)
+        else:
+            enzmldoc = self.enzmldoc
+
+        df = pe.to_pandas(enzmldoc, per_measurement=False)
 
         # Drop all this rows where "id" is within measurement_ids
         df = (
