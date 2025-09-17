@@ -7,113 +7,115 @@ ChEBI database by ID and map it to the PyEnzyme data model (v2).
 
 import requests
 import re
-from typing import Optional, Union
-from pydantic_xml import element, attr, BaseXmlModel
+from typing import Optional, Dict, List
+from pydantic import BaseModel, Field, RootModel
 from pyenzyme.versions import v2
 
 
-class PropertyModel(
-    BaseXmlModel,
-    tag="property",
-    nsmap={"": "https://www.ebi.ac.uk/webservices/chebi"},
-):
-    """
-    Model for a ChEBI entity property.
-    """
+class ChEBIError(Exception):
+    """Error class for ChEBI-specific errors."""
 
-    name: str = attr(name="name")
-    value: str = element(tag="value")
+    def __init__(self, message: str, cause: Optional[Exception] = None):
+        super().__init__(message)
+        self.cause = cause
 
 
-class SynonymModel(
-    BaseXmlModel,
-    tag="synonym",
-    nsmap={"": "https://www.ebi.ac.uk/webservices/chebi"},
-):
-    """
-    Model for a ChEBI synonym.
-    """
+class ChEBIName(BaseModel):
+    """Individual name/synonym entry."""
 
-    data: str = element(tag="data")
-    type: str = attr(name="type")
-    source: Optional[str] = attr(name="source", default=None)
+    name: str
+    status: str
+    type: str
+    source: str
+    ascii_name: str
+    adapted: bool
+    language_code: str
 
 
-class FormulaModel(
-    BaseXmlModel,
-    tag="formula",
-    nsmap={"": "https://www.ebi.ac.uk/webservices/chebi"},
-):
-    """
-    Model for a ChEBI chemical formula.
-    """
+class ChEBINames(BaseModel):
+    """Names and synonyms structure. All name types are optional."""
 
-    formula: str = element(tag="data")
-    source: Optional[str] = attr(name="source", default=None)
+    SYNONYM: Optional[List[ChEBIName]] = None
+    IUPAC_NAME: Optional[List[ChEBIName]] = Field(None, alias="IUPAC NAME")
+    INN: Optional[List[ChEBIName]] = None
 
 
-class StructureModel(
-    BaseXmlModel,
-    tag="structure",
-    nsmap={"": "https://www.ebi.ac.uk/webservices/chebi"},
-):
-    """
-    Model for a ChEBI structure representation.
-    """
+class ChEBIChemicalData(BaseModel):
+    """Chemical formula and mass data."""
 
-    type: str = attr(name="type")
-    structure: str = element(tag="structure")
-    dimension: Optional[str] = attr(name="dimension", default=None)
-    format: Optional[str] = attr(name="format", default=None)
+    formula: str
+    charge: int
+    mass: str
+    monoisotopic_mass: str
 
 
-class ChEBIEntity(
-    BaseXmlModel,
-    tag="return",
-    search_mode="unordered",
-    nsmap={"": "https://www.ebi.ac.uk/webservices/chebi"},
-):
-    """
-    Model for a ChEBI entity response.
-    """
+class ChEBIStructure(BaseModel):
+    """Chemical structure information. All structure fields may be null."""
 
-    chebi_id: str = element(tag="chebiId")
-    chebi_ascii_name: str = element(tag="chebiAsciiName")
-    definition: Optional[str] = element(tag="definition", default=None)
-    status: str = element(tag="status")
-    mass: Optional[float] = element(tag="mass", default=None)
-    charge: Optional[int] = element(tag="charge", default=None)
-    structure: Optional[StructureModel] = element(tag="structure", default=None)
-    formula: Optional[FormulaModel] = element(tag="formula", default=None)
-    inchi: Optional[str] = element(tag="inchi", default=None)
-    inchikey: Optional[str] = element(tag="inchiKey", default=None)
-    smiles: Optional[str] = element(tag="smiles", default=None)
-    chebiId_version: Optional[str] = element(tag="chebiIdVersion", default=None)
+    id: int
+    smiles: Optional[str] = None
+    standard_inchi: Optional[str] = None
+    standard_inchi_key: Optional[str] = None
+    wurcs: Optional[str] = None
+    is_r_group: bool
 
 
-class GetEntityResponse(
-    BaseXmlModel,
-    tag="getCompleteEntityResponse",
-    search_mode="unordered",
-    nsmap={"": "https://www.ebi.ac.uk/webservices/chebi"},
-):
-    """
-    Model for the ChEBI API response inside SOAP envelope.
-    """
+class ChEBIEntryData(BaseModel):
+    """Core data structure for a ChEBI entry."""
 
-    entity: ChEBIEntity = element(tag="return")
+    id: int
+    chebi_accession: str
+    name: str
+    ascii_name: str
+    stars: int
+    definition: str
+    names: ChEBINames
+    chemical_data: ChEBIChemicalData
+    default_structure: Optional[ChEBIStructure] = None
+    modified_on: str
+    secondary_ids: List[str]
+    is_released: bool
+
+
+class ChEBIEntryResult(BaseModel):
+    """Individual ChEBI entry result."""
+
+    standardized_chebi_id: str
+    primary_chebi_id: str
+    exists: bool
+    id_type: str
+    data: ChEBIEntryData
+
+
+class ChEBIApiResponse(RootModel[Dict[str, ChEBIEntryResult]]):
+    """Top-level response structure from ChEBI API. Maps ChEBI IDs to their corresponding entry data."""
+
+    root: Dict[str, ChEBIEntryResult]
+
+
+class ChebiSearchResult(BaseModel):
+    """Individual search result structure."""
+
+    _source: Dict[str, str]  # Contains chebi_accession field
+
+
+class ChebiSearchResponse(BaseModel):
+    """Search response structure from ChEBI search API."""
+
+    results: List[ChebiSearchResult]
 
 
 class ChEBIClient:
     """Client for accessing the ChEBI API to fetch chemical entity data."""
 
-    BASE_URL = "https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity"
+    BASE_URL = "https://www.ebi.ac.uk/chebi/backend/api/public/compounds/"
+    SEARCH_URL = "https://www.ebi.ac.uk/chebi/backend/api/public/es_search/"
 
     def __init__(self):
         """Initialize the ChEBI client."""
         pass
 
-    def get_entry_by_id(self, chebi_id: str) -> Union[ChEBIEntity, None]:
+    def get_entry_by_id(self, chebi_id: str) -> ChEBIEntryResult:
         """
         Fetch a ChEBI entry by its ID.
 
@@ -121,49 +123,178 @@ class ChEBIClient:
             chebi_id: The ChEBI ID to fetch, can be with or without the 'CHEBI:' prefix
 
         Returns:
-            ChEBIEntity object with the parsed response data
+            ChEBIEntryResult object with the parsed response data
 
         Raises:
-            ValueError: If the ChEBI ID is invalid or not found
-            ConnectionError: If the connection to the ChEBI server fails
+            ChEBIError: If the ChEBI ID is invalid or not found
+            ChEBIError: If the connection to the ChEBI server fails
         """
-        # Ensure the CHEBI ID has the correct format
         if not chebi_id.startswith("CHEBI:"):
             chebi_id = f"CHEBI:{chebi_id}"
 
-        # Construct the URL
-        url = f"{self.BASE_URL}?chebiId={chebi_id}"
-
         try:
-            response = requests.get(url)
+            response = requests.get(self.BASE_URL, params={"chebi_ids": chebi_id})
             response.raise_for_status()
 
             if response.status_code == 200:
                 try:
-                    # Extract the getCompleteEntityResponse element using regex
-                    xml_text = response.text
-                    match = re.search(
-                        r"<getCompleteEntityResponse.*?</getCompleteEntityResponse>",
-                        xml_text,
-                        re.DOTALL,
-                    )
+                    raw_response_data = response.json()
 
-                    if not match:
-                        raise ValueError(
-                            "Could not find expected content in ChEBI response"
-                        )
+                    if not raw_response_data or len(raw_response_data) == 0:
+                        raise ChEBIError(f"No data found for ChEBI ID {chebi_id}")
 
-                    # Parse only the relevant XML fragment
-                    xml_text = match.group(0)
-                    entity_response = GetEntityResponse.from_xml(xml_text)
-                    return entity_response.entity
+                    chebi_response = ChEBIApiResponse(raw_response_data)
+
+                    entry = list(chebi_response.root.values())[0]
+                    return entry
+
                 except Exception as e:
-                    raise ValueError(f"Failed to parse ChEBI response: {str(e)}")
+                    if isinstance(e, ChEBIError):
+                        raise e
+                    raise ChEBIError(f"Failed to parse ChEBI response: {str(e)}", e)
             else:
-                raise ValueError(f"Failed to retrieve ChEBI entry for ID {chebi_id}")
+                raise ChEBIError(f"HTTP {response.status_code}: {response.reason}")
 
         except requests.exceptions.RequestException as e:
-            raise ConnectionError(f"Connection to ChEBI server failed: {str(e)}")
+            raise ChEBIError(f"Failed to fetch ChEBI ID {chebi_id}: {str(e)}", e)
+
+    def get_entries_batch(self, chebi_ids: List[str]) -> List[ChEBIEntryResult]:
+        """
+        Fetch multiple ChEBI entries by their IDs.
+
+        Args:
+            chebi_ids: List of ChEBI IDs to fetch
+
+        Returns:
+            List of ChEBIEntryResult objects with data from ChEBI
+
+        Raises:
+            ChEBIError: If any ChEBI ID is invalid or not found
+            ChEBIError: If the connection to the ChEBI server fails
+        """
+        if not chebi_ids:
+            return []
+
+        formatted_ids = []
+        for chebi_id in chebi_ids:
+            if not chebi_id.startswith("CHEBI:"):
+                formatted_ids.append(f"CHEBI:{chebi_id}")
+            else:
+                formatted_ids.append(chebi_id)
+
+        try:
+            response = requests.get(
+                self.BASE_URL, params={"chebi_ids": ",".join(formatted_ids)}
+            )
+            response.raise_for_status()
+
+            if response.status_code == 200:
+                try:
+                    raw_response_data = response.json()
+                    chebi_response = ChEBIApiResponse(raw_response_data)
+                    return list(chebi_response.root.values())
+
+                except Exception as e:
+                    raise ChEBIError(
+                        f"Failed to parse ChEBI batch response: {str(e)}", e
+                    )
+            else:
+                raise ChEBIError(f"HTTP {response.status_code}: {response.reason}")
+
+        except requests.exceptions.RequestException as e:
+            raise ChEBIError(f"Failed to fetch ChEBI batch: {str(e)}", e)
+
+    def search_entries(
+        self, query: str, size: Optional[int] = None
+    ) -> List[ChEBIEntryResult]:
+        """
+        Search for ChEBI entries by query string.
+
+        Args:
+            query: The search query string to find ChEBI entries
+            size: The maximum number of search results to return
+
+        Returns:
+            List of ChEBIEntryResult objects for matching entries
+
+        Raises:
+            ChEBIError: If the search request fails or the API is unavailable
+        """
+        params = {"term": query}
+        if size:
+            params["size"] = str(size)
+
+        try:
+            response = requests.get(self.SEARCH_URL, params=params)
+            response.raise_for_status()
+
+            if response.status_code == 200:
+                try:
+                    search_results = ChebiSearchResponse(**response.json())
+
+                    if not search_results.results:
+                        return []
+
+                    chebi_ids = [
+                        result._source["chebi_accession"]
+                        for result in search_results.results
+                    ]
+
+                    return self.get_entries_batch(chebi_ids)
+
+                except Exception as e:
+                    if isinstance(e, ChEBIError):
+                        raise e
+                    raise ChEBIError(f"Invalid search response format: {str(e)}", e)
+            else:
+                raise ChEBIError(
+                    f"Search failed: HTTP {response.status_code}: {response.reason}"
+                )
+
+        except requests.exceptions.RequestException as e:
+            raise ChEBIError(f"Failed to search ChEBI: {str(e)}", e)
+
+
+def process_chebi_entry(entry: ChEBIEntryResult) -> v2.SmallMolecule:
+    """
+    Process a ChEBI entry result and convert it to a SmallMolecule object.
+
+    Args:
+        entry: The ChEBI entry result from the API
+
+    Returns:
+        A SmallMolecule object with mapped data
+    """
+    smallmol_id = process_id(entry.data.ascii_name)
+
+    structure = entry.data.default_structure
+    canonical_smiles = structure.smiles if structure else None
+    inchi = structure.standard_inchi if structure else None
+    inchikey = structure.standard_inchi_key if structure else None
+
+    small_molecule = v2.SmallMolecule(
+        id=smallmol_id,
+        name=entry.data.ascii_name,
+        canonical_smiles=canonical_smiles,
+        inchi=inchi,
+        inchikey=inchikey,
+        constant=False,
+        vessel_id=None,
+        synonymous_names=[],
+        references=[
+            f"https://www.ebi.ac.uk/chebi/searchId.do?chebiId={entry.standardized_chebi_id}"
+        ],
+    )
+
+    small_molecule.add_type_term(
+        term=f"OBO:{entry.standardized_chebi_id.replace(':', '_')}",
+        prefix="OBO",
+        iri="http://purl.obolibrary.org/obo/",
+    )
+
+    small_molecule.ld_id = f"OBO:{entry.standardized_chebi_id.replace(':', '_')}"
+
+    return small_molecule
 
 
 def fetch_chebi(
@@ -176,7 +307,9 @@ def fetch_chebi(
 
     Args:
         chebi_id: The ChEBI ID to fetch
+        smallmol_id: Optional custom ID for the small molecule
         vessel_id: The ID of the vessel to add the small molecule to
+
     Returns:
         A SmallMolecule object with data from ChEBI
 
@@ -184,50 +317,89 @@ def fetch_chebi(
         ValueError: If the ChEBI ID is invalid or not found
         ConnectionError: If the connection to the ChEBI server fails
     """
+    try:
+        client = ChEBIClient()
+        chebi_entry = client.get_entry_by_id(chebi_id)
+
+        small_molecule = process_chebi_entry(chebi_entry)
+
+        if smallmol_id is not None:
+            small_molecule.id = smallmol_id
+        if vessel_id is not None:
+            small_molecule.vessel_id = vessel_id
+
+        return small_molecule
+    except ChEBIError as e:
+        if "Connection" in str(e) and "400" not in str(e) and "404" not in str(e):
+            raise ConnectionError(str(e)) from e
+        else:
+            raise ValueError(str(e)) from e
+
+
+def fetch_chebi_batch(chebi_ids: List[str]) -> List[v2.SmallMolecule]:
+    """
+    Fetch multiple ChEBI entries by their IDs and convert them to SmallMolecule objects.
+
+    Args:
+        chebi_ids: List of ChEBI IDs to fetch
+
+    Returns:
+        List of SmallMolecule objects with data from ChEBI
+
+    Raises:
+        ChEBIError: If any ChEBI ID is invalid or not found
+        ChEBIError: If the connection to the ChEBI server fails
+    """
+    if not chebi_ids:
+        return []
+
     client = ChEBIClient()
-    chebi_entity = client.get_entry_by_id(chebi_id)
+    chebi_entries = client.get_entries_batch(chebi_ids)
 
-    if not chebi_entity:
-        raise ValueError(f"No data found for ChEBI ID {chebi_id}")
+    return [process_chebi_entry(entry) for entry in chebi_entries]
 
-    # Create a SmallMolecule instance
-    if smallmol_id is None:
-        smallmol_id = process_id(chebi_entity.chebi_ascii_name)
 
-    small_molecule = v2.SmallMolecule(
-        id=smallmol_id,
-        name=chebi_entity.chebi_ascii_name,
-        canonical_smiles=chebi_entity.smiles,
-        inchi=chebi_entity.inchi,
-        inchikey=chebi_entity.inchikey,
-        constant=False,  # Default to non-constant
-        vessel_id=vessel_id,
-    )
+def search_chebi(query: str, size: Optional[int] = None) -> List[v2.SmallMolecule]:
+    """
+    Search for ChEBI entries by query string.
 
-    # Add type term for ChEBI source
-    small_molecule.add_type_term(
-        term=f"OBO:{chebi_entity.chebi_id.replace(':', '_')}",
-        prefix="OBO",
-        iri="http://purl.obolibrary.org/obo/",
-    )
+    This function searches the ChEBI database using the EBI search API and returns
+    a list of SmallMolecule objects for each matching entry.
 
-    # Add LD ID
-    small_molecule.ld_id = f"OBO:{chebi_entity.chebi_id.replace(':', '_')}"
+    Args:
+        query: The search query string to find ChEBI entries
+        size: The maximum number of search results to return
 
-    # Add full link as reference
-    small_molecule.references.append(
-        f"https://www.ebi.ac.uk/chebi/searchId.do?chebiId={chebi_entity.chebi_id}"
-    )
+    Returns:
+        A list of SmallMolecule objects
 
-    return small_molecule
+    Raises:
+        ChEBIError: If the search request fails or the API is unavailable
+
+    Example:
+        # Search for glucose entries
+        glucose_results = search_chebi('glucose', 10)
+
+        # Search for ATP entries
+        atp_results = search_chebi('ATP', 5)
+    """
+    client = ChEBIClient()
+    chebi_entries = client.search_entries(query, size)
+
+    return [process_chebi_entry(entry) for entry in chebi_entries]
 
 
 def process_id(name: str) -> str:
     """
-    Process the ID of a ChEBI entity.
+    Process a name string to create a valid identifier.
 
-    Replaces special characters and intial non-alpha characters with an underscore.
+    Replaces non-alphanumeric characters with underscores, removes consecutive
+    underscores, converts to lowercase, and trims leading/trailing underscores.
+
+    Args:
+        name: The name string to process
+
+    Returns:
+        A processed identifier string
     """
-    # Replace non-alphanumeric characters with underscore
-    # and then replace multiple consecutive underscores with a single one
     return re.sub(r"_+", "_", re.sub(r"[^a-zA-Z0-9]+", "_", name)).lower().strip("_")
