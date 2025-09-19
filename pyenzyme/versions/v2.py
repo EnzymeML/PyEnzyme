@@ -116,15 +116,15 @@ class EnzymeMLDocument(BaseModel):
         default="2",
         description="""The version of the EnzymeML Document.""",
     )
-    description: Optional[Optional[str]] = Field(
+    description: Optional[str] = Field(
         default=None,
         description="""Description of the EnzymeML Document.""",
     )
-    created: Optional[Optional[str]] = Field(
+    created: Optional[str] = Field(
         default=None,
         description="""Date the EnzymeML Document was created.""",
     )
-    modified: Optional[Optional[str]] = Field(
+    modified: Optional[str] = Field(
         default=None,
         description="""Date the EnzymeML Document was modified.""",
     )
@@ -870,24 +870,24 @@ class Protein(BaseModel):
         constant through the experiment or not.
         Default is True.""",
     )
-    sequence: Optional[Optional[str]] = Field(
+    sequence: Optional[str] = Field(
         default=None,
         description="""Amino acid sequence of the protein""",
     )
-    vessel_id: Optional[Optional[str]] = Field(
+    vessel_id: Optional[str] = Field(
         default=None,
         description="""Identifier of the vessel this protein has been
         applied to.""",
     )
-    ecnumber: Optional[Optional[str]] = Field(
+    ecnumber: Optional[str] = Field(
         default=None,
         description="""EC number of the protein.""",
     )
-    organism: Optional[Optional[str]] = Field(
+    organism: Optional[str] = Field(
         default=None,
         description="""Expression host organism of the protein.""",
     )
-    organism_tax_id: Optional[Optional[str]] = Field(
+    organism_tax_id: Optional[str] = Field(
         default=None,
         description="""Taxonomy identifier of the expression host.""",
     )
@@ -1019,7 +1019,7 @@ class Complex(BaseModel):
         constant through the experiment or not.
         Default is False.""",
     )
-    vessel_id: Optional[Optional[str]] = Field(
+    vessel_id: Optional[str] = Field(
         default=None,
         description="""Unique identifier of the vessel this complex has
         been used in.""",
@@ -1148,23 +1148,23 @@ class SmallMolecule(BaseModel):
         is constant through the experiment or not.
         Default is False.""",
     )
-    vessel_id: Optional[Optional[str]] = Field(
+    vessel_id: Optional[str] = Field(
         default=None,
         description="""Identifier of the vessel this small molecule has
         been used in.""",
     )
-    canonical_smiles: Optional[Optional[str]] = Field(
+    canonical_smiles: Optional[str] = Field(
         default=None,
         description="""Canonical Simplified Molecular-Input Line-Entry
         System (SMILES) encoding of the small
         molecule.""",
     )
-    inchi: Optional[Optional[str]] = Field(
+    inchi: Optional[str] = Field(
         default=None,
         description="""International Chemical Identifier (InChI) encoding
         of the small molecule.""",
     )
-    inchikey: Optional[Optional[str]] = Field(
+    inchikey: Optional[str] = Field(
         default=None,
         description="""Hashed International Chemical Identifier
         (InChIKey) encoding of the small molecule.""",
@@ -1297,7 +1297,7 @@ class Reaction(BaseModel):
         description="""Whether the reaction is reversible or
         irreversible. Default is False.""",
     )
-    kinetic_law: Optional[Optional[Equation]] = Field(
+    kinetic_law: Optional[Equation] = Field(
         default=None,
         description="""Mathematical expression of the reaction.""",
     )
@@ -1966,30 +1966,30 @@ class Parameter(BaseModel):
         default=...,
         description="""Equation symbol of the parameter.""",
     )
-    value: Optional[Optional[float]] = Field(
+    value: Optional[float] = Field(
         default=None,
         description="""Numerical value of the estimated parameter.""",
     )
-    unit: Optional[Optional[UnitDefinitionAnnot]] = Field(
+    unit: Optional[UnitDefinitionAnnot] = Field(
         default=None,
         description="""Unit of the estimated parameter.""",
     )
-    initial_value: Optional[Optional[float]] = Field(
+    initial_value: Optional[float] = Field(
         default=None,
         description="""Initial value that was used for the parameter
         estimation.""",
     )
-    upper_bound: Optional[Optional[float]] = Field(
+    upper_bound: Optional[float] = Field(
         default=None,
         description="""Upper bound for the parameter value that was used
         for the parameter estimation""",
     )
-    lower_bound: Optional[Optional[float]] = Field(
+    lower_bound: Optional[float] = Field(
         default=None,
         description="""Lower bound for the parameter value that was used
         for the parameter estimation""",
     )
-    stderr: Optional[Optional[float]] = Field(
+    stderr: Optional[float] = Field(
         default=None,
         description="""Standard error of the estimated parameter.""",
     )
@@ -2108,20 +2108,20 @@ class Measurement(BaseModel):
         of the measurement. A species refers to a
         Protein, Complex, or SmallMolecule.""",
     )
-    group_id: Optional[Optional[str]] = Field(
+    group_id: Optional[str] = Field(
         default=None,
         description="""User-defined group ID to signal relationships
         between measurements.""",
     )
-    ph: Optional[Optional[float]] = Field(
+    ph: Optional[float] = Field(
         default=None,
         description="""pH value of the measurement.""",
     )
-    temperature: Optional[Optional[float]] = Field(
+    temperature: Optional[float] = Field(
         default=None,
         description="""Temperature of the measurement.""",
     )
-    temperature_unit: Optional[Optional[UnitDefinitionAnnot]] = Field(
+    temperature_unit: Optional[UnitDefinitionAnnot] = Field(
         default=None,
         description="""Unit of the temperature of the measurement.""",
     )
@@ -2272,7 +2272,7 @@ class MeasurementData(BaseModel):
         default=...,
         description="""The identifier for the described reactant.""",
     )
-    prepared: Optional[Optional[float]] = Field(
+    prepared: Optional[float] = Field(
         default=None,
         description="""Amount of the the species before starting the
         measurement. This field can be used
@@ -2282,13 +2282,13 @@ class MeasurementData(BaseModel):
         concentration of a species at the first
         data point from the array.""",
     )
-    initial: Optional[Optional[float]] = Field(
+    initial: Optional[float] = Field(
         default=None,
         description="""Initial amount of the measurement data. This must
         be the same as the first data point in
         the array.""",
     )
-    data_unit: Optional[Optional[UnitDefinitionAnnot]] = Field(
+    data_unit: Optional[UnitDefinitionAnnot] = Field(
         default=None,
         description="""SI unit of the data that was measured.""",
     )
@@ -2300,11 +2300,11 @@ class MeasurementData(BaseModel):
         default_factory=list,
         description="""Corresponding time points of the .""",
     )
-    time_unit: Optional[Optional[UnitDefinitionAnnot]] = Field(
+    time_unit: Optional[UnitDefinitionAnnot] = Field(
         default=None,
         description="""Unit of the time points of the .""",
     )
-    data_type: Optional[Optional[DataTypes]] = Field(
+    data_type: Optional[DataTypes] = Field(
         default=None,
         description="""Type of data that was measured (e.g.
         concentration, absorbance, etc.)""",
