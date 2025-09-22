@@ -232,7 +232,16 @@ class ThinLayerPysces(BaseThinLayer):
 
         self.parameters = parameters
 
-        return self.minimizer.minimize(method=method)
+        result = self.minimizer.minimize(method=method)
+        # add standard error if available in enzmldoc and if param.fit=False
+        # (e.g. if parameter was fitted before)
+        for param in self.enzmldoc.parameters:
+            if not param.fit and param.stderr is not None:
+                if param.symbol in result.params:
+                    result.params[param.symbol].stderr = param.stderr
+
+        return result
+
 
     def write(self) -> v2.EnzymeMLDocument:
         """
@@ -255,16 +264,18 @@ class ThinLayerPysces(BaseThinLayer):
             >>> pe.write_enzymeml(optimized_doc, "optimized_model.json")
         """
         nu_enzmldoc = self.enzmldoc.model_copy(deep=True)
-        results = self.minimizer.result.params.valuesdict()  # type: ignore
+        results = self.minimizer.result.params  # type: ignore
 
-        for name, value in results.items():
+        for name in results:
             query = nu_enzmldoc.filter_parameters(symbol=name)
 
             if len(query) == 0:
                 raise ValueError(f"Parameter {name} not found")
 
             parameter = query[0]
-            parameter.value = value
+            parameter.value = results[name].value
+            if results[name].stderr is not None:
+                parameter.stderr = results[name].stderr
 
         return nu_enzmldoc
 
@@ -286,8 +297,9 @@ class ThinLayerPysces(BaseThinLayer):
         for param in self.enzmldoc.parameters:
             # Build kwargs dictionary with conditional assignments
             kwargs = {
-                **({"min": param.lower_bound} if param.lower_bound is not None else {}),
-                **({"max": param.upper_bound} if param.upper_bound is not None else {}),
+                **({'min': param.lower_bound} if param.lower_bound is not None else {}),
+                **({'max': param.upper_bound} if param.upper_bound is not None else {}),
+                **({'vary': param.fit}),
             }
 
             # Determine parameter value

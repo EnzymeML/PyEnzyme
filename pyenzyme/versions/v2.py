@@ -201,8 +201,8 @@ class EnzymeMLDocument(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "name": "schema:title",
             "created": "schema:dateCreated",
             "modified": "schema:dateModified",
@@ -603,6 +603,7 @@ class EnzymeMLDocument(BaseModel):
         initial_value: Optional[float] = None,
         upper_bound: Optional[float] = None,
         lower_bound: Optional[float] = None,
+        fit: Optional[bool] = True,
         stderr: Optional[float] = None,
         constant: Optional[bool] = True,
         **kwargs,
@@ -616,6 +617,7 @@ class EnzymeMLDocument(BaseModel):
             "initial_value": initial_value,
             "upper_bound": upper_bound,
             "lower_bound": lower_bound,
+            "fit": fit,
             "stderr": stderr,
             "constant": constant,
         }
@@ -659,8 +661,8 @@ class Creator(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "given_name": "schema:givenName",
             "family_name": "schema:familyName",
             "mail": "schema:email",
@@ -773,8 +775,8 @@ class Vessel(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -911,8 +913,8 @@ class Protein(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1044,8 +1046,8 @@ class Complex(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1195,8 +1197,8 @@ class SmallMolecule(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1330,8 +1332,8 @@ class Reaction(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1517,8 +1519,8 @@ class ReactionElement(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "species_id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1622,8 +1624,8 @@ class ModifierElement(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "species_id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1738,8 +1740,8 @@ class Equation(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "species_id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1874,8 +1876,8 @@ class Variable(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -1989,6 +1991,11 @@ class Parameter(BaseModel):
         description="""Lower bound for the parameter value that was used
         for the parameter estimation""",
     )
+    fit: Optional[bool] = Field(
+        default=True,
+        description="""Whether this parameter should be varied or not in
+        the context of an optimization.""",
+    )
     stderr: Optional[float] = Field(
         default=None,
         description="""Standard error of the estimated parameter.""",
@@ -2014,8 +2021,8 @@ class Parameter(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -2141,8 +2148,8 @@ class Measurement(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "id": {
                 "@id": "schema:identifier",
                 "@type": "@id",
@@ -2330,8 +2337,8 @@ class MeasurementData(BaseModel):
         serialization_alias="@context",
         default_factory=lambda: {
             "enzml": "http://www.enzymeml.org/v2/",
-            "schema": "https://schema.org/",
             "OBO": "http://purl.obolibrary.org/obo/",
+            "schema": "https://schema.org/",
             "species_id": {
                 "@type": "@id",
             },
