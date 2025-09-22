@@ -264,16 +264,18 @@ class ThinLayerPysces(BaseThinLayer):
             >>> pe.write_enzymeml(optimized_doc, "optimized_model.json")
         """
         nu_enzmldoc = self.enzmldoc.model_copy(deep=True)
-        results = self.minimizer.result.params.valuesdict()  # type: ignore
+        results = self.minimizer.result.params  # type: ignore
 
-        for name, value in results.items():
+        for name in results:
             query = nu_enzmldoc.filter_parameters(symbol=name)
 
             if len(query) == 0:
                 raise ValueError(f"Parameter {name} not found")
 
             parameter = query[0]
-            parameter.value = value
+            parameter.value = results[name].value
+            if results[name].stderr is not None:
+                parameter.stderr = results[name].stderr
 
         return nu_enzmldoc
 
