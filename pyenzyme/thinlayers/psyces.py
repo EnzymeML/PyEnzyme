@@ -232,7 +232,16 @@ class ThinLayerPysces(BaseThinLayer):
 
         self.parameters = parameters
 
-        return self.minimizer.minimize(method=method)
+        result = self.minimizer.minimize(method=method)
+        # add standard error if available in enzmldoc and if param.fit=False
+        # (e.g. if parameter was fitted before)
+        for param in self.enzmldoc.parameters:
+            if not param.fit and param.stderr is not None:
+                if param.symbol in result.params:
+                    result.params[param.symbol].stderr = param.stderr
+
+        return result
+
 
     def write(self) -> v2.EnzymeMLDocument:
         """
@@ -286,8 +295,9 @@ class ThinLayerPysces(BaseThinLayer):
         for param in self.enzmldoc.parameters:
             # Build kwargs dictionary with conditional assignments
             kwargs = {
-                **({"min": param.lower_bound} if param.lower_bound is not None else {}),
-                **({"max": param.upper_bound} if param.upper_bound is not None else {}),
+                **({'min': param.lower_bound} if param.lower_bound is not None else {}),
+                **({'max': param.upper_bound} if param.upper_bound is not None else {}),
+                **({'vary': param.fit}),
             }
 
             # Determine parameter value
