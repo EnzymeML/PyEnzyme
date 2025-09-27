@@ -178,11 +178,11 @@ class ThinLayerCopasi(BaseThinLayer):
                 # validate value
                 if k in data.columns:
                     initial_value = data[data["time"] == 0.0][k]
-                    if not initial_value.empty and float(initial_value) != v[0]:
+                    if not initial_value.empty and float(initial_value.iloc[0]) != v[0]:
                         log.warning(
                             f'The initial value of "{k}" in experiment "{measurement_id}" '
                             f"is inconsistent with the specified initial concentration: "
-                            f"{float(initial_value)} != {v[0]}"
+                            f"{float(initial_value.iloc[0])} != {v[0]}"
                         )
 
             exp_filename = os.path.abspath(
@@ -218,10 +218,10 @@ class ThinLayerCopasi(BaseThinLayer):
                     obj_map.setRole(i, role)
                     obj_map.setObjectCN(
                         i,
-                        self.sbml_id_map[col]
+                        COPASI.CRegisteredCommonName(self.sbml_id_map[col]
                         .getConcentrationReference()
                         .getCN()
-                        .getString(),
+                        .getString()),
                     )
 
                 elif col.startswith("init_") and col[5:] in self.sbml_id_map.keys():
@@ -229,10 +229,10 @@ class ThinLayerCopasi(BaseThinLayer):
                     obj_map.setRole(i, role)
                     obj_map.setObjectCN(
                         i,
-                        self.sbml_id_map[col[5:]]
+                        COPASI.CRegisteredCommonName(self.sbml_id_map[col[5:]]
                         .getInitialConcentrationReference()
                         .getCN()
-                        .getString(),
+                        .getString()),
                     )
 
                 else:
@@ -298,9 +298,9 @@ class ThinLayerCopasi(BaseThinLayer):
             fit_item = self.problem.addFitItem(cn)
             assert isinstance(fit_item, COPASI.CFitItem)
             if "lower" in item:
-                fit_item.setLowerBound(COPASI.CCommonName(str(item["lower"])))
+                fit_item.setLowerBound(COPASI.CRegisteredCommonName(str(item["lower"])))
             if "upper" in item:
-                fit_item.setUpperBound(COPASI.CCommonName(str(item["upper"])))
+                fit_item.setUpperBound(COPASI.CRegisteredCommonName(str(item["upper"])))
             if "start" in item:
                 fit_item.setStartValue(float(item["start"]))
 
@@ -399,8 +399,8 @@ class ThinLayerCopasi(BaseThinLayer):
                 cn = obj.getCN()
                 fit_item = self.problem.addFitItem(cn)
                 assert isinstance(fit_item, COPASI.CFitItem)
-                fit_item.setLowerBound(COPASI.CCommonName(str(1e-6)))
-                fit_item.setUpperBound(COPASI.CCommonName(str(1e6)))
+                fit_item.setLowerBound(COPASI.CRegisteredCommonName(str(1e-6)))
+                fit_item.setUpperBound(COPASI.CRegisteredCommonName(str(1e6)))
                 fit_item.setStartValue(float(p.value))
 
     def _set_default_items_from_init_file(self):
@@ -439,8 +439,8 @@ class ThinLayerCopasi(BaseThinLayer):
             cn = mv.getInitialValueReference().getCN()
             fit_item = self.problem.addFitItem(cn)
             assert isinstance(fit_item, COPASI.CFitItem)
-            fit_item.setLowerBound(COPASI.CCommonName(str(global_param.lower)))
-            fit_item.setUpperBound(COPASI.CCommonName(str(global_param.upper)))
+            fit_item.setLowerBound(COPASI.CRegisteredCommonName(str(global_param.lower)))
+            fit_item.setUpperBound(COPASI.CRegisteredCommonName(str(global_param.upper)))
             fit_item.setStartValue(float(value))
 
         for reaction_id, (model, _) in self.reaction_data.items():
@@ -467,8 +467,8 @@ class ThinLayerCopasi(BaseThinLayer):
                 cn = obj.getCN()
                 fit_item = self.problem.addFitItem(cn)
                 assert isinstance(fit_item, COPASI.CFitItem)
-                fit_item.setLowerBound(COPASI.CCommonName(str(p.lower)))
-                fit_item.setUpperBound(COPASI.CCommonName(str(p.upper)))
+                fit_item.setLowerBound(COPASI.CRegisteredCommonName(str(p.lower)))
+                fit_item.setUpperBound(COPASI.CRegisteredCommonName(str(p.upper)))
                 fit_item.setStartValue(float(value))
 
 

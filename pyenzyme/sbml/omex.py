@@ -184,4 +184,7 @@ def read_sbml_omex(path: Path | str) -> tuple[TextIO, dict[str, pd.DataFrame]]:
 
         meas_data[entry.location] = df
 
-    return open(omex.get_path(master_file.location)), meas_data
+    return open(
+        omex.get_path(master_file.location),
+        encoding="utf-8",
+    ), meas_data

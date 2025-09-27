@@ -5,4 +5,9 @@ try:
 except ImportError:
     pass
 
-__all__ = ["BaseThinLayer", "ThinLayerPysces"]
+try:
+    from .basico import ThinLayerCopasi
+except ImportError:
+    pass
+
+__all__ = ["BaseThinLayer", "ThinLayerPysces", "ThinLayerCopasi"]
