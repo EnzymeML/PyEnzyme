@@ -45,7 +45,7 @@ class ThinLayerCopasi(BaseThinLayer):
 
     model: basico.COPASI.CDataModel
     model_dir: Path | str
-    inits: list[InitMap]
+    inits: dict[str, InitMap]
     cols: list[str]
     parameters: list
     nu_enzmldoc: v2.EnzymeMLDocument
