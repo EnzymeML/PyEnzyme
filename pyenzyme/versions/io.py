@@ -3,15 +3,15 @@ from pathlib import Path
 from typing import Optional
 
 import pandas as pd
-
-from pydantic import ValidationError
 import rich
+from pydantic import ValidationError
+
 from pyenzyme.petab.io import to_petab
 from pyenzyme.petab.petab import PEtab
+from pyenzyme.sbml.parser import read_sbml
 from pyenzyme.sbml.serializer import to_sbml
 from pyenzyme.tabular import from_dataframe, read_csv, read_excel, to_pandas
 from pyenzyme.versions import v2
-from pyenzyme.sbml.parser import read_sbml
 
 AVAILABLE_VERSIONS = ["v1", "v2"]
 
@@ -38,6 +38,7 @@ class EnzymeMLHandler:
         Raises:
             ValueError: If the document cannot be parsed with any available version
         """
+        error = None
         for version in AVAILABLE_VERSIONS:
             if version == "v1":
                 try:
@@ -50,10 +51,11 @@ class EnzymeMLHandler:
                         data = json.load(f)
 
                     return v2.EnzymeMLDocument.model_validate(data)
-                except ValidationError:
+                except ValidationError as e:
+                    error = e
                     continue
 
-        raise ValueError(f"Invalid EnzymeML version: {path}")
+        raise ValueError(f"Invalid EnzymeML version: {path}") from error
 
     @classmethod
     def read_enzymeml_from_string(cls, data: str) -> v2.EnzymeMLDocument:  # noqa: F405
