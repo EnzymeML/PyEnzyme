@@ -1,7 +1,7 @@
 import re
 from enum import Enum
 
-from pyenzyme import Equation, ReactionElement, Reaction
+from pyenzyme import Equation, Reaction, ReactionElement
 from pyenzyme.versions.v2 import ModifierElement, ModifierRole
 
 ELEMENT_PATTERN = r"(\d*)\s?([A-Za-z\d]+)"
@@ -125,6 +125,7 @@ def build_reaction(
         id=id,
         reversible=reversible,
         modifiers=mod_objs,
+        kinetic_law=kinetic_law,
     )
     reaction.reactants += _extract_elements(left)
     reaction.products += _extract_elements(right)
