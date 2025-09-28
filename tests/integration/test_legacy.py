@@ -16,7 +16,7 @@ class TestLegacy:
         consistent and expected output for legacy OMEX files.
         """
         enzmldoc = EnzymeMLDocument.fromFile("tests/fixtures/sbml/v1_example.omex")
-        expected = open("tests/fixtures/sbml/v1_sbml.xml", "r").read()
+        expected = open("tests/fixtures/sbml/v1_sbml.xml", "r", encoding="utf-8").read()
         actual = enzmldoc.toXMLString()
 
         assert actual == expected
