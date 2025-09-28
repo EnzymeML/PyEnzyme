@@ -45,6 +45,23 @@ class EnzymeMLSuite:
 
         return EnzymeMLHandler.read_enzymeml_from_string(content)
 
+    def get_document(self, id: str) -> EnzymeMLDocument:
+        """
+        Retrieves an EnzymeML document from the service.
+        """
+        try:
+            response = self.client.get(f"/docs/{id}")
+        except httpx.ConnectError:
+            raise ConnectionError(
+                "Could not connect to the EnzymeML suite. Make sure it is running."
+            )
+
+        response.raise_for_status()
+
+        content = response.json()["data"]["content"]
+
+        return EnzymeMLHandler.read_enzymeml_from_string(content)
+
     def update_current(self, doc: EnzymeMLDocument):
         """
         Updates the current EnzymeML document on the service.
