@@ -277,7 +277,11 @@ class ThinLayerCopasi(BaseThinLayer):
                 )
 
             param_dict["name"] = 'Values[' + param.symbol + ']'
-            parameters.append(param_dict)
+
+            # add only if lower and upper bound are not np.nan
+            if "lower" in param_dict and "upper" in param_dict:
+                if not (np.isnan(param_dict["lower"]) or np.isnan(param_dict["upper"])):
+                    parameters.append(param_dict)
 
         return parameters
 
@@ -295,6 +299,9 @@ class ThinLayerCopasi(BaseThinLayer):
 
         # get all species
         species_df = basico.get_species(model=self.model).reset_index()
+
+        # construct sbml_id to name mapping dictionary
+        sbml_id_to_name = {row['sbml_id']: row['name'] for _, row in species_df.iterrows()}
 
         # loop over 'id' colum of self.df and create a new experiment for each id
         for id in self.df['id'].unique():
@@ -315,6 +322,11 @@ class ThinLayerCopasi(BaseThinLayer):
                 if col in species_df['name'].values:
                     df = df.rename(columns={col: f"[{col}]"})
                     continue
+                if col in sbml_id_to_name.keys():
+                    # locate the name corresponding to the sbml_id
+                    species_name = sbml_id_to_name[col]
+                    df = df.rename(columns={col: f"[{species_name}]"})
+                    continue
                 # otherwise raise error
                 else:
                     raise ValueError(f"Column {col} not found in species_df")
@@ -322,7 +334,10 @@ class ThinLayerCopasi(BaseThinLayer):
             # finally add all the initial concentrations to the dataframe with the
             # initial value at Time == 0
             for species in inits.species.keys():
-                df.loc[df.index[0], f"[{species}]_0"] = inits.species[species]
+                if species in sbml_id_to_name.keys():
+                    df.loc[df.index[0], f"[{sbml_id_to_name[species]}]_0"] = inits.species[species]
+                else:
+                    df.loc[df.index[0], f"[{species}]_0"] = inits.species[species]
 
             # now add as experiment to basico
             basico.add_experiment(name=id, data=df, data_dir=self.model_dir)
