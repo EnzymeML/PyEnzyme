@@ -80,6 +80,10 @@ class TestTabularImport:
             assert len(m.species_data[1].time) == 11, (
                 f"Expected 10 time points. Got {len(m.species_data[1].time)}"
             )
+
+            assert m.species_data[0].data_unit is not None, (
+                f"Expected data unit. Got {m.species_data[0].data_unit}"
+            )
             assert m.species_data[0].data_unit.name == "mmol / l", (
                 f"Expected mM. Got {m.species_data[0].data_unit}"
             )
@@ -93,6 +97,9 @@ class TestTabularImport:
                     f"Expected None. Got {m.species_data[0].time_unit}"
                 )
 
+            assert m.species_data[1].data_unit is not None, (
+                f"Expected data unit. Got {m.species_data[1].data_unit}"
+            )
             assert m.species_data[1].data_unit.name == "mmol / l", (
                 f"Expected mM. Got {m.species_data[1].data_unit.name}"
             )
