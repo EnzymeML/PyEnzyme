@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from functools import cached_property
-from typing import Dict, List, Optional, Tuple, TypeAlias
+from typing import Dict, List, Optional, Set, Tuple, TypeAlias
 
 import pandas as pd
+from sympy import Symbol, sympify
 
 import pyenzyme as pe
 from pyenzyme.versions import v2
@@ -79,7 +80,9 @@ class BaseThinLayer(ABC):
         enzmldoc = enzmldoc.model_copy(deep=True)
 
         # Collect all species that are explicitly modeled
+        all_species = BaseThinLayer._get_all_species(enzmldoc)
         modeled_species = set()
+        equations = []
 
         # Add species from reactions (reactants and products)
         for reaction in enzmldoc.reactions:
@@ -88,11 +91,24 @@ class BaseThinLayer(ABC):
             )
             modeled_species.update(product.species_id for product in reaction.products)
 
+            if reaction.kinetic_law:
+                equations.append(sympify(reaction.kinetic_law.equation))
+
         # Add species from ODE equations
+        for equation in enzmldoc.equations:
+            if equation.equation_type == v2.EquationType.ODE:
+                equations.append(sympify(equation.equation))
+                modeled_species.add(equation.species_id)
+            elif (
+                equation.equation_type == v2.EquationType.ASSIGNMENT
+                or equation.equation_type == v2.EquationType.INITIAL_ASSIGNMENT
+            ):
+                equations.append(sympify(equation.equation))
+
+        # Find species referenced in equations
+        equation_symbols = {symbol for eq in equations for symbol in eq.free_symbols}
         modeled_species.update(
-            equation.species_id
-            for equation in enzmldoc.equations
-            if equation.equation_type == v2.EquationType.ODE
+            species for species in all_species if Symbol(species) in equation_symbols
         )
 
         if not modeled_species:
@@ -131,6 +147,18 @@ class BaseThinLayer(ABC):
         ]
 
         return enzmldoc
+
+    @staticmethod
+    def _get_all_species(enzmldoc: v2.EnzymeMLDocument) -> Set[str]:
+        """
+        Gets all species from the EnzymeML document.
+        """
+        return set(
+            species.id
+            for species in enzmldoc.small_molecules
+            + enzmldoc.proteins
+            + enzmldoc.complexes
+        )
 
     @abstractmethod
     def integrate(

@@ -6,19 +6,19 @@
 
 from __future__ import annotations
 
+import contextlib
+import io
+import os
 from dataclasses import dataclass
 from pathlib import Path
-from joblib import Parallel, delayed
+from typing import Dict, List, Optional, Tuple
+
 import dill
 import numpy as np
 import pandas as pd
-import os
-import contextlib
-import io
+from joblib import Parallel, delayed
 
-from typing import Dict, List, Optional, Tuple
-
-from pyenzyme.thinlayers.base import BaseThinLayer, SimResult, Time, InitCondDict
+from pyenzyme.thinlayers.base import BaseThinLayer, InitCondDict, SimResult, Time
 from pyenzyme.versions import v2
 
 try:
@@ -242,7 +242,6 @@ class ThinLayerPysces(BaseThinLayer):
 
         return result
 
-
     def write(self) -> v2.EnzymeMLDocument:
         """
         Creates a new EnzymeML document with optimized parameter values.
@@ -297,9 +296,9 @@ class ThinLayerPysces(BaseThinLayer):
         for param in self.enzmldoc.parameters:
             # Build kwargs dictionary with conditional assignments
             kwargs = {
-                **({'min': param.lower_bound} if param.lower_bound is not None else {}),
-                **({'max': param.upper_bound} if param.upper_bound is not None else {}),
-                **({'vary': param.fit}),
+                **({"min": param.lower_bound} if param.lower_bound is not None else {}),
+                **({"max": param.upper_bound} if param.upper_bound is not None else {}),
+                **({"vary": param.fit}),
             }
 
             # Determine parameter value
@@ -542,10 +541,13 @@ class InitMap:
         """
         model = dill.loads(dill.dumps(model))
         model.sim_time = np.array(self.time)
-        model.__dict__.update(
-            {
-                f"{species_id}_init": value if value != 0 else 1.0e-9
-                for species_id, value in self.species.items()
-            }
-        )
+
+        for species, value in self.species.items():
+            if hasattr(model, f"{species}_init"):
+                setattr(model, f"{species}_init", value)
+            elif hasattr(model, species):
+                setattr(model, species, value)
+            else:
+                raise ValueError(f"Species {species} not found in model")
+
         return model

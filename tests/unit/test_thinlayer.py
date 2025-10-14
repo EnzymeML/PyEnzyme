@@ -1,5 +1,5 @@
 from pyenzyme.thinlayers.base import BaseThinLayer
-from pyenzyme.versions.v2 import EnzymeMLDocument, EquationType
+from pyenzyme.versions.v2 import EnzymeMLDocument, Equation, EquationType
 
 # Mock data for creating test species measurements
 MOCK_DATA = {
@@ -96,6 +96,205 @@ class TestThinLayer:
             f"Unmodeled species should be removed, but appears in measurements {measurement_has_unmodeled}."
         )
 
+    def test_includes_species_in_ode_equation(self):
+        """
+        Test that species referenced in equations are kept in the document even when
+        they are not defined as ODEs or part of reactions.
+
+        This test verifies that:
+        - A species that appears in an equation (but not in reactions or ODEs) is kept
+        - The species can have initial values in measurements without time course data
+        - The filtering function correctly identifies equation-referenced species as modeled
+        """
+        enzmldoc = self._create_enzmldoc()
+
+        # Add a new species that will only appear in equations (not reactions/ODEs)
+        equation_only_species = enzmldoc.add_to_small_molecules(
+            id="p1",
+            name="Equation Only Species",
+        )
+
+        # Add an initial for the species to each measurement
+        for i, measurement in enumerate(enzmldoc.measurements):
+            measurement.add_to_species_data(
+                species_id=equation_only_species.id,
+                initial=i * 2.0,
+                data=[],
+                time=[],
+            )
+
+        # Add an assignment equation that references this species
+        # This species is NOT an ODE and NOT part of any reaction
+        enzmldoc.add_to_equations(
+            species_id="Product",  # Left side of equation
+            equation_type=EquationType.ODE,
+            equation="p1 * 2.0",  # p1 appears in the equation
+        )
+
+        # Verify the species exists before filtering
+        assert equation_only_species.id in [s.id for s in enzmldoc.small_molecules]
+
+        # Remove unmodeled species
+        thinlayer = MockThinLayer(enzmldoc)
+        tl_enzmldoc = thinlayer.optimize()
+
+        assert equation_only_species.id in [
+            s.id for s in tl_enzmldoc.small_molecules
+        ], (
+            f"Species '{equation_only_species.id}' should be kept because it appears in an equation, "
+            f"but it was removed. Remaining species: {[s.id for s in tl_enzmldoc.small_molecules]}"
+        )
+
+    def test_includes_species_in_assignment_equation(self):
+        """
+        Test that species referenced in equations are kept in the document even when
+        they are not defined as ODEs or part of reactions.
+
+        This test verifies that:
+        - A species that appears in an equation (but not in reactions or ODEs) is kept
+        - The species can have initial values in measurements without time course data
+        - The filtering function correctly identifies equation-referenced species as modeled
+        """
+        enzmldoc = self._create_enzmldoc()
+
+        # Add a new species that will only appear in equations (not reactions/ODEs)
+        equation_only_species = enzmldoc.add_to_small_molecules(
+            id="p1",
+            name="Equation Only Species",
+        )
+
+        # Add an initial for the species to each measurement
+        for i, measurement in enumerate(enzmldoc.measurements):
+            measurement.add_to_species_data(
+                species_id=equation_only_species.id,
+                initial=i * 2.0,
+                data=[],
+                time=[],
+            )
+
+        # Add an assignment equation that references this species
+        # This species is NOT an ODE and NOT part of any reaction
+        enzmldoc.add_to_equations(
+            species_id="Product",  # Left side of equation
+            equation_type=EquationType.ASSIGNMENT,
+            equation="p1 * 2.0",  # p1 appears in the equation
+        )
+
+        # Verify the species exists before filtering
+        assert equation_only_species.id in [s.id for s in enzmldoc.small_molecules]
+
+        # Remove unmodeled species
+        thinlayer = MockThinLayer(enzmldoc)
+        tl_enzmldoc = thinlayer.optimize()
+
+        assert equation_only_species.id in [
+            s.id for s in tl_enzmldoc.small_molecules
+        ], (
+            f"Species '{equation_only_species.id}' should be kept because it appears in an equation, "
+            f"but it was removed. Remaining species: {[s.id for s in tl_enzmldoc.small_molecules]}"
+        )
+
+    def test_includes_species_in_initial_assignment_equation(self):
+        """
+        Test that species referenced in equations are kept in the document even when
+        they are not defined as ODEs or part of reactions.
+
+        This test verifies that:
+        - A species that appears in an equation (but not in reactions or ODEs) is kept
+        - The species can have initial values in measurements without time course data
+        - The filtering function correctly identifies equation-referenced species as modeled
+        """
+        enzmldoc = self._create_enzmldoc()
+
+        # Add a new species that will only appear in equations (not reactions/ODEs)
+        equation_only_species = enzmldoc.add_to_small_molecules(
+            id="p1",
+            name="Equation Only Species",
+        )
+
+        # Add an initial for the species to each measurement
+        for i, measurement in enumerate(enzmldoc.measurements):
+            measurement.add_to_species_data(
+                species_id=equation_only_species.id,
+                initial=i * 2.0,
+                data=[],
+                time=[],
+            )
+
+        # Add an assignment equation that references this species
+        # This species is NOT an ODE and NOT part of any reaction
+        enzmldoc.add_to_equations(
+            species_id="Product",  # Left side of equation
+            equation_type=EquationType.INITIAL_ASSIGNMENT,
+            equation="p1 * 2.0",  # p1 appears in the equation
+        )
+
+        # Verify the species exists before filtering
+        assert equation_only_species.id in [s.id for s in enzmldoc.small_molecules]
+
+        # Remove unmodeled species
+        thinlayer = MockThinLayer(enzmldoc)
+        tl_enzmldoc = thinlayer.optimize()
+
+        assert equation_only_species.id in [
+            s.id for s in tl_enzmldoc.small_molecules
+        ], (
+            f"Species '{equation_only_species.id}' should be kept because it appears in an equation, "
+            f"but it was removed. Remaining species: {[s.id for s in tl_enzmldoc.small_molecules]}"
+        )
+
+    def test_includes_species_in_kinetic_law_equation(self):
+        """
+        Test that species referenced in equations are kept in the document even when
+        they are not defined as ODEs or part of reactions.
+
+        This test verifies that:
+        - A species that appears in an equation (but not in reactions or ODEs) is kept
+        - The species can have initial values in measurements without time course data
+        - The filtering function correctly identifies equation-referenced species as modeled
+        """
+        enzmldoc = self._create_enzmldoc()
+
+        # Add a new species that will only appear in equations (not reactions/ODEs)
+        equation_only_species = enzmldoc.add_to_small_molecules(
+            id="p1",
+            name="Equation Only Species",
+        )
+
+        # Add an initial for the species to each measurement
+        for i, measurement in enumerate(enzmldoc.measurements):
+            measurement.add_to_species_data(
+                species_id=equation_only_species.id,
+                initial=i * 2.0,
+                data=[],
+                time=[],
+            )
+
+        # Add a reaction that references this species
+        # This species is NOT an ODE and NOT part of any reaction
+        reaction = enzmldoc.add_to_reactions(id="R1", name="R1")
+        reaction.add_to_reactants(species_id="Substrate", stoichiometry=1)
+        reaction.add_to_products(species_id="Product", stoichiometry=1)
+        reaction.kinetic_law = Equation(
+            equation="p1 * 2.0",
+            equation_type=EquationType.RATE_LAW,
+            species_id="v",
+        )
+
+        # Verify the species exists before filtering
+        assert equation_only_species.id in [s.id for s in enzmldoc.small_molecules]
+
+        # Remove unmodeled species
+        thinlayer = MockThinLayer(enzmldoc)
+        tl_enzmldoc = thinlayer.optimize()
+
+        assert equation_only_species.id in [
+            s.id for s in tl_enzmldoc.small_molecules
+        ], (
+            f"Species '{equation_only_species.id}' should be kept because it appears in a reaction, "
+            f"but it was removed. Remaining species: {[s.id for s in tl_enzmldoc.small_molecules]}"
+        )
+
     def _create_enzmldoc(self) -> EnzymeMLDocument:
         """
         Create a test EnzymeML document with various measurement scenarios.
@@ -116,7 +315,7 @@ class TestThinLayer:
         # Add small molecules
         substrate = enzmldoc.add_to_small_molecules(id="Substrate", name="Substrate")
         product = enzmldoc.add_to_small_molecules(id="Product", name="Product")
-        unmodeled = enzmldoc.add_to_small_molecules(id="Unmodeled", name="Unmodeled")
+        unmodeled = enzmldoc.add_to_small_molecules(id="s1", name="Unmodeled")
 
         # Add a measurement with unmodeled species
         measurement = enzmldoc.add_to_measurements(id="M1", name="M1")
