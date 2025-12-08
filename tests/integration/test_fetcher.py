@@ -1,4 +1,5 @@
 import pytest
+
 from pyenzyme.fetcher.chebi import fetch_chebi
 from pyenzyme.fetcher.pdb import fetch_pdb
 from pyenzyme.fetcher.pubchem import fetch_pubchem
@@ -21,6 +22,9 @@ class TestFetcher:
             small_molecule.references[0]
             == "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:15377"
         )
+
+    def test_fetch_chebi_wo_defintion(self):
+        fetch_rhea("RHEA:75423", vessel_id="v0")
 
     def test_fetch_chebi_to_small_molecule_with_id(self):
         small_molecule = fetch_chebi("CHEBI:15377", smallmol_id="s1")

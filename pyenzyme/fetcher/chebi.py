@@ -5,10 +5,12 @@ This module provides functionality to fetch chemical entity data from the
 ChEBI database by ID and map it to the PyEnzyme data model (v2).
 """
 
-import requests
 import re
-from typing import Optional, Dict, List
-from pydantic import BaseModel, Field, RootModel
+from typing import Dict, List, Optional
+
+import requests
+from pydantic import BaseModel, ConfigDict, RootModel
+
 from pyenzyme.versions import v2
 
 
@@ -20,70 +22,31 @@ class ChEBIError(Exception):
         self.cause = cause
 
 
-class ChEBIName(BaseModel):
-    """Individual name/synonym entry."""
-
-    name: str
-    status: str
-    type: str
-    source: str
-    ascii_name: str
-    adapted: bool
-    language_code: str
-
-
-class ChEBINames(BaseModel):
-    """Names and synonyms structure. All name types are optional."""
-
-    SYNONYM: Optional[List[ChEBIName]] = None
-    IUPAC_NAME: Optional[List[ChEBIName]] = Field(None, alias="IUPAC NAME")
-    INN: Optional[List[ChEBIName]] = None
-
-
-class ChEBIChemicalData(BaseModel):
-    """Chemical formula and mass data."""
-
-    formula: str
-    charge: int
-    mass: str
-    monoisotopic_mass: str
-
-
 class ChEBIStructure(BaseModel):
-    """Chemical structure information. All structure fields may be null."""
+    """Chemical structure information."""
 
-    id: int
+    model_config = ConfigDict(extra="ignore")
+
     smiles: Optional[str] = None
     standard_inchi: Optional[str] = None
     standard_inchi_key: Optional[str] = None
-    wurcs: Optional[str] = None
-    is_r_group: bool
 
 
 class ChEBIEntryData(BaseModel):
     """Core data structure for a ChEBI entry."""
 
-    id: int
-    chebi_accession: str
-    name: str
+    model_config = ConfigDict(extra="ignore")
+
     ascii_name: str
-    stars: int
-    definition: str
-    names: ChEBINames
-    chemical_data: ChEBIChemicalData
     default_structure: Optional[ChEBIStructure] = None
-    modified_on: str
-    secondary_ids: List[str]
-    is_released: bool
 
 
 class ChEBIEntryResult(BaseModel):
     """Individual ChEBI entry result."""
 
+    model_config = ConfigDict(extra="ignore")
+
     standardized_chebi_id: str
-    primary_chebi_id: str
-    exists: bool
-    id_type: str
     data: ChEBIEntryData
 
 
@@ -95,6 +58,8 @@ class ChEBIApiResponse(RootModel[Dict[str, ChEBIEntryResult]]):
 
 class ChebiSearchResult(BaseModel):
     """Individual search result structure."""
+
+    model_config = ConfigDict(extra="ignore")
 
     _source: Dict[str, str]  # Contains chebi_accession field
 
