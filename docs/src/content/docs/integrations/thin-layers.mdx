@@ -1,0 +1,46 @@
+---
+title: Thin Layers for Kinetic Modeling
+description: Learn how to use PyEnzyme's thin layers to simulate and fit kinetic models using powerful modeling tools like PySCeS and COPASI.
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+import { CardGrid } from '@astrojs/starlight/components';
+
+## What Are Thin Layers?
+
+Thin layers are PyEnzyme's interface for connecting experimental data to powerful kinetic modeling tools. They function as **translators** that bridge EnzymeML (the experimental data format) and the language of modeling software.
+
+For experimentalists who have collected time-course data showing how concentrations change over time, thin layers enable:
+
+1. **Simulation** of model predictions under different conditions
+2. **Parameter fitting** of models to experimental data to determine kinetic parameters  
+3. **Comparison** of model predictions with experimental measurements
+
+PyEnzyme handles all translation automatically. Manual data conversion or learning complex modeling software interfaces is not required.
+
+## The Workflow
+
+The typical workflow is straightforward:
+
+1. **Prepare an EnzymeML document** with reactions, equations, and measurements
+2. **Choose a thin layer** (PySCeS or COPASI) based on requirements
+3. **Simulate** to observe model predictions
+4. **Optimize** to fit parameters to experimental data
+5. **Export** the fitted parameters back to the EnzymeML document
+
+## Available Thin Layers
+
+PyEnzyme provides thin layers for two popular modeling tools. Both provide the same interface, enabling easy switching between them:
+
+<CardGrid>
+  <LinkCard title="PySCeS Thin Layer" icon="code" href="integrations/pysces">
+    Use PySCeS for Python-based kinetic modeling and parameter fitting. Perfect if you prefer working entirely in Python.
+    
+    **[Learn more →](integrations/pysces)**
+  </LinkCard>
+  <LinkCard title="COPASI Thin Layer" icon="rocket" href="integrations/copasi">
+    Use COPASI for advanced features and graphical visualization. Ideal if you need sophisticated analysis tools.
+    
+    **[Learn more →](integrations/copasi)**
+  </LinkCard>
+</CardGrid>

@@ -1,0 +1,41 @@
+/* Load Open Sans (if not already loaded elsewhere) */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+:root {
+    /* Your existing values */
+    --sl-content-width: 50rem;
+    --sl-color-accent: #2979FF;
+    --sl-color-backdrop-overlay: black;
+
+    /* Use Open Sans as main font */
+    --sl-font-system: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --__sl-font: var(--sl-font, var(--sl-font-system)), var(--sl-font-system);
+
+    /* Base background color (keeps whatever Starlight sets, with a fallback) */
+    --sl-color-bg: var(--sl-color-bg, #050509);
+
+    /* Set colors for headings */
+    --sl-color-heading: #ffffff;
+
+    /* Gradient based on current bg: slightly brighter center, darker edges */
+    --sl-bg-gradient: radial-gradient(circle at top left,
+            color-mix(in srgb, var(--sl-color-bg) 70%, white 30%) 0%,
+            color-mix(in srgb, var(--sl-color-bg) 85%, black 15%) 50%,
+            color-mix(in srgb, var(--sl-color-bg) 90%, black 10%) 100%);
+}
+
+body {
+    font-family: var(--__sl-font);
+    background-color: var(--sl-color-bg);
+    /* solid fallback */
+    background-image: var(--sl-bg-gradient);
+    /* gradient overlay */
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+p {
+    text-align: justify;
+}

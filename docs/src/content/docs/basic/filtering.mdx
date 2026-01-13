@@ -1,0 +1,272 @@
+---
+title: Filtering Data
+description: Learn how to query, filter, and manage entities within EnzymeML documents using filter expressions and other management methods.
+---
+
+Once you've created an EnzymeML document and filled it with proteins, small molecules, reactions, and measurements, you'll often need to find specific entities within that document. Perhaps you want to find all proteins from a particular organism, or all reversible reactions, or all measurements taken at a specific temperature. Rather than manually looking through lists of entities, PyEnzyme provides filtering capabilities that let you search for entities based on their attributes.
+
+Think of filtering as asking questions about your data: "Which proteins come from humans?" or "Which reactions involve this particular substrate?" PyEnzyme's filter methods provide a straightforward way to get answers to these questions, returning just the entities that match your criteria. Instead of writing loops to manually search through lists, PyEnzyme's filter methods provide a clean, readable way to work with your data.
+
+## How Filtering Works
+
+PyEnzyme provides filter methods for all major entity collections in an `EnzymeMLDocument`. The design is consistent and predictable: each type of entity (proteins, small molecules, reactions, measurements, etc.) has a corresponding filter method that follows the same pattern. This consistency makes filtering easy to learn: once you understand how to filter one type of entity, you can apply the same approach to all others.
+
+**The general pattern:**
+
+```python
+filtered_entities = enzmldoc.filter_<collection>(attribute1=value1, attribute2=value2, ...)
+```
+
+Here's how to read this pattern:
+- `enzmldoc` is your EnzymeML document
+- `filter_<collection>` is the filter method for a specific entity type (e.g., `filter_proteins`, `filter_reactions`, `filter_measurements`)
+- You provide keyword arguments where the keyword is an attribute name (like `name`, `organism`, or `reversible`) and the value is what you're searching for
+- The method returns a list containing all entities that match your criteria
+
+**Understanding the matching behavior:**
+
+When you provide multiple attributes to filter on, PyEnzyme uses an "AND" condition: meaning entities must match *all* the criteria you specify to be included in the results. This is intuitive: if you ask for proteins that are from "Homo sapiens" AND in vessel "v1", you'll only get proteins that satisfy both conditions.
+
+Let's see this in practice:
+
+```python
+import pyenzyme as pe
+
+# Load an existing document
+enzmldoc = pe.read_enzymeml("experiment.json")
+
+# Filter proteins by name
+alcohol_dehydrogenases = enzmldoc.filter_proteins(name="Alcohol dehydrogenase")
+
+# Filter by multiple attributes (AND condition)
+human_proteins = enzmldoc.filter_proteins(
+    organism="Homo sapiens",
+    vessel_id="v1"
+)
+
+# Filter reactions by reversibility
+reversible_reactions = enzmldoc.filter_reactions(reversible=True)
+```
+
+**What each example does:**
+
+1. **Single attribute filtering**: `filter_proteins(name="Alcohol dehydrogenase")` finds all proteins whose name is exactly "Alcohol dehydrogenase". This returns a list that might contain zero, one, or multiple proteins depending on what's in your document.
+
+2. **Multiple attribute filtering**: `filter_proteins(organism="Homo sapiens", vessel_id="v1")` finds proteins that meet both conditions: they must be from humans AND they must be in vessel v1. If a protein is from humans but in a different vessel, it won't be included.
+
+3. **Boolean attribute filtering**: `filter_reactions(reversible=True)` finds all reactions where the `reversible` attribute is set to `True`. This uses a boolean value (True/False) rather than a string.
+
+**Important characteristics of filter results:**
+
+**Returns a list**: Filter methods always return a list, even if there's only one match or no matches at all. If nothing matches, you'll get an empty list `[]`.
+
+**Multiple criteria use AND logic**: All specified attributes must match. PyEnzyme doesn't currently support OR logic (where either condition A or condition B could be true), but you can perform multiple separate filters and combine the results if needed.
+
+**Exact attribute names required**: The attribute names you use in the filter must match the entity's field names exactly, including capitalization. If you're not sure what attributes an entity has, you can check by looking at an example entity or consulting the entity's documentation.
+
+**Results reference the original entities**: The entities returned by filtering aren't copies: they're references to the actual entities in your document. This means if you modify a filtered entity, you're modifying the entity in the document itself. This is usually what you want, but it's important to be aware of.
+
+**No matches returns an empty list**: If your filter criteria don't match any entities, you'll get an empty list. This isn't an error: it simply means no entities met your criteria. You can check if the list is empty with `if not filtered_results:` or `if len(filtered_results) == 0:`.
+
+
+## Filtering Different Entity Types
+
+PyEnzyme provides filter methods for all major entity types in your document. Let's explore how to filter each type with practical examples.
+
+### Filtering Proteins
+
+Proteins can be filtered by any of their attributes, such as name, organism, EC number, sequence, or vessel ID.
+
+```python
+import pyenzyme as pe
+
+enzmldoc = pe.read_enzymeml("experiment.json")
+
+# Find all proteins from a specific organism
+human_proteins = enzmldoc.filter_proteins(organism="Homo sapiens")
+
+# Find proteins with a specific EC number
+oxidoreductases = enzmldoc.filter_proteins(ecnumber="1.1.1.1")
+
+# Find proteins in a specific vessel
+vessel_proteins = enzmldoc.filter_proteins(vessel_id="v1")
+
+# Combine multiple criteria
+human_adh = enzmldoc.filter_proteins(
+    name="Alcohol dehydrogenase",
+    organism="Homo sapiens"
+)
+```
+
+**Common use cases:**
+- Finding all enzymes of a certain type (by EC number)
+- Grouping proteins by organism
+- Locating proteins in specific experimental vessels
+- Identifying enzymes by name when you have multiple variants
+
+### Filtering Small Molecules
+
+Small molecules can be filtered by attributes like name, chemical identifiers (SMILES, InChI), or vessel association.
+
+```python
+# Find molecules by name
+ethanol = enzmldoc.filter_small_molecules(name="ethanol")
+
+# Find molecules in a specific vessel
+vessel_molecules = enzmldoc.filter_small_molecules(vessel_id="v1")
+
+# Find by chemical structure (if you know the SMILES)
+alcohol = enzmldoc.filter_small_molecules(canonical_smiles="CCO")
+```
+
+**Common use cases:**
+- Locating specific substrates or products by name
+- Finding all molecules in a particular vessel
+- Identifying molecules by their chemical structure
+- Checking if a particular compound is already in your document
+
+### Filtering Reactions
+
+Reactions can be filtered by attributes such as name, reversibility, or associated enzyme.
+
+```python
+# Find all reversible reactions
+reversible = enzmldoc.filter_reactions(reversible=True)
+
+# Find all irreversible reactions
+irreversible = enzmldoc.filter_reactions(reversible=False)
+
+# Find reactions by name
+specific_reaction = enzmldoc.filter_reactions(name="Ethanol oxidation")
+```
+
+**Common use cases:**
+- Separating reversible from irreversible reactions
+- Finding specific reactions by name
+- Organizing reactions for different types of analysis
+
+### Filtering Measurements
+
+Measurements can be filtered by attributes like name, temperature, pH, or other experimental conditions.
+
+```python
+# Find measurements at body temperature
+physiological = enzmldoc.filter_measurements(temperature=37.0)
+
+# Find measurements at a specific pH
+neutral_ph = enzmldoc.filter_measurements(ph=7.0)
+
+# Find by measurement name
+run1 = enzmldoc.filter_measurements(name="Run 1")
+
+# Combine conditions
+specific_conditions = enzmldoc.filter_measurements(
+    temperature=37.0,
+    ph=7.4
+)
+```
+
+**Common use cases:**
+- Grouping measurements by experimental conditions
+- Finding replicates or related experimental runs
+- Filtering by temperature or pH for analysis
+- Locating specific measurement series
+
+### Filtering Vessels
+
+Vessels can be filtered by attributes like name or volume.
+
+```python
+# Find vessels by name
+cuvettes = enzmldoc.filter_vessels(name="Cuvette")
+
+# Find vessels by volume (with specific unit)
+small_vessels = enzmldoc.filter_vessels(volume=1.0)
+```
+
+**Common use cases:**
+- Locating specific experimental containers
+- Grouping experiments by vessel type
+- Organizing vessels by size or capacity
+
+## Working with Filter Results
+
+Once you've filtered entities, you can work with the results in several ways:
+
+### Checking Results
+
+```python
+# Get filtered proteins
+proteins = enzmldoc.filter_proteins(organism="Homo sapiens")
+
+# Check if any matches were found
+if proteins:
+    print(f"Found {len(proteins)} human proteins")
+else:
+    print("No human proteins found")
+
+# Iterate through results
+for protein in proteins:
+    print(f"Protein: {protein.name}, EC: {protein.ecnumber}")
+```
+
+### Modifying Filtered Entities
+
+Since filter results reference the original entities, you can modify them directly:
+
+```python
+# Find all proteins from a specific organism
+proteins = enzmldoc.filter_proteins(organism="Homo sapiens")
+
+# Modify an attribute for all matching proteins
+for protein in proteins:
+    protein.name = "Human alcohol dehydrogenase"
+    
+# The changes are reflected in the document
+```
+
+**Important**: Be careful when modifying filtered entities, as you're changing the original entities in your document. Make sure modifications are intentional.
+
+### Extracting Information
+
+You can extract specific information from filtered entities:
+
+```python
+# Get all protein names from human proteins
+human_proteins = enzmldoc.filter_proteins(organism="Homo sapiens")
+protein_names = [p.name for p in human_proteins]
+print(protein_names)
+
+# Get all EC numbers from your enzymes
+all_proteins = enzmldoc.filter_proteins()  # No filter = get all
+ec_numbers = [p.ecnumber for p in all_proteins if p.ecnumber]
+print(ec_numbers)
+```
+
+### Combining Filter Results
+
+If you need OR logic (either condition A or condition B), you can perform multiple filters and combine the results:
+
+```python
+# Find proteins from either humans or yeast
+human_proteins = enzmldoc.filter_proteins(organism="Homo sapiens")
+yeast_proteins = enzmldoc.filter_proteins(organism="Saccharomyces cerevisiae")
+
+# Combine the results
+combined = human_proteins + yeast_proteins
+
+# Remove duplicates if needed (though usually not necessary)
+unique_proteins = list(set(combined))
+```
+
+## Next Steps
+
+After learning how to filter and manage entities in your EnzymeML documents, you can explore:
+
+The [Exporting documents](./export.mdx) guide shows how to save your documents (including filtered subsets) in various formats for sharing and analysis.
+
+The [Visualizing data](./visualize.mdx) guide demonstrates how to create plots and visualizations from your filtered measurements and data.
+
+For advanced analysis, the [Mathematical modeling](./modelling.mdx) guide explains how to build and fit kinetic models using your filtered experimental data.
+
+Finally, the [Working with units](./units.mdx) guide provides detailed information about how PyEnzyme handles different unit systems, which is particularly useful when filtering by numerical attributes like temperature or concentration.

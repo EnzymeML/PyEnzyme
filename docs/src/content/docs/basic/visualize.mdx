@@ -1,0 +1,284 @@
+---
+title: Visualizing Experimental Data
+description: Learn how to create publication-quality static plots and interactive visualizations of your EnzymeML measurement data, with optional model fits.
+---
+
+Creating visualizations of your experimental data is essential for understanding what happened in your experiments, communicating results to others, and validating mathematical models. PyEnzyme makes visualization straightforward, providing functions that automatically create plots from your EnzymeML documents without requiring you to manually set up axes, legends, or data series.
+
+PyEnzyme offers two types of visualizations, each suited for different purposes:
+
+**Static plots** are traditional figures created using matplotlib (Python's standard plotting library). These are perfect for publications, presentations, and anywhere you need a fixed, high-quality image. They export to standard formats like PNG, PDF, or SVG, ready for inclusion in manuscripts.
+
+**Interactive plots** are created using Bokeh, a modern visualization library that produces plots you can interact with: zooming in on specific time ranges, hovering over data points to see exact values, panning across the plot to explore different regions. These are ideal for exploring your data in detail, especially in Jupyter notebooks where you can work with them directly.
+
+## Static Plots
+
+Static plots are traditional figures: the kind you'd include in a paper, presentation, or report. PyEnzyme creates these using matplotlib, Python's standard plotting library, which produces high-quality images that can be saved in various formats. The `plot()` function automatically organizes your measurements into a grid of subplots, with each measurement getting its own panel, so you can compare multiple experiments at a glance.
+
+### Basic Usage
+
+Creating a basic plot of all your measurements is remarkably simple:
+
+```python
+import pyenzyme as pe
+
+# Load an EnzymeML document
+enzmldoc = pe.read_enzymeml("experiment.json")
+
+# Create static plots for all measurements
+fig, axes = pe.plot(enzmldoc=enzmldoc, show=True)
+
+# Save the figure
+fig.savefig("measurements.png", dpi=300)
+```
+
+**What this code does:**
+
+1. **Load your document**: First, we load an EnzymeML document containing your measurement data.
+
+2. **Create the plot**: The `pe.plot()` function does the heavy lifting. It examines your document, finds all measurements, and creates a figure with subplots arranged in a grid. The `show=True` parameter tells it to display the figure on your screen.
+
+3. **Save the figure**: The function returns matplotlib Figure and Axes objects (stored in `fig` and `axes`), which you can then save to a file. The `dpi=300` parameter sets the resolution: 300 dots per inch is standard for publication-quality images.
+
+When this code runs, you'll see a figure pop up showing all your time-course measurements, with each species in different colors and a legend identifying them. If you have multiple measurements, they'll be arranged in a grid for easy comparison.
+
+### Plotting Specific Measurements
+
+Often, you don't want to plot *everything* in your document: maybe you have dozens of measurements but only want to visualize a few specific ones for a particular analysis or figure. PyEnzyme makes this easy with the `measurement_ids` parameter:
+
+```python
+# Plot only specific measurements
+fig, axes = pe.plot(
+    enzmldoc=enzmldoc,
+    measurement_ids=["m1", "m2", "m3"],
+    show=True
+)
+```
+
+This creates a figure showing only measurements m1, m2, and m3, ignoring all others in the document. This is useful when:
+- You're focusing on specific experimental conditions
+- You want to compare a subset of replicates
+- You're creating figures for a paper and need to show only relevant experiments
+- Your document contains many measurements that would make the figure too crowded
+
+### Customizing Plot Appearance
+
+While PyEnzyme's default plots look good out of the box, you might want to customize their appearance to match publication requirements or personal preferences. The `plot()` function accepts several parameters for customization:
+
+```python
+fig, axes = pe.plot(
+    enzmldoc=enzmldoc,
+    columns=3,              # Number of columns in the grid
+    marker_size=8,          # Size of data point markers
+    marker_style="s",       # Marker style ("o", "s", "^", etc.)
+    show=True,
+    out="plot.png",         # Save directly to file
+    img_format="png",       # Image format (png, pdf, svg)
+    dpi=300                 # Resolution for saved images
+)
+```
+
+**Understanding the customization options:**
+
+**`columns=3`**: Controls how many columns of subplots appear in the grid. If you have six measurements, `columns=3` would create two rows of three plots each. Adjusting this helps you create figures with the aspect ratio you want.
+
+**`marker_size=8`**: Makes the data point markers larger or smaller. Larger markers are more visible but can clutter dense data; smaller markers are subtle but might be hard to see in presentations.
+
+**`marker_style="s"`**: Changes the shape of markers. Common options include:
+- `"o"` for circles (the default)
+- `"s"` for squares
+- `"^"` for triangles
+- `"D"` for diamonds
+
+Different marker styles can help distinguish between different experimental conditions or make your figures match a specific style.
+
+**`out="plot.png"`**: Specifies a filename to save the plot to directly. This is convenient when you don't need to see the plot on screen and just want to generate a file.
+
+**`img_format="png"`**: Determines the file format. PNG is good for general use, PDF and SVG are vector formats that scale without losing quality (ideal for publications).
+
+**`dpi=300`**: Sets the resolution. 300 DPI (dots per inch) is the standard for print-quality images in scientific publications.
+
+### Plotting with Model Fits
+
+One of the most powerful features of PyEnzyme's visualization is the ability to overlay model predictions on your experimental data. This lets you visually assess how well your mathematical model fits your measurements: a crucial step in model validation. If you've used a "thin layer" (PyEnzyme's term for integration with simulation and fitting tools) to fit model parameters to your data, you can include those fitted predictions directly in your plots.
+
+Here's how to create plots showing both experimental data and model fits:
+
+```python
+import pyenzyme as pe
+from pyenzyme.thinlayers import ThinLayerPysces
+
+# Load document
+enzmldoc = pe.read_enzymeml("experiment.json")
+
+# Create thin layer and fit parameters
+tl = ThinLayerPysces(enzmldoc=enzmldoc)
+tl.optimize()
+
+# Plot experimental data with model fits
+fig, axes = pe.plot(
+    enzmldoc=enzmldoc,
+    thinlayer=tl,           # Include model predictions
+    measurement_ids=["m1", "m2"],
+    show=True
+)
+
+# Save publication-quality figure
+fig.savefig("fitted_model.png", dpi=300, bbox_inches="tight")
+```
+
+**Understanding this workflow:**
+
+1. **Load your data**: Start with an EnzymeML document containing your measurements and a mathematical model (reactions with kinetic laws or ODEs).
+
+2. **Fit the model**: Create a thin layer object and use `optimize()` to fit model parameters to your data. This finds parameter values that best match your experimental observations.
+
+3. **Plot with fits**: By passing the thin layer object to `pe.plot()` using the `thinlayer=tl` parameter, PyEnzyme automatically simulates the model with the fitted parameters and overlays the predictions on your plot.
+
+4. **Save the result**: The resulting figure shows your experimental data as markers and model predictions as dashed lines, making it easy to see where the model agrees with or deviates from your measurements.
+
+**Visual representation:**
+
+Model fits appear as dashed lines that match the color of the corresponding experimental data points. For example, if substrate data points are blue, the substrate model fit will be a dashed blue line. This color matching makes it immediately clear which line corresponds to which species, even when you have multiple species in the same plot.
+
+## Interactive Plots
+
+Interactive plots take visualization to the next level by letting you actually interact with your data. Instead of a static image, you get a dynamic plot where you can zoom in to examine specific time ranges, pan across to see different regions, and hover over data points to see their exact values. These plots are created using Bokeh, a modern Python visualization library designed for interactivity.
+
+Interactive plots are especially valuable in Jupyter notebooks (a popular environment for scientific computing in Python), where you can manipulate plots directly while working with your data. They're also great for exploring data before creating final static figures for publication: you might notice details in the interactive version that lead to important insights.
+
+### Basic Interactive Plotting
+
+Creating an interactive plot is similar to creating a static one, but uses a different function:
+
+```python
+import pyenzyme as pe
+from bokeh.plotting import show
+
+# Load document
+enzmldoc = pe.read_enzymeml("experiment.json")
+
+# Create interactive plots
+tabs = pe.plot_interactive(enzmldoc=enzmldoc)
+
+# Display in notebook or browser
+show(tabs)
+```
+
+**What this code does:**
+
+1. **Create interactive plots**: The `pe.plot_interactive()` function examines your document and creates interactive visualizations. Unlike static plots which put multiple measurements in a grid, interactive plots organize measurements into tabs: you can click between tabs to view different measurements.
+
+2. **Display**: The `show(tabs)` function displays the interactive plot. In a Jupyter notebook, it appears inline below your code cell. Outside a notebook, it opens in your web browser.
+
+**Interactivity features:**
+
+Once the plot appears, you can:
+- **Zoom**: Use the zoom tool to focus on specific time ranges or concentration ranges
+- **Pan**: Click and drag to move around the plot
+- **Hover**: Move your mouse over data points to see exact time and concentration values in a tooltip
+- **Reset**: Click the reset button to return to the original view
+- **Save**: Export the current view as a PNG image
+
+These features make interactive plots perfect for exploratory data analysis: looking for patterns, checking for anomalies, or examining specific portions of your time course in detail.
+
+### Saving Interactive Plots
+
+One of the great features of interactive plots is that they can be saved as standalone HTML files. These files contain all the plot data and interactivity, so you can share them with colleagues, embed them in websites, or include them as supplementary materials for publications. Recipients can view and interact with the plots in any web browser without needing Python or PyEnzyme installed.
+
+```python
+# Save as HTML file
+tabs = pe.plot_interactive(
+    enzmldoc=enzmldoc,
+    out="interactive_plots.html",
+    show=False  # Don't display immediately
+)
+```
+
+**What happens:**
+
+This creates an HTML file named "interactive_plots.html" that you can open in any web browser. The file is completely self-contained: all the data and interactivity code is embedded in the single HTML file. The `show=False` parameter prevents the plot from displaying immediately (useful when you're generating multiple files in a batch process), but the file is still created.
+
+You can email this HTML file to a colleague, and they can open it and interact with your data, zooming and hovering just like you can. This is much more informative than sending static images, especially for complex time-course data.
+
+### Customizing Interactive Plots
+
+Interactive plots accept customization parameters similar to static plots:
+
+```python
+tabs = pe.plot_interactive(
+    enzmldoc=enzmldoc,
+    measurement_ids=["m1", "m2"],
+    width=1000,              # Plot width in pixels
+    height=500,              # Plot height in pixels
+    output_nb=True,          # Output to notebook if available
+    show=True
+)
+```
+
+**Understanding the options:**
+
+**`measurement_ids`**: Just like with static plots, you can specify which measurements to include, filtering out others you don't want to visualize.
+
+**`width` and `height`**: Control the dimensions of the plot in pixels. The defaults are reasonable for most cases, but you might want larger plots for presentations or smaller ones for embedding in web pages. Note these are in pixels, not inches like static plots.
+
+**`output_nb=True`**: Tells PyEnzyme to check if you're running in a Jupyter notebook and, if so, configure output appropriately. This is usually set automatically, but you can specify it explicitly if needed.
+
+### Interactive Plots with Model Fits
+
+Just like static plots, interactive plots can show model fits overlaid on experimental data. This is particularly powerful because you can zoom in to examine how well the model fits specific regions of your data:
+
+```python
+import pyenzyme as pe
+from pyenzyme.thinlayers import ThinLayerPysces
+from bokeh.plotting import show
+
+# Load and fit model
+enzmldoc = pe.read_enzymeml("experiment.json")
+tl = ThinLayerPysces(enzmldoc=enzmldoc)
+tl.optimize()
+
+# Create interactive plot with fits
+tabs = pe.plot_interactive(
+    enzmldoc=enzmldoc,
+    thinlayer=tl,
+    measurement_ids=["m1", "m2"],
+    out="fitted_interactive.html"
+)
+
+show(tabs)
+```
+## Customization with Matplotlib
+
+Since `plot()` returns matplotlib Figure and Axes objects, further customization is possible:
+
+```python
+fig, axes = pe.plot(enzmldoc=enzmldoc, show=False)
+
+# Customize individual subplots
+for ax in axes:
+    ax.set_xlim(0, 100)           # Set x-axis limits
+    ax.set_ylim(0, 50)             # Set y-axis limits
+    ax.tick_params(labelsize=12)   # Adjust tick label size
+
+# Add overall title
+fig.suptitle("Experimental Time-Course Data", fontsize=16, y=0.98)
+
+# Adjust spacing
+plt.tight_layout(rect=[0, 0, 1, 0.96])
+
+# Save
+fig.savefig("customized_plot.png", dpi=300)
+```
+
+## Next Steps
+
+Now that you understand how to visualize your EnzymeML data, you have powerful tools for data exploration, model validation, and communication of results. Visualization is often the step that brings your data to life and reveals insights that might be hidden in tables of numbers.
+
+**Sharing your visualized results**: Once you've created compelling visualizations, you'll likely want to share them. The [Export](./export.mdx) guide shows you how to save your complete EnzymeML documents (including the data that underlies your plots) in formats suitable for sharing with collaborators, submitting to databases, or including as supplementary materials for publications.
+
+**Deepening your analysis with modeling**: If visualization reveals interesting kinetic behavior in your data, the next step is often mathematical modeling. The [thin layers](../integrations/thin-layers.mdx) guide explains how to build and fit kinetic models to your data, and as you've seen in this guide, those fitted models can be visualized alongside your experimental measurements to validate the modeling work.
+
+**Expanding your dataset**: Perhaps your visualizations have revealed the need for additional experiments: maybe you need more time points in a certain region, or measurements at different conditions to complete your understanding. The [Import](./import.mdx) guide shows you how to bring additional measurement data into your EnzymeML documents, allowing you to build comprehensive datasets that you can visualize and analyze together.
+
+Visualization is both an early and late step in data analysis: plot your data early to understand what you have, and create polished figures late in the process to communicate your findings. PyEnzyme's visualization tools support both phases, from quick exploratory plots to publication-ready figures.

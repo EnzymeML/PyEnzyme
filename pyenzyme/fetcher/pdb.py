@@ -5,11 +5,15 @@ This module provides functionality to fetch protein data from the
 Protein Data Bank by ID and map it to the PyEnzyme data model (v2).
 """
 
-import requests
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
+
+import httpx
 from pydantic import BaseModel, Field
+
 from pyenzyme.fetcher.chebi import process_id
 from pyenzyme.versions import v2
+
+DEFAULT_TIMEOUT = 5.0
 
 
 class Citation(BaseModel):
@@ -154,7 +158,8 @@ class PDBClient:
             ConnectionError: If the connection to the server fails
         """
         try:
-            response = requests.get(url)
+            with httpx.Client(timeout=DEFAULT_TIMEOUT) as client:
+                response = client.get(url)
             response.raise_for_status()
 
             if response.status_code == 200:
@@ -164,7 +169,7 @@ class PDBClient:
                     f"Request failed with status code {response.status_code}"
                 )
 
-        except requests.exceptions.RequestException as e:
+        except httpx.HTTPStatusError as e:
             raise ConnectionError(f"Connection failed: {str(e)}")
         except ValueError as e:
             raise ValueError(f"Failed to parse response: {str(e)}")

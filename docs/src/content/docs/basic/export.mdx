@@ -1,0 +1,280 @@
+---
+title: Exporting EnzymeML Documents
+description: Learn how to export EnzymeML documents to various formats including JSON, SBML, OMEX, PEtab, and pandas DataFrames for analysis and sharing.
+---
+
+Once you've created or imported an EnzymeML document containing your experimental data, you'll often need to export it to different formats. The reasons for this are varied: you might want to share your experiment with collaborators who use different software tools, submit your data to a scientific database, analyze your results with specialized software, or simply archive your work in a standardized format. PyEnzyme makes this process straightforward by providing simple commands to export your data to all commonly used formats in computational biology and data science.
+
+Different export formats serve different needs, and understanding when to use each one will help you work more effectively:
+
+**JSON** is a text-based format that's easy for both humans and computers to read. JSON is particularly well-suited for storing your documents long-term, sharing them via the web, or using them in web applications. If you're not sure which format to use, JSON is often a safe choice because it maintains complete information.
+
+**SBML (Systems Biology Markup Language) and OMEX** are standard formats used throughout the systems biology community. If you want to use your data with popular modeling tools like COPASI, PySCeS, or similar software, these formats ensure compatibility. OMEX archives are especially useful because they bundle everything together, your model and your measurement data, in a single package.
+
+**PEtab** is a specialized format designed specifically for parameter estimation problems. If you're planning to fit kinetic models to your experimental data using tools like AMICI or pyPESTO, PEtab provides the standardized structure these tools expect.
+
+**Pandas DataFrame** is useful when you want to analyze or visualize your data using Python's data analysis tools. If you're familiar with pandas (a popular Python library for data analysis) or want to create custom plots and perform statistical analyses, this export format makes your measurement data immediately available for such work.
+
+## Exporting to JSON
+
+JSON (JavaScript Object Notation) is the native format for EnzymeML version 2 documents. When you export to JSON, you create a complete snapshot of your entire experiment, including all the vessels, species, reactions, measurements, and metadata are captured in a single file. The key advantage of JSON is that it's "human-readable," meaning if you open the file in a text editor, you can actually understand what you're looking at, unlike some binary formats that appear as gibberish.
+
+Because JSON is text-based rather than binary, it has several practical benefits. You can easily archive these files without worrying about whether specialized software will be available in the future. If you're using version control systems like Git, JSON files work well because the system can show you exactly what changed between versions. JSON is also the standard format used across the web, making it ideal if you're building web applications or APIs that need to serve experimental data.
+
+Here's how to export your EnzymeML document to JSON:
+
+```python
+import pyenzyme as pe
+
+# Write to a JSON file
+pe.write_enzymeml(enzmldoc, "experiment.json")
+
+# Write to a directory (creates experiment.json)
+pe.write_enzymeml(enzmldoc, "./output/")
+
+# Get JSON as a string
+json_string = pe.write_enzymeml(enzmldoc, path=None)
+print(json_string)
+```
+
+Let's look at each example:
+
+1. **Writing to a specific file**: `pe.write_enzymeml(enzmldoc, "experiment.json")` saves your document to a file named "experiment.json" in your current directory.
+
+2. **Writing to a directory**: `pe.write_enzymeml(enzmldoc, "./output/")` saves the document to a directory called "output" (the file will be named "experiment.json" automatically). This is useful when you're organizing multiple exports.
+
+3. **Getting JSON as a string**: Sometimes you don't want to create a file, but maybe you're sending the data over a network or processing it further in your code. By specifying `path=None`, the function returns the JSON content as a text string instead of writing it to a file.
+
+**Why choose JSON:**
+
+JSON is an excellent choice when you need complete preservation of all your experimental information. Nothing gets lost or simplified, every detail you documented is maintained exactly as you entered it. This makes JSON ideal for situations where you want to store your work for later use with PyEnzyme, share it with colleagues who also use PyEnzyme, or integrate it into web-based systems.
+
+The format also supports JSON-LD (JSON for Linking Data), which is useful for semantic web applications, systems that understand relationships between data. However, this is an advanced feature that most users won't need to worry about initially.
+
+**Best suited for:**
+- Creating backup copies of your work
+- Sharing complete experiments with other PyEnzyme users
+- Long-term archival of experimental data
+- Building web applications or databases that serve experimental information
+- Situations where you want to track changes to your documents over time using version control
+
+## Exporting to SBML and OMEX
+
+SBML (Systems Biology Markup Language) is a widely adopted standard format for representing biochemical models. Think of it as a common language that different systems biology software tools can all understand. When you export your work to SBML, you're making it compatible with a large ecosystem of specialized tools used by researchers around the world.
+
+OMEX (Open Modeling EXchange) takes this a step further by creating an archive, essentially a package that bundles everything together. An OMEX archive contains not just the model (in SBML format) but also your measurement data, metadata, and other supporting information. This bundling is convenient because everything needed to understand and reproduce your experiment is contained in a single file.
+
+If you plan to use your data with popular modeling and simulation tools like COPASI, PySCeS, or similar systems biology software, exporting to SBML or OMEX is essential. These tools are designed to read SBML files directly, allowing you to simulate your models, estimate parameters, perform sensitivity analyses, and conduct other advanced computational studies without having to manually convert or reformat your data.
+
+### Exporting to OMEX
+
+An OMEX archive is a comprehensive package that contains everything someone would need to work with your experiment. It's similar to a ZIP file in that it bundles multiple files together, but it follows a specific structure designed for biological models and data.
+
+Here's how to create an OMEX archive from your EnzymeML document:
+
+```python
+import pyenzyme as pe
+
+# Export to OMEX archive (includes SBML + data)
+sbml_string, rdf_data = pe.to_sbml(
+    enzmldoc,
+    out="experiment.omex",
+    verbose=False
+)
+```
+
+In this code:
+- `enzmldoc` is your EnzymeML document that you want to export
+- `out="experiment.omex"` specifies the name of the archive file to create
+- `verbose=False` keeps the export process quiet (set to `True` if you want to see detailed progress and validation messages)
+- The function returns two things: `sbml_string` (the SBML model as text) and `rdf_data` (semantic metadata), though you often won't need to use these directly since everything is saved in the archive
+
+**What's inside an OMEX archive:**
+
+When you open an OMEX archive (you can actually unzip it like a regular archive file), you'll find several components:
+- An SBML model file (typically named `experiment.xml`) that describes your reactions, species, and kinetic equations
+- Measurement data files in TSV (Tab-Separated Values) format containing your experimental time-course data
+- Metadata and annotations that provide additional context about your experiment
+- RDF (Resource Description Framework) information that creates semantic connections between different parts of your data, making it more machine-readable and discoverable
+
+**When OMEX is the right choice:**
+
+OMEX archives are particularly useful when you need maximum compatibility with the broader systems biology community. Use OMEX when you're:
+
+- Sharing your work with collaborators who use modeling tools like COPASI, PySCeS, or similar software
+- Publishing models to scientific databases or repositories that accept SBML-based formats
+- Creating a complete archive of your experimental work where everything is bundled together
+- Working in environments where interoperability between different systems biology tools is important
+
+### Exporting to SBML XML
+
+Sometimes you don't need the full OMEX archive and you just want the SBML model file itself. This might be the case if you're only interested in the model structure or if you're integrating the SBML into another workflow that doesn't require the measurement data.
+
+Here's how to get the SBML content without creating an archive:
+
+```python
+# Get SBML as a string
+sbml_string, rdf_data = pe.to_sbml(enzmldoc, out=None)
+
+# Save to file
+with open("model.xml", "w") as f:
+    f.write(sbml_string)
+```
+
+In this example:
+
+- By setting `out=None`, we tell PyEnzyme not to create an OMEX archive file
+- Instead, the function returns the SBML content as a text string (`sbml_string`)
+- We then manually save this string to a file named "model.xml" using standard Python file operations
+
+**What's included in the SBML export:**
+
+
+- **Species definitions**: All the proteins, small molecules, and complexes you've defined, including their initial concentrations
+- **Reaction networks**: The chemical transformations in your system, complete with stoichiometries (how many molecules of each species participate)
+- **Unit definitions**: Standardized descriptions of all units used in your model
+- **Kinetic models and parameters**: The mathematical equations and constants that describe reaction rates
+- **Compartments**: Your vessels are represented as compartments, which define the spatial context for species
+
+**Automatic validation:**
+
+Before PyEnzyme creates the SBML export, it automatically validates your document to ensure it meets SBML requirements. This validation checks several things:
+- All reactions must have proper stoichiometries (you can't have a reaction without specifying how many molecules of each species are involved)
+- All species must be properly defined with necessary attributes
+- Units must be compatible with SBML's unit system
+- The overall structure must conform to SBML standards
+
+If PyEnzyme finds any issues during validation, it will let you know what needs to be fixed before the export can succeed. This automatic checking helps prevent creating invalid SBML files that other tools might reject or misinterpret.
+
+## Exporting to PEtab
+
+PEtab (Parameter Estimation Tabular format) is a specialized format designed specifically for parameter estimation problems in systems biology. If you're not familiar with parameter estimation, it's the process of finding the best values for model parameters (like reaction rate constants) by fitting a mathematical model to experimental data. This is a common task in computational biology, and PEtab provides a standardized way to structure these problems so that different software tools can work with them.
+
+PEtab is particularly well-suited for workflows where you want to determine unknown parameters in your kinetic models. Tools like AMICI and pyPESTO are designed to read PEtab files and perform sophisticated parameter estimation analyses.
+
+Here's how to export your EnzymeML document to PEtab format:
+
+```python
+import pyenzyme as pe
+
+# Export to PEtab format
+pe.to_petab(enzmldoc, path="./petab_output/")
+```
+
+This simple command creates a complete PEtab problem specification in the directory "./petab_output/".
+
+**What gets created:**
+
+The PEtab export doesn't create a single file, instead it creates a collection of related files that together describe your parameter estimation problem:
+
+- **Model file**: An SBML file containing your reaction network and kinetic equations
+- **Measurement data files**: TSV files with your experimental time-course data
+- **Parameter table**: Specifies which parameters should be estimated, what their initial guesses are, and what ranges they can take
+- **Condition table**: Describes different experimental conditions (like varying initial concentrations or temperatures)
+- **Observable table**: Defines what quantities you measured and how they relate to model variables
+
+**When to use PEtab:**
+
+PEtab is the right choice when you're conducting parameter estimation or model fitting studies. Specifically, consider PEtab when you're:
+
+- Trying to determine unknown kinetic parameters from your experimental data
+- Using specialized parameter estimation tools like AMICI or pyPESTO
+- Sharing parameter estimation problems with collaborators who use standard fitting tools
+- Publishing model fitting studies where reproducibility is important
+
+**What your document needs:**
+
+Not all EnzymeML documents are suitable for PEtab export. Your document needs to have certain elements:
+
+- **Measurements**: You must have experimental data, since parameter estimation involves fitting models to data
+- **Kinetic models**: Your reactions should have associated kinetic equations, since these contain the parameters you want to estimate
+- **Parameters with bounds**: The parameters you want to estimate should be defined with upper and lower bounds, which guide the fitting algorithm
+
+If your document is missing any of these elements, PyEnzyme will let you know what needs to be added before the PEtab export can proceed.
+
+## Exporting to Pandas DataFrame
+
+If you're planning to analyze or visualize your measurement data using Python, exporting to a pandas DataFrame is often the most convenient approach. Pandas is a widely used Python library for data analysis, and DataFrames are its primary data structure. Think of them as sophisticated spreadsheets that you can manipulate programmatically.
+
+When you export to pandas, PyEnzyme takes your time-course measurements and organizes them into a tabular format where each row represents a time point and each column represents either time, measurement ID, or concentration data for a specific species. This structure makes it very easy to perform statistical analyses, create custom plots, or integrate with other Python-based data analysis tools.
+
+Here's how to export your measurement data to a pandas DataFrame:
+
+```python
+import pyenzyme as pe
+import pandas as pd
+
+# Export measurements to DataFrame
+df = pe.to_pandas(enzmldoc)
+
+# Optional: ignore specific measurements
+df = pe.to_pandas(enzmldoc, ignore=["m1", "m2"])
+
+# Now you can analyze with pandas
+print(df.head())
+df.plot(x="time", y="substrate")
+```
+
+Let's break down what's happening:
+
+- `df = pe.to_pandas(enzmldoc)` converts all measurements in your document into a DataFrame stored in the variable `df`
+- The optional `ignore` parameter allows you to exclude specific measurements by their IDs. This is useful if you have some measurements you don't want to include in your analysis (for example, failed experiments or outliers)
+- Once you have the DataFrame, you can use all of pandas' powerful features, like `df.head()` to preview the first few rows or `df.plot()` to create quick visualizations
+
+**How the DataFrame is organized:**
+
+The DataFrame has a straightforward structure:
+
+- A `time` column containing the time points when measurements were taken
+- An `id` column identifying which measurement (experimental run) each row belongs to
+- Additional columns for each species you measured, where the column name is the species ID and the values are concentrations
+
+This organization makes it easy to work with the data: You can filter by time, group by measurement ID, or plot concentration profiles for different species.
+
+**When to use pandas export:**
+
+This format is ideal when you want to:
+- Perform your own data analysis beyond what PyEnzyme provides built-in
+- Create custom visualizations with matplotlib, seaborn, or other plotting libraries
+- Conduct statistical analyses (calculating means, standard deviations, correlations, etc.)
+- Integrate your EnzymeML data with other Python-based data analysis workflows
+- Export your data to CSV or Excel formats for use in other software
+
+**Example: Creating a plot**
+
+Here's a practical example showing how to create a visualization after exporting to pandas:
+
+```python
+import matplotlib.pyplot as plt
+
+# Export to DataFrame
+df = pe.to_pandas(enzmldoc)
+
+# Plot time courses
+for species in ["substrate", "product"]:
+    if species in df.columns:
+        plt.plot(df["time"], df[species], label=species)
+
+plt.xlabel("Time (min)")
+plt.ylabel("Concentration (mmol/l)")
+plt.legend()
+plt.show()
+```
+
+This code creates a plot showing how substrate and product concentrations change over time. The `if species in df.columns` check ensures we only try to plot species that actually exist in our data. The result is a standard line plot with properly labeled axes and a legend, ready for presentations or publications.
+
+**Note on metadata**: While pandas export is convenient for data analysis, keep in mind that it only includes the measurement data itself. Metadata about proteins, reactions, kinetic models, and other aspects of your experiment aren't included in the DataFrame. If you need to preserve complete information, use JSON export in addition to pandas export.
+
+## Next Steps
+
+Now that you understand how to export your EnzymeML documents, you can effectively share your work and integrate it with other tools and workflows.
+
+If you haven't already explored how to create EnzymeML documents from scratch, the [Creating documents](./creating.mdx) guide provides comprehensive information about building complete experimental descriptions.
+
+To learn how to bring existing experimental data into PyEnzyme from spreadsheets, databases, or other sources, see the [Import](./import.mdx) guide.
+
+Before exporting, you might want to enrich your documents with information from scientific databases. The [Fetchers](./fetchers.mdx) guide shows how to automatically retrieve protein sequences, chemical structures, and other validated information that will make your exported documents more complete and valuable.
+
+Finally, if you're working with data that uses different measurement units or you're curious about how PyEnzyme handles unit conversions during export, the [Unit handling](./units.mdx) guide provides detailed information about PyEnzyme's unit management system.
+
+Each of these guides complements what you've learned here about exporting, helping you develop a complete workflow from data import through documentation to export and sharing.

@@ -1,0 +1,335 @@
+---
+title: COPASI
+description: Use COPASI for advanced kinetic modeling and parameter estimation with your EnzymeML documents.
+---
+
+## Introduction to COPASI
+
+COPASI (COmplex PAthway SImulator) is a powerful software application for simulating and analyzing biochemical networks. The COPASI thin layer connects EnzymeML documents to COPASI, providing access to advanced modeling features while working in Python.
+
+### Why COPASI?
+
+- **Advanced features**: Steady-state analysis, sensitivity analysis, parameter scans
+- **Proven software**: Widely used in systems biology research
+- **Graphical interface**: COPASI's GUI available for visualization
+- **Robust optimization**: Sophisticated parameter estimation algorithms
+
+## Installation
+
+### Step 1: Install COPASI
+
+COPASI must be installed separately before using the thin layer:
+
+1. **Download COPASI**: Visit [copasi.org](https://copasi.org/) and download for your operating system
+2. **Install COPASI**: Follow the installation instructions for your platform
+3. **Verify installation**: Make sure COPASI is accessible from the command line
+
+### Step 2: Install Python Dependencies
+
+```bash
+pip install "pyenzyme[copasi]"
+```
+
+Or install manually:
+
+```bash
+pip install basico
+```
+
+**Note:** `basico` is the Python interface to COPASI. It requires COPASI to be installed separately.
+
+## Basic Usage
+
+### Step 1: Prepare Your Document
+
+EnzymeML documents should contain reactions, equations, parameters, and measurements:
+
+```python
+import pyenzyme as pe
+import pyenzyme.equations as peq
+
+# Create or load your document
+doc = pe.EnzymeMLDocument(name="My Model")
+
+# Add reactions, species, equations, and parameters
+# ... (see Creating Documents guide)
+
+# Add parameters to fit
+doc.add_to_parameters(
+    id="kcat",
+    name="Catalytic rate constant",
+    value=100.0,
+    unit="1 / s",
+    lower_bound=10.0,
+    upper_bound=1000.0,
+    fit=True
+)
+```
+
+### Step 2: Create the Thin Layer
+
+```python
+from pyenzyme.thinlayers import ThinLayerCopasi
+
+# Create thin layer
+tl = ThinLayerCopasi(
+    enzmldoc=doc,
+    model_dir="./copasi_models"  # Where COPASI files will be saved
+)
+```
+
+### Step 3: Simulate Your Model
+
+Simulate model behavior with specific initial conditions:
+
+```python
+# Simulate the model
+results, time = tl.integrate(
+    model=doc,
+    initial_conditions={
+        "substrate": 10.0,  # mM
+        "product": 0.0,     # mM
+        "enzyme": 0.1      # mM
+    },
+    t0=0.0,      # Start time
+    t1=100.0,    # End time (seconds)
+    nsteps=200   # Number of time points
+)
+
+# Plot results
+import matplotlib.pyplot as plt
+plt.plot(time, results["substrate"], label="Substrate")
+plt.plot(time, results["product"], label="Product")
+plt.xlabel("Time (s)")
+plt.ylabel("Concentration (mM)")
+plt.legend()
+plt.show()
+```
+
+### Step 4: Fit Parameters to Data
+
+Fit your model parameters to experimental measurements:
+
+```python
+# Optimize parameters
+result = tl.optimize(method="LevenbergMarquardt")
+
+# Check if fitting was successful
+if result is not None:
+    print("Fitting completed!")
+    
+    # Get document with fitted parameters
+    fitted_doc = tl.write()
+    
+    # Save fitted model
+    pe.write_enzymeml(fitted_doc, "fitted_model.json")
+```
+
+## Understanding COPASI Results
+
+### Simulation Results
+
+Like PySCeS, `integrate` returns results and time arrays:
+
+```python
+results, time = tl.integrate(...)
+
+# Access concentration trajectories
+substrate = results["substrate"]
+product = results["product"]
+```
+
+### Optimization Results
+
+COPASI returns optimization statistics:
+
+```python
+result = tl.optimize()
+
+# Result contains:
+# - Optimization status
+# - Fitted parameter values
+# - Goodness of fit metrics
+```
+
+## Optimization Methods
+
+COPASI supports several optimization algorithms:
+
+<div style="display: flex; justify-content: center;">
+
+| Method | Description | Best For |
+|--------|-------------|----------|
+| `LevenbergMarquardt` | Levenberg-Marquardt | Most cases, fast |
+| `EvolutionaryProgram` | Evolutionary algorithm | Global optimization |
+| `ParticleSwarm` | Particle swarm | Complex landscapes |
+| `HookeJeeves` | Pattern search | Simple problems |
+| `RandomSearch` | Random search | Exploration |
+
+</div>
+
+```python
+# Use a specific method
+result = tl.optimize(method="EvolutionaryProgram")  # For difficult problems
+```
+
+## Working with COPASI Files
+
+COPASI thin layer creates COPASI model files (`.cps`) that you can open in COPASI's graphical interface:
+
+```python
+tl = ThinLayerCopasi(doc, model_dir="./copasi_models")
+
+# After creating the thin layer, you can:
+# 1. Open the .cps file in COPASI GUI for visualization
+# 2. Use COPASI's advanced features (steady-state, sensitivity analysis)
+# 3. Continue working in Python with the thin layer
+```
+
+This is particularly useful for:
+- Visualizing model structure
+- Performing steady-state analysis
+- Running parameter scans
+- Exporting publication-quality figures
+
+## Complete Example
+
+Here's a complete workflow:
+
+```python
+import pyenzyme as pe
+from pyenzyme.thinlayers import ThinLayerCopasi
+import matplotlib.pyplot as plt
+
+# 1. Load document
+doc = pe.read_enzymeml("experiment.json")
+
+# 2. Create thin layer
+tl = ThinLayerCopasi(doc, model_dir="./models")
+
+# 3. Simulate initial model
+initial_results, time = tl.integrate(
+    model=doc,
+    initial_conditions={"substrate": 10.0, "product": 0.0},
+    t0=0.0,
+    t1=100.0,
+    nsteps=200
+)
+
+# 4. Fit parameters
+print("Fitting parameters with COPASI...")
+result = tl.optimize(method="LevenbergMarquardt")
+
+if result:
+    # 5. Get fitted model
+    fitted_doc = tl.write()
+    
+    # 6. Simulate fitted model
+    fitted_results, _ = tl.integrate(
+        model=fitted_doc,
+        initial_conditions={"substrate": 10.0, "product": 0.0},
+        t0=0.0,
+        t1=100.0,
+        nsteps=200
+    )
+    
+    # 7. Compare results
+    experimental_df = tl.df
+    
+    plt.figure(figsize=(10, 6))
+    plt.scatter(experimental_df["time"], experimental_df["substrate"],
+                label="Experimental", alpha=0.6)
+    plt.plot(time, initial_results["substrate"], 
+             "--", label="Initial model")
+    plt.plot(time, fitted_results["substrate"],
+             "-", label="Fitted model", linewidth=2)
+    plt.xlabel("Time (s)")
+    plt.ylabel("Concentration (mM)")
+    plt.legend()
+    plt.show()
+    
+    # 8. Save fitted model
+    pe.write_enzymeml(fitted_doc, "fitted_model.json")
+    
+    # 9. Optional: Open in COPASI GUI for further analysis
+    print("Model saved! Open ./models/experiment.cps in COPASI for visualization")
+```
+
+## Advantages of COPASI
+
+### Advanced Analysis
+
+Once your model is in COPASI format, you can use COPASI's GUI for:
+
+- **Steady-state analysis**: Find equilibrium states
+- **Sensitivity analysis**: See how parameters affect outputs
+- **Parameter scans**: Explore parameter space systematically
+- **Bifurcation analysis**: Find critical parameter values
+
+### Integration with Other Tools
+
+COPASI models can be:
+- Exported to SBML for use in other tools
+- Used with COPASI's command-line interface
+- Integrated into larger modeling workflows
+
+## Tips for Success
+
+1. **Install COPASI first**: Make sure COPASI is properly installed before using the thin layer
+
+2. **Check COPASI version**: Ensure you have a compatible COPASI version (check basico documentation)
+
+3. **Use COPASI GUI**: Open the generated `.cps` files in COPASI for visualization and advanced analysis
+
+4. **Start simple**: Begin with basic simulations before attempting complex optimizations
+
+5. **Check file paths**: Ensure `model_dir` is writable and accessible
+
+## Troubleshooting
+
+### COPASI Not Found
+
+If you get errors about COPASI not being found:
+
+- Verify COPASI is installed: Try running `copasi` from command line
+- Check PATH: Make sure COPASI is in your system PATH
+- Reinstall basico: `pip install --upgrade basico`
+
+### Import Errors
+
+If importing fails:
+
+```python
+try:
+    from pyenzyme.thinlayers import ThinLayerCopasi
+except ImportError as e:
+    print(f"Installation issue: {e}")
+    print("Make sure COPASI is installed and basico is available")
+```
+
+### Model Conversion Issues
+
+- Ensure your EnzymeML document has valid equations
+- Check that all species are properly defined
+- Verify units are consistent
+
+## When to Use COPASI vs PySCeS
+
+**Use COPASI if:**
+- Advanced analysis features are required (steady-state, sensitivity)
+- COPASI's graphical interface is desired
+- Working with complex models requiring robust optimization
+- Integration with other COPASI-based workflows is needed
+
+**Use PySCeS if:**
+- Pure Python solutions are preferred
+- Simpler installation is desired (no external software)
+- Basic simulation and fitting are sufficient
+- Familiarity with Python scientific computing exists
+
+## Next Steps
+
+- Learn about the [PySCeS thin layer](./pysces.mdx) for Python-based modeling
+- Explore [creating documents](../basic/creating.mdx) to build your models
+- Visit [COPASI website](https://copasi.org/) for COPASI documentation and tutorials
+- Check out [basico documentation](https://basico.readthedocs.io/) for Python-COPASI integration

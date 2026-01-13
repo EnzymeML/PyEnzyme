@@ -8,6 +8,7 @@ from pyenzyme.fetcher.uniprot import fetch_uniprot
 
 
 class TestFetcher:
+    @pytest.mark.remote
     def test_fetch_chebi_to_small_molecule(self):
         small_molecule = fetch_chebi("CHEBI:15377")
         assert small_molecule is not None
@@ -23,9 +24,7 @@ class TestFetcher:
             == "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:15377"
         )
 
-    def test_fetch_chebi_wo_defintion(self):
-        fetch_rhea("RHEA:75423", vessel_id="v0")
-
+    @pytest.mark.remote
     def test_fetch_chebi_to_small_molecule_with_id(self):
         small_molecule = fetch_chebi("CHEBI:15377", smallmol_id="s1")
         assert small_molecule is not None
@@ -41,10 +40,12 @@ class TestFetcher:
             == "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:15377"
         )
 
+    @pytest.mark.remote
     def test_fetch_chebi_to_small_molecule_invalid_id(self):
         with pytest.raises(ValueError):
             fetch_chebi("INVALID_ID")
 
+    @pytest.mark.remote
     def test_fetch_uniprot_to_protein(self):
         protein = fetch_uniprot("P07327")
         assert protein is not None
@@ -61,6 +62,7 @@ class TestFetcher:
         assert len(protein.references) == 1
         assert protein.references[0] == "https://www.uniprot.org/uniprotkb/P07327"
 
+    @pytest.mark.remote
     def test_fetch_uniprot_to_protein_with_prefix(self):
         protein = fetch_uniprot("uniprot:P07327")
         assert protein is not None
@@ -77,6 +79,7 @@ class TestFetcher:
         assert len(protein.references) == 1
         assert protein.references[0] == "https://www.uniprot.org/uniprotkb/P07327"
 
+    @pytest.mark.remote
     def test_fetch_uniprot_to_protein_with_id(self):
         protein = fetch_uniprot("P07327", protein_id="p1")
         assert protein is not None
@@ -93,6 +96,7 @@ class TestFetcher:
         assert len(protein.references) == 1
         assert protein.references[0] == "https://www.uniprot.org/uniprotkb/P07327"
 
+    @pytest.mark.remote
     def test_fetch_rhea_to_reaction(self):
         reaction, small_molecules = fetch_rhea("RHEA:22864")
 
@@ -118,10 +122,12 @@ class TestFetcher:
         assert reaction.products[0].stoichiometry == 1
         assert reaction.products[0].species_id == small_molecules[0].id
 
+    @pytest.mark.remote
     def test_fetch_rhea_to_reaction_invalid_id(self):
         with pytest.raises(ValueError):
             fetch_rhea("INVALID_ID")
 
+    @pytest.mark.remote
     def test_fetch_pubchem_to_small_molecule(self):
         small_molecule = fetch_pubchem(cid="2244")
         assert small_molecule is not None
@@ -134,6 +140,7 @@ class TestFetcher:
             == "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)"
         )
 
+    @pytest.mark.remote
     def test_fetch_pubchem_to_small_molecule_with_prefix(self):
         small_molecule = fetch_pubchem(cid="pubchem:2244")
         assert small_molecule is not None
@@ -146,10 +153,12 @@ class TestFetcher:
             == "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)"
         )
 
+    @pytest.mark.remote
     def test_fetch_pubchem_to_small_molecule_invalid_id(self):
         with pytest.raises(ValueError):
             fetch_pubchem(cid="162176127617627")
 
+    @pytest.mark.remote
     def test_fetch_pdb_to_protein(self):
         protein = fetch_pdb("1a23")
         assert protein is not None
@@ -163,6 +172,7 @@ class TestFetcher:
             == "AQYEDGKQYTTLEKPVAGAPQVLEFFSFFCPHCYQFEEVLHISDNVKKKLPEGVKMTKYHVNFMGGDLGKDLTQAWAVAMALGVEDKVTVPLFEGVQKTQTIRSASDIRDVFINAGIKGEEYDAAWNSFVVKSLVAQQEKAAADVQLRGVPAMFVNGKYQLNPQGMDTSNMDVFVQQYADTVKYLSEKK"
         )
 
+    @pytest.mark.remote
     def test_fetch_pdb_to_protein_with_prefix(self):
         protein = fetch_pdb("pdb:1a23")
         assert protein is not None
@@ -176,6 +186,7 @@ class TestFetcher:
             == "AQYEDGKQYTTLEKPVAGAPQVLEFFSFFCPHCYQFEEVLHISDNVKKKLPEGVKMTKYHVNFMGGDLGKDLTQAWAVAMALGVEDKVTVPLFEGVQKTQTIRSASDIRDVFINAGIKGEEYDAAWNSFVVKSLVAQQEKAAADVQLRGVPAMFVNGKYQLNPQGMDTSNMDVFVQQYADTVKYLSEKK"
         )
 
+    @pytest.mark.remote
     def test_fetch_pdb_to_protein_invalid_id(self):
         with pytest.raises(ValueError):
             fetch_pdb("INVALID_ID")

@@ -1,0 +1,511 @@
+---
+title: Database Fetchers
+description: Learn how to fetch chemical and biological entities from databases like ChEBI, UniProt, PubChem, RHEA, and PDB to enrich your EnzymeML documents.
+---
+
+PyEnzyme provides the ability to automatically retrieve information from established scientific databases. If you've ever looked up a chemical compound or protein in a database like ChEBI, UniProt, or PubChem, you know that these databases contain comprehensive, validated information about complete chemical structures, protein sequences, EC numbers, and much more. PyEnzyme can fetch this information automatically, saving you from having to manually copy and paste all these details into your documents.
+
+The way this works is simple: instead of typing out complete chemical structures or protein sequences by hand, you just provide a database identifier, which is a short code that uniquely identifies the molecule or protein in that database. PyEnzyme then connects to the database, retrieves all the relevant information, and automatically populates your EnzymeML document with complete, accurate data.
+
+For example, imagine you're documenting an experiment that uses alcohol dehydrogenase (an enzyme that helps break down alcohol). Rather than manually looking up this enzyme's amino acid sequence, its EC classification number, which organism it comes from, and other details, you can simply provide its UniProt ID: "P07327". PyEnzyme will fetch all this information automatically. The same applies to chemical compounds, where youprovide a ChEBI or PubChem ID, and PyEnzyme retrieves the complete chemical structure, molecular formula, and other metadata.
+
+**Why is this approach beneficial?**
+
+**Accuracy**: Scientific databases are carefully curated by experts. The information has been validated and reviewed, so you can trust that it's correct. This is much more reliable than manually transcribing structures or sequences, where typos and errors can easily occur.
+
+**Consistency**: Using standardized database identifiers ensures that everyone refers to the same molecule or protein in exactly the same way. This eliminates ambiguity, because there's no confusion about which isomer of a compound you used or which variant of a protein.
+
+**Completeness**: Databases contain rich metadata that would be tedious to enter manually. In addition to the basic information, you get synonyms, cross-references to other databases, and contextual details that make your documentation more complete.
+
+**Efficiency**: Fetching data automatically is much faster than looking it up and typing it out yourself. What might take minutes or hours of manual work becomes a single line of code.
+
+**Interoperability**: When your document contains database identifiers, it can be linked to these databases, making your work more discoverable and enabling integration with other computational tools that use the same identifiers.
+
+## Available Fetchers
+
+PyEnzyme can connect to several major scientific databases, each specialized for different types of biological and chemical information. Here's an overview of what's available:
+
+<div style="display: flex; justify-content: center;">
+
+| Database | Fetcher Function | What It Fetches | Example ID |
+|----------|----------------|-----------------|------------|
+| **ChEBI** | `fetch_chebi` | Small molecules | `CHEBI:16236` |
+| **UniProt** | `fetch_uniprot` | Proteins | `P07327` |
+| **PubChem** | `fetch_pubchem` | Small molecules | `702` |
+| **RHEA** | `fetch_rhea` | Reactions + molecules | `RHEA:25290` |
+| **PDB** | `fetch_pdb` | Protein structures | `1A23` |
+
+</div>
+
+Each database serves a different purpose:
+
+- **ChEBI and PubChem** are for chemical compounds (substrates, products, cofactors)
+- **UniProt** is the primary source for protein and enzyme information
+- **PDB** provides protein structural data from crystallography or other structure determination methods
+- **RHEA** is unique in that it fetches complete reactions, including all the molecules involved
+
+The choice of which database to use often depends on what information you need and what identifiers you have available. In the sections below, we'll explore each fetcher in detail.
+
+## Fetching Small Molecules
+
+Small molecules are the chemical compounds that participate in your reactions, such as substrates that get consumed, products that get formed, cofactors that assist enzymes, inhibitors that slow reactions down, and any other chemical species present in your experimental system. Rather than manually entering chemical structures and properties for each compound, PyEnzyme can fetch complete chemical information from two major databases: ChEBI and PubChem.
+
+### ChEBI Database
+
+ChEBI (Chemical Entities of Biological Interest) is a carefully curated database of small molecules, maintained by the European Bioinformatics Institute (EBI). What makes ChEBI particularly valuable for biochemical and enzymatic studies is its focus on molecules that have biological relevance. Unlike general chemical databases that might contain millions of industrial or synthetic compounds, ChEBI concentrates on molecules that matter in biological systems, and it includes rich information about their biological roles and contexts.
+
+When you fetch a molecule from ChEBI using PyEnzyme, you get much more than just a name. The system retrieves the complete chemical structure in multiple standard formats (SMILES, InChI, and InChI Key), alternative names and synonyms, the molecular formula, mass and charge information, and cross-references to other databases. This comprehensive information ensures that your EnzymeML document contains complete, unambiguous chemical information that anyone can understand and reproduce.
+
+Here's how to fetch a small molecule from ChEBI:
+
+```python
+import pyenzyme as pe
+
+# Fetch a small molecule from ChEBI
+# You can use IDs with or without the "CHEBI:" prefix
+molecule = pe.fetch_chebi("CHEBI:16236", vessel_id="v1")
+# or
+molecule = pe.fetch_chebi("16236", vessel_id="v1")
+
+# Add to document
+enzmldoc = pe.EnzymeMLDocument(name="My Experiment")
+enzmldoc.small_molecules.append(molecule)
+```
+
+Let's break this down:
+
+- `pe.fetch_chebi()` is the function that connects to the ChEBI database
+- The first argument is the ChEBI identifier. You can include the "CHEBI:" prefix or just use the number
+- `vessel_id="v1"` specifies which vessel this molecule belongs to (required, as all species need a vessel association)
+- The function returns a complete `SmallMolecule` object that you can then add to your document
+
+**What information gets fetched:**
+
+When PyEnzyme connects to ChEBI, it retrieves:
+- **Name and synonyms**: The primary name and alternative names for the compound
+- **Chemical structure**: Represented in SMILES (a compact text notation), InChI (a standardized structure representation), and InChI Key (a hashed version useful for database lookups)
+- **Chemical formula**: The molecular formula showing which atoms are present
+- **Mass and charge**: Molecular weight and ionic charge
+- **Database cross-references**: Links to related entries in other databases
+
+**Practical example:**
+
+Let's fetch ethanol (a common substrate in enzyme studies) and see what we get:
+
+```python
+# Fetch ethanol
+ethanol = pe.fetch_chebi("CHEBI:16236", vessel_id="v1")
+
+print(ethanol.name)  # "ethanol"
+print(ethanol.canonical_smiles)  # "CCO"
+print(ethanol.inchikey)  # "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"
+```
+
+The fetched molecule object contains all this information as attributes you can access. The SMILES string "CCO" represents two carbon atoms (C) bonded to each other, with one bonded to an oxygen (O), the structure of ethanol. The InChI Key is a unique identifier that unambiguously specifies this exact molecule, ensuring there's no confusion with similar compounds.
+
+### PubChem Database
+
+PubChem is a comprehensive database of chemical compounds maintained by the National Institutes of Health (NIH). While ChEBI focuses specifically on molecules of biological interest, PubChem is much broader, containing compounds including pharmaceuticals, synthetic chemicals, industrial compounds, and natural products. This makes PubChem useful when you're working with chemicals that might not be in ChEBI's more specialized collection.
+
+Here's how to fetch a molecule from PubChem:
+
+```python
+import pyenzyme as pe
+
+# Fetch using PubChem CID (Compound ID)
+molecule = pe.fetch_pubchem("702", vessel_id="v1")  # Ethanol CID
+
+# Add to document
+enzmldoc.small_molecules.append(molecule)
+```
+
+The process is very similar to ChEBI: you provide the PubChem CID (Compound ID), which is a unique number PubChem assigns to each compound, along with the vessel ID. PyEnzyme fetches the compound information and returns a `SmallMolecule` object ready to be added to your document.
+
+**Choosing between PubChem and ChEBI:**
+
+Both databases provide chemical structure information, but they have different strengths:
+
+**PubChem** is your best choice when:
+- You're working with a general chemical that might not have biological significance
+- The compound you need isn't available in ChEBI
+- You already have a PubChem CID from another source
+- You need the broadest possible coverage of chemical space
+
+**ChEBI** is preferable when:
+- You're working with biochemical or metabolic compounds
+- You want rich biological context and role information
+- You're documenting enzymatic reactions where biological relevance is key
+- You need detailed ontological classifications of biological molecules
+
+For most enzymatic and metabolic studies, ChEBI is the natural first choice due to its biological focus, but PubChem serves as an excellent backup for compounds not found in ChEBI.
+
+## Fetching Proteins
+
+Proteins, particularly enzymes, are often the central actors in biochemical experiments. They catalyze reactions, bind to substrates, and drive the transformations you're studying. Documenting protein information accurately is crucial for reproducibility, as even small differences in protein sequence can affect activity. PyEnzyme can fetch protein information from two major sources: UniProt (for sequence and functional data) and PDB (for three-dimensional structural information).
+
+### UniProt Database
+
+UniProt is the world's most comprehensive database for protein sequence and function information. It's maintained by a consortium of major bioinformatics institutions including the European Bioinformatics Institute, the Swiss Institute of Bioinformatics, and the Protein Information Resource. For enzyme documentation, UniProt is invaluable because it provides everything you need to fully characterize a protein: its amino acid sequence, its function, its EC number (if it's an enzyme), which organism it comes from, and much more.
+
+When you fetch a protein from UniProt, PyEnzyme retrieves an extensive set of information: the complete amino acid sequence, the protein's name and any alternative names, its EC number, the organism it originates from, functional descriptions, and connections to other databases. This comprehensive information ensures your EnzymeML document contains everything needed for others to understand exactly which protein you used and reproduce your work.
+
+Here's how to fetch a protein from UniProt:
+
+```python
+import pyenzyme as pe
+
+# Fetch a protein from UniProt
+protein = pe.fetch_uniprot("P07327", vessel_id="v1")
+
+# Add to document
+enzmldoc.proteins.append(protein)
+```
+
+In this code:
+
+- `pe.fetch_uniprot()` connects to the UniProt database
+- `"P07327"` is the UniProt accession number, a unique identifier for this specific protein
+- `vessel_id="v1"` specifies which vessel contains this protein (required for all species)
+- The function returns a complete `Protein` object ready to add to your document
+
+**What information gets retrieved:**
+
+PyEnzyme fetches comprehensive protein information from UniProt:
+- **Protein name and synonyms**: The official name and any alternative names the protein is known by
+- **Amino acid sequence**: The complete sequence of amino acids that form the protein, typically several hundred amino acids long
+- **EC number**: If the protein is an enzyme, its Enzyme Commission number that classifies what type of reaction it catalyzes
+- **Organism information**: Which species the protein comes from, important because the same enzyme from different organisms can have different properties
+- **Function and pathway information**: Descriptions of what the protein does and which biological pathways it participates in
+- **Database cross-references**: Links to entries in other databases that contain related information
+
+**Practical example:**
+
+Let's fetch human alcohol dehydrogenase, a well-studied enzyme:
+
+```python
+# Fetch alcohol dehydrogenase
+adh = pe.fetch_uniprot("P07327", vessel_id="v1")
+
+print(adh.name)  # "Alcohol dehydrogenase 1A"
+print(adh.ecnumber)  # "1.1.1.1"
+print(adh.organism)  # "Homo sapiens"
+print(len(adh.sequence))  # Sequence length (number of amino acids)
+```
+
+This code fetches the protein and then accesses various attributes. The EC number "1.1.1.1" tells us this enzyme catalyzes oxidation-reduction reactions on alcohols. "Homo sapiens" indicates it's the human version of this enzyme. The sequence length tells us how many amino acids the protein contains, important information for characterizing the protein.
+
+### PDB Database
+
+The Protein Data Bank (PDB) is a database of three-dimensional protein structures determined through experimental methods like X-ray crystallography, NMR spectroscopy, or cryo-electron microscopy. While UniProt tells you what the protein sequence is and what it does, PDB shows you what it looks like: how the protein folds in three-dimensional space.
+
+Here's how to fetch a protein from PDB:
+
+```python
+import pyenzyme as pe
+
+# Fetch protein from PDB
+# Specify entity_id if the structure has multiple entities
+protein = pe.fetch_pdb("1A23", entity_id="1", vessel_id="v1")
+
+# Add to document
+enzmldoc.proteins.append(protein)
+```
+
+In this code:
+
+- `"1A23"` is the PDB identifier (PDB IDs are typically four characters: letters and numbers)
+- `entity_id="1"` specifies which entity to fetch. Many PDB structures contain multiple separate entities (for example, multiple protein chains or a protein complex with several components), so you specify which one you want
+- `vessel_id="v1"` assigns the protein to a vessel
+
+**Choosing between PDB and UniProt:**
+
+Both databases provide protein information, but they serve different purposes:
+
+**UniProt** is your go-to choice when:
+- You need sequence and functional information
+- You want to document which enzyme you used in your experiment
+- You need EC numbers, organism information, and functional descriptions
+- You're doing standard enzyme kinetics where sequence is more important than structure
+
+**PDB** is appropriate when:
+- You specifically need three-dimensional structural data
+- You're studying structure-function relationships
+- The spatial arrangement of the protein is relevant to your analysis
+- You want to visualize or analyze the protein's 3D structure
+
+For most enzyme documentation in PyEnzyme, UniProt is the more practical choice because it provides the functional context needed for kinetics studies.
+
+## Fetching Reactions
+
+### RHEA Database
+
+RHEA is a curated database of biochemical reactions maintained by the Swiss Institute of Bioinformatics. What makes RHEA particularly powerful when used with PyEnzyme is that it doesn't just provide information about reactions: when you fetch a reaction from RHEA, PyEnzyme automatically fetches all the associated molecules from ChEBI as well. This means a single command can populate your document with a complete reaction including all substrates, products, cofactors, and their chemical structures.
+
+This is incredibly convenient: instead of manually fetching each molecule involved in a reaction and then building the reaction structure yourself, RHEA provides the complete package: the reaction equation, all the molecules, and the stoichiometry (how many of each molecule participates).
+
+Here's how to fetch a reaction from RHEA:
+
+```python
+import pyenzyme as pe
+
+# Fetch a reaction from RHEA
+# Returns: (reaction, list_of_molecules)
+reaction, molecules = pe.fetch_rhea("RHEA:25290", vessel_id="v1")
+
+# Add to document
+enzmldoc.reactions.append(reaction)
+enzmldoc.small_molecules += molecules  # All reactants and products
+```
+
+Let's break down what's happening:
+
+- `pe.fetch_rhea()` connects to the RHEA database
+- `"RHEA:25290"` is the RHEA identifier for a specific reaction (you can include or omit the "RHEA:" prefix)
+- `vessel_id="v1"` assigns all the molecules to a vessel
+- The function returns *two* things: a `Reaction` object and a list of `SmallMolecule` objects
+- We add the reaction to our document's reactions list and add all the molecules to the small_molecules list using the `+=` operator
+
+**What information gets fetched:**
+
+When PyEnzyme fetches from RHEA, you receive:
+- **Complete reaction equation**: The reaction structure showing which molecules are consumed and which are produced
+- **All reactants and products**: Each molecule involved is fetched as a complete `SmallMolecule` object with chemical structures from ChEBI
+- **Reaction metadata**: Information about the reaction, including any annotations
+- **Stoichiometries**: The quantities of each molecule, for example, if two molecules of substrate A combine with one molecule of substrate B to form one molecule of product C
+
+**Practical example:**
+
+Let's fetch an ethanol oxidation reaction:
+
+```python
+# Fetch ethanol oxidation reaction
+reaction, molecules = pe.fetch_rhea("RHEA:25290", vessel_id="v1")
+
+print(reaction.name)  # "RHEA:25290"
+print(len(molecules))  # Number of molecules (ethanol, NAD+, acetaldehyde, NADH, H+)
+
+# The reaction object already has reactants and products defined
+for reactant in reaction.reactants:
+    print(f"Reactant: {reactant.species_id}, Stoichiometry: {reactant.stoichiometry}")
+```
+
+This code fetches the reaction and then explores what was retrieved. The `molecules` list contains all the chemical species involved: in this case, ethanol and NAD+ as reactants, and acetaldehyde, NADH, and a proton (H+) as products. The reaction object already has these molecules linked as reactants and products with proper stoichiometries, so you don't need to manually build these connections.
+
+This automated fetching of complete reactions makes RHEA one of the most powerful fetchers in PyEnzyme, especially when you're documenting well-characterized biochemical reactions that are already in the database.
+
+## Complete Workflow Example
+
+To see how these fetchers work together in practice, here's a complete example that creates an EnzymeML document almost entirely from database fetches. This demonstrates how much time you can save by leveraging existing database information:
+
+```python
+import pyenzyme as pe
+
+# Initialize document
+enzmldoc = pe.EnzymeMLDocument(name="Ethanol Degradation")
+
+# Add vessel
+vessel = enzmldoc.add_to_vessels(
+    name="Reaction vessel",
+    volume=1.0,
+    unit="ml"
+)
+
+# Fetch protein from UniProt
+enzyme = pe.fetch_uniprot("P07327", vessel_id=vessel.id)
+enzmldoc.proteins.append(enzyme)
+
+# Fetch reaction from RHEA (includes all molecules)
+reaction, molecules = pe.fetch_rhea("RHEA:25290", vessel_id=vessel.id)
+enzmldoc.reactions.append(reaction)
+enzmldoc.small_molecules += molecules
+
+# View what was fetched
+pe.summary(enzmldoc)
+```
+
+**What this workflow accomplishes:**
+
+1. **Creates a document**: We start with an empty EnzymeML document titled "Ethanol Degradation"
+
+2. **Sets up the experimental context**: We add a vessel (reaction vessel) to establish where the reaction takes place
+
+3. **Fetches the enzyme**: Using just the UniProt ID "P07327", we retrieve complete information about human alcohol dehydrogenase, including its sequence, EC number, and organism
+
+4. **Fetches the entire reaction**: The RHEA fetch with ID "RHEA:25290" automatically retrieves:
+   - The reaction structure (which molecules are reactants, which are products)
+   - All five molecules involved (ethanol, NAD+, acetaldehyde, NADH, and H+)
+   - Complete chemical structures for all molecules (fetched from ChEBI)
+   - Proper stoichiometries
+
+5. **Summarizes the results**: The `pe.summary()` function displays what was fetched, allowing you to verify that everything looks correct
+
+With just a few lines of code and three database IDs, you've created a document that contains:
+- One complete enzyme with full sequence and functional data
+- Five small molecules with complete chemical structures
+- One complete reaction connecting these molecules
+
+This would have taken significant time to assemble manually, but with fetchers, it's done in seconds with guaranteed accuracy.
+
+## Using the Compose Function
+
+If you want an even more streamlined approach to building documents from database information, PyEnzyme provides a `compose` function that handles multiple fetches in a single command. Instead of calling individual fetcher functions and then adding each result to your document, `compose` does everything at once.
+
+Here's how it works:
+
+```python
+import pyenzyme as pe
+
+# Compose a document from database IDs
+doc = pe.compose(
+    name="Complete Experiment",
+    proteins=["P07327"],  # UniProt IDs
+    small_molecules=["CHEBI:16236"],  # ChEBI IDs
+    reactions=["RHEA:25290"],  # RHEA IDs
+)
+
+# The document is automatically populated with all fetched entities
+pe.summary(doc)
+```
+
+With this single function call, PyEnzyme:
+
+1. Creates a new EnzymeML document with the specified name
+2. Fetches all the proteins from UniProt (you can provide multiple IDs in the list)
+3. Fetches all the small molecules from ChEBI (again, multiple IDs are supported)
+4. Fetches all the reactions from RHEA
+5. Creates vessels automatically and assigns all species appropriately
+6. Returns a complete, ready-to-use document
+
+**Why use compose:**
+
+**Convenience**: Instead of writing separate fetch and append statements for each entity, you provide all the database IDs in one place and get back a complete document. This is particularly useful when setting up new experiments where most information comes from databases.
+
+**Automatic deduplication**: If the same molecule appears in multiple reactions (which is common, for example, water or cofactors that appear in many reactions), `compose` automatically recognizes this and includes the molecule only once in the document, properly linking it to all relevant reactions.
+
+**Automatic vessel management**: You don't need to manually create vessels and track vessel IDs. The `compose` function handles this behind the scenes, creating vessels as needed and assigning all species appropriately.
+
+**Cleaner code**: Your code becomes more declarative: you specify *what* you want (these proteins, these molecules, these reactions) rather than *how* to construct it (fetch this, add it, fetch that, add it). This makes the code easier to read and maintain.
+
+The `compose` function is ideal when you're starting a new document and most of your experimental components are available in databases. You can always add additional manual entries later if needed.
+
+## Error Handling
+
+When fetching from databases, things don't always go as planned. You might mistype a database ID, the database might be temporarily unavailable, or your internet connection might be interrupted. PyEnzyme handles these situations by raising exceptions (Python's way of signaling that something went wrong), which you can catch and handle gracefully.
+
+Here's how to handle potential errors when fetching:
+
+```python
+import pyenzyme as pe
+from pyenzyme.fetcher.chebi import ChEBIError
+
+try:
+    molecule = pe.fetch_chebi("INVALID_ID", vessel_id="v1")
+except ChEBIError as e:
+    print(f"ChEBI fetch failed: {e}")
+except Exception as e:
+    print(f"Unexpected error: {e}")
+```
+
+This code uses Python's try-except structure for error handling:
+- The `try:` block contains the code that might fail (the fetch operation)
+- If a ChEBI-specific error occurs, the first `except ChEBIError` block catches it and prints a descriptive message
+- If any other type of error occurs, the second `except Exception` block catches it
+- If no error occurs, the code continues normally
+
+**Common errors you might encounter:**
+
+**Invalid ID format**: Database IDs have specific formats (for example, UniProt IDs are typically 6 characters, starting with a letter). If you provide an ID that doesn't match the expected format, you'll get an error. Double-check that you've copied the ID correctly.
+
+**ID not found in database**: The ID format might be valid, but that particular entry doesn't exist in the database. This can happen if you're using an outdated ID, if the entry has been deprecated, or if there was a typo. Verify the ID by looking it up directly on the database's website.
+
+**Network connectivity issues**: Fetchers need to connect to external databases over the internet. If your network connection is down or unstable, fetches will fail. Check your internet connection and try again.
+
+## Fetcher Details and Options
+
+Each fetcher function accepts several optional parameters that give you more control over how the fetched entities are added to your document. Understanding these options can help you customize the fetching process to better suit your workflow.
+
+### ChEBI Fetcher Options
+
+The ChEBI fetcher is flexible about ID format and allows you to specify custom identifiers:
+
+```python
+# ChEBI accepts IDs with or without prefix
+molecule1 = pe.fetch_chebi("CHEBI:16236", vessel_id="v1")
+molecule2 = pe.fetch_chebi("16236", vessel_id="v1")  # Same result
+
+# Optional: specify molecule ID
+molecule = pe.fetch_chebi("16236", smallmol_id="ethanol", vessel_id="v1")
+```
+
+The `smallmol_id` parameter lets you provide your own identifier for the molecule instead of using PyEnzyme's auto-generated ID. This can be useful for creating more readable IDs that match your naming conventions or make your code clearer.
+
+### UniProt Fetcher Options
+
+Similar to ChEBI, UniProt fetches allow custom ID specification:
+
+```python
+# Basic fetch
+protein = pe.fetch_uniprot("P07327", vessel_id="v1")
+
+# With custom protein ID
+protein = pe.fetch_uniprot("P07327", protein_id="adh1", vessel_id="v1")
+```
+
+The `protein_id` parameter works like `smallmol_id`: it lets you assign a specific identifier to the protein. For example, you might use abbreviated names like "adh1" for alcohol dehydrogenase instead of an auto-generated ID.
+
+### PDB Fetcher Options
+
+PDB structures often contain multiple entities (separate protein chains or complexes), so the PDB fetcher provides an entity_id parameter:
+
+```python
+# Basic fetch (uses entity 1 by default)
+protein = pe.fetch_pdb("1A23", vessel_id="v1")
+
+# Specify entity ID for multi-chain structures
+protein = pe.fetch_pdb("1A23", entity_id="A", vessel_id="v1")
+
+# With custom protein ID
+protein = pe.fetch_pdb("1A23", protein_id="my_protein", entity_id="1", vessel_id="v1")
+```
+
+Many crystallographic structures contain multiple protein chains. The `entity_id` parameter specifies which chain you want to fetch. If you don't specify one, PyEnzyme uses entity "1" by default. You can check the PDB website for a specific structure to see which entities are available.
+
+### PubChem Fetcher Options
+
+PubChem fetching is straightforward, with optional custom ID assignment:
+
+```python
+# Fetch using CID
+molecule = pe.fetch_pubchem("702", vessel_id="v1")
+
+# With custom molecule ID
+molecule = pe.fetch_pubchem("702", smallmol_id="ethanol", vessel_id="v1")
+```
+
+The CID (Compound ID) is PubChem's numerical identifier for compounds. Like other fetchers, you can provide a custom `smallmol_id` for clarity.
+
+### RHEA Fetcher Options
+
+RHEA fetches are flexible with ID format:
+
+```python
+# Basic fetch
+reaction, molecules = pe.fetch_rhea("RHEA:25290", vessel_id="v1")
+
+# RHEA IDs can be with or without prefix
+reaction, molecules = pe.fetch_rhea("25290", vessel_id="v1")  # Also works
+```
+
+Whether you include the "RHEA:" prefix or just use the number, PyEnzyme understands what you mean. This flexibility makes it easier to work with IDs from different sources that might format them differently.
+
+## Next Steps
+
+Now that you understand how to use database fetchers to populate your EnzymeML documents automatically, you're equipped to work much more efficiently. Fetchers handle the time-consuming work of looking up and transcribing molecular and protein information, allowing you to focus on your experimental work.
+
+To complete your documents, you may need to create additional entities that aren't available in databases or are specific to your experimental setup. The [Creating documents](./creating.mdx) guide provides comprehensive information about manually adding vessels, species, reactions, and other components to complement what you've fetched.
+
+While fetchers provide rich metadata about molecules and proteins, you'll still need to add your actual experimental measurements: the time-course data showing how concentrations change during your reactions. The [Import](./import.mdx) guide shows you how to bring measurement data into PyEnzyme from spreadsheets, CSV files, and other common formats.
+
+Once your document is complete with both fetched metadata and experimental measurements, you'll want to share it or use it with other tools. The [Export](./export.mdx) guide explains how to save your enriched documents in various formats suitable for different purposes: JSON for archiving, SBML for modeling tools, or pandas DataFrames for custom analysis.
+
+Finally, if you're working with measurements in different unit systems or want to understand how PyEnzyme handles unit conversions when working with fetched data, the [Unit handling](./units.mdx) guide provides detailed information about PyEnzyme's unit management.

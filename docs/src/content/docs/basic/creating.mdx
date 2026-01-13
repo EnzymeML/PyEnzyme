@@ -1,0 +1,425 @@
+---
+title: Creating EnzymeML Documents
+description: Learn how to create and populate EnzymeML documents with vessels, proteins, small molecules, reactions, and measurements.
+---
+
+An **EnzymeML document** is a comprehensive container for documenting enzymatic and biocatalytic experiments. Think of it as a digital laboratory notebook that captures all aspects of your experiment: the physical setup, the chemical species involved, the reactions that occur, and the measurements you collect. PyEnzyme provides a Python-based interface to create and work with these documents.
+
+The purpose of an EnzymeML document is to record your experimental work in a structured format that both humans and computers can understand. This standardized structure makes it possible to share experiments with colleagues, submit data to scientific databases, and use computational tools for analysis, all while maintaining the integrity and completeness of your experimental information.
+
+At its core, an `EnzymeMLDocument` is organized around several types of entities, each representing a different aspect of your experiment:
+
+- **Vessels**: The physical containers where your experiment takes place (such as test tubes, cuvettes, or reaction flasks). These define the physical space and volume available for your reaction.
+
+- **Proteins**: The enzymes or other proteins that participate in your experiment. Enzymes are biological catalysts that speed up chemical reactions, and documenting them properly includes information about their source and structure.
+
+- **Small Molecules**: The chemical compounds involved in your reactions. These include substrates (starting materials), products (what gets formed), cofactors (helper molecules), and any other chemical species present.
+
+- **Complexes**: Combinations of multiple species that form during the reaction, such as when an enzyme temporarily binds to its substrate. While these are often transient, documenting them can be important for understanding reaction mechanisms.
+
+- **Reactions**: The chemical transformations that occur during your experiment, describing how substrates are converted into products and which enzymes catalyze these conversions.
+
+- **Measurements**: The actual experimental data you collect, typically as time-course measurements showing how concentrations change over time.
+
+- **Equations**: Mathematical models that describe the kinetics of your reactions, essentially formulas that predict how fast reactions proceed under different conditions.
+
+- **Parameters**: The numerical constants used in your equations, such as reaction rate constants and enzyme affinity values.
+
+## Creating a New Document
+
+Before you can document your experimental work, you need to create a new EnzymeML document. This document will serve as the container for all the information about your experiment.
+
+To begin, you'll import the PyEnzyme library and create an empty document:
+
+```python
+import pyenzyme as pe
+
+# Create a new EnzymeML document
+enzmldoc = pe.EnzymeMLDocument(name="My Experiment")
+```
+
+In this code:
+- The first line imports PyEnzyme and gives it the shorthand name `pe` for convenience
+- The second line creates a new document with the name "My Experiment"
+- We store this document in a variable called `enzmldoc` (short for "EnzymeML document"), which we'll use to add information throughout your experiment
+
+The name you provide will serve as the title for your experiment. Choose something descriptive that will help you and others identify what this experiment is about. You can also add additional information when creating the document:
+
+```python
+enzmldoc = pe.EnzymeMLDocument(
+    name="Ethanol Degradation Study",
+    description="Investigation of alcohol dehydrogenase kinetics",
+)
+```
+
+Here we've added:
+- A descriptive `name` that clearly states what the experiment studies
+- A `description` field that provides more context about the experimental goals
+
+These additional fields are optional, but they help provide context and make your documentation more complete and easier to understand later.
+
+## Adding Vessels
+
+In any laboratory experiment, reactions occur in physical containers such as test tubes, cuvettes, flasks, or other vessels. In PyEnzyme, these containers are represented as "vessels" and play an important organizational role in your documentation.
+
+Every chemical species in your experiment (whether it's a protein, small molecule, or complex) needs to be associated with a vessel. This association tells PyEnzyme where in your experimental setup that species exists. This is particularly important when you're working with multiple reactions happening in different containers, perhaps with different volumes or under different conditions. The vessel system keeps everything organized and maintains the proper context for each part of your experiment.
+
+To add a vessel to your document, use the following code:
+
+```python
+# Add a vessel to the document
+vessel = enzmldoc.add_to_vessels(
+    id="v1",
+    name="Eppendorf tube",
+    volume=10.0,
+    unit="ml"
+)
+```
+
+Let's break down what each part means:
+- `id="v1"` gives the vessel a unique identifier that you can use to reference it later.
+- `name="Eppendorf tube"` is a human-readable name that describes what type of container you're using.
+- `volume=10.0` specifies how much the vessel can hold.
+- `unit="ml"` indicates the unit of measurement for the volume. PyEnzyme understands common unit abbreviations like "ml" (milliliters), "l" (liters), and "μl" (microliters), and will automatically convert them to the appropriate internal representation.
+
+The function returns a vessel object, which we store in the variable `vessel`. We'll use this variable later when adding species to the document, so that we can tell PyEnzyme which vessel each species belongs to.
+
+## Adding Proteins
+
+Proteins, particularly enzymes, are often the key players in biochemical experiments. Enzymes speed up chemical reactions without being consumed in the process. Documenting which proteins are present in your experiment is essential for understanding and reproducing your work.
+
+PyEnzyme allows you to add protein information in two ways: you can enter the details manually if you already have them, or you can use PyEnzyme's built-in database fetchers to automatically retrieve protein information from scientific databases like UniProt or the Protein Data Bank (see the [Fetchers guide](./fetchers.mdx) for more details on automatic retrieval).
+
+When documenting a protein, you'll want to include several pieces of information:
+- The protein's name
+- Its amino acid sequence
+- An EC number, which is a standardized classification system that describes what type of reaction the enzyme catalyzes
+- The organism it comes from
+
+This information is important because it allows other researchers to know exactly which enzyme you used. Even enzymes with the same name can have slight differences depending on which organism they come from, and these differences can affect the results.
+
+Here's how to add a protein to your document:
+
+```python
+# Add a protein manually
+protein = enzmldoc.add_to_proteins(
+    id="p1",
+    name="Alcohol dehydrogenase",
+    sequence="MAVKLT...",  # Amino acid sequence
+    vessel_id=vessel.id,
+    ecnumber="1.1.1.1",  # EC number
+    organism="Homo sapiens"
+)
+```
+
+In this example:
+- `id="p1"` is a unique identifier for this protein
+- `name="Alcohol dehydrogenase"` is the common name of the enzyme
+- `sequence="MAVKLT..."` represents the amino acid sequence using single-letter codes. The "..." indicates that the sequence continues beyond what's shown here. This field is optional but strongly recommended for reproducibility.
+- `vessel_id=vessel.id` tells PyEnzyme which vessel this protein is in. Notice we use `vessel.id` to reference the vessel we created earlier. This connection is required, every protein must be associated with a vessel.
+- `ecnumber="1.1.1.1"` is the enzyme's classification number according to the Enzyme Commission numbering system
+- `organism="Homo sapiens"` specifies that this enzyme comes from humans (Homo sapiens is the scientific name)
+
+Alternatively, you can create a protein object first and then add it to the document using the list-based approach:
+
+```python
+# Create a protein object and add it to the document
+enzmldoc.proteins.append(protein)
+```
+
+This second approach can be useful when you want to modify the protein object before adding it to the document, or when you're working with proteins created by other parts of your code.
+
+## Adding Small Molecules
+
+In enzymatic reactions, "small molecules" refer to the various chemical compounds that participate in the reaction. This category includes:
+- **Substrates**: The starting materials that the enzyme acts upon
+- **Products**: The compounds formed as a result of the reaction
+- **Cofactors**: Helper molecules that some enzymes need to function properly
+- **Inhibitors**: Compounds that slow down or stop enzyme activity
+- Any other chemical species present in your experimental system
+
+These molecules are what get transformed, consumed, or produced during the reactions you're studying.
+
+Similar to proteins, PyEnzyme allows you to add small molecules manually or automatically fetch their information from chemical databases like ChEBI or PubChem (see the [Fetchers guide](./fetchers.mdx) for automatic retrieval).
+
+When documenting small molecules, it's important to include chemical structure information. While the name "ethanol" might seem unambiguous, many chemicals exist in different forms (called isomers) that have the same molecular formula but different structures. To avoid any confusion about exactly which chemical you're working with, PyEnzyme uses standardized chemical notation systems like SMILES (Simplified Molecular Input Line Entry System) and InChI (International Chemical Identifier). These notations provide a text-based way to represent molecular structures precisely.
+
+Here's how to add a small molecule to your document:
+
+```python
+# Add a small molecule manually
+substrate = enzmldoc.add_to_small_molecules(
+    id="s1",
+    name="Ethanol",
+    vessel_id=vessel.id,
+    canonical_smiles="CCO",  # SMILES notation
+    inchikey="QTBSBXVTEAMEQO-UHFFFAOYSA-N"  # InChI Key
+)
+```
+
+In this example:
+- `id="s1"` is a unique identifier
+- `name="Ethanol"` is the common name of the chemical
+- `vessel_id=vessel.id` specifies which vessel contains this molecule (required, just like with proteins)
+- `canonical_smiles="CCO"` is the SMILES notation representing the structure of ethanol (C stands for carbon, O for oxygen, and the structure shows how they're connected)
+- `inchikey="QTBSBXVTEAMEQO-UHFFFAOYSA-N"` is a unique identifier based on the molecule's structure, like a fingerprint for the compound
+
+If you need to add multiple small molecules at once, you can use Python's list addition syntax:
+
+```python
+# Add multiple small molecules at once
+enzmldoc.small_molecules += [substrate, product, cofactor]
+```
+
+This adds all three molecules to the document in a single operation, which can be convenient when you're setting up your experiment documentation.
+
+**Recommendations for working with small molecules:**
+- Whenever possible, include either `canonical_smiles` or `inchikey` information. This ensures that anyone reading your documentation knows exactly which chemical you used, without any ambiguity.
+- If the information is available in public databases, consider using PyEnzyme's fetcher functions to automatically retrieve complete and accurate chemical data (see the [Fetchers guide](./fetchers.mdx)).
+- Use consistent, clear naming conventions throughout your document, as this will make it easier to build reactions later.
+
+## Adding Complexes
+
+During many enzymatic reactions, temporary combinations of molecules form. For example, an enzyme typically binds to its substrate before converting it to product. During this binding period, they exist as an "enzyme-substrate complex." While these complexes are often short-lived, explicitly documenting them can be important for understanding the detailed mechanism of how a reaction proceeds.
+
+In PyEnzyme, a complex represents any multi-component species formed when two or more molecules come together. This could be an enzyme bound to its substrate, two proteins interacting with each other, or any other combination of molecular species.
+
+Here's how to add a complex to your document:
+
+```python
+# Add a complex (e.g., enzyme-substrate complex)
+complex = enzmldoc.add_to_complexes(
+    id="c1",
+    name="ES Complex",
+    participants=[protein.id, substrate.id],  # List of species IDs
+    vessel_id=vessel.id
+)
+```
+
+In this example:
+- `id="c1"` is a unique identifier for the complex
+- `name="ES Complex"` is a descriptive name (ES is a common abbreviation for enzyme-substrate)
+- `participants=[protein.id, substrate.id]` is a list specifying which molecules form this complex. Notice that we provide the IDs of the protein and substrate we created earlier. This creates a connection between the complex and its component molecules.
+- `vessel_id=vessel.id` indicates which vessel the complex exists in (required)
+
+**When should you document complexes?**
+
+For many basic experiments, you may not need to explicitly document complexes. However, they become important when:
+- You're building detailed kinetic models that explicitly track intermediate species formed during the reaction
+- You need to represent multi-component structures that play a significant role in your experimental system
+- You're performing micro-kinetic modeling, which requires accounting for all intermediate states in a reaction mechanism
+
+## Building Reactions
+
+At the heart of any enzymatic experiment is the reaction itself, the chemical transformation where substrates are converted into products. Documenting reactions in PyEnzyme means describing:
+
+- Which molecules are consumed (the reactants or substrates)
+- Which molecules are produced (the products)
+- Which enzyme catalyzes (speeds up) the transformation
+- The stoichiometry, how many molecules of each type are involved (for example, if two molecules of substrate A combine to form one molecule of product B)
+- Whether the reaction can proceed in both directions (reversible) or only forward (irreversible)
+
+Reactions form the core of your experimental documentation because they define the network of chemical transformations happening in your system.
+
+PyEnzyme offers two different ways to build reactions, and you can choose whichever approach fits better with how you work:
+
+1. **Manual construction**: You explicitly create a reaction object and add each reactant and product individually
+2. **Equation-based creation**: You write out the reaction as a mathematical equation (similar to how you might write it on paper), and PyEnzyme interprets it
+
+Both methods create the same type of reaction object, so the choice is mainly about personal preference and what feels more natural for your workflow.
+
+### Manual Reaction Building
+
+The manual approach involves creating a reaction step-by-step, explicitly specifying each component. This method provides fine-grained control and can be easier to understand when you're first learning PyEnzyme.
+
+Here's how to build a reaction manually:
+
+```python
+# Create a reaction
+reaction = enzmldoc.add_to_reactions(
+    id="r1",
+    name="Ethanol oxidation",
+    reversible=True
+)
+
+# Add reactants (educts)
+reaction.add_to_reactants(
+    species_id=substrate.id,
+    stoichiometry=1.0
+)
+
+# Add products
+reaction.add_to_products(
+    species_id=product.id,
+    stoichiometry=1.0
+)
+```
+
+Let's walk through each step:
+
+1. **Creating the reaction**: We call `add_to_reactions()` to create a new reaction object. We provide:
+   - An `id` for unique identification (optional)
+   - A descriptive `name` for the reaction
+   - The `reversible` parameter, which is set to `True` if the reaction can proceed in both forward and backward directions, or `False` if it only goes one way
+
+2. **Adding reactants**: We use `add_to_reactants()` to specify which molecules are consumed in the reaction. The term "educts" (shown in the comment) is another word for reactants, commonly used in some scientific communities. For each reactant, we provide:
+   - The `species_id`, which references a molecule we created earlier (in this case, our substrate)
+   - The `stoichiometry`, which indicates how many molecules of this species participate in the reaction. A stoichiometry of 1.0 means one molecule; if two molecules of substrate were needed, you'd use 2.0.
+
+3. **Adding products**: Similarly, we use `add_to_products()` to specify what the reaction produces, providing the same information as for reactants.
+
+This step-by-step approach makes it clear exactly what each component of the reaction is, which can be helpful for complex reactions with multiple reactants and products.
+
+### Using Equations
+
+For a more mathematical approach, especially when you're working with kinetic models, you can create reactions using equation strings. This method is particularly useful if you're familiar with writing rate equations or if you're transcribing models from scientific literature.
+
+Here's an example:
+
+```python
+import pyenzyme.equations as peq
+
+# Build equations from strings
+equations = peq.build_equations(
+    "s1'(t) = kcat * E_tot * s0(t) / (K_m + s0(t))",
+    "E_tot = 100",
+    unit_mapping={
+        "kcat": "1 / s",
+        "K_m": "mmol / l",
+        "E_tot": "mmol / l",
+    },
+    enzmldoc=enzmldoc,
+)
+
+enzmldoc.equations += equations
+```
+
+Let's break down what's happening here:
+
+1. **Import the equations module**: We import `pyenzyme.equations` with the shorthand `peq` to access equation-building functions.
+
+2. **Define the equations as strings**: The first equation `"s1'(t) = kcat * E_tot * s0(t) / (K_m + s0(t))"` is a rate equation written in mathematical notation. The `s1'(t)` represents the rate of change of species s1 over time, and the right side is the famous Michaelis-Menten equation that describes how enzyme reaction rates depend on substrate concentration.
+
+3. **Define constants**: The second equation `"E_tot = 100"` sets the total enzyme concentration to a constant value.
+
+4. **Specify units**: The `unit_mapping` dictionary tells PyEnzyme what units each parameter uses. For example, `kcat` (the catalytic rate constant) has units of "1 / s" (per second), meaning it represents how many reactions the enzyme catalyzes per second.
+
+5. **Provide the document context**: The `enzmldoc=enzmldoc` parameter gives the function access to your document so it can properly link the equations to the species you've defined.
+
+This equation-based approach can be more concise when you're working with complex kinetic models, but it requires some familiarity with mathematical notation and kinetic modeling concepts.
+
+## Adding Measurements
+
+Measurements are where you document the actual experimental data you collected in the laboratory. Typically, these are time-course measurements that show how the concentrations of different chemical species change as the reaction proceeds. For example, you might measure how substrate concentration decreases over time while product concentration increases.
+
+Each measurement object represents one experimental run, which is one complete execution of your experiment under a particular set of conditions. If you performed the experiment multiple times (replicates) or under different conditions (different temperatures, pH levels, etc.), you would create a separate measurement for each run. This allows you to keep all your experimental data organized within a single EnzymeML document.
+
+You can add measurements in two ways: manually enter the data point by point (as shown here), or import data from common file formats like Excel or CSV (see the [Import guide](./import.mdx) for details on file import).
+
+Here's how to create a measurement manually:
+
+```python
+# Create a measurement manually
+measurement = pe.Measurement(
+    name="Run 1",
+    id="m1",
+    temperature=37.0,
+    temperature_unit="C",
+    ph=7.4
+)
+
+# Add species data (time-course measurements)
+measurement.add_to_species_data(
+    species_id=substrate.id,
+    time=[0, 1, 2, 3, 4, 5],  # Time points
+    data=[10.0, 8.5, 7.2, 6.1, 5.3, 4.7],  # Concentrations
+    data_unit="mmol / l",
+    time_unit="min",
+    initial=10.0
+)
+```
+
+Let's examine each part:
+
+1. **Creating the measurement object**: We create a `Measurement` with:
+   - A `name` to identify this particular experimental run
+   - An `id` for unique identification (optional)
+   - `temperature` and `temperature_unit` to record the experimental temperature (37.0 degrees Celsius in this case)
+   - `ph` to record the pH level (7.4, which is close to physiological pH)
+
+2. **Adding the actual data**: We use `add_to_species_data()` to add time-course data for a specific species. The parameters are:
+   - `species_id`: Which molecule we're measuring (in this case, the substrate we defined earlier)
+   - `time`: A list of time points when measurements were taken. In this example, measurements were taken at 0, 1, 2, 3, 4, and 5 minutes.
+   - `data`: A list of concentration values corresponding to each time point. These numbers show the substrate concentration decreasing from 10.0 to 4.7 as the reaction proceeds.
+   - `data_unit`: The unit for the concentration measurements (millimoles per liter in this case)
+   - `time_unit`: The unit for the time measurements (minutes)
+   - `initial`: The starting concentration, which should match the first value in the data list
+
+**Important points about measurements:**
+- A single measurement can include data for multiple species. For example, you could add data for both substrate and product concentrations from the same experimental run by calling `add_to_species_data()` multiple times on the same measurement object.
+- The `time` and `data` lists must have the same number of elements. each time point needs a corresponding concentration value.
+- PyEnzyme handles unit conversions automatically, so you don't need to worry about converting everything to a standard unit yourself (see the [Units guide](./units.mdx) for more information).
+
+## Adding Parameters
+
+When working with kinetic models, you often need to define parameters, which are numerical constants that describe the characteristics of your enzymatic system. These might include rate constants (which describe how fast reactions proceed), binding constants (which describe how tightly enzymes bind to substrates), or other values specific to your model.
+
+Parameters are particularly important when you're fitting mathematical models to your experimental data or when you want to document the kinetic properties of your enzymatic system.
+
+Here's how to add a parameter to your document:
+
+```python
+# Add a parameter
+parameter = enzmldoc.add_to_parameters(
+    id="kcat",
+    name="Catalytic rate constant",
+    value=100.0,
+    unit="1 / s",
+    upper=200.0,
+    lower=50.0
+)
+```
+
+Let's look at what each field means:
+
+- `id="kcat"`: A unique identifier for this parameter. "kcat" is a standard symbol in enzyme kinetics representing the catalytic rate constant (also called the turnover number).
+
+- `name="Catalytic rate constant"`: A human-readable description of what this parameter represents.
+
+- `value=100.0`: The numerical value of the parameter. This might be a known value from literature, a value you've determined experimentally, or an initial guess if you're planning to fit the parameter to your data.
+
+- `unit="1 / s"`: The unit for this parameter. The catalytic rate constant has units of "per second" (written as "1 / s"), meaning it represents how many substrate molecules one enzyme molecule converts to product per second.
+
+- `upper=200.0` and `lower=50.0`: These optional fields define the upper and lower bounds for this parameter. These bounds are useful when you're fitting models to data. They tell the fitting algorithm that the parameter value should stay within this range. In this example, we're saying that kcat should be between 50 and 200 per second.
+
+Parameters become especially useful when you're using PyEnzyme's modeling capabilities or when you want to document the kinetic constants that characterize your enzymatic system for future reference or publication.
+
+## Tips and Best Practices
+
+As you begin working with PyEnzyme, these recommendations can help you create well-organized and reliable documentation:
+
+**Consider using meaningful IDs**: While PyEnzyme will automatically generate IDs for you if you don't provide them, using descriptive identifiers can make your code easier to read and debug. For example, "substrate_ethanol" is more informative than "s1" when you're reviewing your code later or sharing it with colleagues.
+
+**Remember to associate everything with vessels**: Every species in your document, whether it's a protein, small molecule, or complex, needs to be linked to a vessel through the `vessel_id` parameter. This requirement might seem tedious at first, but it serves an important purpose: it maintains the experimental context and helps organize your data, especially when dealing with multiple reactions in different containers.
+
+**Take advantage of database fetchers**: Manually entering chemical structures, protein sequences, and other molecular information is time-consuming and error-prone. PyEnzyme includes fetcher functions that can automatically retrieve this information from established scientific databases like ChEBI, PubChem, and UniProt. This not only saves time but also ensures accuracy and consistency in your documentation. See the [Fetchers guide](./fetchers.mdx) for details on how to use these tools.
+
+**Check your work as you build**: PyEnzyme includes automatic validation to catch errors, but it's good practice to periodically verify that your document structure looks correct. The `pe.summary(enzmldoc)` function is particularly useful for this. It displays a concise overview of everything in your document, making it easy to spot if something is missing or incorrect.
+
+**Start with the basics**: If you're new to PyEnzyme, don't try to use all features at once. Begin by documenting the essential elements: vessels, species, reactions, and measurements. Once you're comfortable with these basics, you can gradually add more sophisticated features like complexes, detailed kinetic equations, and parameters. Building up your understanding incrementally will make the learning process more manageable and less overwhelming.
+
+**Save your work frequently**: As you build your EnzymeML document, consider saving it regularly to a file (see the [Export guide](./export.mdx) for details). This provides a backup of your work and allows you to track how your documentation evolves over time.
+
+## Next Steps
+
+Now that you understand how to create EnzymeML documents from scratch, you're ready to explore more of PyEnzyme's capabilities.
+
+If you have existing experimental data in spreadsheets or other file formats, the [Importing data](./import.mdx) guide will show you how to bring that data into PyEnzyme without having to manually enter every data point.
+
+When you're ready to share your work or use it with other tools, the [Exporting documents](./export.mdx) guide explains how to save your EnzymeML documents in various formats suitable for different purposes.
+
+To streamline the process of adding chemical and protein information, take a look at the [Using database fetchers](./fetchers.mdx) guide, which demonstrates how to automatically retrieve validated information from scientific databases rather than entering it manually.
+
+Finally, if you're working with measurements that use different unit systems or need to understand how PyEnzyme handles unit conversions, the [unit handling](./units.mdx) guide provides detailed information about PyEnzyme's unit management system.
+
+Each of these guides builds on what you've learned here, helping you work more efficiently and take full advantage of PyEnzyme's features.

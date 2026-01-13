@@ -1,0 +1,164 @@
+---
+title: Installation
+description: Install PyEnzyme and get ready to start using it.
+---
+
+## Prerequisites
+
+PyEnzyme requires Python 3.10 or higher. You can install PyEnzyme using either `pip` (the standard Python package manager) or `uv` (a faster, modern alternative).
+
+## Install with pip
+
+The standard way to install PyEnzyme is using pip:
+
+```bash
+pip install pyenzyme
+```
+
+This installs PyEnzyme with all core dependencies, including support for reading and writing EnzymeML documents, database fetchers, visualization tools, and unit handling.
+
+## Install with uv
+
+[uv](https://github.com/astral-sh/uv) is a fast Python package manager written in Rust. It's significantly faster than pip and provides better dependency resolution. If you don't have uv installed, you can install it first:
+
+```bash
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Then install PyEnzyme:
+
+```bash
+uv pip install pyenzyme
+```
+
+## Install from source
+
+To install the latest development version or contribute to PyEnzyme, clone the repository and install in editable mode:
+
+```bash
+git clone https://github.com/EnzymeML/PyEnzyme.git
+cd PyEnzyme
+pip install -e .
+```
+
+Installing in editable mode (`-e`) allows you to make changes to the source code that will be immediately reflected without reinstalling.
+
+## Optional dependencies
+
+PyEnzyme provides optional dependency groups for extended functionality. The available groups are:
+
+### Excel support (`excel`)
+
+Enables reading and writing Excel files (`.xlsx`). Installs `openpyxl`.
+
+**With pip:**
+```bash
+pip install "pyenzyme[excel]"
+```
+
+**With uv:**
+```bash
+uv pip install "pyenzyme[excel]"
+```
+
+### PySCeS integration (`pysces`)
+
+Enables kinetic modeling and parameter fitting using PySCeS. Installs `pysces` and `lmfit`.
+
+**With pip:**
+```bash
+pip install "pyenzyme[pysces]"
+```
+
+**With uv:**
+```bash
+uv pip install "pyenzyme[pysces]"
+```
+
+See the [mathematical modeling guide](/basic/modelling/) for details on using PySCeS with PyEnzyme.
+
+### COPASI support (`copasi`)
+
+Enables using COPASI for kinetic modeling and parameter fitting. Installs `copasi-basico`.
+
+**With pip:**
+```bash
+pip install "pyenzyme[copasi]"
+```
+
+**With uv:**
+```bash
+uv pip install "pyenzyme[copasi]"
+```
+
+See the [COPASI integration guide](/integrations/copasi/) for details on using COPASI with PyEnzyme.
+
+### Development dependencies (`tests`)
+
+Includes testing tools for development and running the test suite. Installs `pytest`, `pytest-httpx`, and `pytest-sugar`.
+
+**With pip:**
+```bash
+pip install "pyenzyme[tests]"
+```
+
+**With uv:**
+```bash
+uv pip install "pyenzyme[tests]"
+```
+
+### Legacy API support (`v1`)
+
+Provides backward compatibility with PyEnzyme v1.x. Installs `seaborn`, `numexpr`, `python-libcombine`, `deepdiff`, and `deprecation`.
+
+**With pip:**
+```bash
+pip install "pyenzyme[v1]"
+```
+
+**With uv:**
+```bash
+uv pip install "pyenzyme[v1]"
+```
+
+The legacy API is available via `pyenzyme.v1`. New projects should use the current API.
+
+### Installing multiple extras
+
+You can install multiple optional dependencies at once:
+
+**With pip:**
+```bash
+pip install "pyenzyme[excel,pysces]"
+```
+
+**With uv:**
+```bash
+uv pip install "pyenzyme[excel,pysces]"
+```
+
+### Using uv dependency groups
+
+When using uv, you can also leverage dependency groups directly when installing from source:
+
+```bash
+git clone https://github.com/EnzymeML/PyEnzyme.git
+cd PyEnzyme
+uv pip install -e ".[pysces,excel,tests,v1]"
+```
+
+## Verify installation
+
+After installation, verify that PyEnzyme is working correctly:
+
+```python
+import pyenzyme as pe
+print(pe.__version__)
+```
+
+If you see the version number printed, PyEnzyme is installed successfully.
+
+## Next steps
+
+Once PyEnzyme is installed, proceed to the next guide to learn how to create EnzymeML documents.
