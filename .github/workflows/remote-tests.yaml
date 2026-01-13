@@ -24,7 +24,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Install the project
-        run: uv sync --locked --all-extras --dev
-        
+        run: uv sync --locked --all-extras --all-groups
+
       - name: Run remote tests
         run: uv run pytest -vv -m "remote"
