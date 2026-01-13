@@ -5,11 +5,15 @@ This module provides functionality to fetch chemical entity data from the
 ChEBI database by ID and map it to the PyEnzyme data model (v2).
 """
 
-import requests
 import re
-from typing import Optional, Dict, List
+from typing import Dict, List, Optional
+
+import httpx
 from pydantic import BaseModel, Field, RootModel
+
 from pyenzyme.versions import v2
+
+DEFAULT_TIMEOUT = 5.0
 
 
 class ChEBIError(Exception):
@@ -133,8 +137,10 @@ class ChEBIClient:
             chebi_id = f"CHEBI:{chebi_id}"
 
         try:
-            response = requests.get(self.BASE_URL, params={"chebi_ids": chebi_id})
-            response.raise_for_status()
+            with httpx.Client(timeout=DEFAULT_TIMEOUT) as client:
+                url = self.BASE_URL.format(chebi_id)
+                response = client.get(url)
+                response.raise_for_status()
 
             if response.status_code == 200:
                 try:
@@ -153,9 +159,9 @@ class ChEBIClient:
                         raise e
                     raise ChEBIError(f"Failed to parse ChEBI response: {str(e)}", e)
             else:
-                raise ChEBIError(f"HTTP {response.status_code}: {response.reason}")
+                raise ChEBIError(f"HTTP {response.status_code}: {response.text}")
 
-        except requests.exceptions.RequestException as e:
+        except httpx.HTTPStatusError as e:
             raise ChEBIError(f"Failed to fetch ChEBI ID {chebi_id}: {str(e)}", e)
 
     def get_entries_batch(self, chebi_ids: List[str]) -> List[ChEBIEntryResult]:
@@ -183,10 +189,10 @@ class ChEBIClient:
                 formatted_ids.append(chebi_id)
 
         try:
-            response = requests.get(
-                self.BASE_URL, params={"chebi_ids": ",".join(formatted_ids)}
-            )
-            response.raise_for_status()
+            with httpx.Client(timeout=DEFAULT_TIMEOUT) as client:
+                url = self.BASE_URL.format(chebi_id)
+                response = client.get(url)
+                response.raise_for_status()
 
             if response.status_code == 200:
                 try:
@@ -199,9 +205,9 @@ class ChEBIClient:
                         f"Failed to parse ChEBI batch response: {str(e)}", e
                     )
             else:
-                raise ChEBIError(f"HTTP {response.status_code}: {response.reason}")
+                raise ChEBIError(f"HTTP {response.status_code}: {response.text}")
 
-        except requests.exceptions.RequestException as e:
+        except httpx.HTTPStatusError as e:
             raise ChEBIError(f"Failed to fetch ChEBI batch: {str(e)}", e)
 
     def search_entries(
@@ -225,7 +231,9 @@ class ChEBIClient:
             params["size"] = str(size)
 
         try:
-            response = requests.get(self.SEARCH_URL, params=params)
+            with httpx.Client(timeout=DEFAULT_TIMEOUT) as client:
+                url = self.SEARCH_URL
+                response = client.get(url, params=params)
             response.raise_for_status()
 
             if response.status_code == 200:
@@ -248,10 +256,10 @@ class ChEBIClient:
                     raise ChEBIError(f"Invalid search response format: {str(e)}", e)
             else:
                 raise ChEBIError(
-                    f"Search failed: HTTP {response.status_code}: {response.reason}"
+                    f"Search failed: HTTP {response.status_code}: {response.text}"
                 )
 
-        except requests.exceptions.RequestException as e:
+        except httpx.HTTPStatusError as e:
             raise ChEBIError(f"Failed to search ChEBI: {str(e)}", e)
 
 

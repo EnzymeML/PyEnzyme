@@ -5,16 +5,18 @@ This module provides functionality to fetch reaction data from the
 Rhea database by ID and map it to the PyEnzyme data model (v2).
 """
 
+import re
 from io import StringIO
+from typing import ClassVar, List, Optional, Tuple
+
+import httpx
 import pandas as pd
 from pydantic import BaseModel, ConfigDict
-from typing import List, ClassVar, Optional, Tuple
-
-import requests
 
 from pyenzyme.fetcher.chebi import fetch_chebi
 from pyenzyme.versions import v2
-import re
+
+DEFAULT_TIMEOUT = 5.0
 
 
 class RheaResult(BaseModel):
@@ -114,8 +116,10 @@ class RheaClient(BaseModel):
         Raises:
             HTTPError: If the request to the Rhea API fails
         """
-        response = requests.get(RheaClient.BASE_URL.format(query, "tsv"))
-        response.raise_for_status()
+        with httpx.Client(timeout=DEFAULT_TIMEOUT) as client:
+            url = RheaClient.BASE_URL.format(query, "tsv")
+            response = client.get(url)
+            response.raise_for_status()
 
         return pd.read_csv(StringIO(response.text), sep="\t")
 
@@ -133,8 +137,10 @@ class RheaClient(BaseModel):
         Raises:
             HTTPError: If the request to the Rhea API fails
         """
-        response = requests.get(RheaClient.BASE_URL.format(query, "json"))
-        response.raise_for_status()
+        with httpx.Client(timeout=DEFAULT_TIMEOUT) as client:
+            url = RheaClient.BASE_URL.format(query, "json")
+            response = client.get(url)
+            response.raise_for_status()
 
         return RheaQuery.model_validate(response.json())
 

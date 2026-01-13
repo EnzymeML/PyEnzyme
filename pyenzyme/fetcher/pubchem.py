@@ -1,9 +1,12 @@
 from typing import ClassVar, Optional
+
+import httpx
 from pydantic import BaseModel, Field, field_validator
-import requests
 
 from pyenzyme.fetcher.chebi import process_id
 from pyenzyme.versions import v2
+
+DEFAULT_TIMEOUT = 5.0
 
 
 class PCUrn(BaseModel):
@@ -90,7 +93,10 @@ class PubChemClient(BaseModel):
             ValueError: If the PubChem API request fails
         """
         url = PubChemClient.BASE_CID_URL.format(cid)
-        response = requests.get(url)
+
+        with httpx.Client(timeout=DEFAULT_TIMEOUT) as client:
+            response = client.get(url)
+            response.raise_for_status()
 
         if response.status_code != 200:
             raise ValueError(f"Failed to fetch PubChem data for CID {cid}")
