@@ -1,0 +1,323 @@
+---
+title: PySCeS
+description: Use PySCeS for kinetic modeling and parameter fitting directly from your EnzymeML documents.
+---
+
+## Introduction to PySCeS
+
+PySCeS (Python Simulator for Cellular Systems) is a powerful Python library for simulating and analyzing biochemical reaction networks. The PySCeS thin layer connects EnzymeML documents to PySCeS, enabling simulation of models and parameter fitting without leaving Python.
+
+### Why PySCeS?
+
+- **Pure Python**: Everything runs in Python. No external software required
+- **Flexible**: Multiple optimization algorithms available
+- **Well-integrated**: Works seamlessly with NumPy, SciPy, and matplotlib
+- **Fast**: Efficient simulation of complex models
+
+## Installation
+
+Install PyEnzyme with PySCeS support:
+
+```bash
+pip install "pyenzyme[pysces]"
+```
+
+Or install dependencies separately:
+
+```bash
+pip install pysces lmfit
+```
+
+## Basic Usage
+
+### Step 1: Prepare Your Document
+
+EnzymeML documents should contain:
+- Reactions and equations describing the kinetic model
+- Parameters with initial values and bounds
+- Measurements with experimental data (for fitting)
+
+```python
+import pyenzyme as pe
+import pyenzyme.equations as peq
+
+# Create or load your document
+doc = pe.EnzymeMLDocument(name="My Kinetic Model")
+
+# Add reactions, species, and equations
+# ... (see Creating Documents guide)
+
+# Add equations describing kinetics
+doc.equations += peq.build_equations(
+    "product'(t) = kcat * enzyme * substrate / (Km + substrate)",
+    unit_mapping={
+        "kcat": "1 / s",
+        "Km": "mmol / l"
+    },
+    enzmldoc=doc
+)
+
+# Add parameters to fit
+doc.add_to_parameters(
+    id="kcat",
+    name="Catalytic rate constant",
+    value=100.0,  # Initial guess
+    unit="1 / s",
+    lower_bound=10.0,
+    upper_bound=1000.0,
+    fit=True  # This parameter will be fitted
+)
+```
+
+### Step 2: Create the Thin Layer
+
+```python
+from pyenzyme.thinlayers import ThinLayerPysces
+
+# Create thin layer from your document
+tl = ThinLayerPysces(
+    enzmldoc=doc,
+    model_dir="./pysces_models"  # Where PySCeS files will be saved
+)
+```
+
+### Step 3: Simulate Your Model
+
+Simulate model behavior with specific initial conditions:
+
+```python
+# Simulate the model
+results, time = tl.integrate(
+    model=doc,
+    initial_conditions={
+        "substrate": 10.0,  # mM
+        "product": 0.0,     # mM
+        "enzyme": 0.1      # mM
+    },
+    t0=0.0,      # Start time
+    t1=100.0,    # End time (seconds)
+    nsteps=200   # Number of time points
+)
+
+# results is a dictionary: {"substrate": [...], "product": [...]}
+# time is a list of time points
+```
+
+### Step 4: Fit Parameters to Data
+
+When experimental measurements are available, fit model parameters:
+
+```python
+# Optimize parameters to match experimental data
+result = tl.optimize(method="leastsq")  # Least squares fitting
+
+# Check results
+if result.success:
+    print("Fitting successful!")
+    print(f"Reduced chi-square: {result.redchi}")
+    
+    # Get document with fitted parameters
+    fitted_doc = tl.write()
+    
+    # Save fitted model
+    pe.write_enzymeml(fitted_doc, "fitted_model.json")
+else:
+    print("Fitting failed - check your model and data")
+```
+
+## Understanding the Results
+
+### Simulation Results
+
+The `integrate` method returns two things:
+
+- **results**: A dictionary mapping species IDs to concentration arrays
+- **time**: A list of time points
+
+```python
+results, time = tl.integrate(...)
+
+# Access results for a specific species
+substrate_concentrations = results["substrate"]
+product_concentrations = results["product"]
+
+# Plot results
+import matplotlib.pyplot as plt
+plt.plot(time, substrate_concentrations, label="Substrate")
+plt.plot(time, product_concentrations, label="Product")
+plt.xlabel("Time (s)")
+plt.ylabel("Concentration (mM)")
+plt.legend()
+plt.show()
+```
+
+### Optimization Results
+
+The `optimize` method returns an `lmfit.MinimizerResult` object with information about the fitting:
+
+```python
+result = tl.optimize()
+
+# Check if fitting succeeded
+print(f"Success: {result.success}")
+
+# View fitted parameter values
+for param_name, param_value in result.params.items():
+    print(f"{param_name}: {param_value.value} ± {param_value.stderr}")
+
+# Goodness of fit metrics
+print(f"Chi-square: {result.chisqr}")
+print(f"Reduced chi-square: {result.redchi}")
+```
+
+## Optimization Methods
+
+PySCeS supports many optimization algorithms. Selection should be based on requirements:
+
+<div style="display: flex; justify-content: center;">
+
+| Method | Description | Best For |
+|--------|-------------|----------|
+| `leastsq` | Levenberg-Marquardt | Most cases, fast |
+| `nelder` | Nelder-Mead | Simple problems |
+| `lbfgsb` | L-BFGS-B | Bounded parameters |
+| `emcee` | MCMC sampling | Uncertainty estimation |
+| `differential_evolution` | Global optimization | Multiple local minima |
+
+</div>
+
+```python
+# Use a specific method
+result = tl.optimize(method="lbfgsb")  # Good for bounded parameters
+```
+
+## Working with Multiple Measurements
+
+When documents contain multiple measurements, the thin layer uses all of them for fitting:
+
+```python
+# Thin layer automatically uses all measurements
+tl = ThinLayerPysces(doc)
+
+# Or specify which measurements to use
+tl = ThinLayerPysces(
+    doc,
+    measurement_ids=["m1", "m2", "m3"]  # Only use these measurements
+)
+
+# Fit using all specified measurements
+result = tl.optimize()
+```
+
+## Complete Example
+
+Here's a complete workflow example:
+
+```python
+import pyenzyme as pe
+import pyenzyme.equations as peq
+from pyenzyme.thinlayers import ThinLayerPysces
+import matplotlib.pyplot as plt
+
+# 1. Load document with model and data
+doc = pe.read_enzymeml("my_experiment.json")
+
+# 2. Create thin layer
+tl = ThinLayerPysces(doc, model_dir="./models")
+
+# 3. Simulate with initial guess parameters
+initial_results, time = tl.integrate(
+    model=doc,
+    initial_conditions={"substrate": 10.0, "product": 0.0},
+    t0=0.0,
+    t1=100.0,
+    nsteps=200
+)
+
+# 4. Fit parameters to experimental data
+print("Fitting parameters...")
+result = tl.optimize(method="leastsq")
+
+if result.success:
+    # 5. Get fitted model
+    fitted_doc = tl.write()
+    
+    # 6. Simulate with fitted parameters
+    fitted_results, _ = tl.integrate(
+        model=fitted_doc,
+        initial_conditions={"substrate": 10.0, "product": 0.0},
+        t0=0.0,
+        t1=100.0,
+        nsteps=200
+    )
+    
+    # 7. Compare model and data
+    experimental_df = tl.df
+    
+    plt.figure(figsize=(10, 6))
+    
+    # Plot experimental data
+    plt.scatter(experimental_df["time"], experimental_df["substrate"],
+                label="Experimental", alpha=0.6, s=50)
+    
+    # Plot initial model
+    plt.plot(time, initial_results["substrate"], 
+             "--", label="Initial model", alpha=0.7)
+    
+    # Plot fitted model
+    plt.plot(time, fitted_results["substrate"],
+             "-", label="Fitted model", linewidth=2)
+    
+    plt.xlabel("Time (s)")
+    plt.ylabel("Concentration (mM)")
+    plt.legend()
+    plt.title("Model Fitting Results")
+    plt.show()
+    
+    # 8. Save fitted model
+    pe.write_enzymeml(fitted_doc, "fitted_model.json")
+    print("Fitted model saved!")
+else:
+    print("Fitting failed - check your model")
+```
+
+## Tips for Success
+
+1. **Start with reasonable initial guesses**: Parameters close to the true values help fitting converge
+
+2. **Set appropriate bounds**: Use `lower_bound` and `upper_bound` to keep parameters physically meaningful
+
+3. **Check your model**: Simulate before fitting to ensure the model behaves as expected
+
+4. **Visualize results**: Always plot model predictions against experimental data to assess fit quality
+
+5. **Try different methods**: If one optimization method fails, try another (e.g., `differential_evolution` for difficult problems)
+
+6. **Check measurement data**: Ensure your experimental data is properly formatted and units are consistent
+
+## Troubleshooting
+
+### Fitting Fails
+
+- Check that parameters have `fit=True` set
+- Verify parameter bounds are reasonable
+- Ensure initial parameter values are not at bounds
+- Try a different optimization method
+
+### Simulation Errors
+
+- Verify all species in initial conditions are defined in your model
+- Check that equations reference correct species IDs
+- Ensure units are consistent
+
+### Model Doesn't Match Data
+
+- Check if the model structure is appropriate for the data
+- Verify initial conditions match the experiments
+- Consider if additional reactions or species are needed
+
+## Next Steps
+
+- Learn about the [COPASI thin layer](./copasi.mdx) for alternative modeling capabilities
+- Explore [creating documents](../basic/creating.mdx) to build your kinetic models
+- Check out [PySCeS documentation](https://pysces.sourceforge.net/) for advanced features

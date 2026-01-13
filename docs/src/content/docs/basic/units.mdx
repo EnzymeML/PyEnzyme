@@ -1,0 +1,128 @@
+---
+title: Working with Units
+description: Understand how PyEnzyme handles units automatically, including unit decomposition, conversion, and the UnitDefinition system.
+---
+
+Units are fundamental to scientific work, yet they're often a source of confusion and errors. When you record a concentration as "10," does that mean 10 millimolar, 10 micromolar, or 10 molar? These differ by factors of a thousand, and mixing them up could invalidate your entire analysis.
+
+PyEnzyme provides a sophisticated unit system that works automatically in the background. The good news is that while the underlying system is powerful and follows rigorous scientific standards (like SBML, the Systems Biology Markup Language), you don't need to understand the complexity to use it. You can write units as simple strings the way you'd write them in a lab notebook: `"ml"` for milliliters, `"mmol / l"` for millimolar concentration, `"1 / s"` for per-second rate constants. PyEnzyme handles everything else: validating that units are correct, converting them to standardized representations, and preserving them throughout your workflow from data entry through to export.
+
+## Automatic Unit Handling
+
+The most important thing to understand about PyEnzyme's unit system is that you can use simple, familiar string representations like `"ml"` or `"mmol / l"`, and PyEnzyme automatically handles all the technical details. You don't need to construct complex unit objects or understand the internal representation unless you want to work with very specialized units.
+
+Here's a simple example:
+
+```python
+import pyenzyme as pe
+
+# Create a vessel with a simple unit string
+vessel = pe.Vessel(
+    name="Test tube",
+    volume=10.0,
+    unit="ml"  # Simple string - PyEnzyme handles the rest!
+)
+
+# Check what PyEnzyme created
+print(vessel.unit)
+# UnitDefinition(id='ml', name='ml', base_units=[BaseUnit(kind=UnitType.LITRE, exponent=1, multiplier=1.0, scale=-3.0)])
+```
+
+**What's happening here:**
+
+When you write `unit="ml"`, you're providing a simple string that anyone can understand. Behind the scenes, PyEnzyme converts this into a formal unit definition that breaks "ml" down into its fundamental components: one litre (LITRE) raised to the power of 1 (exponent=1), with a scale of -3 (meaning 10^-3, or one-thousandth). This formal representation ensures compatibility with scientific standards and other software tools, but you never need to write it yourself.
+
+**What PyEnzyme does automatically:**
+
+**Parsing**: When you provide a unit string, PyEnzyme parses it to understand its structure. For example, "mmol / l" is recognized as millimoles per liter, and "1 / s" is understood as per second.
+
+**Decomposition**: Complex units are broken down into base units (like meters, liters, moles, seconds) with appropriate multipliers and exponents. This standardization ensures consistent internal representation.
+
+**Validation**: PyEnzyme checks that your unit string is valid and properly formatted. If you accidentally write "invalid_unit", you'll get an error immediately rather than having it cause problems later.
+
+**Storage**: Unit definitions are created and stored with your entities (vessels, measurements, parameters) so that unit information is preserved throughout your workflow.
+
+**Conversion support**: When needed (like when exporting to different formats), PyEnzyme can convert between equivalent unit representations while preserving the physical meaning.
+
+The key takeaway: write units as simple strings the way you'd write them naturally, and trust that PyEnzyme will handle them correctly.
+
+
+## Common Unit Patterns
+
+PyEnzyme recognizes a wide range of unit patterns commonly used in biochemistry and enzyme kinetics. Here's a reference guide to help you write units correctly:
+
+### Volume Units
+
+Volumes describe the size of vessels and reaction volumes:
+
+```python
+"ml"      # Millilitre (most common for test tubes and cuvettes)
+"l"       # Litre (for larger vessels like flasks or bioreactors)
+"μl"      # Microlitre (for microplate wells or small-volume assays; you can also write "ul")
+"dl"      # Decilitre (less common, but recognized)
+```
+
+**Usage tip**: Use the unit that naturally describes your vessel size. A cuvette is naturally measured in milliliters, while a bioreactor might be in liters.
+
+### Concentration Units
+
+Concentrations describe how much of a substance is present in a given volume:
+
+```python
+"mmol / l"    # Millimolar (very common in enzyme kinetics, abbreviated "mM")
+"mol / l"     # Molar (for concentrated solutions)
+"μmol / l"    # Micromolar (for dilute solutions; also "umol / l")
+"nmol / l"    # Nanomolar (for very dilute solutions or high-affinity binding)
+"mg / l"      # Mass per volume (when working with mass rather than moles)
+```
+
+**Usage tip**: Millimolar (mmol / l or mM) is the workhorse unit for most enzyme kinetics. Micromolar is common for studying high-affinity enzymes or inhibitors. Nanomolar is typical for trace analytes or very tight binding.
+
+### Time Units
+
+Time units describe when measurements were taken or how long reactions proceeded:
+
+```python
+"s"       # Second (for fast reactions or kinetic measurements)
+"min"     # Minute (most common for enzyme kinetics)
+"h"       # Hour (for slow reactions; "hours" also works)
+"ms"      # Millisecond (for very fast kinetics, like stopped-flow experiments)
+```
+
+**Usage tip**: Minutes are standard for typical enzyme assays. Seconds are used for rapid kinetics, and hours for slow reactions or long-term experiments.
+
+### Rate Constants
+
+Rate constants describe how fast reactions proceed and have units that depend on the reaction order:
+
+```python
+"1 / s"           # Per second (first-order rate constant)
+"1 / min"         # Per minute (first-order, alternative time base)
+"1 / s / mM"      # Per second per millimolar (second-order rate constant)
+"l / mol / s"     # Litre per mole per second (second-order, alternative notation)
+```
+
+**Usage tip**: First-order rate constants (like kcat) have units of time^-1. Second-order rate constants (like for bimolecular association) have units of concentration^-1 time^-1. The units tell you about the reaction mechanism.
+
+### Temperature Units
+
+Temperature units describe experimental conditions:
+
+```python
+"°C"       # Celsius (most common in biochemistry; room temp ~25°C, body temp 37°C)
+"K"        # Kelvin (required for thermodynamic calculations)
+```
+
+## Next Steps
+
+Now that you understand how PyEnzyme handles units, you're equipped to work with quantitative data confidently, knowing that unit information will be preserved and validated throughout your workflow.
+
+**Creating documents with proper units**: The [Creating documents](./creating.mdx) guide shows you how to build complete EnzymeML documents from scratch. As you follow those examples, you'll see units specified for vessels, measurements, and parameters. You now understand what PyEnzyme is doing with those unit strings and why specifying them correctly matters.
+
+**Importing data**: When you [import data](./import.mdx) from Excel, CSV, or other formats, you'll specify units as part of the import process. Understanding unit handling helps you choose appropriate units when importing and verify that imported data has units assigned correctly. You'll know how to check whether your import preserved units as intended.
+
+**Exporting with confidence**: When you [export documents](./export.mdx) to different formats (JSON, SBML, pandas), unit information travels with your data. Understanding unit handling lets you verify that units are preserved correctly in exports and interpreted properly by other tools that read your exported files.
+
+**Database fetchers**: An additional benefit of PyEnzyme's unit system is that when you use [database fetchers](./fetchers.mdx) to automatically retrieve information about molecules or proteins, those fetchers bring along standardized units from the databases. The unit system ensures this automatically retrieved information integrates seamlessly with your manually entered data.
+
+Units might seem like a minor detail, but they're fundamental to reproducible science. PyEnzyme's unit system works largely in the background, but understanding how it works gives you confidence that your data's quantitative information is accurate, consistent, and will be correctly interpreted by others.

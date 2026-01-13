@@ -1,0 +1,635 @@
+---
+title: Mathematical Modeling
+description: Learn how to define kinetic models using ODEs, reactions, and kinetic rate laws for simulating and fitting enzymatic systems.
+---
+
+Mathematical modeling is a powerful tool for understanding enzymatic systems. While collecting experimental data tells you what happened in your specific experiments, mathematical models help you understand *why* it happened and *what would happen* under different conditions. PyEnzyme makes mathematical modeling accessible by allowing you to define models using straightforward, string-based syntax: you can write equations almost as you would on paper, and PyEnzyme handles the technical details behind the scenes.
+
+If you've never built a mathematical model before, don't worry. At its core, modeling is about describing how concentrations of different chemical species change over time based on the reactions occurring in your system. PyEnzyme supports this through two main mathematical frameworks: differential equations (which describe rates of change) and reactions (which describe chemical transformations).
+
+**Two approaches to modeling:**
+
+PyEnzyme offers two complementary ways to build models, and you can choose based on what feels more natural for your system:
+
+**Reaction-based modeling**: This approach mimics how you might draw reactions on paper. You define chemical transformations (like "substrate converts to product") with their stoichiometry (how many molecules of each species are involved), and then specify rate laws that describe how fast each reaction proceeds. This is intuitive for standard biochemical reactions and automatically ensures mass balance.
+
+**ODE-based modeling**: ODE stands for "Ordinary Differential Equation": mathematical expressions that directly describe how each species' concentration changes over time. This gives you more control and flexibility, which is useful for complex systems or non-standard kinetics that don't fit neatly into reaction schemes. You write equations that explicitly state how each concentration changes as a function of current concentrations and rate constants.
+
+Both approaches ultimately describe the same thing: how your system evolves over time. They offer different perspectives and suit different situations. Many researchers use reaction-based modeling for straightforward enzyme kinetics, and ODE-based modeling when they need more control over exactly how concentrations change.
+
+## Equation Types
+
+PyEnzyme supports four different types of equations, each serving a specific purpose in describing your enzymatic system. Understanding these types helps you choose the right tool for expressing different aspects of your model.
+
+### 1. Ordinary Differential Equations (ODEs)
+
+ODEs are equations that describe how species concentrations change over time. Essentially, they specify the *rate* at which each concentration increases or decreases. If you've studied calculus, you'll recognize the derivative notation (the apostrophe `'` after the species name). If you haven't, think of it this way: the ODE tells you how fast a concentration is changing at any given moment, based on the current state of the system.
+
+ODEs are the foundation of kinetic modeling because they directly capture the dynamics of your system. When you simulate a model, PyEnzyme (through integration tools called "thin layers") solves these ODEs to calculate how concentrations evolve from their initial values to their final values over the time course of your experiment.
+
+**Syntax**: `species_id'(t) = expression`
+
+The notation reads as: "The rate of change of species_id with respect to time equals [some expression]"
+
+Here's an example:
+
+```python
+import pyenzyme as pe
+import pyenzyme.equations as peq
+
+# Define ODE for substrate consumption
+ode = peq.build_equation(
+    "s1'(t) = -k1 * s1(t) * E",
+    enzmldoc=enzmldoc,
+    unit_mapping={"k1": "1 / (s * mM)"}
+)
+```
+
+**Understanding this equation:**
+
+- `s1'(t)` represents how fast the substrate concentration is changing
+- The right side `-k1 * s1(t) * E` describes what determines that rate
+- The negative sign means the substrate is being consumed (decreasing)
+- The rate depends on the current substrate concentration `s1(t)`, the enzyme concentration `E`, and the rate constant `k1`
+- This particular form represents a second-order reaction where the rate depends on both substrate and enzyme concentrations
+
+The `unit_mapping` tells PyEnzyme what units the parameter `k1` has, which is important for ensuring all the math works out dimensionally.
+
+### 2. Rate Laws
+
+Rate laws are expressions that describe how fast a specific reaction proceeds based on the concentrations of reactants and other species. Unlike ODEs which describe overall rates of change for a species (which might be affected by multiple reactions), rate laws describe the velocity of a single reaction.
+
+Rate laws are attached to specific reactions. For example, if you have a reaction converting substrate to product, the rate law specifies how the reaction velocity depends on substrate concentration (and potentially other factors like enzyme concentration or inhibitors).
+
+**Syntax**: `expression` (just the expression, no left-hand side with an equals sign)
+
+A common example is the Michaelis-Menten rate law for enzyme-catalyzed reactions:
+
+```python
+# Michaelis-Menten rate law
+rate_law = peq.build_equation(
+    "v_max * substrate / (K_m + substrate)",
+    enzmldoc=enzmldoc,
+    equation_type=pe.EquationType.RATE_LAW,
+    unit_mapping={
+        "v_max": "mM / s",
+        "K_m": "mM"
+    }
+)
+```
+
+**Understanding the Michaelis-Menten equation:**
+
+This is probably the most famous equation in enzyme kinetics. It describes how reaction velocity depends on substrate concentration:
+- `v_max` is the maximum velocity the reaction can achieve (when substrate is saturating)
+- `substrate` is the current substrate concentration
+- `K_m` (the Michaelis constant) represents the substrate concentration at which the reaction proceeds at half its maximum velocity
+
+At low substrate concentrations (when `substrate` is much less than `K_m`), the reaction rate increases nearly linearly with substrate. At high concentrations (when `substrate` is much greater than `K_m`), the rate approaches `v_max` and becomes nearly constant: the enzyme is saturated.
+
+Notice that a rate law is just an expression: it doesn't have `= something` on the left side. That's because it describes a rate that will be used in the context of reactions, not a direct rate of change for a specific species.
+
+### 3. Assignments
+
+Assignments let you define variables as algebraic combinations of other variables. These are different from ODEs because they don't involve rates of change. Instead, they're relationships that hold at every moment in time. Assignments are recalculated at each time step during simulation based on the current values of other variables.
+
+A common use for assignments is defining quantities that are combinations of other species. For example, if you want to track total enzyme concentration (the sum of free enzyme and enzyme-substrate complex), you'd use an assignment rather than an ODE.
+
+**Syntax**: `variable(t) = expression`
+
+The `(t)` indicates that this variable's value can change over time (because the variables on the right side might change), even though it's not a differential equation.
+
+```python
+# Total enzyme concentration
+assignment = peq.build_equation(
+    "E_tot(t) = E_free + ES",
+    enzmldoc=enzmldoc,
+    equation_type=pe.EquationType.ASSIGNMENT
+)
+```
+
+**What this means:**
+
+At every moment during the simulation, `E_tot` equals the sum of free enzyme (`E_free`) and enzyme-substrate complex (`ES`). As the simulation proceeds and `E_free` and `ES` change (according to their ODEs), `E_tot` is automatically recalculated. This is useful for tracking conserved quantities or defining derived variables that you want to monitor or use in other equations.
+
+### 4. Initial Assignments
+
+Initial assignments define constants that are set once at the beginning of the simulation and never change. Unlike regular assignments that are recalculated at each time step, initial assignments establish fixed values that remain constant throughout.
+
+These are useful for defining parameters that represent total concentrations, experimental conditions, or other quantities that don't vary during the time course of a single experiment.
+
+**Syntax**: `variable = expression` (no `(t)` because it doesn't change with time)
+
+```python
+# Constant total enzyme concentration
+initial = peq.build_equation(
+    "E_tot = 100",
+    enzmldoc=enzmldoc,
+    equation_type=pe.EquationType.INITIAL_ASSIGNMENT,
+    unit_mapping={"E_tot": "mM"}
+)
+```
+
+**What this means:**
+
+The total enzyme concentration `E_tot` is set to 100 mM at the start of the simulation and remains at that value throughout. This might represent the total amount of enzyme you added to the reaction, which doesn't change even though it might exist in different forms (free enzyme vs. bound in complexes) as the reaction proceeds.
+
+Initial assignments are particularly useful when combined with ODEs. For example, you might use an initial assignment to set `E_tot`, and then write ODEs for free enzyme and enzyme-substrate complex that respect the constraint that their sum always equals `E_tot`.
+
+## Building Equations
+
+Now that you understand the different equation types, let's see how to actually create them in PyEnzyme. The process is straightforward: you write equations as strings (almost like you would on paper), and PyEnzyme converts them into proper mathematical objects that can be used for simulation and fitting.
+
+### Single Equation
+
+When you need to create just one equation, use the `build_equation()` function:
+
+```python
+import pyenzyme as pe
+import pyenzyme.equations as peq
+
+# Create an ODE
+ode = peq.build_equation(
+    equation="s1'(t) = -k * s1(t)",
+    enzmldoc=enzmldoc,
+    unit_mapping={"k": "1 / s"}
+)
+
+# Add to document
+enzmldoc.equations.append(ode)
+```
+
+**What this code does:**
+
+- The `equation` parameter contains the equation as a string: `"s1'(t) = -k * s1(t)"` represents exponential decay where substrate s1 decreases at a rate proportional to its current concentration
+- `enzmldoc` is your document: providing this allows PyEnzyme to automatically create parameters and link species
+- `unit_mapping` specifies what units the parameter `k` has (per second, indicating a first-order rate constant)
+- The function returns an equation object that you add to your document using `append()`
+
+This is useful when you're building your model incrementally or when you only need a single equation.
+
+### Multiple Equations
+
+Often, you'll have several equations that together describe your system. Rather than calling `build_equation()` multiple times, you can use `build_equations()` (plural) to create several equations at once:
+
+```python
+# Build multiple ODEs
+equations = peq.build_equations(
+    "s1'(t) = -k1 * s1(t) * E",
+    "s2'(t) = k1 * s1(t) * E - k2 * s2(t)",
+    "E'(t) = -k1 * s1(t) * E + k2 * s2(t)",
+    enzmldoc=enzmldoc,
+    unit_mapping={
+        "k1": "1 / (s * mM)",
+        "k2": "1 / s"
+    }
+)
+
+enzmldoc.equations += equations
+```
+
+**Understanding this system:**
+
+This set of three ODEs describes a simple enzymatic system:
+
+- The first equation: substrate s1 is consumed (negative rate) by reaction with enzyme E, with rate constant k1
+- The second equation: intermediate s2 is formed from s1 (positive term) and then decays (negative term) with rate constant k2
+- The third equation: enzyme E is consumed when binding s1 (negative term) and regenerated when s2 decays (positive term)
+
+Notice how the same terms appear in multiple equations with opposite signs. This represents conservation: what leaves one species enters another. This is a hallmark of properly balanced chemical kinetics.
+
+The `unit_mapping` specifies units for both parameters: k1 involves two concentration terms (s1 and E), so it has units of "per second per mM", while k2 is a first-order rate constant with units of "per second".
+
+The function returns a list of equation objects, which we add to the document using `+=` (the append-list operator).
+
+### Automatic Type Inference
+
+One of PyEnzyme's convenient features is that it can usually figure out what type of equation you're writing based on the syntax, so you don't need to explicitly specify it. This makes writing models faster and more intuitive.
+
+Here's how PyEnzyme recognizes different equation types:
+
+```python
+# ODE (derivative notation)
+ode = peq.build_equation("s1'(t) = -k * s1(t)", enzmldoc=enzmldoc)
+
+# Assignment (variable with time)
+assignment = peq.build_equation("E_tot(t) = E + ES", enzmldoc=enzmldoc)
+
+# Initial assignment (no time dependency)
+initial = peq.build_equation("E_tot = 100", enzmldoc=enzmldoc)
+
+# Rate law (no left-hand side)
+rate_law = peq.build_equation("k * s1", enzmldoc=enzmldoc)
+```
+
+**How PyEnzyme decides:**
+
+- **Has an apostrophe `'` in the left-hand side?** → It's an ODE (derivative with respect to time)
+- **Has `(t)` but no apostrophe?** → It's an assignment (time-varying but not a differential equation)
+- **Has no `(t)` and has an equals sign?** → It's an initial assignment (constant value)
+- **Has no left-hand side at all?** → It's a rate law (just an expression)
+
+This automatic recognition means you can write equations naturally without worrying about explicitly declaring types: PyEnzyme understands what you mean from context.
+
+## Reaction-Based Modeling
+
+While ODE-based modeling gives you direct control over how each concentration changes, reaction-based modeling offers a more intuitive approach that mirrors how biochemists typically think about their systems. Instead of writing differential equations, you define chemical reactions: transformations that convert reactants into products. PyEnzyme automatically generates the appropriate mathematics behind the scenes.
+
+This approach has several advantages: it's more intuitive if you're familiar with chemical notation, it automatically ensures mass balance (atoms aren't created or destroyed), and it clearly separates the reaction network (what transforms into what) from the kinetics (how fast those transformations occur).
+
+### Building Reactions from Strings
+
+PyEnzyme allows you to define reactions using chemical notation that you'd naturally write on paper, with arrows indicating the direction of transformation:
+
+```python
+import pyenzyme.equations as peq
+
+# Irreversible reaction
+reaction1 = peq.build_reaction(
+    name="Substrate to Product",
+    scheme="S --> P",
+    id="r1"
+)
+
+# Reversible reaction
+reaction2 = peq.build_reaction(
+    name="Equilibrium Reaction",
+    scheme="A + B <=> C",
+    id="r2"
+)
+
+# Reaction with stoichiometry
+reaction3 = peq.build_reaction(
+    name="Dimerization",
+    scheme="2A --> A2",
+    id="r3"
+)
+
+# Add to document
+enzmldoc.reactions += [reaction1, reaction2, reaction3]
+```
+
+**Understanding the syntax:**
+
+The `scheme` parameter uses chemical notation:
+- `-->` represents an irreversible reaction (goes only in one direction, left to right)
+- `<=>` represents a reversible reaction (can proceed in both forward and backward directions)
+- `+` connects multiple reactants or products (e.g., "A + B" means both A and B are consumed)
+- Numbers before species indicate stoichiometry (e.g., "2A" means two molecules of A)
+
+**What each example represents:**
+
+**Irreversible reaction** (`S --> P`): Substrate S converts to product P, and the reaction only goes forward. This might represent an enzyme-catalyzed reaction where the reverse reaction is negligibly slow.
+
+**Reversible reaction** (`A + B <=> C`): Species A and B can combine to form C, and C can also break down back into A and B. The double arrow indicates the reaction can proceed in both directions, potentially reaching an equilibrium.
+
+**Stoichiometric reaction** (`2A --> A2`): Two molecules of A combine to form one molecule of A2 (a dimer). The "2" specifies stoichiometry: the quantitative relationship between reactants and products.
+
+After creating reactions, you add them to your document just like you would add any other entity, using `append()` for single reactions or `+=` for multiple reactions.
+
+### Building Multiple Reactions
+
+When you have several reactions that together describe your system (as is common in multi-step enzymatic pathways), you can create them all at once using `build_reactions()` (plural):
+
+```python
+reactions = peq.build_reactions(
+    "S --> P",
+    "A + B <=> C",
+    "2A --> A2"
+)
+
+enzmldoc.reactions += reactions
+```
+
+This creates three reaction objects in one call, returning them as a list that you can add to your document. This is more concise than creating reactions individually and makes it easier to see the overall reaction network in your code.
+
+### Adding Kinetic Laws to Reactions
+
+Creating a reaction scheme (like "S --> P") tells PyEnzyme what transforms into what, but it doesn't specify *how fast* the transformation occurs. That's where kinetic laws come in. A kinetic law is a mathematical expression describing the reaction rate as a function of concentrations and parameters.
+
+Here's how to create a reaction and attach a kinetic law to it:
+
+```python
+import pyenzyme as pe
+import pyenzyme.equations as peq
+
+# Create a reaction
+reaction = peq.build_reaction(
+    name="Enzymatic Reaction",
+    scheme="S --> P",
+    id="r1"
+)
+
+# Create Michaelis-Menten rate law
+rate_law = peq.build_equation(
+    "v_max * S / (K_m + S)",
+    enzmldoc=enzmldoc,
+    equation_type=pe.EquationType.RATE_LAW,
+    unit_mapping={
+        "v_max": "mM / s",
+        "K_m": "mM"
+    }
+)
+
+# Attach rate law to reaction
+reaction.kinetic_law = rate_law
+
+# Add to document
+enzmldoc.reactions.append(reaction)
+```
+
+**Understanding this workflow:**
+
+1. **Define the reaction scheme**: We create a reaction object that specifies S converts to P. At this point, we know *what* happens but not *how fast*.
+
+2. **Define the kinetic law**: We create a rate law using the Michaelis-Menten equation, which describes how reaction velocity depends on substrate concentration S. The parameters `v_max` and `K_m` determine the quantitative behavior.
+
+3. **Connect them**: By setting `reaction.kinetic_law = rate_law`, we attach the kinetic law to the reaction. Now PyEnzyme knows both what the reaction is and how fast it proceeds.
+
+4. **Add to document**: Finally, we add the complete reaction (with its kinetic law) to the document.
+
+When you simulate this model, PyEnzyme will use the kinetic law to calculate how fast S decreases and P increases at each moment, based on the current substrate concentration and the parameter values.
+
+### Reactions with Modifiers
+
+In many biochemical reactions, there are species that affect the reaction rate without being consumed or produced themselves. The most common example is an enzyme: it catalyzes the conversion of substrate to product but isn't itself changed by the reaction. These are called "modifiers."
+
+In PyEnzyme, you can specify modifiers when building a reaction:
+
+```python
+# Reaction with enzyme modifier
+reaction = peq.build_reaction(
+    name="Catalyzed Reaction",
+    scheme="S --> P",
+    id="r1",
+    modifiers=["E"]  # Enzyme as modifier
+)
+
+enzmldoc.reactions.append(reaction)
+```
+
+**What modifiers represent:**
+
+The `modifiers` parameter is a list of species IDs for molecules that influence the reaction rate. In this example:
+- The reaction scheme "S --> P" indicates substrate S is converted to product P
+- The enzyme "E" is listed as a modifier, meaning it catalyzes this transformation but isn't consumed
+- When you write a kinetic law for this reaction, you can include the enzyme concentration "E" in the rate expression
+
+Modifiers can also represent inhibitors (species that slow down reactions), activators (species that speed up reactions), or any other species that affects kinetics without appearing as a reactant or product. This distinction between species that are consumed/produced versus species that merely influence rates is important for properly representing enzyme-catalyzed reactions.
+
+## Common Kinetic Models
+
+PyEnzyme makes it easy to implement standard kinetic models used throughout enzymology and biochemistry. These models have been developed and refined over decades and represent well-understood mechanistic behaviors. Here are the most commonly used models and how to implement them in PyEnzyme.
+
+### Michaelis-Menten Kinetics
+
+The Michaelis-Menten equation is the foundation of enzyme kinetics: it's probably the single most important equation in enzymology. It describes how the rate of an enzyme-catalyzed reaction depends on substrate concentration, and it applies to any single-substrate enzyme that follows a simple binding and catalysis mechanism.
+
+**When to use it:** For most simple enzyme-catalyzed reactions where one substrate is converted to one product, and the enzyme binds substrate, catalyzes conversion, and releases product.
+
+Here's how to implement Michaelis-Menten kinetics in PyEnzyme:
+
+```python
+import pyenzyme as pe
+import pyenzyme.equations as peq
+
+# Create reaction
+reaction = peq.build_reaction(
+    name="Enzymatic Reaction",
+    scheme="S --> P",
+    id="r1"
+)
+
+# Michaelis-Menten rate law
+rate_law = peq.build_equation(
+    "v_max * S / (K_m + S)",
+    enzmldoc=enzmldoc,
+    equation_type=pe.EquationType.RATE_LAW,
+    unit_mapping={
+        "v_max": "mM / s",
+        "K_m": "mM"
+    }
+)
+
+reaction.kinetic_law = rate_law
+enzmldoc.reactions.append(reaction)
+
+# Set parameter values and bounds
+km = enzmldoc.filter_parameters(symbol="K_m")[0]
+km.initial_value = 5.0
+km.lower_bound = 1.0
+km.upper_bound = 20.0
+
+vmax = enzmldoc.filter_parameters(symbol="v_max")[0]
+vmax.initial_value = 10.0
+vmax.lower_bound = 1.0
+vmax.upper_bound = 50.0
+```
+
+**Understanding the parameters:**
+
+**v_max** (maximum velocity): The fastest rate the enzyme can achieve, which occurs when substrate is saturating (at very high concentrations). This depends on how much enzyme you have and how fast the enzyme can convert substrate to product once bound.
+
+**K_m** (Michaelis constant): The substrate concentration at which the reaction velocity is half of v_max. This gives you an idea of the enzyme's affinity for its substrate: a low K_m means the enzyme binds substrate tightly and reaches half-maximal velocity at low substrate concentrations, while a high K_m means you need more substrate to achieve the same velocity.
+
+**Setting initial values and bounds:** When you plan to fit parameters to data, you provide initial guesses (`initial_value`) and reasonable ranges (`lower_bound` and `upper_bound`). These bounds help the fitting algorithm by defining what values are physically reasonable: for example, K_m can't be negative, and v_max has practical upper limits based on your system.
+
+### Competitive Inhibition
+
+Competitive inhibition occurs when an inhibitor molecule competes with the substrate for binding to the enzyme's active site. The inhibitor and substrate can't both bind simultaneously: they compete for the same spot. This type of inhibition is common in drug design, where the drug acts as a competitive inhibitor of an enzyme.
+
+The effect of competitive inhibition is that you need more substrate to achieve the same reaction velocity: the inhibitor effectively increases the apparent K_m without changing v_max (because at very high substrate concentrations, the substrate outcompetes the inhibitor).
+
+**When to use it:** When you have an inhibitor that binds to the same site as the substrate, or when you're studying enzyme inhibition by drugs or other compounds.
+
+```python
+# Competitive inhibition rate law
+rate_law = peq.build_equation(
+    "v_max * S / (K_m * (1 + I / K_i) + S)",
+    enzmldoc=enzmldoc,
+    equation_type=pe.EquationType.RATE_LAW,
+    unit_mapping={
+        "v_max": "mM / s",
+        "K_m": "mM",
+        "K_i": "mM"
+    }
+)
+```
+
+**Understanding the parameters:**
+
+- `I` is the inhibitor concentration
+- `K_i` (inhibition constant) describes how tightly the inhibitor binds: a low K_i means strong inhibition
+- The term `(1 + I / K_i)` increases the apparent K_m, making it harder for substrate to bind when inhibitor is present
+
+### Mass Action Kinetics
+
+Mass action kinetics is the simplest kinetic model, based on the law of mass action: the rate of a reaction is proportional to the product of the concentrations of the reactants. This applies to elementary reactions: reactions that occur in a single step at the molecular level.
+
+**When to use it:** For simple binding reactions, elementary chemical reactions, or as building blocks for more complex models. Not appropriate for enzyme-catalyzed reactions, which typically don't follow simple mass action due to enzyme saturation.
+
+```python
+# Mass action rate law
+rate_law = peq.build_equation(
+    "k * A * B",
+    enzmldoc=enzmldoc,
+    equation_type=pe.EquationType.RATE_LAW,
+    unit_mapping={"k": "1 / (s * mM^2)"}
+)
+```
+
+**What this means:**
+
+For a reaction where A and B combine, the rate is proportional to both [A] and [B]. If you double the concentration of A, the reaction rate doubles. If you double both A and B, the rate quadruples (doubles twice). The rate constant `k` determines the proportionality.
+
+The units of `k` depend on the reaction order: for this bimolecular reaction (two reactants), k has units that make the overall rate have units of concentration/time.
+
+### Hill Kinetics
+
+The Hill equation describes cooperative binding, where binding of one molecule of substrate affects the binding of additional substrate molecules. This occurs in enzymes with multiple binding sites (like hemoglobin binding oxygen) or in regulatory enzymes where binding to one site changes the enzyme's shape, making it easier (positive cooperativity) or harder (negative cooperativity) for additional substrates to bind.
+
+**When to use it:** For enzymes showing sigmoidal (S-shaped) kinetic curves rather than the hyperbolic curves of Michaelis-Menten kinetics. Common in allosteric enzymes and multi-subunit proteins.
+
+```python
+# Hill equation
+rate_law = peq.build_equation(
+    "v_max * S^n / (K_d + S^n)",
+    enzmldoc=enzmldoc,
+    equation_type=pe.EquationType.RATE_LAW,
+    unit_mapping={
+        "v_max": "mM / s",
+        "K_d": "mM",
+        "n": "1"
+    }
+)
+```
+
+**Understanding the parameters:**
+
+- `n` (Hill coefficient): Describes the degree of cooperativity
+  - `n = 1`: No cooperativity (reduces to Michaelis-Menten)
+  - `n > 1`: Positive cooperativity (binding of one substrate makes binding of additional substrate easier)
+  - `n < 1`: Negative cooperativity (binding of one substrate makes binding of additional substrate harder)
+- `K_d`: The dissociation constant, similar to K_m but reflecting the concentration at which half the sites are occupied
+- `v_max`: Maximum velocity, as in Michaelis-Menten
+
+The exponent `n` in the equation creates the cooperative behavior: at low concentrations, small increases in substrate cause large increases in velocity, creating the characteristic sigmoidal curve.
+
+## ODE-Based Modeling
+
+ODEs provide direct control over species dynamics and are useful for complex models:
+
+### Simple ODE System
+
+```python
+import pyenzyme as pe
+import pyenzyme.equations as peq
+
+# Define ODEs for a simple reaction system
+equations = peq.build_equations(
+    "S'(t) = -k1 * S(t) * E + k2 * ES",
+    "E'(t) = -k1 * S(t) * E + k2 * ES + k3 * ES",
+    "ES'(t) = k1 * S(t) * E - k2 * ES - k3 * ES",
+    "P'(t) = k3 * ES",
+    enzmldoc=enzmldoc,
+    unit_mapping={
+        "k1": "1 / (s * mM)",
+        "k2": "1 / s",
+        "k3": "1 / s"
+    }
+)
+
+enzmldoc.equations += equations
+```
+
+### ODEs with Initial Assignments
+
+Combine ODEs with initial assignments for constants:
+
+```python
+# Total enzyme concentration (constant)
+initial_eq = peq.build_equation(
+    "E_tot = 100",
+    enzmldoc=enzmldoc,
+    equation_type=pe.EquationType.INITIAL_ASSIGNMENT,
+    unit_mapping={"E_tot": "mM"}
+)
+
+# ODEs using the constant
+odes = peq.build_equations(
+    "S'(t) = -kcat * E_tot * S(t) / (K_m + S(t))",
+    "P'(t) = kcat * E_tot * S(t) / (K_m + S(t))",
+    enzmldoc=enzmldoc,
+    unit_mapping={
+        "kcat": "1 / s",
+        "K_m": "mM"
+    }
+)
+
+enzmldoc.equations.append(initial_eq)
+enzmldoc.equations += odes
+```
+
+## Parameter Management
+
+### Automatic Parameter Creation
+
+PyEnzyme automatically creates parameters when they appear in equations:
+
+```python
+# Parameters k1, k2, and k3 are automatically created
+equations = peq.build_equations(
+    "S'(t) = -k1 * S(t)",
+    "P'(t) = k1 * S(t) - k2 * P(t)",
+    enzmldoc=enzmldoc,
+    unit_mapping={
+        "k1": "1 / s",
+        "k2": "1 / s"
+    }
+)
+```
+
+### Setting Parameter Values and Bounds
+
+After creation, parameters can be configured:
+
+```python
+# Get parameter
+k1 = enzmldoc.filter_parameters(symbol="k1")[0]
+
+# Set initial value
+k1.initial_value = 0.1
+
+# Set bounds for parameter estimation
+k1.lower_bound = 0.01
+k1.upper_bound = 1.0
+
+# Set units (if not specified in unit_mapping)
+k1.unit = "1 / s"
+```
+
+### Parameter Units
+
+Always specify units when building equations:
+
+```python
+equations = peq.build_equations(
+    "S'(t) = -k * S(t)",
+    enzmldoc=enzmldoc,
+    unit_mapping={"k": "1 / s"}  # First-order rate constant
+)
+```
+
+## Next Steps
+
+Now that you understand how to build mathematical models in PyEnzyme, you're ready to put them to use. Models become powerful when you simulate them, fit them to data, and use them to test hypotheses and make predictions.
+
+**Simulation and parameter fitting**: The [thin layers](../integrations/thin-layers.mdx) guide shows you how to use PyEnzyme's integration with simulation tools to solve your models numerically. You'll learn how to simulate model behavior over time, fit unknown parameters to your experimental data, and evaluate how well your model matches reality. This is where your model transitions from a mathematical description to a quantitative tool for understanding your system.
+
+**Visualization**: Once you have model predictions, you'll want to visualize them alongside your experimental data. The [Visualize](./visualize.mdx) guide demonstrates how to create plots comparing model predictions with measurements, helping you assess model quality and communicate results. Good visualizations make it immediately apparent whether your model captures the essential behavior of your system.
+
+**Sharing models with the community**: If you want to share your model with colleagues who use different tools, or submit it to a model database, the [Export](./export.mdx) guide explains how to export your PyEnzyme models to SBML format. SBML is the standard format for systems biology models, ensuring your work can be used by researchers using COPASI, PySCeS, or other modeling platforms.
+
+**More examples and context**: The [Creating documents](./creating.mdx) guide includes additional examples of building models alongside other experimental documentation. Seeing models in the full context of complete experimental descriptions can provide helpful patterns and inspiration for your own modeling work.
+
+Mathematical modeling is an iterative process: you build a model, test it against data, refine it based on what you learn, and repeat. PyEnzyme's tools make this iteration cycle efficient and accessible, letting you focus on the biology and chemistry rather than getting bogged down in mathematical technicalities.

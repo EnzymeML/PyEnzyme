@@ -1,0 +1,272 @@
+---
+title: Importing EnzymeML Documents
+description: Learn how to import EnzymeML documents from various file formats including JSON, SBML/OMEX, Excel, CSV, and pandas DataFrames.
+---
+
+PyEnzyme allows you to import experimental data from a variety of sources and formats. Rather than requiring you to manually enter all your data or start from scratch, PyEnzyme can read data from formats you're likely already using: Excel spreadsheets, CSV files, JSON files, SBML archives, and even pandas DataFrames if you're working in Python. All of these can be converted into `EnzymeMLDocument` objects that you can then work with, analyze, and export.
+
+This flexibility is particularly valuable in real-world research scenarios. Perhaps you've been recording your time-course measurements in Excel and want to transition to EnzymeML without re-entering all that data. Or maybe you've downloaded a published study from a database, and it's in SBML format. Or you've received data from a collaborator who uses a different system. PyEnzyme's import capabilities let you bring all these different data sources into a unified, standardized format.
+
+## Reading EnzymeML JSON Files
+
+The most straightforward way to import data into PyEnzyme is from a native EnzymeML JSON file. JSON is the native format for EnzymeML version `>=2.0` documents, and it preserves everything about your experiment: all the metadata, the structure, the relationships between entities, and the measurement data. Nothing gets lost or simplified in this format, making it ideal for sharing complete experimental documentation with colleagues who also use PyEnzyme, or for storing your own experiments to work on later.
+
+Here's how to read an EnzymeML JSON file:
+
+```python
+import pyenzyme as pe
+
+# Read from a JSON file
+enzmldoc = pe.read_enzymeml("experiment.json")
+
+# Or read from a string
+with open("experiment.json", "r") as f:
+    json_string = f.read()
+enzmldoc = pe.read_enzymeml_from_string(json_string)
+```
+
+**What's happening in this code:**
+
+The first approach (`pe.read_enzymeml("experiment.json")`) is the simplest: you just provide the file path, and PyEnzyme reads and parses the JSON file, returning a complete `EnzymeMLDocument` object. This is what you'll use most of the time.
+
+The second approach reads the JSON content as a string first (using Python's standard file operations), then passes that string to `pe.read_enzymeml_from_string()`. This is useful in specific situations: for example, if you're receiving JSON content from a web API or database rather than from a file, or if you need to process or validate the JSON text before parsing it.
+
+## Reading SBML and OMEX Archives
+
+SBML (Systems Biology Markup Language) is the standard format used throughout the systems biology community for representing biochemical models. If you've downloaded data from a model database, received files from collaborators using modeling software like COPASI or PySCeS, or are working with published models, there's a good chance you'll encounter SBML files. PyEnzyme can read these files and convert them into EnzymeML documents.
+
+OMEX (Open Modeling EXchange) archives take SBML a step further. They're essentially ZIP files that package together an SBML model along with associated measurement data files, metadata, and annotations. Think of an OMEX archive as a complete experimental package where everything is bundled together rather than scattered across multiple separate files.
+
+Here's how to import SBML-based data:
+
+```python
+import pyenzyme as pe
+
+# Read from an OMEX archive (recommended)
+enzmldoc = pe.read_enzymeml("experiment.omex")
+
+# Read from SBML directly
+enzmldoc = pe.from_sbml("model.xml")
+```
+
+## Importing Measurement Data from Spreadsheets
+
+One of the most common scenarios in laboratory work is having experimental data already recorded in spreadsheets. Most researchers use Excel or similar software to record their time-course measurements as they collect them during experiments. The good news is that PyEnzyme can directly import this data: you don't need to re-type everything or manually create measurement objects for each data point.
+
+This capability is particularly valuable when you're transitioning from traditional spreadsheet-based record-keeping to more structured EnzymeML documentation. Instead of spending hours transcribing data, you can import entire spreadsheets with a single command. PyEnzyme reads the spreadsheet, identifies time points and concentration values, and automatically creates proper `Measurement` objects with all the data organized correctly.
+
+### Excel Files
+
+Excel is ubiquitous in laboratory settings, and PyEnzyme provides native support for reading measurement data directly from `.xlsx` files:
+
+```python
+import pyenzyme as pe
+
+# Read measurements from Excel
+measurements = pe.from_excel(
+    path="data.xlsx",
+    data_unit="mmol / l",
+    time_unit="min"
+)
+
+# Add to your document
+enzmldoc = pe.EnzymeMLDocument(name="My Experiment")
+enzmldoc.measurements += measurements
+```
+
+**Understanding the code:**
+
+- `path="data.xlsx"` specifies which Excel file to read
+- `data_unit="mmol / l"` tells PyEnzyme what units the concentration data are in (millimoles per liter in this case)
+- `time_unit="min"` specifies the units for your time points (minutes)
+- The function returns a list of `Measurement` objects that you can add to your document
+
+**How to structure your Excel file:**
+
+For PyEnzyme to successfully import your data, your Excel spreadsheet needs to be organized in a specific way. Don't worry: it's a straightforward structure that you might already be using:
+
+**Required columns:**
+
+- **`time`**: A column containing your time points. This column must start at 0 (the initial measurement). For example: 0, 1, 2, 3, 4, 5...
+
+- **`[species_id]` columns**: One or more columns for each species you measured, where the column header is the species identifier. For example, if you measured substrate and product concentrations, you'd have columns named "substrate" and "product" containing the concentration values at each time point.
+
+**Optional column:**
+
+- **`id`**: If your spreadsheet contains data from multiple experimental runs (replicates or different conditions), include an `id` column that identifies which measurement each row belongs to. For example, "m1" for measurement 1, "m2" for measurement 2, etc.
+
+**Example Excel structure:**
+
+Here's what a properly structured spreadsheet looks like:
+
+<div style="display: flex; justify-content: center;">
+
+| time | id | substrate | product |
+|------|----|-----------|---------|
+| 0    | m1 | 10.0      | 0.0     |
+| 1    | m1 | 8.5       | 1.5     |
+| 2    | m1 | 7.2       | 2.8     |
+| 3    | m1 | 6.1       | 3.9     |
+| 4    | m1 | 5.3       | 4.7     |
+| 5    | m1 | 4.7       | 5.3     |
+
+</div>
+
+In this example:
+- Time points are in minutes (0 through 5)
+- All rows belong to measurement "m1"
+- Substrate concentration starts at 10.0 and decreases as the reaction proceeds
+- Product concentration starts at 0.0 and increases as substrate is converted
+- The reaction shows conservation of mass: as substrate decreases, product increases proportionally
+
+### CSV and TSV Files
+
+CSV (Comma-Separated Values) and TSV (Tab-Separated Values) files are plain text formats that many programs can export, making them extremely portable. Perhaps your data analysis software exports to CSV, or you prefer working with plain text files. PyEnzyme can read these formats just as easily as Excel files.
+
+Here's how to import from CSV or TSV files:
+
+```python
+import pyenzyme as pe
+
+# Read measurements from CSV (tab-separated by default)
+measurements = pe.read_csv(
+    path="data.tsv",
+    data_unit="mmol / l",
+    time_unit="min",
+    sep="\t"  # Specify separator if not tab
+)
+
+enzmldoc.measurements += measurements
+```
+
+**Understanding the parameters:**
+
+- `path="data.tsv"` specifies the file to read (can be .csv, .tsv, or any text file)
+- `data_unit` and `time_unit` work exactly like in Excel import: they specify what units your data use
+- `sep="\t"` specifies the separator character. Tab-separated files use `"\t"`, comma-separated files use `","`. If you don't specify this, PyEnzyme assumes tabs by default.
+
+**File structure requirements:**
+
+CSV/TSV files need the same column structure as Excel files:
+- A `time` column starting at 0
+- Columns for each species (with the species ID as the column header)
+- Optionally, an `id` column if you have multiple measurements
+
+The only difference from Excel is that the data is in plain text format with separators (commas or tabs) between columns instead of in Excel's spreadsheet format. This makes CSV/TSV files slightly more universal: virtually any program can read and write them, and they're easy to inspect in a text editor.
+
+## Importing from Pandas DataFrames
+
+If you're working in Python and using pandas for data analysis (a very common scenario in scientific computing), you might already have your measurement data in a pandas DataFrame. Perhaps you loaded it from a file, queried it from a database, or generated it through computational analysis. The good news is that PyEnzyme can convert pandas DataFrames directly into measurement objects without needing to save to an intermediate file format.
+
+This direct conversion is convenient when you're doing data processing in Python: you can clean your data, perform calculations, organize it as you like using pandas' powerful tools, and then import it directly into PyEnzyme without ever leaving your Python environment.
+
+Here's how to import from a pandas DataFrame:
+
+```python
+import pandas as pd
+import pyenzyme as pe
+
+# Create or load a DataFrame
+df = pd.DataFrame({
+    'time': [0, 1, 2, 3, 4, 5],
+    'substrate': [10.0, 8.0, 6.5, 5.2, 4.1, 3.3],
+    'product': [0.0, 2.0, 3.5, 4.8, 5.9, 6.7]
+})
+
+# Convert to measurements
+measurements = pe.from_dataframe(
+    df=df,
+    meas_id="experiment_1",
+    data_unit="mmol / l",
+    time_unit="min"
+)
+
+enzmldoc.measurements += measurements
+```
+
+**What this code does:**
+
+In the example, we first create a DataFrame with three columns: time, substrate, and product. In practice, you'd more likely be loading this data from somewhere using pandas' read functions (`pd.read_csv()`, `pd.read_excel()`, etc.) or generating it from analysis.
+
+The `pe.from_dataframe()` function takes your DataFrame and converts it to PyEnzyme measurements:
+- `df=df` is the DataFrame to convert
+- `meas_id="experiment_1"` gives this measurement a specific identifier
+- `data_unit` and `time_unit` specify the units, just like with file imports
+
+**DataFrame structure requirements:**
+
+For successful import, your DataFrame must meet these requirements:
+
+**Time column**: The DataFrame must have a column named `time` that starts at 0. This represents your time points.
+
+**Species columns**: Other columns represent species concentrations, where the column name is used as the species identifier. In the example above, "substrate" and "product" are the species names.
+
+**Numeric data**: All the concentration and time values must be numeric (floats or integers). Text values or missing data (NaN) in these columns will cause issues, though PyEnzyme handles NaN values reasonably gracefully in some contexts.
+
+**Consistent structure**: Each row represents one time point for one measurement. If you have multiple measurements, include an `id` column (explained in the next section).
+
+This direct DataFrame import is particularly powerful when combined with pandas' data manipulation capabilities: you can filter, transform, and prepare your data exactly how you want it before importing into PyEnzyme.
+
+## Handling Multiple Measurements
+
+In real experimental work, you rarely perform just one measurement. You might have replicates of the same experiment, measurements under different conditions (varying temperature, pH, or substrate concentrations), or data from multiple experimental runs. Rather than creating separate files for each measurement, PyEnzyme allows you to include multiple measurements in a single file by adding an `id` column that identifies which measurement each data row belongs to.
+
+This approach keeps related measurements together, making data organization simpler and reducing the number of files you need to manage. When PyEnzyme encounters an `id` column, it automatically groups the data by these identifiers and creates separate `Measurement` objects for each unique ID.
+
+Here's how to structure data with multiple measurements:
+
+```python
+# Excel/CSV/DataFrame with multiple measurements
+df = pd.DataFrame({
+    'time': [0, 1, 2, 0, 1, 2],
+    'id': ['m1', 'm1', 'm1', 'm2', 'm2', 'm2'],
+    'substrate': [10.0, 8.0, 6.5, 20.0, 18.0, 16.5],
+    'product': [0.0, 2.0, 3.5, 0.0, 2.0, 3.5]
+})
+
+measurements = pe.from_dataframe(
+    df=df,
+    data_unit="mmol / l",
+    time_unit="min"
+)
+# Returns a list of Measurement objects, one per unique 'id'
+```
+
+**Understanding the structure:**
+
+In this example, the DataFrame contains data for two measurements (identified as "m1" and "m2"). Notice how:
+- The time column repeats: it goes 0, 1, 2, then starts over at 0, 1, 2 again
+- The `id` column indicates which measurement each row belongs to: the first three rows are "m1", the next three are "m2"
+- Each measurement has its own time series: measurement "m1" starts with substrate at 10.0, while measurement "m2" starts with substrate at 20.0
+
+When PyEnzyme processes this data, it recognizes that there are two distinct measurements and creates two separate `Measurement` objects. The function returns a list containing both measurements, which you can then add to your document using `enzmldoc.measurements += measurements`.
+
+## Version Compatibility
+
+EnzymeML has evolved over time, and there are different versions of the format in use. You might receive files created with older versions of EnzymeML tools, or you might be working with recently created documents using the latest format. This could potentially be a compatibility headache, but PyEnzyme handles it automatically so you don't have to worry about which version a file uses.
+
+When you try to read a file, PyEnzyme tries different version parsers in sequence until one successfully reads the file. This means you can use the same simple `read_enzymeml()` command regardless of whether the file is in version 1 or version 2 format: PyEnzyme figures it out automatically.
+
+Here's how version compatibility works in practice:
+
+```python
+# PyEnzyme will try v1 and v2 parsers automatically
+enzmldoc = pe.read_enzymeml("old_format.omex")  # Works with v1 files
+enzmldoc = pe.read_enzymeml("new_format.json")  # Works with v2 files
+```
+
+Both of these commands use the same function, and both work correctly. PyEnzyme detects which version the file is in and uses the appropriate parser. You don't need to specify the version or use different functions for different format versions.
+
+## Next Steps
+
+Now that you understand how to import data from various sources into PyEnzyme, you're equipped to work with existing data rather than starting from scratch every time. This import capability is central to PyEnzyme's practical utility in real research workflows.
+
+Once you've imported your data, you'll likely want to work with it in various ways. The [Export](./export.mdx) guide shows you how to save your imported (and potentially modified or enriched) documents in different formats suitable for sharing with collaborators, submitting to databases, or using with specialized analysis tools.
+
+If your imported data is incomplete: perhaps you have measurements but not all the species metadata, the [Creating documents](./creating.mdx) guide explains how to add additional entities like proteins, small molecules, and reactions to complete your documentation.
+
+To enrich imported data with validated information from scientific databases, check out the [Fetchers](./fetchers.mdx) guide. For example, you might import measurement data from Excel, then use fetchers to automatically add complete protein sequences and chemical structures from UniProt and ChEBI.
+
+Finally, if you're working with imported data that uses different measurement units than you prefer, or you're curious about how PyEnzyme handles unit conversions automatically during import, the [Unit handling](./units.mdx) guide provides comprehensive information about PyEnzyme's unit management system.
+
+Together, these capabilities let you build complete, well-documented experimental records by combining imported data with manual entries and database information.

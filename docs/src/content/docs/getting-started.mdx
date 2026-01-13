@@ -1,0 +1,75 @@
+---
+title: Getting Started
+description: A brief introduction to PyEnzyme and what it can do for your enzymatic research data.
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+import { CardGrid } from '@astrojs/starlight/components';
+
+## What is PyEnzyme?
+
+PyEnzyme is the Python interface to the **EnzymeML** data model, offering a convenient way to document and model research data. With its lightweight syntax, PyEnzyme enables rapid development of data management solutions in enzymology and biocatalysis.
+
+PyEnzyme provides reproducible **documentation** of enzymatic and biocatalytic experiments, allowing you to **import** from and **export** to the **EnzymeML** format and more. You can **fetch** entities from official databases like [CheBI](https://www.ebi.ac.uk/chebi/), [UniProt](https://www.uniprot.org/), [PubChem](https://www.ncbi.nlm.nih.gov/pubchem/), [RHEA](https://www.ebi.ac.uk/rhea/), and [PDB](https://www.rcsb.org/), and **visualize** experimental results for inspection and publication.
+
+## Quick Start
+
+Here's a quick example showing what PyEnzyme can do. This snippet demonstrates creating an EnzymeML document, fetching data from databases, and working with measurements:
+
+```python
+import pyenzyme as pe
+
+# Create a simple EnzymeML document
+enzmldoc = pe.EnzymeMLDocument(name="My Experiment")
+
+# Add a vessel (reaction container)
+vessel = enzmldoc.add_to_vessels(
+    id="vessel_1",
+    name="Vessel 1",
+    volume=1.0,
+    unit="l",  # Units are automatically converted
+)
+
+# Fetch a protein from UniProt
+protein = pe.fetch_uniprot("P07327", vessel_id=vessel.id)
+enzmldoc.proteins.append(protein)
+
+# Fetch a reaction from RHEA database
+reaction, participants = pe.fetch_rhea("RHEA:22864", vessel_id=vessel.id)
+enzmldoc.small_molecules += participants
+enzmldoc.reactions.append(reaction)
+
+# Parse experimental data from a file
+measurements = pe.from_excel(
+    path="measurements.xlsx",
+    data_unit="mmol / l",
+    time_unit="h",
+)
+enzmldoc.measurements += measurements
+
+# Save to EnzymeML format
+pe.write_enzymeml(enzmldoc, "enzmldoc.json")
+
+# Load from EnzymeML format
+enzmldoc = pe.read_enzymeml("enzmldoc.json")
+```
+
+This example shows how PyEnzyme simplifies working with enzymatic data by automatically handling unit conversions, fetching metadata from databases, and providing a clean interface for creating structured experimental documentation.
+
+## Next Steps
+
+Ready to get started? Follow these guides to set up PyEnzyme and begin creating your own EnzymeML documents:
+
+<CardGrid>
+  <LinkCard title="Installation" icon="download" href="/basic/installation/">
+    Learn how to install PyEnzyme and its optional dependencies for extended functionality.
+    
+    **[Get started →](/basic/installation/)**
+  </LinkCard>
+  <LinkCard
+    title="Creating EnzymeML Documents" icon="document" href="/basic/creating/">
+    Discover how to create and populate EnzymeML documents with vessels, proteins, reactions, and measurements.
+    
+    **[Learn more →](/basic/creating/)**
+  </LinkCard>
+</CardGrid>
