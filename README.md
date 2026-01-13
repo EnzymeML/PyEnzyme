@@ -6,6 +6,7 @@
 <a href="https://www.codacy.com/gh/EnzymeML/PyEnzyme/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EnzymeML/PyEnzyme&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/4ceb8d010e7b456c926c8b18737ff102"/></a>
 </h1>
 <p align="center">
+
 PyEnzyme is the interface to the data model <b>EnzymeML</b> and offers a convenient way to document and model research data. Lightweight syntax for rapid development of data management solution in enzymology and biocatalysis.</p>
 
 ### 🧬 Features
@@ -49,6 +50,10 @@ using the following options.
 # PySCeS - modeling
 python -m pip install "pyenzyme[pysces]"
 ```
+
+### 📖 Documentation
+
+For further documentation on how to use PyEnzyme, please refer to the [documentation](https://pyenzyme.vercel.app). Here you will find detailed guides on how to use PyEnzyme effectively and efficiently.
 
 ## ⚙️ Example code
 
