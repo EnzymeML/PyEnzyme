@@ -42,9 +42,10 @@ v1 = [
     "deepdiff>=8.5.0,<9",
     "deprecation>=2.1.0,<3",
 ]
+copasi = ["copasi-basico>=0.85"]
 
 [tool.uv]
-default-groups = ["psyces", "excel", "tests", "v1"]
+default-groups = ["excel"]
 
 [build-system]
 requires = ["hatchling"]
