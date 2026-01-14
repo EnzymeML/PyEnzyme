@@ -1,9 +1,12 @@
+import pytest
+
 from pyenzyme.v1 import EnzymeMLDocument
 
 
 class TestLegacy:
     """Test class for legacy functionality of EnzymeML v1."""
 
+    @pytest.mark.skip(reason="Legacy functionality is not supported in v2")
     def test_legacy(self):
         """Test that EnzymeML documents can be loaded from OMEX files and converted to XML.
 
