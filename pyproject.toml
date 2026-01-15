@@ -3,7 +3,7 @@ name = "pyenzyme"
 version = "2.2.1"
 description = "A Python library for EnzymeML"
 authors = [{ name = "Jan Range", email = "range.jan@web.de" }]
-requires-python = ">=3.10,<4"
+requires-python = ">=3.11,<4"
 readme = "README.md"
 license = { text = "BSD-2-Clause" }
 dependencies = [
