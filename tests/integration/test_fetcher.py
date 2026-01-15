@@ -1,3 +1,4 @@
+import httpx
 import pytest
 
 from pyenzyme.fetcher.chebi import fetch_chebi
@@ -155,7 +156,7 @@ class TestFetcher:
 
     @pytest.mark.remote
     def test_fetch_pubchem_to_small_molecule_invalid_id(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(httpx.HTTPStatusError):
             fetch_pubchem(cid="162176127617627")
 
     @pytest.mark.remote

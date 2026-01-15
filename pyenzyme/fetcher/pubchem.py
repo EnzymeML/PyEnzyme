@@ -98,9 +98,6 @@ class PubChemClient(BaseModel):
             response = client.get(url)
             response.raise_for_status()
 
-        if response.status_code != 200:
-            raise ValueError(f"Failed to fetch PubChem data for CID {cid}")
-
         return PubChemQuery(**response.json())
 
     @staticmethod
