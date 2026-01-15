@@ -50,3 +50,9 @@ default-groups = ["excel"]
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[[tool.uv.index]]
+explicit = true
+name = "testpypi"
+publish-url = "https://test.pypi.org/legacy/"
+url = "https://test.pypi.org/simple/"
