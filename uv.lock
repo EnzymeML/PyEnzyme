@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.11, <4"
 resolution-markers = [
     "python_full_version >= '3.12'",
@@ -1469,7 +1469,7 @@ wheels = [
 
 [[package]]
 name = "pyenzyme"
-version = "2.2.1"
+version = "2.2.2"
 source = { editable = "." }
 dependencies = [
     { name = "bokeh" },
@@ -1489,14 +1489,14 @@ dependencies = [
     { name = "sympy" },
 ]
 
-[package.dev-dependencies]
+[package.optional-dependencies]
 copasi = [
     { name = "copasi-basico" },
 ]
 excel = [
     { name = "openpyxl" },
 ]
-psyces = [
+pysces = [
     { name = "lmfit" },
     { name = "pysces" },
 ]
@@ -1516,41 +1516,34 @@ v1 = [
 [package.metadata]
 requires-dist = [
     { name = "bokeh", specifier = ">=3.7.3,<4" },
+    { name = "copasi-basico", marker = "extra == 'copasi'", specifier = ">=0.85" },
+    { name = "deepdiff", marker = "extra == 'v1'", specifier = ">=8.5.0,<9" },
+    { name = "deprecation", marker = "extra == 'v1'", specifier = ">=2.1.0,<3" },
     { name = "dill", specifier = ">=0.3.9,<0.5.0" },
     { name = "fastobo", specifier = ">=0.13.0,<0.14" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "joblib", specifier = ">=1.5.0,<2" },
+    { name = "lmfit", marker = "extra == 'pysces'", specifier = ">=1.3.3,<2" },
     { name = "loguru", specifier = ">=0.7.2,<0.8" },
     { name = "matplotlib", specifier = ">=3.10,<4" },
     { name = "mdmodels", specifier = ">=0.2.4,<0.3" },
+    { name = "numexpr", marker = "extra == 'v1'", specifier = ">=2.11.0,<3" },
+    { name = "openpyxl", marker = "extra == 'excel'", specifier = ">=3.1.4,<4" },
     { name = "pandas", specifier = ">=2.0.0" },
     { name = "pydantic-xml", specifier = ">=2.17.0,<3" },
     { name = "pymetadata", specifier = ">=0.5.3,<0.6" },
+    { name = "pysces", marker = "extra == 'pysces'", specifier = ">=1.2.3,<2" },
+    { name = "pytest", marker = "extra == 'tests'", specifier = ">=8.2.2,<9" },
+    { name = "pytest-httpx", marker = "extra == 'tests'", specifier = ">=0.35.0,<0.36" },
+    { name = "pytest-sugar", marker = "extra == 'tests'", specifier = ">=1.1.1" },
+    { name = "python-libcombine", marker = "extra == 'v1'", specifier = ">=0.2.20,<0.3" },
     { name = "python-libsbml", specifier = ">=5.20.2,<6" },
     { name = "rdflib", specifier = "==7.0.0" },
     { name = "rich", specifier = ">=13.7.1,<14" },
+    { name = "seaborn", marker = "extra == 'v1'", specifier = ">=0.13.2,<0.14" },
     { name = "sympy", specifier = ">=1.12.1,<2" },
 ]
-
-[package.metadata.requires-dev]
-copasi = [{ name = "copasi-basico", specifier = ">=0.85" }]
-excel = [{ name = "openpyxl", specifier = ">=3.1.4,<4" }]
-psyces = [
-    { name = "lmfit", specifier = ">=1.3.3,<2" },
-    { name = "pysces", specifier = ">=1.2.3,<2" },
-]
-tests = [
-    { name = "pytest", specifier = ">=8.2.2,<9" },
-    { name = "pytest-httpx", specifier = ">=0.35.0,<0.36" },
-    { name = "pytest-sugar", specifier = ">=1.1.1" },
-]
-v1 = [
-    { name = "deepdiff", specifier = ">=8.5.0,<9" },
-    { name = "deprecation", specifier = ">=2.1.0,<3" },
-    { name = "numexpr", specifier = ">=2.11.0,<3" },
-    { name = "python-libcombine", specifier = ">=0.2.20,<0.3" },
-    { name = "seaborn", specifier = ">=0.13.2,<0.14" },
-]
+provides-extras = ["pysces", "excel", "tests", "v1", "copasi"]
 
 [[package]]
 name = "pyerfa"
@@ -1632,6 +1625,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/7d/a9/ae4adbb20ae4c0e6a3279782bd5fed7228668915903339714d65bac3c5f0/pysces-1.2.3-cp313-cp313-macosx_14_0_arm64.whl", hash = "sha256:0ad88654d946cf8a7154c5dd708ed11b73ba2106ab14092ac51e4fc3ab5bfed5", size = 1740069, upload-time = "2025-05-07T09:12:10.864Z" },
     { url = "https://files.pythonhosted.org/packages/46/0a/a07947532ca60f96c9515e937c9620762b64d8eaf417bba4eebea14d90ce/pysces-1.2.3-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2e54ee6ef5b7a833eddd7f1ab119d6910fa823080140d9f7c6fbfb10c03d74eb", size = 2029300, upload-time = "2025-05-07T09:12:12.247Z" },
     { url = "https://files.pythonhosted.org/packages/4c/9c/3fa5285f99005e84e0b8561eadd3c8303ddb642222ed4a5c96319e9310ed/pysces-1.2.3-cp313-cp313-win_amd64.whl", hash = "sha256:f8dace7fad10927e0745089c86ef7424c7a063a51777237471a5c23fb29469fb", size = 1657341, upload-time = "2025-05-07T09:12:14.038Z" },
+    { url = "https://files.pythonhosted.org/packages/44/e2/72acdaaa65364fcea71e27bc8f52ea531b8ca1c035aa6f5f132e104d59e9/pysces-1.2.3-cp314-cp314-macosx_15_0_arm64.whl", hash = "sha256:2bae811bb175114aefb77669e2006e4277bcbd82b8cc7b5a7e7a46207052b37d", size = 1743741, upload-time = "2026-02-10T21:23:41.012Z" },
+    { url = "https://files.pythonhosted.org/packages/87/3b/680c9abf8c098e4850f5715fc04d2bda06ae5759fb4c4536608ebd37178c/pysces-1.2.3-cp314-cp314-macosx_15_0_x86_64.whl", hash = "sha256:e9de8caaa0857279757cdb812470647465667b6c7d75f98288ef9400038d04c3", size = 2364813, upload-time = "2026-02-10T21:23:36.667Z" },
+    { url = "https://files.pythonhosted.org/packages/7a/bd/eabb9a08107a7a8f01cde9291d3979070eece932091ceb4d55a82042b949/pysces-1.2.3-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:c95635344fd3a1fa1bb5f33879ee412ae67a4ef22388b746bb52aaae882ff73a", size = 2049933, upload-time = "2026-02-10T21:23:44.431Z" },
+    { url = "https://files.pythonhosted.org/packages/03/fe/c20e92d104e99412932490ddb7104259d9c792ae66afed067e9883cd6598/pysces-1.2.3-cp314-cp314-win_amd64.whl", hash = "sha256:11938b9103a1afe7b8dbe9d296d2f050f7186a076cf28998dc4ffb44e61cdbb4", size = 1672084, upload-time = "2026-02-10T21:23:49.378Z" },
+    { url = "https://files.pythonhosted.org/packages/a6/9d/e463ce7b50cfecb04b579e3be2942c3fdeeaec84ebceda93b1f39b655767/pysces-1.2.3-cp314-cp314-win_arm64.whl", hash = "sha256:5410ddfef77e53d0dc03e65577f61ff6d78c5c9ea65c9a5191293a94237f14d2", size = 1131373, upload-time = "2026-02-10T21:23:46.388Z" },
 ]
 
 [[package]]
