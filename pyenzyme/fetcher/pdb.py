@@ -8,7 +8,7 @@ Protein Data Bank by ID and map it to the PyEnzyme data model (v2).
 from typing import Any, Dict, List, Optional
 
 import httpx
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from pyenzyme.fetcher.chebi import process_id
 from pyenzyme.versions import v2
@@ -18,6 +18,10 @@ DEFAULT_TIMEOUT = 5.0
 
 class Citation(BaseModel):
     """Model for PDB citation data"""
+
+    # The PDB API returns numeric identifiers (e.g. PubMed ID) as integers,
+    # so coerce them to strings to match the string-typed fields below.
+    model_config = ConfigDict(coerce_numbers_to_str=True)
 
     title: Optional[str] = None
     authors: Optional[List[str]] = None
