@@ -1,9 +1,11 @@
 import pytest
 import pyenzyme as pe
 from pyenzyme.tools import to_dict_wo_json_ld
+from tests.utils import skip_on_forbidden
 
 
 class TestComposer:
+    @skip_on_forbidden
     def test_compose(self):
         # Act
         doc = pe.compose(
@@ -23,6 +25,7 @@ class TestComposer:
         expected_doc = pe.read_enzymeml("tests/fixtures/compose/expected_compose.json")
         assert to_dict_wo_json_ld(doc) == to_dict_wo_json_ld(expected_doc)
 
+    @skip_on_forbidden
     def test_compose_with_prefix(self):
         # Act
         doc = pe.compose(
@@ -42,6 +45,7 @@ class TestComposer:
         expected_doc = pe.read_enzymeml("tests/fixtures/compose/expected_compose.json")
         assert to_dict_wo_json_ld(doc) == to_dict_wo_json_ld(expected_doc)
 
+    @skip_on_forbidden
     def test_compose_no_vessel(self):
         # Act
         doc = pe.compose(
