@@ -197,17 +197,21 @@ def _fetch_with_fetchers(
     Raises:
         ValueError: If no fetcher can handle the given entity ID
     """
+    last_error: Optional[Exception] = None
     for fetcher in fetchers:
         try:
             return fetcher(entity_id)
-        except Exception:
+        except Exception as e:
+            last_error = e
             continue
 
     fetcher_names = ", ".join(f.__name__ for f in fetchers)
+    # Chain the last underlying error so callers can inspect the real cause
+    # (e.g. an HTTP 403 from a remote database blocked in CI).
     raise ValueError(
         f"No {entity_type} fetcher found for {entity_id}. "
         f"Supported fetchers: {fetcher_names}"
-    )
+    ) from last_error
 
 
 def _remove_duplicates(objects: List[Any]) -> List[Any]:
