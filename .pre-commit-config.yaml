@@ -1,0 +1,14 @@
+# Run once per clone:  uv run pre-commit install
+repos:
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.11.31
+    hooks:
+      # Re-locks uv.lock whenever pyproject.toml changes, so the two can't drift.
+      - id: uv-lock
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.22
+    hooks:
+      # Same lint gate CI runs (lint.yml lints ./pyenzyme and ./tests only).
+      - id: ruff-check
+        files: ^(pyenzyme|tests)/
