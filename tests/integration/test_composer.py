@@ -3,6 +3,7 @@ import pyenzyme as pe
 from pyenzyme.tools import to_dict_wo_json_ld
 
 
+@pytest.mark.remote
 class TestComposer:
     def test_compose(self):
         # Act
