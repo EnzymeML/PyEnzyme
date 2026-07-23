@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from importlib.metadata import version
+
 from mdmodels.units.unit_definition import UnitDefinition, UnitType
 
 from .composer import compose
@@ -45,4 +47,4 @@ __all__ = [
     "group_measurements",
 ]
 
-__version__ = "2.2.2"
+__version__ = version("pyenzyme")
