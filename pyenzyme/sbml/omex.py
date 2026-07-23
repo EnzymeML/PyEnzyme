@@ -114,14 +114,15 @@ def create_sbml_omex(
         sbml_path = f"{temp_dir}/model.xml"
         with open(sbml_path, "w") as f:
             f.write(sbml_doc)
-            omex.add_entry(
-                entry_path=Path(sbml_path),
-                entry=ManifestEntry(
-                    location="./model.xml",
-                    format=EntryFormat.SBML,
-                    master=True,
-                ),
-            )
+        # add_entry copies from entry_path, so the file must be closed/flushed first
+        omex.add_entry(
+            entry_path=Path(sbml_path),
+            entry=ManifestEntry(
+                location="./model.xml",
+                format=EntryFormat.SBML,
+                master=True,
+            ),
+        )
 
         if data is not None:
             data_path = f"{temp_dir}/data.tsv"
