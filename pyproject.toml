@@ -10,6 +10,7 @@ dependencies = [
     "python-libsbml>=5.20.2,<6",
     "rich>=13.7.1,<14",
     "pandas>=2.0.0",
+    "pydantic>=2,<3",
     "pydantic-xml>=2.17.0,<3",
     "loguru>=0.7.2,<0.8",
     "rdflib==7.0.0",
