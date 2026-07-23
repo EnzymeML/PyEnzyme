@@ -5,14 +5,28 @@ on:
     types: [released]
 
 jobs:
-  deploy:
+  check-version:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
+      - name: Verify release tag matches package version
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          VER="$(grep -m1 '^version = ' pyproject.toml | sed -E 's/.*"([^"]+)".*/\1/')"
+          echo "tag=$TAG  pyproject=$VER"
+          test "$TAG" = "$VER"
+
+  test:
+    uses: ./.github/workflows/unit-tests.yaml
+
+  publish:
+    needs: [check-version, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v9.0.0
 
       - name: Publish Package
         env:

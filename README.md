@@ -139,6 +139,13 @@ For new projects, we recommend utilizing the updated API available in the packag
 
 ## 🧪 Testing
 
+Contributors should install the pre-commit hooks once per clone (keeps `uv.lock` in sync and runs the linter before each commit):
+
+```bash
+uv tool install pre-commit
+pre-commit install
+```
+
 In order to run tests there are two different ways. First you can utilize `pytest` directly by running the following:
 
 ```bash

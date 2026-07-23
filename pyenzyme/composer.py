@@ -197,16 +197,18 @@ def _fetch_with_fetchers(
     Raises:
         ValueError: If no fetcher can handle the given entity ID
     """
+    errors = []
     for fetcher in fetchers:
         try:
             return fetcher(entity_id)
-        except Exception:
+        except Exception as e:
+            errors.append(f"{fetcher.__name__}: {type(e).__name__}: {e}")
             continue
 
-    fetcher_names = ", ".join(f.__name__ for f in fetchers)
+    detail = "; ".join(errors)
     raise ValueError(
-        f"No {entity_type} fetcher found for {entity_id}. "
-        f"Supported fetchers: {fetcher_names}"
+        f"No {entity_type} fetcher succeeded for {entity_id}. "
+        f"Tried: {detail}"
     )
 
 
