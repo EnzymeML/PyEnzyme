@@ -24,7 +24,7 @@ class Citation(BaseModel):
     journal_name: Optional[str] = Field(default=None, alias="journal_abbrev")
     year: Optional[int] = None
     doi: Optional[str] = None
-    pubmed_id: Optional[str] = Field(default=None, alias="pdbx_database_id_PubMed")
+    pubmed_id: Optional[int] = Field(default=None, alias="pdbx_database_id_PubMed")
 
 
 class StructInfo(BaseModel):
@@ -261,9 +261,8 @@ def fetch_pdb(
     if pdb_response.citation and pdb_response.citation[0].doi:
         protein.references.append(f"https://doi.org/{pdb_response.citation[0].doi}")
 
-    if pdb_response.citation and pdb_response.citation[0].pubmed_id:
-        protein.references.append(
-            f"https://pubmed.ncbi.nlm.nih.gov/{pdb_response.citation[0].pubmed_id}"
-        )
+    if pdb_response.citation and pdb_response.citation[0].pubmed_id is not None:
+        pubmed_id = str(pdb_response.citation[0].pubmed_id)
+        protein.references.append(f"https://pubmed.ncbi.nlm.nih.gov/{pubmed_id}")
 
     return protein
