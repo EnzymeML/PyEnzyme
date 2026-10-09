@@ -1,8 +1,9 @@
 import json
-import pyenzyme as pe
-from pyenzyme.suite import EnzymeMLSuite
+
 from pytest_httpx import HTTPXMock
 
+import pyenzyme as pe
+from pyenzyme.suite import EnzymeMLSuite
 from pyenzyme.tools import to_dict_wo_json_ld
 from pyenzyme.versions import v2
 
@@ -10,7 +11,7 @@ from pyenzyme.versions import v2
 class TestSuite:
     def test_fetch_current(self, httpx_mock: HTTPXMock):
         # Arrange
-        with open("tests/fixtures/sbml/ode_example_enzml.json", "r") as f:
+        with open("tests/fixtures/sbml/ode_example_enzml.json") as f:
             data = json.load(f)
             httpx_mock.add_response(json={"data": {"content": data}})
 
@@ -24,7 +25,7 @@ class TestSuite:
 
     def test_update_current(self, httpx_mock: HTTPXMock):
         # Arrange
-        with open("tests/fixtures/sbml/ode_example_enzml.json", "r") as f:
+        with open("tests/fixtures/sbml/ode_example_enzml.json") as f:
             data = pe.read_enzymeml_from_string(json.load(f))
             httpx_mock.add_response(
                 match_json=json.loads(data.model_dump_json()),

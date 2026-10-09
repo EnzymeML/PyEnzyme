@@ -5,9 +5,10 @@ This module provides functionality to fetch protein data from the
 UniProt database by ID and map it to the PyEnzyme data model (v2).
 """
 
+
 import requests
-from typing import List, Optional, Union
 from pydantic import BaseModel, Field, ValidationError
+
 from pyenzyme.fetcher.chebi import process_id
 from pyenzyme.versions import v2
 
@@ -28,21 +29,21 @@ class RecommendedName(BaseModel):
     """Model for a recommended or submitted protein name in UniProt API"""
 
     full_name: ProteinName = Field(alias="fullName")
-    ec_numbers: Optional[List[ECNumber]] = Field(default=None, alias="ecNumbers")
+    ec_numbers: list[ECNumber] | None = Field(default=None, alias="ecNumbers")
 
 
 class ProteinDescription(BaseModel):
     """Model for protein description in UniProt API"""
 
-    recommended_name: Optional[RecommendedName] = Field(
+    recommended_name: RecommendedName | None = Field(
         default=None, alias="recommendedName"
     )
-    submission_names: List[RecommendedName] = Field(
+    submission_names: list[RecommendedName] = Field(
         default_factory=list, alias="submissionNames"
     )
 
     @property
-    def name(self) -> Optional[RecommendedName]:
+    def name(self) -> RecommendedName | None:
         """Recommended name, or the first submission name for unreviewed (TrEMBL) entries."""
         if self.recommended_name:
             return self.recommended_name
@@ -52,8 +53,8 @@ class ProteinDescription(BaseModel):
 class Organism(BaseModel):
     """Model for organism in UniProt API"""
 
-    scientific_name: Optional[str] = Field(default=None, alias="scientificName")
-    taxon_id: Optional[int] = Field(default=None, alias="taxonId")
+    scientific_name: str | None = Field(default=None, alias="scientificName")
+    taxon_id: int | None = Field(default=None, alias="taxonId")
 
 
 class Sequence(BaseModel):
@@ -61,7 +62,7 @@ class Sequence(BaseModel):
 
     value: str
     length: int
-    mol_weight: Optional[int] = Field(default=None, alias="molWeight")
+    mol_weight: int | None = Field(default=None, alias="molWeight")
 
 
 class UniProtEntry(BaseModel):
@@ -71,10 +72,10 @@ class UniProtEntry(BaseModel):
 
     id: str = Field(alias="uniProtkbId")
     protein_description: ProteinDescription = Field(alias="proteinDescription")
-    organism: Optional[Organism] = None
-    sequence: Optional[Sequence] = None
+    organism: Organism | None = None
+    sequence: Sequence | None = None
     accession: str = Field(alias="primaryAccession")
-    annotation_score: Optional[float] = Field(default=None, alias="annotationScore")
+    annotation_score: float | None = Field(default=None, alias="annotationScore")
 
 
 class UniProtClient:
@@ -86,7 +87,7 @@ class UniProtClient:
         """Initialize the UniProt client."""
         pass
 
-    def get_entry_by_id(self, uniprot_id: str) -> Union[UniProtEntry, None]:
+    def get_entry_by_id(self, uniprot_id: str) -> UniProtEntry | None:
         """
         Fetch a UniProt entry by its ID.
 
@@ -135,8 +136,8 @@ class UniProtClient:
 
 def fetch_uniprot(
     uniprot_id: str,
-    protein_id: Optional[str] = None,
-    vessel_id: Optional[str] = None,
+    protein_id: str | None = None,
+    vessel_id: str | None = None,
 ) -> v2.Protein:
     """
     Fetch a UniProt entry by ID and convert it to a Protein object.

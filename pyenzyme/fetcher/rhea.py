@@ -7,7 +7,7 @@ Rhea database by ID and map it to the PyEnzyme data model (v2).
 
 import re
 from io import StringIO
-from typing import ClassVar, List, Optional, Tuple
+from typing import ClassVar
 
 import httpx
 import pandas as pd
@@ -46,7 +46,7 @@ class RheaQuery(BaseModel):
     """
 
     count: int
-    results: List[RheaResult]
+    results: list[RheaResult]
 
 
 class RheaClient(BaseModel):
@@ -65,7 +65,7 @@ class RheaClient(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     json_content: RheaResult
-    chebi_ids: List[str]
+    chebi_ids: list[str]
 
     BASE_URL: ClassVar[str] = (
         "https://www.rhea-db.org/rhea/?query=RHEA:{0}&columns=rhea-id,equation,chebi-id&format={1}&limit=10"
@@ -147,8 +147,8 @@ class RheaClient(BaseModel):
 
 def fetch_rhea(
     rhea_id: str,
-    vessel_id: Optional[str] = None,
-) -> Tuple[v2.Reaction, List[v2.SmallMolecule]]:
+    vessel_id: str | None = None,
+) -> tuple[v2.Reaction, list[v2.SmallMolecule]]:
     """
     Fetch a Rhea entry by ID and convert it to a Reaction object.
 
@@ -227,7 +227,7 @@ def fetch_rhea(
     return reaction, small_molecules
 
 
-def _split_chemical_equation_side(equation_side: str) -> List[str]:
+def _split_chemical_equation_side(equation_side: str) -> list[str]:
     """
     Split a chemical equation side on '+' while respecting parentheses.
 

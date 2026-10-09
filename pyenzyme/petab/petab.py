@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List, Union, Optional
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -19,12 +19,12 @@ class PEtab(BaseModel):
         description="Version of the PEtab format. Only value 1 is supported.",
     )
 
-    parameter_file: Union[Path, List[Path]] = Field(
+    parameter_file: Path | list[Path] = Field(
         description="File name (absolute or relative) or URL to PEtab parameter table "
         "containing parameters of all models listed in `problems`. A single "
         "table may be split into multiple files and described as an array here."
     )
-    problems: List[Problem] = Field(
+    problems: list[Problem] = Field(
         default_factory=list,
         description="One or multiple PEtab problems (sets of model, condition, observable "
         "and measurement files). If different model and data files are "
@@ -35,11 +35,11 @@ class PEtab(BaseModel):
 
     def add_problem(
         self,
-        sbml_files: List[Path],
-        measurement_files: List[Path],
-        condition_files: List[Path],
-        observable_files: List[Path],
-        visualization_files: Optional[List[Path]] = None,
+        sbml_files: list[Path],
+        measurement_files: list[Path],
+        condition_files: list[Path],
+        observable_files: list[Path],
+        visualization_files: list[Path] | None = None,
     ) -> None:
         """
         Add a problem to the PEtab object.
@@ -60,13 +60,13 @@ class Problem(BaseModel):
     A set of PEtab model, condition, observable and measurement files and optional visualization files.
     """
 
-    sbml_files: List[Path] = Field(description="List of PEtab SBML files.")
-    measurement_files: List[Path] = Field(
+    sbml_files: list[Path] = Field(description="List of PEtab SBML files.")
+    measurement_files: list[Path] = Field(
         description="List of PEtab measurement files."
     )
-    condition_files: List[Path] = Field(description="List of PEtab condition files.")
-    observable_files: List[Path] = Field(description="List of PEtab observable files.")
-    visualization_files: Optional[List[Path]] = Field(
+    condition_files: list[Path] = Field(description="List of PEtab condition files.")
+    observable_files: list[Path] = Field(description="List of PEtab observable files.")
+    visualization_files: list[Path] | None = Field(
         default=None,
         description="List of PEtab visualization files.",
     )

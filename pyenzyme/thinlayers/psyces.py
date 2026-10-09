@@ -11,7 +11,6 @@ import io
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 import dill
 import numpy as np
@@ -63,7 +62,7 @@ class ThinLayerPysces(BaseThinLayer):
         self,
         enzmldoc: v2.EnzymeMLDocument,
         model_dir: Path | str = "./pysces_models",
-        measurement_ids: Optional[List[str]] = None,
+        measurement_ids: list[str] | None = None,
     ):
         """
         Initialize the ThinLayerPysces instance.
@@ -128,7 +127,7 @@ class ThinLayerPysces(BaseThinLayer):
         t0: float,
         t1: float,
         nsteps: int = 100,
-    ) -> Tuple[SimResult, Time]:
+    ) -> tuple[SimResult, Time]:
         """
         Integrates the model from t0 to t1 with the given initial conditions.
 
@@ -469,7 +468,7 @@ class ThinLayerPysces(BaseThinLayer):
 
     def _simulate_condition(
         self, init_concs: InitMap
-    ) -> Tuple[List[np.ndarray], List[str]]:
+    ) -> tuple[list[np.ndarray], list[str]]:
         """
         Simulates a single experimental condition.
 
@@ -502,11 +501,11 @@ class InitMap:
         species (Dict[str, float]): Dictionary mapping species IDs to initial concentrations.
     """
 
-    time: List[float]
-    species: Dict[str, float]
+    time: list[float]
+    species: dict[str, float]
 
     @classmethod
-    def from_measurement(cls, meas: v2.Measurement, df: pd.DataFrame) -> "InitMap":
+    def from_measurement(cls, meas: v2.Measurement, df: pd.DataFrame) -> InitMap:
         """
         Create an InitMap instance from a measurement and its dataframe.
 

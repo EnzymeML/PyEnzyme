@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-from typing import Optional
 
 import pandas as pd
 import rich
@@ -24,7 +23,7 @@ class EnzymeMLHandler:
     """
 
     @classmethod
-    def read_enzymeml(cls, path: str) -> v2.EnzymeMLDocument:  # noqa: F405
+    def read_enzymeml(cls, path: str) -> v2.EnzymeMLDocument:
         """Read an EnzymeML document from a file.
 
         Attempts to read the document using different version parsers until successful.
@@ -47,7 +46,7 @@ class EnzymeMLHandler:
                     continue
             elif version == "v2":
                 try:
-                    with open(path, "r") as f:
+                    with open(path) as f:
                         data = json.load(f)
 
                     return v2.EnzymeMLDocument.model_validate(data)
@@ -58,7 +57,7 @@ class EnzymeMLHandler:
         raise ValueError(f"Invalid EnzymeML version: {path}") from error
 
     @classmethod
-    def read_enzymeml_from_string(cls, data: str) -> v2.EnzymeMLDocument:  # noqa: F405
+    def read_enzymeml_from_string(cls, data: str) -> v2.EnzymeMLDocument:
         """Read an EnzymeML document from a string.
 
         Attempts to read the document using different version parsers until successful.
@@ -87,7 +86,7 @@ class EnzymeMLHandler:
         df: pd.DataFrame,
         data_unit: str,
         time_unit: str,
-    ) -> list[v2.Measurement]:  # noqa: F405
+    ) -> list[v2.Measurement]:
         """Parse a pandas DataFrame into a list of measurements.
 
         This function expects the DataFrame to have the following structure:
@@ -120,7 +119,7 @@ class EnzymeMLHandler:
         cls,
         enzmldoc: v2.EnzymeMLDocument,
         path: Path | str | None = None,
-    ) -> Optional[str]:  # noqa: F405
+    ) -> str | None:
         """Write an EnzymeML document to a file or return as a string.
 
         Args:
@@ -154,7 +153,7 @@ class EnzymeMLHandler:
         enzmldoc: v2.EnzymeMLDocument,
         path: Path | str | None = None,
         verbose: bool = False,
-    ) -> tuple[str, pd.DataFrame | None]:  # noqa: F405
+    ) -> tuple[str, pd.DataFrame | None]:
         """Convert an EnzymeML document to SBML format and write it to a file.
 
         The systems biology markup language (SBML) is a machine-readable format for
@@ -186,7 +185,7 @@ class EnzymeMLHandler:
         cls,
         enzmldoc: v2.EnzymeMLDocument,
         path: Path | str,
-    ) -> PEtab:  # noqa: F405
+    ) -> PEtab:
         """
         Convert an EnzymeML document to a PEtab parameter estimation problem and write to file.
 
@@ -226,7 +225,7 @@ class EnzymeMLHandler:
     def from_sbml(
         cls,
         path: Path | str,
-    ) -> v2.EnzymeMLDocument:  # noqa: F405
+    ) -> v2.EnzymeMLDocument:
         """
         Read an SBML file and initialize an EnzymeML document.
 
@@ -249,7 +248,7 @@ class EnzymeMLHandler:
         cls,
         enzmldoc: v2.EnzymeMLDocument,
         per_measurement: bool = False,
-    ) -> pd.DataFrame | dict[str, pd.DataFrame]:  # noqa: F405
+    ) -> pd.DataFrame | dict[str, pd.DataFrame]:
         """Convert an EnzymeML document to a pandas DataFrame.
 
         The resulting DataFrame contains the following columns:
@@ -285,7 +284,7 @@ class EnzymeMLHandler:
         time_unit: str,
         data_type: v2.DataTypes = v2.DataTypes.CONCENTRATION,
         sep: str = "\t",
-    ) -> list[v2.Measurement]:  # noqa: F405
+    ) -> list[v2.Measurement]:
         """Reads a CSV file from the specified path into a measurement.
 
         This function expects the CSV file to have the following structure:
@@ -322,7 +321,7 @@ class EnzymeMLHandler:
         data_unit: str,
         time_unit: str,
         data_type: v2.DataTypes = v2.DataTypes.CONCENTRATION,
-    ) -> list[v2.Measurement]:  # noqa: F405
+    ) -> list[v2.Measurement]:
         """Reads an Excel file from the specified path into Measurement objects.
 
         This function expects the Excel file to have the following structure:

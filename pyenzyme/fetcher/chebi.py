@@ -6,7 +6,6 @@ ChEBI database by ID and map it to the PyEnzyme data model (v2).
 """
 
 import re
-from typing import List, Optional
 
 import httpx
 from pydantic import BaseModel, ConfigDict, Field
@@ -19,7 +18,7 @@ DEFAULT_TIMEOUT = 5.0
 class ChEBIError(Exception):
     """Error class for ChEBI-specific errors."""
 
-    def __init__(self, message: str, cause: Optional[Exception] = None):
+    def __init__(self, message: str, cause: Exception | None = None):
         super().__init__(message)
         self.cause = cause
 
@@ -30,19 +29,19 @@ class ChebiSearchSource(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     chebi_accession: str
-    name: Optional[str] = None
+    name: str | None = None
     ascii_name: str
-    smiles: Optional[str] = None
-    inchi: Optional[str] = None
-    inchikey: Optional[str] = None
-    definition: Optional[str] = None
-    formula: Optional[str] = None
-    charge: Optional[int] = None
-    mass: Optional[float] = None
-    monoisotopicmass: Optional[float] = None
-    stars: Optional[int] = None
-    default_structure: Optional[int] = None
-    structures: Optional[List[int]] = None
+    smiles: str | None = None
+    inchi: str | None = None
+    inchikey: str | None = None
+    definition: str | None = None
+    formula: str | None = None
+    charge: int | None = None
+    mass: float | None = None
+    monoisotopicmass: float | None = None
+    stars: int | None = None
+    default_structure: int | None = None
+    structures: list[int] | None = None
 
 
 class ChebiSearchResult(BaseModel):
@@ -56,7 +55,7 @@ class ChebiSearchResult(BaseModel):
 class ChebiSearchResponse(BaseModel):
     """Search response structure from ChEBI search API."""
 
-    results: List[ChebiSearchResult]
+    results: list[ChebiSearchResult]
     total: int
     number_pages: int
 
@@ -105,14 +104,14 @@ class ChEBIClient:
                 except Exception as e:
                     if isinstance(e, ChEBIError):
                         raise e
-                    raise ChEBIError(f"Failed to parse ChEBI response: {str(e)}", e)
+                    raise ChEBIError(f"Failed to parse ChEBI response: {e!s}", e)
             else:
                 raise ChEBIError(f"HTTP {response.status_code}: {response.text}")
 
         except httpx.HTTPStatusError as e:
-            raise ChEBIError(f"Failed to fetch ChEBI ID {chebi_id}: {str(e)}", e)
+            raise ChEBIError(f"Failed to fetch ChEBI ID {chebi_id}: {e!s}", e)
 
-    def get_entries_batch(self, chebi_ids: List[str]) -> List[ChebiSearchSource]:
+    def get_entries_batch(self, chebi_ids: list[str]) -> list[ChebiSearchSource]:
         """
         Fetch multiple ChEBI entries by their IDs using the search API.
 
@@ -136,13 +135,13 @@ class ChEBIClient:
                 results.append(entry)
             except ChEBIError as e:
                 # Continue with other IDs even if one fails
-                raise ChEBIError(f"Failed to fetch ChEBI ID {chebi_id}: {str(e)}", e)
+                raise ChEBIError(f"Failed to fetch ChEBI ID {chebi_id}: {e!s}", e)
 
         return results
 
     def search_entries(
-        self, query: str, size: Optional[int] = None, page: int = 1
-    ) -> List[ChebiSearchSource]:
+        self, query: str, size: int | None = None, page: int = 1
+    ) -> list[ChebiSearchSource]:
         """
         Search for ChEBI entries by query string.
 
@@ -178,14 +177,14 @@ class ChEBIClient:
                 except Exception as e:
                     if isinstance(e, ChEBIError):
                         raise e
-                    raise ChEBIError(f"Invalid search response format: {str(e)}", e)
+                    raise ChEBIError(f"Invalid search response format: {e!s}", e)
             else:
                 raise ChEBIError(
                     f"Search failed: HTTP {response.status_code}: {response.text}"
                 )
 
         except httpx.HTTPStatusError as e:
-            raise ChEBIError(f"Failed to search ChEBI: {str(e)}", e)
+            raise ChEBIError(f"Failed to search ChEBI: {e!s}", e)
 
 
 def process_search_result(source: ChebiSearchSource) -> v2.SmallMolecule:
@@ -227,8 +226,8 @@ def process_search_result(source: ChebiSearchSource) -> v2.SmallMolecule:
 
 def fetch_chebi(
     chebi_id: str,
-    smallmol_id: Optional[str] = None,
-    vessel_id: Optional[str] = None,
+    smallmol_id: str | None = None,
+    vessel_id: str | None = None,
 ) -> v2.SmallMolecule:
     """
     Fetch a ChEBI entry by ID and convert it to a SmallMolecule object.
@@ -264,7 +263,7 @@ def fetch_chebi(
             raise ValueError(str(e)) from e
 
 
-def fetch_chebi_batch(chebi_ids: List[str]) -> List[v2.SmallMolecule]:
+def fetch_chebi_batch(chebi_ids: list[str]) -> list[v2.SmallMolecule]:
     """
     Fetch multiple ChEBI entries by their IDs and convert them to SmallMolecule objects.
 
@@ -287,7 +286,7 @@ def fetch_chebi_batch(chebi_ids: List[str]) -> List[v2.SmallMolecule]:
     return [process_search_result(source) for source in chebi_sources]
 
 
-def search_chebi(query: str, size: Optional[int] = None) -> List[v2.SmallMolecule]:
+def search_chebi(query: str, size: int | None = None) -> list[v2.SmallMolecule]:
     """
     Search for ChEBI entries by query string.
 

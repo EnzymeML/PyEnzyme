@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, get_origin, get_args
+from typing import TYPE_CHECKING, Any, get_args, get_origin
 
 if TYPE_CHECKING:
     from pyenzyme.versions.v2 import EnzymeMLDocument

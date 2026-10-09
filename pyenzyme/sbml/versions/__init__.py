@@ -1,15 +1,15 @@
 from .v2 import (
-    DataAnnot,
-    SpeciesDataAnnot,
-    ProteinAnnot,
-    ParameterAnnot,
     ComplexAnnot,
+    DataAnnot,
+    ParameterAnnot,
+    ProteinAnnot,
+    SpeciesDataAnnot,
 )
 
 __all__ = [
-    "DataAnnot",
-    "SpeciesDataAnnot",
-    "ProteinAnnot",
-    "ParameterAnnot",
     "ComplexAnnot",
+    "DataAnnot",
+    "ParameterAnnot",
+    "ProteinAnnot",
+    "SpeciesDataAnnot",
 ]

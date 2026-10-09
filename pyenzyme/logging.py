@@ -1,4 +1,5 @@
 import sys
+
 from loguru import logger
 
 
@@ -31,11 +32,11 @@ def add_logger(
 
     """
     format = (
-        "  <cyan>%s</cyan>\t{module: >10}\t<level>{level}</level>: {message}" % name
+        f"  <cyan>{name}</cyan>\t{{module: >10}}\t<level>{{level}}</level>: {{message}}"
     )
 
     if isinstance(channel, str):
-        format = "{time:YYYY-MM-DD HH:mm:ss} %s {level}: {message}" % name
+        format = f"{{time:YYYY-MM-DD HH:mm:ss}} {name} {{level}}: {{message}}"
 
     logger.remove()
     logger.add(

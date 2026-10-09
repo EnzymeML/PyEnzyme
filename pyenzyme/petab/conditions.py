@@ -1,7 +1,9 @@
-from typing import Dict, Any
+from typing import Any
+
 from pydantic import Field
 
 from pyenzyme.versions import v2
+
 from .baserow import BaseRow
 
 
@@ -22,7 +24,7 @@ class ConditionRow(BaseRow):
     condition_name: str = Field(alias="conditionName")
     species: dict[str, float] = Field(default_factory=dict)
 
-    def to_row(self) -> Dict[str, Any]:
+    def to_row(self) -> dict[str, Any]:
         """
         Converts the condition to a dictionary suitable for a PEtab conditions table row.
 

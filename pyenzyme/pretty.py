@@ -1,8 +1,9 @@
 from typing import TYPE_CHECKING
+
+from rich.columns import Columns
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-from rich.columns import Columns
 
 if TYPE_CHECKING:
     from pyenzyme.versions.v2 import EnzymeMLDocument

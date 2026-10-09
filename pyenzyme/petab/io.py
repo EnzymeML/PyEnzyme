@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Union
 
 import pandas as pd
 import yaml
@@ -21,7 +20,7 @@ MEASUREMENT_FILENAME = "measurements.tsv"
 SBML_FILENAME = "model.xml"
 
 
-def to_petab(doc: v2.EnzymeMLDocument, path: Union[Path, str]) -> PEtab:
+def to_petab(doc: v2.EnzymeMLDocument, path: Path | str) -> PEtab:
     """
     Convert an EnzymeML document to a PEtab parameter estimation problem.
 

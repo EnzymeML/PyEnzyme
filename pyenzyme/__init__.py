@@ -28,23 +28,23 @@ to_petab = EnzymeMLHandler.to_petab
 write_enzymeml = EnzymeMLHandler.write_enzymeml
 
 __all__ = [
+    "EnzymeMLHandler",
+    "EnzymeMLSuite",
     "UnitDefinition",
     "UnitType",
-    "EnzymeMLSuite",
-    "EnzymeMLHandler",
+    "compose",
     "from_csv",
     "from_dataframe",
     "from_excel",
     "from_sbml",
+    "group_measurements",
+    "plot",
+    "plot_interactive",
     "read_enzymeml",
+    "summary",
     "to_pandas",
     "to_sbml",
     "write_enzymeml",
-    "compose",
-    "plot",
-    "plot_interactive",
-    "summary",
-    "group_measurements",
 ]
 
 __version__ = version("pyenzyme")

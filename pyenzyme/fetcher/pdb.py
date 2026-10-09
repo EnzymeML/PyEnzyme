@@ -5,7 +5,7 @@ This module provides functionality to fetch protein data from the
 Protein Data Bank by ID and map it to the PyEnzyme data model (v2).
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import httpx
 from pydantic import BaseModel, Field
@@ -19,42 +19,42 @@ DEFAULT_TIMEOUT = 5.0
 class Citation(BaseModel):
     """Model for PDB citation data"""
 
-    title: Optional[str] = None
-    authors: Optional[List[str]] = None
-    journal_name: Optional[str] = Field(default=None, alias="journal_abbrev")
-    year: Optional[int] = None
-    doi: Optional[str] = None
-    pubmed_id: Optional[int] = Field(default=None, alias="pdbx_database_id_PubMed")
+    title: str | None = None
+    authors: list[str] | None = None
+    journal_name: str | None = Field(default=None, alias="journal_abbrev")
+    year: int | None = None
+    doi: str | None = None
+    pubmed_id: int | None = Field(default=None, alias="pdbx_database_id_PubMed")
 
 
 class StructInfo(BaseModel):
     """Model for PDB structure information"""
 
-    title: Optional[str] = None
-    experimental_method: Optional[str] = None
-    resolution: Optional[float] = None
+    title: str | None = None
+    experimental_method: str | None = None
+    resolution: float | None = None
 
 
 class EntityInfo(BaseModel):
     """Model for PDB entity information"""
 
-    description: Optional[str] = None
-    polymer_type: Optional[str] = None
-    ec_number: Optional[str] = None
-    sequence: Optional[str] = None
-    organism_scientific_name: Optional[str] = None
-    organism_taxid: Optional[int] = None
+    description: str | None = None
+    polymer_type: str | None = None
+    ec_number: str | None = None
+    sequence: str | None = None
+    organism_scientific_name: str | None = None
+    organism_taxid: int | None = None
 
 
 class PDBResponse(BaseModel):
     """Model for PDB API response"""
 
     pdb_id: str
-    citation: List[Citation] = []
-    struct: Optional[StructInfo] = None
-    polymer_entities: Optional[Dict[str, EntityInfo]] = None
-    rcsb_primary_citation: Optional[Dict[str, Any]] = None
-    rcsb_entry_info: Optional[Dict[str, Any]] = None
+    citation: list[Citation] = []
+    struct: StructInfo | None = None
+    polymer_entities: dict[str, EntityInfo] | None = None
+    rcsb_primary_citation: dict[str, Any] | None = None
+    rcsb_entry_info: dict[str, Any] | None = None
 
 
 class PDBClient:
@@ -62,7 +62,7 @@ class PDBClient:
 
     BASE_URL = "https://data.rcsb.org/rest/v1/core"
 
-    def get_entry_by_id(self, pdb_id: str) -> Optional[PDBResponse]:
+    def get_entry_by_id(self, pdb_id: str) -> PDBResponse | None:
         """
         Fetch a PDB entry by its ID.
 
@@ -139,9 +139,9 @@ class PDBClient:
             )
 
         except ValueError as e:
-            raise ValueError(f"Failed to retrieve PDB entry: {str(e)}")
+            raise ValueError(f"Failed to retrieve PDB entry: {e!s}")
         except ConnectionError as e:
-            raise ValueError(f"Connection to PDB server failed: {str(e)}")
+            raise ValueError(f"Connection to PDB server failed: {e!s}")
 
     def _fetch_json(self, url: str) -> dict:
         """
@@ -170,16 +170,16 @@ class PDBClient:
                 )
 
         except httpx.HTTPStatusError as e:
-            raise ConnectionError(f"Connection failed: {str(e)}")
+            raise ConnectionError(f"Connection failed: {e!s}")
         except ValueError as e:
-            raise ValueError(f"Failed to parse response: {str(e)}")
+            raise ValueError(f"Failed to parse response: {e!s}")
 
 
 def fetch_pdb(
     pdb_id: str,
-    protein_id: Optional[str] = None,
+    protein_id: str | None = None,
     entity_id: str = "1",
-    vessel_id: Optional[str] = None,
+    vessel_id: str | None = None,
 ) -> v2.Protein:
     """
     Fetch a PDB entry by ID and convert it to a Protein object.

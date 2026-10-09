@@ -1,10 +1,10 @@
-from typing import List, Optional, Tuple, Dict
 
-from bokeh.models import TabPanel, Tabs, HoverTool, ColumnDataSource
-from bokeh.plotting import figure, show as show_bokeh
-from bokeh.io import output_file, output_notebook
-from bokeh.palettes import Category10, Category20
 import rich
+from bokeh.io import output_file, output_notebook
+from bokeh.models import ColumnDataSource, HoverTool, TabPanel, Tabs
+from bokeh.palettes import Category10, Category20
+from bokeh.plotting import figure
+from bokeh.plotting import show as show_bokeh
 
 from pyenzyme.thinlayers.base import BaseThinLayer, SimResult, Time
 from pyenzyme.versions import v2
@@ -16,9 +16,9 @@ DEFAULT_HEIGHT = 400
 
 def plot_interactive(
     enzmldoc: v2.EnzymeMLDocument,
-    measurement_ids: Optional[list[str]] = None,
-    thinlayer: Optional[BaseThinLayer] = None,
-    out: Optional[str] = None,
+    measurement_ids: list[str] | None = None,
+    thinlayer: BaseThinLayer | None = None,
+    out: str | None = None,
     width: int = DEFAULT_WIDTH,
     height: int = DEFAULT_HEIGHT,
     show: bool = True,
@@ -157,10 +157,10 @@ def _is_notebook() -> bool:
 def _create_measurement_tab(
     enzmldoc: v2.EnzymeMLDocument,
     measurement: v2.Measurement,
-    thinlayer: Optional[BaseThinLayer],
+    thinlayer: BaseThinLayer | None,
     width: int,
     height: int,
-    color_map: Dict[str, str],
+    color_map: dict[str, str],
     **kwargs,
 ) -> TabPanel:
     """
@@ -244,8 +244,8 @@ def _plot_species_bokeh(
     p: figure,
     species: v2.MeasurementData,
     pred: SimResult,
-    time: List[float],
-    color_map: Dict[str, str],
+    time: list[float],
+    color_map: dict[str, str],
     **kwargs,
 ) -> None:
     """
@@ -346,7 +346,7 @@ def _get_fit(
     enzmldoc: v2.EnzymeMLDocument,
     measurement: v2.Measurement,
     thinlayer: BaseThinLayer,
-) -> Tuple[SimResult, Time]:
+) -> tuple[SimResult, Time]:
     """
     Get model predictions for a measurement using a thinlayer.
 
@@ -391,7 +391,7 @@ def _get_fit(
     )
 
 
-def _collect_dataytypes(measurement_data: List[v2.MeasurementData]) -> List[str]:
+def _collect_dataytypes(measurement_data: list[v2.MeasurementData]) -> list[str]:
     """
     Extract and format unique measurement data types.
 

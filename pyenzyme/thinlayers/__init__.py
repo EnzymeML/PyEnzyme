@@ -1,5 +1,6 @@
 from .base import BaseThinLayer
 
+
 def _get_pysces():
     global ThinLayerPysces
     try:
@@ -30,4 +31,4 @@ def __getattr__(name):
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 
-__all__ = ["BaseThinLayer", "ThinLayerPysces", "ThinLayerCopasi"]
+__all__ = ["BaseThinLayer", "ThinLayerCopasi", "ThinLayerPysces"]

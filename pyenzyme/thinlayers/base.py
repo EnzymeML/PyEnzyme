@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from functools import cached_property
-from typing import Dict, List, Optional, Set, Tuple, TypeAlias
+from typing import TypeAlias
 
 import pandas as pd
 from sympy import Symbol, sympify
@@ -10,9 +10,9 @@ from pyenzyme.versions import v2
 
 # Type aliases for usage across the thinlayers
 # Easier to read and understand than using type hints
-InitCondDict: TypeAlias = Dict[str, float]
-SimResult: TypeAlias = Dict[str, List[float]]
-Time: TypeAlias = List[float]
+InitCondDict: TypeAlias = dict[str, float]
+SimResult: TypeAlias = dict[str, list[float]]
+Time: TypeAlias = list[float]
 
 
 class BaseThinLayer(ABC):
@@ -30,13 +30,13 @@ class BaseThinLayer(ABC):
     """
 
     enzmldoc: v2.EnzymeMLDocument
-    measurement_ids: List[str]
+    measurement_ids: list[str]
     exclude_unmodeled_species: bool = True
 
     def __init__(
         self,
         enzmldoc: v2.EnzymeMLDocument,
-        measurement_ids: Optional[List[str]] = None,
+        measurement_ids: list[str] | None = None,
         df_per_measurement: bool = False,
         exclude_unmodeled_species: bool = True,
     ):
@@ -149,7 +149,7 @@ class BaseThinLayer(ABC):
         return enzmldoc
 
     @staticmethod
-    def _get_all_species(enzmldoc: v2.EnzymeMLDocument) -> Set[str]:
+    def _get_all_species(enzmldoc: v2.EnzymeMLDocument) -> set[str]:
         """
         Gets all species from the EnzymeML document.
         """
@@ -168,7 +168,7 @@ class BaseThinLayer(ABC):
         t0: float,
         t1: float,
         nsteps: int = 100,
-    ) -> Tuple[SimResult, Time]:
+    ) -> tuple[SimResult, Time]:
         """
         Integrates the model from t0 to t1 with the given initial conditions.
 

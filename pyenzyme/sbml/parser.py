@@ -10,14 +10,13 @@ import pandas as pd
 from loguru import logger
 
 import pyenzyme as pe
-
 from pyenzyme import xmlutils
 from pyenzyme.logging import add_logger
 
 from . import read_sbml_omex
 from .ldutils import parse_sbml_rdf_annotation
-from .versions.handler import VersionHandler, SupportedVersions
 from .utils import _get_unit
+from .versions.handler import SupportedVersions, VersionHandler
 
 
 def read_sbml(cls, path: Path | str):

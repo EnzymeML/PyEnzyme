@@ -1,7 +1,8 @@
-from typing import List, Union
+
 from pydantic import Field
 
 from pyenzyme.versions import v2
+
 from .baserow import BaseRow
 
 
@@ -46,11 +47,11 @@ class MeasurementRow(BaseRow):
     condition_id: str = Field(alias="simulationConditionId")
     measurement: float = Field(alias="measurement")
     time: float = Field(alias="time")
-    observable_parameters: Union[str, float, None] = Field(
+    observable_parameters: str | float | None = Field(
         default=None,
         alias="observableParameters",
     )
-    noise_parameters: Union[str, float, None] = Field(
+    noise_parameters: str | float | None = Field(
         default=None,
         alias="noiseParameters",
     )
@@ -60,7 +61,7 @@ class MeasurementRow(BaseRow):
     @classmethod
     def from_measurements(
         cls, measurements: list[v2.Measurement]
-    ) -> List["MeasurementRow"]:
+    ) -> list["MeasurementRow"]:
         """
         Convert a list of EnzymeML Measurement objects to a list of PEtab MeasurementRow objects.
         """
@@ -71,7 +72,7 @@ class MeasurementRow(BaseRow):
         ]
 
     @classmethod
-    def from_measurement(cls, measurement: v2.Measurement) -> List["MeasurementRow"]:
+    def from_measurement(cls, measurement: v2.Measurement) -> list["MeasurementRow"]:
         """
         Convert an EnzymeML Measurement object to a list of PEtab MeasurementRow objects.
 

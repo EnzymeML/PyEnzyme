@@ -1,15 +1,15 @@
 from pyenzyme.sbml.versions.v2 import (
+    ConditionsAnnot,
     DataAnnot,
     MeasurementAnnot,
-    ConditionsAnnot,
+    ParameterAnnot,
+    PHAnnot,
+    ProteinAnnot,
+    SmallMoleculeAnnot,
     SpeciesDataAnnot,
     TemperatureAnnot,
-    PHAnnot,
-    SmallMoleculeAnnot,
-    ProteinAnnot,
-    ParameterAnnot,
-    VariablesAnnot,
     VariableAnnot,
+    VariablesAnnot,
 )
 
 

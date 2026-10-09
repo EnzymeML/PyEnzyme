@@ -1,10 +1,9 @@
 import math
-from typing import List, Optional, Tuple, Union
 
 import numpy as np
 from matplotlib import pyplot as plt
-from matplotlib.figure import Figure
 from matplotlib.axes import Axes
+from matplotlib.figure import Figure
 
 from pyenzyme.thinlayers.base import BaseThinLayer, SimResult, Time
 from pyenzyme.versions import v2
@@ -18,15 +17,15 @@ def plot(
     enzmldoc: v2.EnzymeMLDocument,
     columns: int = 2,
     show: bool = False,
-    measurement_ids: Optional[list[str]] = None,
+    measurement_ids: list[str] | None = None,
     marker_size: int = 6,
     marker_style: str = "o",
-    thinlayer: Optional[BaseThinLayer] = None,
-    out: Optional[str] = None,
+    thinlayer: BaseThinLayer | None = None,
+    out: str | None = None,
     img_format: str = "png",
     dpi: int = 300,
     **kwargs,
-) -> Tuple[Figure, Union[Axes, List[Axes]]]:
+) -> tuple[Figure, Axes | list[Axes]]:
     """
     Creates publication-quality plots of measurement data from an EnzymeML document.
 
@@ -146,7 +145,7 @@ def _plot_measurement(
     ax: Axes,
     enzmldoc: v2.EnzymeMLDocument,
     measurement: v2.Measurement,
-    thinlayer: Optional[BaseThinLayer],
+    thinlayer: BaseThinLayer | None,
     marker_size: int,
     marker_style: str,
     **kwargs,
@@ -205,7 +204,7 @@ def _plot_species(
     ax: Axes,
     species: v2.MeasurementData,
     pred: SimResult,
-    time: List[float],
+    time: list[float],
     marker_size: int,
     marker_style: str,
     **kwargs,
@@ -264,7 +263,7 @@ def _plot_species(
 
 
 def _configure_plot(
-    ax: Axes, measurement: v2.Measurement, dataytypes: List[str]
+    ax: Axes, measurement: v2.Measurement, dataytypes: list[str]
 ) -> None:
     """
     Configure plot appearance with titles, labels, and styling.
@@ -305,7 +304,7 @@ def _get_fit(
     enzmldoc: v2.EnzymeMLDocument,
     measurement: v2.Measurement,
     thinlayer: BaseThinLayer,
-) -> Tuple[SimResult, Time]:
+) -> tuple[SimResult, Time]:
     """
     Get model predictions for a measurement using a thinlayer.
 
@@ -350,7 +349,7 @@ def _get_fit(
     )
 
 
-def _collect_dataytypes(measurement_data: List[v2.MeasurementData]) -> List[str]:
+def _collect_dataytypes(measurement_data: list[v2.MeasurementData]) -> list[str]:
     """
     Extract and format unique measurement data types.
 
