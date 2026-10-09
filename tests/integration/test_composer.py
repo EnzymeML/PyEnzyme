@@ -58,6 +58,19 @@ class TestComposer:
         )
         assert to_dict_wo_json_ld(doc) == to_dict_wo_json_ld(expected_doc)
 
+    def test_compose_id_mapping_renames_reaction_species(self):
+        doc = pe.compose(
+            name="test",
+            reactions=["RHEA:19273"],
+            id_mapping={"CHEBI:63153": "ManNAc"},
+        )
+
+        declared = {sm.id for sm in doc.small_molecules}
+        assert "ManNAc" in declared
+        for reaction in doc.reactions:
+            for element in reaction.reactants + reaction.products:
+                assert element.species_id in declared
+
     def test_compose_invalid_id(self):
         # Act
         # Invalid Protein ID

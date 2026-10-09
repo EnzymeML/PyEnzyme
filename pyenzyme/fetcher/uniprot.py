@@ -7,7 +7,7 @@ UniProt database by ID and map it to the PyEnzyme data model (v2).
 
 import requests
 from typing import List, Optional, Union
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 from pyenzyme.fetcher.chebi import process_id
 from pyenzyme.versions import v2
 
@@ -25,23 +25,35 @@ class ProteinName(BaseModel):
 
 
 class RecommendedName(BaseModel):
-    """Model for recommended protein name in UniProt API"""
+    """Model for a recommended or submitted protein name in UniProt API"""
 
     full_name: ProteinName = Field(alias="fullName")
-    ec_numbers: Optional[List[ECNumber]] = Field(alias="ecNumbers")
+    ec_numbers: Optional[List[ECNumber]] = Field(default=None, alias="ecNumbers")
 
 
 class ProteinDescription(BaseModel):
     """Model for protein description in UniProt API"""
 
-    recommended_name: Optional[RecommendedName] = Field(alias="recommendedName")
+    recommended_name: Optional[RecommendedName] = Field(
+        default=None, alias="recommendedName"
+    )
+    submission_names: List[RecommendedName] = Field(
+        default_factory=list, alias="submissionNames"
+    )
+
+    @property
+    def name(self) -> Optional[RecommendedName]:
+        """Recommended name, or the first submission name for unreviewed (TrEMBL) entries."""
+        if self.recommended_name:
+            return self.recommended_name
+        return next(iter(self.submission_names), None)
 
 
 class Organism(BaseModel):
     """Model for organism in UniProt API"""
 
-    scientific_name: Optional[str] = Field(alias="scientificName")
-    taxon_id: Optional[int] = Field(alias="taxonId")
+    scientific_name: Optional[str] = Field(default=None, alias="scientificName")
+    taxon_id: Optional[int] = Field(default=None, alias="taxonId")
 
 
 class Sequence(BaseModel):
@@ -49,7 +61,7 @@ class Sequence(BaseModel):
 
     value: str
     length: int
-    mol_weight: Optional[int] = Field(alias="molWeight")
+    mol_weight: Optional[int] = Field(default=None, alias="molWeight")
 
 
 class UniProtEntry(BaseModel):
@@ -62,7 +74,7 @@ class UniProtEntry(BaseModel):
     organism: Optional[Organism] = None
     sequence: Optional[Sequence] = None
     accession: str = Field(alias="primaryAccession")
-    annotation_score: Optional[float] = Field(alias="annotationScore")
+    annotation_score: Optional[float] = Field(default=None, alias="annotationScore")
 
 
 class UniProtClient:
@@ -88,26 +100,37 @@ class UniProtClient:
             ValueError: If the UniProt ID is invalid or not found
             ConnectionError: If the connection to the UniProt server fails
         """
-        # Construct the URL
         url = f"{self.BASE_URL}/{uniprot_id}.json"
 
         try:
             response = requests.get(url)
             response.raise_for_status()
-
-            if response.status_code == 200:
-                try:
-                    data = response.json()
-                    return UniProtEntry.model_validate(data)
-                except Exception as e:
-                    raise ValueError(f"Failed to parse UniProt response: {str(e)}")
-            else:
+        except requests.exceptions.HTTPError as e:
+            # 4xx means a bad or unknown ID, not a connection problem
+            if e.response is not None and e.response.status_code < 500:
                 raise ValueError(
-                    f"Failed to retrieve UniProt entry for ID {uniprot_id}"
-                )
-
+                    f"UniProt ID '{uniprot_id}' is invalid or not found "
+                    f"(HTTP {e.response.status_code})"
+                ) from e
+            raise ConnectionError(f"UniProt server error: {e}") from e
         except requests.exceptions.RequestException as e:
-            raise ConnectionError(f"Connection to UniProt server failed: {str(e)}")
+            raise ConnectionError(f"Connection to UniProt server failed: {e}") from e
+
+        data = response.json()
+
+        if data.get("entryType") == "Inactive":
+            reason = data.get("inactiveReason", {})
+            detail = reason.get("inactiveReasonType", "unknown reason")
+            if "deletedReason" in reason:
+                detail += f": {reason['deletedReason']}"
+            if reason.get("mergeDemergeTo"):
+                detail += f", replaced by {', '.join(reason['mergeDemergeTo'])}"
+            raise ValueError(f"UniProt entry {uniprot_id} is inactive ({detail})")
+
+        try:
+            return UniProtEntry.model_validate(data)
+        except ValidationError as e:
+            raise ValueError(f"Failed to parse UniProt response: {e}") from e
 
 
 def fetch_uniprot(
@@ -131,6 +154,7 @@ def fetch_uniprot(
     client = UniProtClient()
 
     # Allow prefixing with 'uniprot:'
+    uniprot_id = uniprot_id.strip()
     if uniprot_id.lower().startswith("uniprot:"):
         uniprot_id = uniprot_id.split(":", 1)[-1]
 
@@ -139,14 +163,9 @@ def fetch_uniprot(
     if not uniprot_entry:
         raise ValueError(f"No data found for UniProt ID {uniprot_id}")
 
-    # Extract protein name
-    name = uniprot_id
-    if (
-        uniprot_entry.protein_description
-        and uniprot_entry.protein_description.recommended_name
-        and uniprot_entry.protein_description.recommended_name.full_name
-    ):
-        name = uniprot_entry.protein_description.recommended_name.full_name.value
+    protein_name = uniprot_entry.protein_description.name
+
+    name = protein_name.full_name.value if protein_name else uniprot_id
 
     # Extract sequence if available
     sequence = None
@@ -163,26 +182,13 @@ def fetch_uniprot(
 
     # Extract EC number
     ecnumber = None
-    if (
-        uniprot_entry.protein_description
-        and uniprot_entry.protein_description.recommended_name
-        and uniprot_entry.protein_description.recommended_name.ec_numbers
-        and len(uniprot_entry.protein_description.recommended_name.ec_numbers) > 0
-    ):
-        ecnumber = uniprot_entry.protein_description.recommended_name.ec_numbers[
-            0
-        ].value
+    if protein_name and protein_name.ec_numbers:
+        ecnumber = protein_name.ec_numbers[0].value
 
     # Create a Protein instance
     if protein_id is None:
-        if (
-            uniprot_entry.protein_description
-            and uniprot_entry.protein_description.recommended_name
-            and uniprot_entry.protein_description.recommended_name.full_name
-        ):
-            protein_id = process_id(
-                uniprot_entry.protein_description.recommended_name.full_name.value
-            )
+        if protein_name:
+            protein_id = process_id(protein_name.full_name.value)
         else:
             protein_id = uniprot_entry.accession
 
