@@ -1,6 +1,7 @@
-import rdflib
 import json
 import xml.etree.ElementTree as ET
+
+import rdflib
 
 
 def parse_sbml_rdf_annotation(sbml_obj, enzml_obj):

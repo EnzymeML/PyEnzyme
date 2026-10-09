@@ -3,13 +3,12 @@ from __future__ import annotations
 import pathlib as pl
 
 import pandas as pd
-
 from mdmodels.units.unit_definition import UnitDefinition
 
 from .versions.v2 import (
     DataTypes,
-    Measurement,
     EnzymeMLDocument,
+    Measurement,
     MeasurementData,
 )
 

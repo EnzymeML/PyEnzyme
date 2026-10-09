@@ -1,8 +1,8 @@
 import pytest
 
+from pyenzyme import EnzymeMLDocument, EquationType
 from pyenzyme.equations.chem import build_reaction, build_reactions
 from pyenzyme.equations.math import build_equation, build_equations
-from pyenzyme import EquationType, EnzymeMLDocument
 
 
 class TestMathEquations:

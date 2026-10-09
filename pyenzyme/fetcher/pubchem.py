@@ -1,4 +1,4 @@
-from typing import ClassVar, Optional
+from typing import ClassVar
 
 import httpx
 from pydantic import BaseModel, Field, field_validator
@@ -15,7 +15,7 @@ class PCUrn(BaseModel):
     """
 
     label: str
-    name: Optional[str] = Field(default=None)
+    name: str | None = Field(default=None)
 
 
 class PCProp(BaseModel):
@@ -104,7 +104,7 @@ class PubChemClient(BaseModel):
     def extract_value(
         query: PCCompound,
         label: str,
-        name: Optional[str] = None,
+        name: str | None = None,
     ) -> float | int | str | None:
         """
         Extracts a specific property value from a PubChem compound.
@@ -149,8 +149,8 @@ class PubChemClient(BaseModel):
 
 def fetch_pubchem(
     cid: str,
-    smallmol_id: Optional[str] = None,
-    vessel_id: Optional[str] = None,
+    smallmol_id: str | None = None,
+    vessel_id: str | None = None,
 ) -> v2.SmallMolecule:
     """
     Fetches a compound from PubChem by CID and converts it to a SmallMolecule object.

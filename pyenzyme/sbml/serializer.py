@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from copy import deepcopy
 from pathlib import Path
-from typing import Callable, List
 
 import libsbml
 import pandas as pd
@@ -629,7 +629,7 @@ def _validate_sbml(sbmldoc: libsbml.SBMLDocument) -> None:
             )
 
 
-def _assign_ids_to_units(doc_units: List[UnitDefinition]) -> List[UnitDefinition]:
+def _assign_ids_to_units(doc_units: list[UnitDefinition]) -> list[UnitDefinition]:
     """
     Assign unique IDs to units.
 

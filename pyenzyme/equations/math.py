@@ -2,10 +2,10 @@ import re
 
 import rich
 from loguru import logger
+from mdmodels.units.unit_definition import UnitDefinition
 from sympy import sympify
 
 from pyenzyme.logging import add_logger
-from mdmodels.units.unit_definition import UnitDefinition
 from pyenzyme.versions.v2 import (
     EnzymeMLDocument,
     Equation,

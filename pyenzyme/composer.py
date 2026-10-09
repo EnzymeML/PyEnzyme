@@ -1,4 +1,5 @@
-from typing import List, Optional, Tuple, Callable, Any
+from collections.abc import Callable
+from typing import Any
 
 from rich.console import Console
 
@@ -28,11 +29,11 @@ console = Console()
 
 def compose(
     name: str,
-    proteins: Optional[list[str]] = None,
-    small_molecules: Optional[list[str]] = None,
-    reactions: Optional[list[str]] = None,
-    vessel: Optional[v2.Vessel] = None,
-    id_mapping: Optional[dict[str, str]] = None,
+    proteins: list[str] | None = None,
+    small_molecules: list[str] | None = None,
+    reactions: list[str] | None = None,
+    vessel: v2.Vessel | None = None,
+    id_mapping: dict[str, str] | None = None,
 ) -> v2.EnzymeMLDocument:
     """
     Compose an EnzymeML document from proteins, small molecules, and reactions.
@@ -162,7 +163,7 @@ def _fetch_small_molecule(small_molecule_id: str) -> v2.SmallMolecule:
     )
 
 
-def _fetch_reaction(reaction_id: str) -> Tuple[v2.Reaction, List[v2.SmallMolecule]]:
+def _fetch_reaction(reaction_id: str) -> tuple[v2.Reaction, list[v2.SmallMolecule]]:
     """
     Fetch reaction information using available fetchers.
 
@@ -179,7 +180,7 @@ def _fetch_reaction(reaction_id: str) -> Tuple[v2.Reaction, List[v2.SmallMolecul
 
 
 def _fetch_with_fetchers(
-    entity_id: str, fetchers: List[Callable], entity_type: str
+    entity_id: str, fetchers: list[Callable], entity_type: str
 ) -> Any:
     """
     Generic function to attempt fetching with multiple fetchers.
@@ -210,7 +211,7 @@ def _fetch_with_fetchers(
     ) from last_error
 
 
-def _remove_duplicates(objects: List[Any]) -> List[Any]:
+def _remove_duplicates(objects: list[Any]) -> list[Any]:
     """
     Remove duplicate objects based on their ID attribute.
 
@@ -235,7 +236,7 @@ def _remove_duplicates(objects: List[Any]) -> List[Any]:
 
 
 def _apply_id_mapping(
-    objects: List[Any],
+    objects: list[Any],
     id_mapping: dict[str, str],
 ) -> dict[str, str]:
     """

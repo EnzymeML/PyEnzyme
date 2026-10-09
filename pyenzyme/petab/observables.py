@@ -1,8 +1,9 @@
 from enum import Enum
-from typing import List, Optional
+
 from pydantic import ConfigDict, Field
 
 from pyenzyme.versions import v2
+
 from .baserow import BaseRow
 
 
@@ -21,24 +22,24 @@ class ObservableRow(BaseRow):
     model_config = ConfigDict(use_enum_values=True)
 
     observable_id: str = Field(alias="observableId")
-    observable_name: Optional[str] = Field(alias="observableName", default=None)
+    observable_name: str | None = Field(alias="observableName", default=None)
     observable_formula: str = Field(alias="observableFormula")
-    observable_noise: Optional[float] = Field(alias="observableNoise", default=0.0)
+    observable_noise: float | None = Field(alias="observableNoise", default=0.0)
     observable_transformation: Transformation = Field(
         alias="observableTransformation",
         default=Transformation.LIN,
     )
-    noise_formula: Optional[str] = Field(
+    noise_formula: str | None = Field(
         default=None,
         alias="noiseFormula",
     )
-    noise_distribution: Optional[NoiseDistribution] = Field(
+    noise_distribution: NoiseDistribution | None = Field(
         default=None,
         alias="noiseDistribution",
     )
 
     @classmethod
-    def from_enzymeml(cls, enzmldoc: v2.EnzymeMLDocument) -> List["ObservableRow"]:
+    def from_enzymeml(cls, enzmldoc: v2.EnzymeMLDocument) -> list["ObservableRow"]:
         """Extract observable rows from an EnzymeML document.
 
         Collects all species with data across measurements and creates observable rows.

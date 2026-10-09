@@ -1,8 +1,9 @@
 from enum import Enum
-from typing import List, Optional
+
 from pydantic import ConfigDict, Field, field_serializer, field_validator
 
 from pyenzyme.versions import v2
+
 from .baserow import BaseRow
 
 
@@ -47,20 +48,20 @@ class ParameterRow(BaseRow):
     model_config = ConfigDict(use_enum_values=True)
 
     parameter_id: str = Field(alias="parameterId")
-    parameter_name: Optional[str] = Field(alias="parameterName", default=None)
+    parameter_name: str | None = Field(alias="parameterName", default=None)
     parameter_scale: ParameterScale = Field(
         default=ParameterScale.LIN,
         alias="parameterScale",
     )
     lower_bound: float = Field(alias="lowerBound")
     upper_bound: float = Field(alias="upperBound")
-    nominal_value: Optional[float] = Field(alias="nominalValue", default=None)
+    nominal_value: float | None = Field(alias="nominalValue", default=None)
     estimate: bool = Field(alias="estimate", default=True)
     initialization_prior_type: PriorType = Field(
         default=PriorType.PARAMETER_SCALE_UNIFORM,
         alias="initializationPriorType",
     )
-    initialization_prior_parameters: List[float] = Field(
+    initialization_prior_parameters: list[float] = Field(
         default_factory=list,
         alias="initializationPriorParameters",
     )
@@ -68,7 +69,7 @@ class ParameterRow(BaseRow):
         default=PriorType.PARAMETER_SCALE_UNIFORM,
         alias="objectivePriorType",
     )
-    objective_prior_parameters: List[float] = Field(
+    objective_prior_parameters: list[float] = Field(
         default_factory=list,
         alias="objectivePriorParameters",
     )
@@ -77,7 +78,7 @@ class ParameterRow(BaseRow):
         "objective_prior_parameters",
         "initialization_prior_parameters",
     )
-    def serialize_prior_parameters(self, v: List[float]) -> str:
+    def serialize_prior_parameters(self, v: list[float]) -> str:
         """
         Serializes a list of prior parameters into a semicolon-separated string.
 
@@ -95,7 +96,7 @@ class ParameterRow(BaseRow):
         mode="before",
     )
     @classmethod
-    def validate_prior_parameters(cls, v: str) -> List[float]:
+    def validate_prior_parameters(cls, v: str) -> list[float]:
         """
         Validates and converts a string of prior parameters into a list of floats.
 
@@ -108,7 +109,7 @@ class ParameterRow(BaseRow):
         return [float(x) for x in v.split(";")]
 
     @classmethod
-    def from_parameters(cls, parameters: List[v2.Parameter]) -> List["ParameterRow"]:
+    def from_parameters(cls, parameters: list[v2.Parameter]) -> list["ParameterRow"]:
         """
         Creates a list of ParameterRow objects from a list of PyEnzyme Parameter objects.
         """
