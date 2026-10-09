@@ -98,6 +98,15 @@ class TestFetcher:
         assert protein.references[0] == "https://www.uniprot.org/uniprotkb/P07327"
 
     @pytest.mark.remote
+    def test_fetch_uniprot_unreviewed_entry(self):
+        # TrEMBL entry: has submissionNames but no recommendedName
+        protein = fetch_uniprot("Q7DDU0")
+
+        assert protein.name == "Polysialic acid capsule biosynthesis protein SiaC"
+        assert protein.ld_id == "uniprot:Q7DDU0"
+        assert protein.sequence
+
+    @pytest.mark.remote
     def test_fetch_rhea_to_reaction(self):
         reaction, small_molecules = fetch_rhea("RHEA:22864")
 

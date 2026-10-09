@@ -1,4 +1,3 @@
-import re
 from typing import List, Optional, Tuple, Callable, Any
 
 from rich.console import Console
@@ -98,21 +97,20 @@ def compose(
     reaction_objects.sort(key=lambda x: x.id)
 
     if id_mapping:
-        small_molecule_objects = _apply_id_mapping(
-            small_molecule_objects,
-            id_mapping,
-            r"CHEBI|PUBCHEM",
-        )
-        protein_objects = _apply_id_mapping(
-            protein_objects,
-            id_mapping,
-            r"UNIPROT|PDB",
-        )
-        reaction_objects = _apply_id_mapping(
-            reaction_objects,
-            id_mapping,
-            r"RHEA",
-        )
+        renamed = _apply_id_mapping(small_molecule_objects + protein_objects, id_mapping)
+        _apply_id_mapping(reaction_objects, id_mapping)
+
+        species_ids = [obj.id for obj in small_molecule_objects + protein_objects]
+        duplicates = sorted({i for i in species_ids if species_ids.count(i) > 1})
+        if duplicates:
+            raise ValueError(
+                f"id_mapping gives several species the same ID: {', '.join(duplicates)}"
+            )
+
+        # Keep reactions pointing at the renamed species
+        for reaction in reaction_objects:
+            for element in reaction.reactants + reaction.products + reaction.modifiers:
+                element.species_id = renamed.get(element.species_id, element.species_id)
 
     # Set vessel IDs if vessel is provided
     vessels = []
@@ -198,18 +196,18 @@ def _fetch_with_fetchers(
         ValueError: If no fetcher can handle the given entity ID
     """
     errors = []
+    last_error = None
     for fetcher in fetchers:
         try:
             return fetcher(entity_id)
         except Exception as e:
             errors.append(f"{fetcher.__name__}: {type(e).__name__}: {e}")
-            continue
+            last_error = e
 
     detail = "; ".join(errors)
     raise ValueError(
-        f"No {entity_type} fetcher succeeded for {entity_id}. "
-        f"Tried: {detail}"
-    )
+        f"No {entity_type} fetcher succeeded for {entity_id}. Tried: {detail}"
+    ) from last_error
 
 
 def _remove_duplicates(objects: List[Any]) -> List[Any]:
@@ -239,29 +237,32 @@ def _remove_duplicates(objects: List[Any]) -> List[Any]:
 def _apply_id_mapping(
     objects: List[Any],
     id_mapping: dict[str, str],
-    prefix: str,
-) -> List[Any]:
+) -> dict[str, str]:
     """
-    Apply ID mapping to objects based on the provided mapping.
+    Apply ID mapping to objects (in place) based on the provided mapping.
+
+    A key matches an object when it equals the object's ``ld_id`` or a trailing
+    part of it, ignoring case: "CHEBI:63153", "chebi:63153" and "63153" all
+    match "OBO:CHEBI_63153", but "CHEBI:1" does not match "OBO:CHEBI_15377".
 
     Args:
         objects: List of objects to apply ID mapping to
         id_mapping: Dictionary mapping old IDs to new IDs
-        prefix: Regex pattern to match ID prefixes
 
     Returns:
-        List of objects with updated IDs
+        Dictionary of the renames applied, from previous to new object ID
     """
+    renamed = {}
     for obj in objects:
-        key = next(
-            (
-                k
-                for k in id_mapping
-                if re.sub(prefix + ":", "", k) in obj.ld_id.replace("_", ":")
-            ),
-            None,
-        )
+        ld_id = _normalize_id(obj.ld_id)
+        key = next((k for k in id_mapping if ld_id.endswith(_normalize_id(k))), None)
         if key:
+            renamed[obj.id] = id_mapping[key]
             obj.id = id_mapping[key]
 
-    return objects
+    return renamed
+
+
+def _normalize_id(identifier: str) -> str:
+    """'OBO:CHEBI_63153' -> ':OBO:CHEBI:63153', 'pubchem:CID962' -> ':PUBCHEM:962'"""
+    return (":" + identifier.upper().replace("_", ":")).replace(":CID", ":")
