@@ -8,6 +8,8 @@ jobs:
       - uses: chartboost/ruff-action@v1
         with:
           src: './pyenzyme'
+          version: 0.15.22  # keep in sync with .pre-commit-config.yaml
       - uses: chartboost/ruff-action@v1
         with:
           src: './tests'
+          version: 0.15.22
