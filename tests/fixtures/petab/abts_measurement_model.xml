@@ -200,12 +200,26 @@
     <listOfCompartments>
       <compartment id="vessel0" name="vessel0" spatialDimensions="3" size="1" units="u4" constant="true">
         <annotation>
-          <rdf:RDF xmlns:OBO="http://purl.obolibrary.org/obo/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Vessel/79b926ec-6278-43ec-b135-d3a0e30ec5ba">
+          <rdf:RDF xmlns:OBO="http://purl.obolibrary.org/obo/" xmlns:enzml="http://www.enzymeml.org/v2/" xmlns:ns1="http://www.enzymeml.org/v2/Vessel/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:nodeID="N0a079c57e02a40d5acf6e5652d5759bc">
+              <schema:identifier>u4</schema:identifier>
+              <schema:name>l</schema:name>
+              <enzml:base_units rdf:nodeID="Naf6bc56e87f944179f26bf1409a7f477"/>
+            </rdf:Description>
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Vessel/3afdb104-63fa-4cf8-94f5-747537d1f378">
+              <schema:identifier>vessel0</schema:identifier>
               <schema:name>vessel0</schema:name>
               <OBO:OBI_0002139 rdf:datatype="http://www.w3.org/2001/XMLSchema#double">1.0</OBO:OBI_0002139>
+              <ns1:unit rdf:nodeID="N0a079c57e02a40d5acf6e5652d5759bc"/>
+              <ns1:constant rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns1:constant>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Vessel"/>
               <rdf:type rdf:resource="http://purl.obolibrary.org/obo/OBI_0400081"/>
+            </rdf:Description>
+            <rdf:Description rdf:nodeID="Naf6bc56e87f944179f26bf1409a7f477">
+              <enzml:kind>litre</enzml:kind>
+              <enzml:exponent rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</enzml:exponent>
+              <enzml:multiplier rdf:datatype="http://www.w3.org/2001/XMLSchema#double">1.0</enzml:multiplier>
+              <enzml:scale rdf:datatype="http://www.w3.org/2001/XMLSchema#double">0.0</enzml:scale>
             </rdf:Description>
           </rdf:RDF>
         </annotation>
@@ -214,9 +228,13 @@
     <listOfSpecies>
       <species sboTerm="SBO:0000252" id="slac" name="slac" compartment="vessel0" initialConcentration="0.079037949" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
         <annotation>
-          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Protein/8fc838cc-55c5-4ee0-ba13-7011a6fae094">
+          <rdf:RDF xmlns:ns1="http://www.enzymeml.org/v2/Protein/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Protein/c3e2e25c-3f58-42c3-844e-a4c62704985c">
+              <schema:identifier>slac</schema:identifier>
               <schema:name>slac</schema:name>
+              <ns1:constant rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ns1:constant>
+              <ns1:vessel_id>vessel0</ns1:vessel_id>
+              <schema:citation rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Protein"/>
               <rdf:type rdf:resource="http://purl.obolibrary.org/obo/PR_000000001"/>
             </rdf:Description>
@@ -225,9 +243,13 @@
       </species>
       <species sboTerm="SBO:0000252" id="slac_inactive" name="slac_inactive" compartment="vessel0" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
         <annotation>
-          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Protein/8c94097f-f06a-4ba1-89f5-17d67bebe4a6">
+          <rdf:RDF xmlns:ns1="http://www.enzymeml.org/v2/Protein/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Protein/728c9e48-d508-46fa-a2bd-e1d0311063f3">
+              <schema:identifier>slac_inactive</schema:identifier>
               <schema:name>slac_inactive</schema:name>
+              <ns1:constant rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ns1:constant>
+              <ns1:vessel_id>vessel0</ns1:vessel_id>
+              <schema:citation rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Protein"/>
               <rdf:type rdf:resource="http://purl.obolibrary.org/obo/PR_000000001"/>
             </rdf:Description>
@@ -236,9 +258,14 @@
       </species>
       <species sboTerm="SBO:0000247" id="abts" name="abts" compartment="vessel0" initialConcentration="4.37288121844535" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
         <annotation>
-          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/f790a43b-4bcd-4c5e-b272-4dba3a995e11">
+          <rdf:RDF xmlns:ns1="http://www.enzymeml.org/v2/SmallMolecule/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/d3c9ec94-b3ca-4d47-9e5f-f132133bd775">
+              <schema:identifier>abts</schema:identifier>
               <schema:name>abts</schema:name>
+              <ns1:constant rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ns1:constant>
+              <ns1:vessel_id>vessel0</ns1:vessel_id>
+              <ns1:synonymous_names rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+              <schema:citation rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
             </rdf:Description>
           </rdf:RDF>
@@ -246,9 +273,14 @@
       </species>
       <species sboTerm="SBO:0000247" id="buffer" name="buffer" compartment="vessel0" initialConcentration="100" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
         <annotation>
-          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/a04b7c7e-292b-4096-857a-f65df5d93c0a">
+          <rdf:RDF xmlns:ns1="http://www.enzymeml.org/v2/SmallMolecule/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/d2ac8e17-5c14-4d75-a459-00d6d1a954ad">
+              <schema:identifier>buffer</schema:identifier>
               <schema:name>buffer</schema:name>
+              <ns1:constant rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ns1:constant>
+              <ns1:vessel_id>vessel0</ns1:vessel_id>
+              <ns1:synonymous_names rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+              <schema:citation rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
             </rdf:Description>
           </rdf:RDF>
@@ -256,9 +288,14 @@
       </species>
       <species sboTerm="SBO:0000247" id="abts_radical" name="abts_radical" compartment="vessel0" initialConcentration="0" substanceUnits="mole" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false">
         <annotation>
-          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/7b4d0da7-bba9-4854-831b-0be4ed1906b0">
+          <rdf:RDF xmlns:ns1="http://www.enzymeml.org/v2/SmallMolecule/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/SmallMolecule/f329753b-59e7-466a-a5e3-99fe6c635d87">
+              <schema:identifier>abts_radical</schema:identifier>
               <schema:name>abts_radical</schema:name>
+              <ns1:constant rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ns1:constant>
+              <ns1:vessel_id>vessel0</ns1:vessel_id>
+              <ns1:synonymous_names rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+              <schema:citation rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/SmallMolecule"/>
             </rdf:Description>
           </rdf:RDF>
@@ -268,8 +305,17 @@
     <listOfParameters>
       <parameter id="k_cat" name="k_cat" value="1.85" constant="true">
         <annotation>
-          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/d0cb729a-b5cf-42e8-a837-f423ebc56676">
+          <rdf:RDF xmlns:ns1="http://www.enzymeml.org/v2/Parameter/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/90e772b6-582c-4968-978c-e080f46fb95f">
+              <schema:identifier>k_cat</schema:identifier>
+              <ns1:name>k_cat</ns1:name>
+              <ns1:symbol>k_cat</ns1:symbol>
+              <ns1:value rdf:datatype="http://www.w3.org/2001/XMLSchema#double">1.85</ns1:value>
+              <ns1:initial_value rdf:datatype="http://www.w3.org/2001/XMLSchema#double">0.01</ns1:initial_value>
+              <ns1:upper_bound rdf:datatype="http://www.w3.org/2001/XMLSchema#double">2.0</ns1:upper_bound>
+              <ns1:lower_bound rdf:datatype="http://www.w3.org/2001/XMLSchema#double">1e-06</ns1:lower_bound>
+              <ns1:fit rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns1:fit>
+              <ns1:constant rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns1:constant>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
             </rdf:Description>
           </rdf:RDF>
@@ -282,8 +328,17 @@
       </parameter>
       <parameter id="K_M" name="K_M" value="20" constant="true">
         <annotation>
-          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/6e85535c-c19f-4555-ab47-19c8f7a40a04">
+          <rdf:RDF xmlns:ns1="http://www.enzymeml.org/v2/Parameter/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/c07ea5b3-2c14-497c-9e11-0d868d838e68">
+              <schema:identifier>K_M</schema:identifier>
+              <ns1:name>K_M</ns1:name>
+              <ns1:symbol>K_M</ns1:symbol>
+              <ns1:value rdf:datatype="http://www.w3.org/2001/XMLSchema#double">20.0</ns1:value>
+              <ns1:initial_value rdf:datatype="http://www.w3.org/2001/XMLSchema#double">120.0</ns1:initial_value>
+              <ns1:upper_bound rdf:datatype="http://www.w3.org/2001/XMLSchema#double">150.0</ns1:upper_bound>
+              <ns1:lower_bound rdf:datatype="http://www.w3.org/2001/XMLSchema#double">1e-06</ns1:lower_bound>
+              <ns1:fit rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns1:fit>
+              <ns1:constant rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns1:constant>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
             </rdf:Description>
           </rdf:RDF>
@@ -296,8 +351,17 @@
       </parameter>
       <parameter id="k_ie" name="k_ie" value="0.001" constant="true">
         <annotation>
-          <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/0ca6e0f7-b51b-4815-be14-a0f5860d612c">
+          <rdf:RDF xmlns:ns1="http://www.enzymeml.org/v2/Parameter/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:schema="https://schema.org/">
+            <rdf:Description rdf:about="http://www.enzymeml.org/v2/Parameter/de29d237-ed76-4618-8a42-24c755cf91ca">
+              <schema:identifier>k_ie</schema:identifier>
+              <ns1:name>k_ie</ns1:name>
+              <ns1:symbol>k_ie</ns1:symbol>
+              <ns1:value rdf:datatype="http://www.w3.org/2001/XMLSchema#double">0.001</ns1:value>
+              <ns1:initial_value rdf:datatype="http://www.w3.org/2001/XMLSchema#double">0.01</ns1:initial_value>
+              <ns1:upper_bound rdf:datatype="http://www.w3.org/2001/XMLSchema#double">0.05</ns1:upper_bound>
+              <ns1:lower_bound rdf:datatype="http://www.w3.org/2001/XMLSchema#double">1e-06</ns1:lower_bound>
+              <ns1:fit rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns1:fit>
+              <ns1:constant rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ns1:constant>
               <rdf:type rdf:resource="http://www.enzymeml.org/v2/Parameter"/>
             </rdf:Description>
           </rdf:RDF>

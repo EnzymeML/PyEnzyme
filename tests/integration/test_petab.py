@@ -48,15 +48,19 @@ class TestPEtab:
                 "tests/fixtures/petab/abts_measurement_parameters.tsv"
             ).read()
 
-            assert expected_sbml == self._remove_uuid(sbml_path.read_text())
+            # rdflib writes blank-node annotations in random order.
+            assert sorted(expected_sbml.splitlines()) == sorted(
+                self._remove_uuid(sbml_path.read_text()).splitlines()
+            )
             assert expected_condition == condition_path.read_text()
             assert expected_observable == observable_path.read_text()
             assert expected_measurement == measurement_path.read_text()
             assert expected_parameter == parameter_path.read_text()
 
     def _remove_uuid(self, s: str) -> str:
+        # UUIDs and rdflib's random blank-node IDs differ on every run.
         return re.sub(
-            r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|N[0-9a-f]{32}",
             "",
             s,
         )
