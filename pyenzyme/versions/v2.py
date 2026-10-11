@@ -142,7 +142,7 @@ class EnzymeMLDocument(BaseModel):
         description="""Title of the EnzymeML Document.""",
     )
     version: str = Field(
-        default= "2.0",
+        default= "2.1",
         description="""The version of the EnzymeML Document.""",
         pattern="^\\d+(\\.\\d+)?$",
     )
